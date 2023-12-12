@@ -64,10 +64,8 @@ async function main() {
     let is = constant('relation', "is");
     for (const jackEntity of jacks) {
         var facts = []
-
         for (const jillEntity of jills) {
             logger.noop({ jackEntity, jillEntity }, main)
-
             let jack = constant(jackEntity.domain, jackEntity.name);
             let jill = constant(jillEntity.domain, jillEntity.name);
             const jillExciting = cointoss()
@@ -75,7 +73,6 @@ async function main() {
             const jillLikesJack = cointoss()
             const jackLikesJill = jillExciting || jackLonely;
             const jackDatesJill = jillLikesJack && jackLikesJill;
-
             {
                 const proposition = predicate([subject(jill), relation(is), object(exciting)]);
                 facts.push([proposition, jillExciting])
@@ -136,7 +133,6 @@ async function main() {
         await storage.StoreImplication(implication)
 
     }
-
     await mongoose.disconnect();
 }
 
