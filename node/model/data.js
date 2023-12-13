@@ -52,9 +52,8 @@ async function main() {
     const jills = await storage.GetEntitiesInDomain('jill')
     logger.noop({ num_jacks: jacks.length, num_jills: jills.length }, main)
 
-
     function cointoss() {
-        return Math.random() < 0.5
+        return Math.random() < 0.5 ? 1.0 : 0.0;
     }
 
     let exciting = constant('predicate', "exciting");
@@ -62,11 +61,26 @@ async function main() {
     let like = constant('relation', "like");
     let date = constant('relation', "date");
     let is = constant('relation', "is");
+    
+    var independentFactMap = {} // store this locally for efficiency, because the MongoDB is slow rn
+    for (const jackEntity of jacks) {
+        let jack = constant(jackEntity.domain, jackEntity.name);
+        const jackLonely = predicate([subject(jack), relation(lonely)]);
+        const pJackLonely = cointoss()
+        logger.dump({jackLonely, pJackLonely}, main)
+        await storage.StoreProposition(jackLonely, pJackLonely)
+        independentFactMap[jackLonely.ToString()] = pJackLonely
+    }
+
+    process.exit()
+    var jillExcitingMap = {}
+    for (const jillEntity of jills) {
+
+    }
     for (const jackEntity of jacks) {
         var facts = []
         for (const jillEntity of jills) {
             logger.noop({ jackEntity, jillEntity }, main)
-            let jack = constant(jackEntity.domain, jackEntity.name);
             let jill = constant(jillEntity.domain, jillEntity.name);
             const jillExciting = cointoss()
             const jackLonely = cointoss()
@@ -74,8 +88,7 @@ async function main() {
             const jackLikesJill = jillExciting || jackLonely;
             const jackDatesJill = jillLikesJack && jackLikesJill;
             {
-                const proposition = predicate([subject(jill), relation(is), object(exciting)]);
-                facts.push([proposition, jillExciting])
+
             }
             {
                 const proposition = predicate([subject(jack), relation(is), object(lonely)]);
