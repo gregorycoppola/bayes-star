@@ -102,16 +102,15 @@ async function main() {
                 const jillExciting = predicate([subject(jill), relation(exciting)]);
                 const pJillExciting = independentFactMap[jillExciting.ToString()]
                 logger.noop({jillExciting, pJillExciting}, main)
-
                 function numeric_or(a, b) {
                     return Math.min(a + b, 1)
                 }
+                const jackLikesJill = predicate([subject(jack), relation(like), object(jill)]);
                 const pJackLikesJill = numeric_or(pJackLonely, pJillExciting);
                 logger.dump({pJackLonely, pJillExciting, pJackLikesJill}, main)
-
-                // logger.noop({ jillLikesJack, pJillLikesJack }, main)
-                // await storage.StoreProposition(jillLikesJack, pJillLikesJack)
-                // independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
+                await storage.StoreProposition(jackLikesJill, pJackLikesJill)
+                logger.dump({jackLikesJill, pJackLikesJill}, main)
+                independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
             }
         }
     }
