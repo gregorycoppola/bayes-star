@@ -12,7 +12,7 @@ function predicate(roles) {
     return new Proposition(roles)
 }
 function role(role_name, argument) {
-    logger.dump({role_name, argument}, role)
+    logger.dump({ role_name, argument }, role)
     return new FilledRole(role_name, argument)
 }
 function variable(domain) {
@@ -62,35 +62,42 @@ async function main() {
     let like = constant('relation', "like");
     let date = constant('relation', "date");
     let is = constant('relation', "is");
-    
+
     var independentFactMap = {} // store this locally for efficiency, because the MongoDB is slow rn
+    // for each jack: coinflip to determine if "lonely(jill)"
     for (const jackEntity of jacks) {
         let jack = constant(jackEntity.domain, jackEntity.name);
         const jackLonely = predicate([subject(jack), relation(lonely)]);
         const pJackLonely = cointoss()
-        logger.dump({jackLonely, pJackLonely}, main)
+        logger.dump({ jackLonely, pJackLonely }, main)
         await storage.StoreProposition(jackLonely, pJackLonely)
         independentFactMap[jackLonely.ToString()] = pJackLonely
     }
+    // for each jill: coinflip to determine if "exciting(jill)"
     for (const jillEntity of jills) {
         let jill = constant(jillEntity.domain, jillEntity.name);
         const jillExciting = predicate([subject(jill), relation(exciting)]);
         const pJillExciting = cointoss()
-        logger.dump({jillExciting, pJillExciting}, main)
+        logger.dump({ jillExciting, pJillExciting }, main)
         await storage.StoreProposition(jillExciting, pJillExciting)
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
     for (const jackEntity of jacks) {
         for (const jillEntity of jills) {
-            let jill = constant(jillEntity.domain, jillEntity.name);
-            let jack = constant(jackEntity.domain, jackEntity.name);
-            const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
-            const pJillLikesJack = cointoss()
-            logger.dump({jillLikesJack, pJillLikesJack}, main)
-            await storage.StoreProposition(jillLikesJack, pJillLikesJack)
-            independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
+            // for each [jill, jack]: coinflip to determine if "likes(jill, jack)"
+            {
+                let jill = constant(jillEntity.domain, jillEntity.name);
+                let jack = constant(jackEntity.domain, jackEntity.name);
+                const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
+                const pJillLikesJack = cointoss()
+                logger.dump({ jillLikesJack, pJillLikesJack }, main)
+                await storage.StoreProposition(jillLikesJack, pJillLikesJack)
+                independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
+            }
         }
     }
+
+
 
     process.exit()
     var jillExcitingMap = {}
