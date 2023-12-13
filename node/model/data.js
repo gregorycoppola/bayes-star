@@ -12,7 +12,7 @@ function predicate(roles) {
     return new Proposition(roles)
 }
 function role(role_name, argument) {
-    logger.dump({ role_name, argument }, role)
+    logger.noop({ role_name, argument }, role)
     return new FilledRole(role_name, argument)
 }
 function variable(domain) {
@@ -69,7 +69,7 @@ async function main() {
         let jack = constant(jackEntity.domain, jackEntity.name);
         const jackLonely = predicate([subject(jack), relation(lonely)]);
         const pJackLonely = cointoss()
-        logger.dump({ jackLonely, pJackLonely }, main)
+        logger.noop({ jackLonely, pJackLonely }, main)
         await storage.StoreProposition(jackLonely, pJackLonely)
         independentFactMap[jackLonely.ToString()] = pJackLonely
     }
@@ -78,21 +78,40 @@ async function main() {
         let jill = constant(jillEntity.domain, jillEntity.name);
         const jillExciting = predicate([subject(jill), relation(exciting)]);
         const pJillExciting = cointoss()
-        logger.dump({ jillExciting, pJillExciting }, main)
+        logger.noop({ jillExciting, pJillExciting }, main)
         await storage.StoreProposition(jillExciting, pJillExciting)
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
     for (const jackEntity of jacks) {
         for (const jillEntity of jills) {
+            let jill = constant(jillEntity.domain, jillEntity.name);
+            let jack = constant(jackEntity.domain, jackEntity.name);
             // for each [jill, jack]: coinflip to determine if "likes(jill, jack)"
             {
-                let jill = constant(jillEntity.domain, jillEntity.name);
-                let jack = constant(jackEntity.domain, jackEntity.name);
                 const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
                 const pJillLikesJack = cointoss()
-                logger.dump({ jillLikesJack, pJillLikesJack }, main)
+                logger.noop({ jillLikesJack, pJillLikesJack }, main)
                 await storage.StoreProposition(jillLikesJack, pJillLikesJack)
                 independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
+            }
+            // for each [jill, jack]: deterministically say that "likes(jack, jill)" iff "lonely(jack) or exciting(jill)"
+            {
+                const jackLonely = predicate([subject(jack), relation(lonely)]);
+                const pJackLonely = independentFactMap[jackLonely.ToString()]
+                logger.noop({jackLonely, pJackLonely}, main)
+                const jillExciting = predicate([subject(jill), relation(exciting)]);
+                const pJillExciting = independentFactMap[jillExciting.ToString()]
+                logger.noop({jillExciting, pJillExciting}, main)
+
+                function numeric_or(a, b) {
+                    return Math.min(a + b, 1)
+                }
+                const pJackLikesJill = numeric_or(pJackLonely, pJillExciting);
+                logger.dump({pJackLonely, pJillExciting, pJackLikesJill}, main)
+
+                // logger.noop({ jillLikesJack, pJillLikesJack }, main)
+                // await storage.StoreProposition(jillLikesJack, pJillLikesJack)
+                // independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
             }
         }
     }

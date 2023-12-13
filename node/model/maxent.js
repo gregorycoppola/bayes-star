@@ -128,7 +128,7 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
         assert.isTrue(gv != null)
         assert.isTrue(ev != null)
         const newWeight = wv + LEARNING_RATE * (gv - ev)
-        logger.dump({ feature, wv, gv, ev, newWeight }, DoSGDUpdate)
+        logger.noop({ feature, wv, gv, ev, newWeight }, DoSGDUpdate)
         r[feature] = newWeight
     }
     return r
@@ -157,7 +157,7 @@ async function TrainOnExample(proposition, backlinks) {
 
 async function DumpWeights() {
     const records = await WeightRecord.find({})
-    logger.dump({ records }, DumpWeights)
+    logger.noop({ records }, DumpWeights)
 }
 
 module.exports = { InitializeWeights, TrainOnExample, DumpWeights }
