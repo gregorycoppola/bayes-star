@@ -12,6 +12,7 @@ function predicate(roles) {
     return new Proposition(roles)
 }
 function role(role_name, argument) {
+    logger.dump({role_name, argument}, role)
     return new FilledRole(role_name, argument)
 }
 function variable(domain) {
@@ -81,9 +82,10 @@ async function main() {
     }
     for (const jackEntity of jacks) {
         for (const jillEntity of jills) {
-            const jillLikesJack = predicate([subject(jillEntity), relation(like), object(jackEntity)]);
+            let jill = constant(jillEntity.domain, jillEntity.name);
+            let jack = constant(jackEntity.domain, jackEntity.name);
+            const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
             const pJillLikesJack = cointoss()
-            facts.push([jillLikesJack, pJillLikesJack])
             logger.dump({jillLikesJack, pJillLikesJack}, main)
             await storage.StoreProposition(jillLikesJack, pJillLikesJack)
             independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
