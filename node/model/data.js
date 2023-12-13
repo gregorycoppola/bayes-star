@@ -79,6 +79,17 @@ async function main() {
         await storage.StoreProposition(jillExciting, pJillExciting)
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
+    for (const jackEntity of jacks) {
+        for (const jillEntity of jills) {
+            const jillLikesJack = predicate([subject(jillEntity), relation(like), object(jackEntity)]);
+            const pJillLikesJack = cointoss()
+            facts.push([jillLikesJack, pJillLikesJack])
+            logger.dump({jillLikesJack, pJillLikesJack}, main)
+            await storage.StoreProposition(jillLikesJack, pJillLikesJack)
+            independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
+        }
+    }
+
     process.exit()
     var jillExcitingMap = {}
     for (const jillEntity of jills) {
