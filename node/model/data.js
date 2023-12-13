@@ -98,19 +98,36 @@ async function main() {
             {
                 const jackLonely = predicate([subject(jack), relation(lonely)]);
                 const pJackLonely = independentFactMap[jackLonely.ToString()]
-                logger.noop({jackLonely, pJackLonely}, main)
+                logger.noop({ jackLonely, pJackLonely }, main)
                 const jillExciting = predicate([subject(jill), relation(exciting)]);
                 const pJillExciting = independentFactMap[jillExciting.ToString()]
-                logger.noop({jillExciting, pJillExciting}, main)
+                logger.noop({ jillExciting, pJillExciting }, main)
                 function numeric_or(a, b) {
                     return Math.min(a + b, 1)
                 }
                 const jackLikesJill = predicate([subject(jack), relation(like), object(jill)]);
                 const pJackLikesJill = numeric_or(pJackLonely, pJillExciting);
-                logger.noop({pJackLonely, pJillExciting, pJackLikesJill}, main)
+                logger.noop({ pJackLonely, pJillExciting, pJackLikesJill }, main)
                 await storage.StoreProposition(jackLikesJill, pJackLikesJill)
-                logger.noop({jackLikesJill, pJackLikesJill}, main)
+                logger.noop({ jackLikesJill, pJackLikesJill }, main)
                 independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
+            }
+            // for each [jill, jack]: deterministically say that "dates(jack, jill)" iff "likes(jack,jill) and likes(jill, jack)"
+            {
+                const jackLikesJill = predicate([subject(jack), relation(like), object(jill)]);
+                const pJackLikesJill = independentFactMap[jackLikesJill.ToString()]
+                const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
+                const pJillLikesJack = independentFactMap[jillLikesJack.ToString()]
+                function numeric_and(a, b) {
+                    return a * b
+                }
+                const pJackDatesJill = numeric_and(pJackLikesJill, pJillLikesJack)
+                logger.note({ pJackLikesJill, pJillLikesJack, pJackDatesJill }, main)
+
+                // logger.note({ pJackLonely, pJillExciting, pJackLikesJill }, main)
+                // await storage.StoreProposition(jackLikesJill, pJackLikesJill)
+                // logger.note({ jackLikesJill, pJackLikesJill }, main)
+                // independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
             }
         }
     }
