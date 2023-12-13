@@ -35,6 +35,7 @@ async function InitializeWeights(implication) {
 
 async function GetPropositionProbability(searchString) {
     assert.isType(searchString, "string")
+    logger.dump({searchString}, GetPropositionProbability)
     const record = await models.PropositionRecord.findOne({ searchString })
     const r = record.probability
     logger.noop({ searchString, record, r }, GetPropositionProbability)
