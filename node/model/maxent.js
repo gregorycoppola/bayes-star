@@ -35,7 +35,7 @@ async function InitializeWeights(implication) {
 
 async function GetPropositionProbability(searchString) {
     assert.isType(searchString, "string")
-    logger.dump({searchString}, GetPropositionProbability)
+    logger.noop({searchString}, GetPropositionProbability)
     const record = await models.PropositionRecord.findOne({ searchString })
     const r = record.probability
     logger.noop({ searchString, record, r }, GetPropositionProbability)
@@ -128,7 +128,8 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
         assert.isTrue(gv != null)
         assert.isTrue(ev != null)
         const newWeight = wv + LEARNING_RATE * (gv - ev)
-        logger.noop({ feature, wv, gv, ev, newWeight }, DoSGDUpdate)
+        const loss = Math.abs(gv - ev)
+        logger.note({ feature, wv, gv, ev, loss, newWeight }, DoSGDUpdate)
         r[feature] = newWeight
     }
     return r
@@ -157,7 +158,7 @@ async function TrainOnExample(proposition, backlinks) {
 
 async function DumpWeights() {
     const records = await WeightRecord.find({})
-    logger.noop({ records }, DumpWeights)
+    logger.note({ records }, DumpWeights)
 }
 
 module.exports = { InitializeWeights, TrainOnExample, DumpWeights }
