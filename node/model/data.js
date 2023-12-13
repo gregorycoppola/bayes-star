@@ -134,13 +134,13 @@ async function main() {
     const implications = [
         // if jack is lonely, he will date any jill
         implication(
-            predicate([subject(xjack), relation(is), object(lonely)]),
+            predicate([subject(xjack), relation(lonely)]),
             predicate([subject(xjack), relation(like), object(xjill)]),
             new RoleMap({ "subject": "subject" })
         ),
         // if jill is exciting, any jack will date her
         implication(
-            predicate([subject(xjill), relation(is), object(exciting)]),
+            predicate([subject(xjill), relation(exciting)]),
             predicate([subject(xjack), relation(like), object(xjill)]),
             new RoleMap({ "object": "subject" })
         ),
