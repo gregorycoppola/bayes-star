@@ -7,7 +7,7 @@ function dump(jsonObject, identifier) {
 
 function note(message, identifier) {
     assert.isTrue(identifier)
-    console.log(identifier, message)
+    console.log(identifier, JSON.stringify(message))
 }
 
 function todo(message, identifier) {}
