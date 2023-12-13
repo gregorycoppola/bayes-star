@@ -1,14 +1,16 @@
 import sys
 import re
 import matplotlib.pyplot as plt
+import random
 
 # Step 1: Read from stdin and process each line
 loss_values = []
 for line in sys.stdin:
-    # Print each line as it is received
-    print(line, end='')
+    # Step 2: Randomly decide whether to print the line
+    if random.randint(1, 100) == 1:
+        print(line, end='')
 
-    # Step 2: Check if the line contains 'loss:'
+    # Check if the line contains 'loss:'
     if "loss:" in line:
         # Parse the loss value
         match = re.search(r"loss:\s*([0-9.]+)", line)
