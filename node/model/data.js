@@ -121,13 +121,10 @@ async function main() {
                 function numeric_and(a, b) {
                     return a * b
                 }
+                const jackDatesJill = predicate([subject(jack), relation(date), object(jill)]);
                 const pJackDatesJill = numeric_and(pJackLikesJill, pJillLikesJack)
-                logger.note({ pJackLikesJill, pJillLikesJack, pJackDatesJill }, main)
-
-                // logger.note({ pJackLonely, pJillExciting, pJackLikesJill }, main)
-                // await storage.StoreProposition(jackLikesJill, pJackLikesJill)
-                // logger.note({ jackLikesJill, pJackLikesJill }, main)
-                // independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
+                logger.noop({ jackLikesJill, jillLikesJack, pJackLikesJill, pJillLikesJack, pJackDatesJill }, main)
+                await storage.StoreProposition(jackDatesJill, pJackDatesJill)
             }
         }
     }
