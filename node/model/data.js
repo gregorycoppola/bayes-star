@@ -107,9 +107,9 @@ async function main() {
                 }
                 const jackLikesJill = predicate([subject(jack), relation(like), object(jill)]);
                 const pJackLikesJill = numeric_or(pJackLonely, pJillExciting);
-                logger.dump({pJackLonely, pJillExciting, pJackLikesJill}, main)
+                logger.noop({pJackLonely, pJillExciting, pJackLikesJill}, main)
                 await storage.StoreProposition(jackLikesJill, pJackLikesJill)
-                logger.dump({jackLikesJill, pJackLikesJill}, main)
+                logger.noop({jackLikesJill, pJackLikesJill}, main)
                 independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
             }
         }
