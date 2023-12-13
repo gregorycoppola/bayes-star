@@ -18,7 +18,7 @@ function trace() {
 }
 
 function noop() {
-    //
+    // noop
 }
 
 module.exports = {dump, note, todo, trace, noop}

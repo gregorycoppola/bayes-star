@@ -129,49 +129,6 @@ async function main() {
         }
     }
 
-
-
-    process.exit()
-    var jillExcitingMap = {}
-    for (const jillEntity of jills) {
-
-    }
-    for (const jackEntity of jacks) {
-        var facts = []
-        for (const jillEntity of jills) {
-            logger.noop({ jackEntity, jillEntity }, main)
-            let jill = constant(jillEntity.domain, jillEntity.name);
-            const jillExciting = cointoss()
-            const jackLonely = cointoss()
-            const jillLikesJack = cointoss()
-            const jackLikesJill = jillExciting || jackLonely;
-            const jackDatesJill = jillLikesJack && jackLikesJill;
-            {
-
-            }
-            {
-                const proposition = predicate([subject(jack), relation(is), object(lonely)]);
-                facts.push([proposition, jackLonely])
-            }
-            {
-                const proposition = predicate([subject(jill), relation(like), object(jack)]);
-                facts.push([proposition, jillLikesJack])
-            }
-            {
-                const proposition = predicate([subject(jack), relation(like), object(jill)]);
-                facts.push([proposition, jackLikesJill])
-            }
-            {
-                const proposition = predicate([subject(jack), relation(date), object(jill)]);
-                facts.push([proposition, jackDatesJill])
-            }
-        }
-        for (const [fact, value] of facts) {
-            logger.noop({ fact, value }, main)
-            await storage.StoreProposition(fact, value)
-        }
-    }
-
     let xjack = variable("jack");
     let xjill = variable("jill");
     const implications = [
