@@ -193,7 +193,7 @@ class Implication {
             assert.isTrue(value.ToString())
             r[key] = value.ToString()
         })
-        return r
+        return JSON.stringify(r)
     }
 }
 

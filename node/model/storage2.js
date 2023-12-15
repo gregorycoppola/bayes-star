@@ -62,7 +62,6 @@ class Storage {
         const record = implication.ToString();
         logger.dump({searchString, record}, this.StoreImplication)
         await this.client.hSet('implications', searchString, record);
-        return updatedEntry;
     }
 
     async GetAllImplications() {
