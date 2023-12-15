@@ -132,9 +132,6 @@ async function main() {
         }
     }
 
-    process.exit()
-
-
     let xjack = variable("jack");
     let xjill = variable("jill");
     const implications = [
@@ -168,7 +165,6 @@ async function main() {
         await storage.StoreImplication(implication)
 
     }
-    await mongoose.disconnect();
 }
 
 main()

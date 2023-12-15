@@ -186,6 +186,15 @@ class Implication {
     MappingString() {
         return this.roleMap.ToString()
     }
+    ToString() {
+        logger.dump({ToString: this}, this.ToString)
+        var r = {}
+        Object.entries(this).forEach(([key, value]) => {
+            assert.isTrue(value.ToString())
+            r[key] = value.ToString()
+        })
+        return r
+    }
 }
 
 class Entity {

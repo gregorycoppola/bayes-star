@@ -59,20 +59,9 @@ class Storage {
         assert.isType(implication, Implication)
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
-        const UniqueKey = implication.UniqueKey();
-        const updatedEntry = await ImplicationRecord.findOneAndUpdate(
-            { UniqueKey },
-            {
-                UniqueKey,
-                searchString,
-                premiseRecord: implication.premise.ToString(),
-                conclusionRecord: implication.conclusion.ToString(),
-                mappingRecord: implication.MappingString(),
-                featureString: implication.FeatureString()
-            },
-            { new: true, upsert: true }
-        );
-        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreImplication);
+        const record = implication.ToString();
+        logger.dump({searchString, record}, this.StoreImplication)
+        await this.client.hSet('implications', searchString, record);
         return updatedEntry;
     }
 
