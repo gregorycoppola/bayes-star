@@ -91,7 +91,7 @@ class Storage {
         const rows = await ImplicationRecord.find({ searchString });
         var result = []
         for (const row of rows) {
-            result.push(Implication.FromRecord(row))
+            result.push(Implication.FromString(row))
         }
         logger.noop({ result }, this.FindPremises)
         return result;

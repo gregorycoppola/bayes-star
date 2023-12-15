@@ -186,18 +186,6 @@ class Implication {
     MappingString() {
         return this.roleMap.ToString()
     }
-
-    static FromRecord(record) {
-        assert.isType(record, ImplicationRecord)
-        const {premiseRecord, conclusionRecord, mappingRecord} = record;
-        logger.noop({premiseRecord, conclusionRecord, mappingRecord}, this.FromRecord)
-
-        const premise = Proposition.FromString(premiseRecord)
-        const conclusion = Proposition.FromString(conclusionRecord)
-        const roleMap = RoleMap.FromRecord(mappingRecord)
-        logger.noop({premise, conclusion, roleMap}, this.FromRecord)
-        return new Implication(premise, conclusion, roleMap)
-    }
 }
 
 class Entity {
@@ -218,12 +206,6 @@ class RoleMap {
     }
     ToString() {
         return ToStringObjectCanonical(this.roleMap)
-    }
-
-    static FromRecord(record) {
-        assert.isType(record, "string")
-        const roleMap = JSON.parse(record)
-        return new RoleMap(roleMap)
     }
 }
 
