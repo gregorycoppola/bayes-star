@@ -7,7 +7,7 @@ const { PropositionRecord, ImplicationRecord, EntityRecord } = require("./models
 const { Proposition, Implication, Entity } = require("./predicate")
 
 class Storage {
-    constructor(redisUrl) {
+    constructor() {
         const client = redis.createClient({
             url: 'redis://localhost:6379'
         });
@@ -95,11 +95,9 @@ async function CreateStorage(dbName) {
 }
 
 async function ConnectDB() {
-    // const baseUrl = 'mongodb://localhost:27017';
-    // const dbName = 'testdb1'
-    // const url = baseUrl + '/' + dbName
-    // await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    // logger.noop('Connected successfully to server', ConnectDB);
+    const storage = new Storage()
+    await storage.Connect()
+    return storage
 }
 
 
