@@ -61,15 +61,6 @@ class Storage {
         return buffer
     }
 
-    async GetAllImplications() {
-        const results = await ImplicationRecord.find({ });
-        var buffer = []
-        for (const record of results) {
-            buffer.push(Implication.FromRecord(record))
-        }
-        return buffer
-    }
-
     async StoreImplication(implication) {
         assert.isType(implication, Implication)
         logger.noop({ implication }, this.StoreImplication)
@@ -89,6 +80,15 @@ class Storage {
         );
         logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreImplication);
         return updatedEntry;
+    }
+    
+    async GetAllImplications() {
+        const results = await ImplicationRecord.find({ });
+        var buffer = []
+        for (const record of results) {
+            buffer.push(Implication.FromRecord(record))
+        }
+        return buffer
     }
 
     async FindPremises(searchString) {
