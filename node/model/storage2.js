@@ -35,7 +35,8 @@ class Storage {
 
     async GetEntitiesInDomain(domain) {
         let set1Members = await this.client.sMembers(domain);
-        console.log('Members of set1:', set1Members);
+        logger.dump('Members of set1:', set1Members);
+        return set1Members.map(name => new Entity(domain, name))
     }
 
     async GetAllPropositions() {
