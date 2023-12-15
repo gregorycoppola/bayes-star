@@ -34,8 +34,7 @@ function relation(argument) {
 
 
 async function main() {
-    await ConnectDB();
-    const storage = await CreateStorage("testdb1")
+    const storage = await CreateStorage()
     await storage.Connect()
     await storage.DropAllDBs()
 

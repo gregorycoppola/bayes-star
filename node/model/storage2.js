@@ -91,14 +91,10 @@ class Storage {
 }
 
 async function CreateStorage(dbName) {
-    return new Storage();
-}
-
-async function ConnectDB() {
     const storage = new Storage()
     await storage.Connect()
     return storage
 }
 
 
-module.exports = { Storage, CreateStorage, ConnectDB }
+module.exports = { Storage, CreateStorage }

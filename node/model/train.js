@@ -5,8 +5,7 @@ const { ComputeBacklinks } = require("./choose")
 const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
 
 async function main() {
-    await ConnectDB()
-    const storage = await CreateStorage("testdb1")
+    const storage = await CreateStorage()
     const implications = await storage.GetAllImplications()
     for (const implication of implications) {
         logger.noop({ implication }, main)
@@ -20,7 +19,7 @@ async function main() {
         await TrainOnExample(proposition, backlinks)
     }
     await DumpWeights()
-    await mongoose.disconnect();
+    await storage.Disconnect();
 }
 
 main()
