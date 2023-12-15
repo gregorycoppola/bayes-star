@@ -34,13 +34,8 @@ class Storage {
     }
 
     async GetEntitiesInDomain(domain) {
-        // loop over values in the domain
-        const results = await EntityRecord.find({ domain });
-        var buffer = []
-        for (const record of results) {
-            buffer.push(new Entity(record.domain, record.name))
-        }
-        return buffer
+        let set1Members = await this.client.sMembers(domain);
+        console.log('Members of set1:', set1Members);
     }
 
     async GetAllPropositions() {
@@ -126,7 +121,6 @@ async function CreateStorage(dbName) {
 }
 
 async function ConnectDB() {
-    logger.trace()
     // const baseUrl = 'mongodb://localhost:27017';
     // const dbName = 'testdb1'
     // const url = baseUrl + '/' + dbName
