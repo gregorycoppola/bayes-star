@@ -55,8 +55,6 @@ async function main() {
     const jills = await storage.GetEntitiesInDomain('jill')
     logger.dump({ num_jacks: jacks.length, num_jills: jills.length }, main)
 
-    process.exit()
-
     function cointoss() {
         return Math.random() < 0.5 ? 1.0 : 0.0;
     }
@@ -86,6 +84,10 @@ async function main() {
         await storage.StoreProposition(jillExciting, pJillExciting)
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
+
+    process.exit()
+
+    
     for (const jackEntity of jacks) {
         for (const jillEntity of jills) {
             let jill = constant(jillEntity.domain, jillEntity.name);

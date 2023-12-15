@@ -44,19 +44,7 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const record = proposition.ToString();
-        logger.noop({ searchString, record })
-        const updatedEntry = await PropositionRecord.findOneAndUpdate(
-            { searchString },
-            {
-                searchString,
-                record,
-                probability,
-            },
-            { new: true, upsert: true }
-        );
-
-        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreProposition);
-        return updatedEntry;
+        await this.client.hSet('propositions', searchString, record);
     }
 
     async GetAllPropositions() {
