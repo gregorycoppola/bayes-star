@@ -3,7 +3,7 @@ const assert = require("../assert");
 const logger = require("../logger")
 const redis = require("redis")
 const { promisify } = require('util');
-const {PropositionRecord, ImplicationRecord, EntityRecord} = require("./models")
+const { PropositionRecord, ImplicationRecord, EntityRecord } = require("./models")
 const { Proposition, Implication, Entity } = require("./predicate")
 
 class Storage {
@@ -11,7 +11,7 @@ class Storage {
         const client = redis.createClient({
             url: 'redis://localhost:6379'
         });
-    
+
         client.on('error', (err) => console.log('Redis Client Error', err));
 
         this.client = client
@@ -48,17 +48,11 @@ class Storage {
     }
 
     async GetAllPropositions() {
-        const results = await PropositionRecord.find({ });
-        logger.noop({results}, this.GetAllPropositions)
-        var buffer = []
-        for (const result of results) {
-            const proposition = Proposition.FromString(result.record)
-            logger.noop({pushing:1, proposition}, this.GetAllPropositions)
-
-            buffer.push(proposition)
+        const allValues = await this.client.hGetAll('propositions');
+        for (const [key, value] of Object.entries(allValues)) {
+            console.log(`Key: ${key}, Value: ${value}`);
         }
-        logger.noop({size: buffer.length}, this.GetAllPropositions)
-        return buffer
+        process.exit() // TODO: implement this
     }
 
     async StoreImplication(implication) {
@@ -81,20 +75,19 @@ class Storage {
         logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreImplication);
         return updatedEntry;
     }
-    
+
     async GetAllImplications() {
-        const results = await ImplicationRecord.find({ });
-        var buffer = []
-        for (const record of results) {
-            buffer.push(Implication.FromRecord(record))
+        const allValues = await this.client.hGetAll('propositions');
+        for (const [key, value] of Object.entries(allValues)) {
+            console.log(`Key: ${key}, Value: ${value}`);
         }
-        return buffer
+        process.exit() // TODO: implement this
     }
 
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
-        logger.noop({searchString}, this.FindPremises)
-        logger.noop({ searchString}, this.FindPremises)
+        logger.noop({ searchString }, this.FindPremises)
+        logger.noop({ searchString }, this.FindPremises)
         const rows = await ImplicationRecord.find({ searchString });
         var result = []
         for (const row of rows) {
