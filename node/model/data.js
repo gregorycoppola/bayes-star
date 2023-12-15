@@ -85,9 +85,6 @@ async function main() {
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
 
-    process.exit()
-
-    
     for (const jackEntity of jacks) {
         for (const jillEntity of jills) {
             let jill = constant(jillEntity.domain, jillEntity.name);
@@ -134,6 +131,9 @@ async function main() {
             }
         }
     }
+
+    process.exit()
+
 
     let xjack = variable("jack");
     let xjill = variable("jill");
