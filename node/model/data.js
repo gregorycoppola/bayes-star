@@ -50,11 +50,12 @@ async function main() {
         }
     }
 
-    process.exit()
 
     const jacks = await storage.GetEntitiesInDomain('jack')
     const jills = await storage.GetEntitiesInDomain('jill')
-    logger.noop({ num_jacks: jacks.length, num_jills: jills.length }, main)
+    logger.dump({ num_jacks: jacks.length, num_jills: jills.length }, main)
+
+    process.exit()
 
     function cointoss() {
         return Math.random() < 0.5 ? 1.0 : 0.0;
