@@ -84,6 +84,10 @@ class Storage {
         logger.noop({ result }, this.FindPremises)
         return result;
     }
+
+    async Disconnect() {
+        await this.client.quit();
+    }
 }
 
 async function CreateStorage(dbName) {

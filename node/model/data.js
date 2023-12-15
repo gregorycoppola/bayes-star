@@ -165,6 +165,8 @@ async function main() {
         await storage.StoreImplication(implication)
 
     }
+
+    await storage.Disconnect()
 }
 
 main()
