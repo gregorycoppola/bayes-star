@@ -1,7 +1,7 @@
 const { Proposition, BackLink } = require("./predicate");
 const assert = require("../assert");
 const logger = require("../logger");
-const { Storage } = require("./storage");
+const { Storage } = require("./storage2");
 const { ConvertToQuantified, ExtractPremiseRoleMap, ConvertToProposition } = require("./ops");
 
 function Combine(inputArray, k) {

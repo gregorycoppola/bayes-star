@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const logger = require("../logger")
-const { CreateStorage, ConnectDB } = require("./storage")
+const { CreateStorage, ConnectDB } = require("./storage2")
 const { ComputeBacklinks } = require("./choose")
 const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
 
