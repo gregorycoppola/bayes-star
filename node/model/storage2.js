@@ -39,6 +39,26 @@ class Storage {
         return set1Members.map(name => new Entity(domain, name))
     }
 
+    async StoreProposition(proposition, probability) {
+        assert.isType(proposition, Proposition)
+        assert.isTrue(proposition.IsFact())
+        const searchString = proposition.SearchString();
+        const record = proposition.ToString();
+        logger.noop({ searchString, record })
+        const updatedEntry = await PropositionRecord.findOneAndUpdate(
+            { searchString },
+            {
+                searchString,
+                record,
+                probability,
+            },
+            { new: true, upsert: true }
+        );
+
+        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreProposition);
+        return updatedEntry;
+    }
+
     async GetAllPropositions() {
         const results = await PropositionRecord.find({ });
         logger.noop({results}, this.GetAllPropositions)
@@ -60,26 +80,6 @@ class Storage {
             buffer.push(Implication.FromRecord(record))
         }
         return buffer
-    }
-
-    async StoreProposition(proposition, probability) {
-        assert.isType(proposition, Proposition)
-        assert.isTrue(proposition.IsFact())
-        const searchString = proposition.SearchString();
-        const record = proposition.ToString();
-        logger.noop({ searchString, record })
-        const updatedEntry = await PropositionRecord.findOneAndUpdate(
-            { searchString },
-            {
-                searchString,
-                record,
-                probability,
-            },
-            { new: true, upsert: true }
-        );
-
-        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreProposition);
-        return updatedEntry;
     }
 
     async StoreImplication(implication) {
