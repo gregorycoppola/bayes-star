@@ -39,8 +39,6 @@ async function main() {
     await storage.Connect()
     await storage.DropAllDBs()
 
-    process.exit()
-
     const TOTAL_MEMBERS_EACH_CLASS = 32
     const domains = ['jack', 'jill']
     for (const domain of domains) {
@@ -51,6 +49,8 @@ async function main() {
             await storage.StoreEntity(entity)
         }
     }
+
+    process.exit()
 
     const jacks = await storage.GetEntitiesInDomain('jack')
     const jills = await storage.GetEntitiesInDomain('jill')

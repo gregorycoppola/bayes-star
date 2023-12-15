@@ -30,10 +30,9 @@ class Storage {
     async StoreEntity(entity) {
         // map from key to list of strings... 
         assert.isType(entity, Entity)
-        const flushdbAsync = promisify(client.flushdb).bind(client);
-        const newItem = new EntityRecord({ name: entity.name, domain: entity.domain });
-        await newItem.save();
+        await this.client.sAdd(entity.domain, entity.name);
     }
+
     async GetEntitiesInDomain(domain) {
         // loop over values in the domain
         const results = await EntityRecord.find({ domain });
@@ -127,11 +126,12 @@ async function CreateStorage(dbName) {
 }
 
 async function ConnectDB() {
-    const baseUrl = 'mongodb://localhost:27017';
-    const dbName = 'testdb1'
-    const url = baseUrl + '/' + dbName
-    await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    logger.noop('Connected successfully to server', ConnectDB);
+    logger.trace()
+    // const baseUrl = 'mongodb://localhost:27017';
+    // const dbName = 'testdb1'
+    // const url = baseUrl + '/' + dbName
+    // await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+    // logger.noop('Connected successfully to server', ConnectDB);
 }
 
 
