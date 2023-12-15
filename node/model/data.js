@@ -36,7 +36,10 @@ function relation(argument) {
 async function main() {
     await ConnectDB();
     const storage = await CreateStorage("testdb1")
+    await storage.Connect()
     await storage.DropAllDBs()
+
+    process.exit()
 
     const TOTAL_MEMBERS_EACH_CLASS = 32
     const domains = ['jack', 'jill']

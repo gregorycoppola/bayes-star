@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const assert = require("../assert");
 const logger = require("../logger")
+const redis = require("redis")
 const { promisify } = require('util');
 const {PropositionRecord, ImplicationRecord, EntityRecord} = require("./models")
 const { Proposition, Implication, Entity } = require("./predicate")
@@ -16,11 +17,14 @@ class Storage {
         this.client = client
     }
 
+    async Connect() {
+        await this.client.connect();
+    }
+
     async DropAllDBs() {
-        // wipe clean entire memory
-        const flushdbAsync = promisify(this.client.flushdb).bind(client);
-        const flushResult = await flushdbAsync();
-        logger.dump({flushResult}, this.DropAllDBs)
+        assert.isTrue(this.client)
+        const flushResult = await this.client.flushDb();
+        console.log({ flushResult });
     }
 
     async StoreEntity(entity) {
