@@ -39,7 +39,7 @@ async function FeaturesFromBacklinks(storage, backlinks) {
 }
 
 function ComputeProbability(weights, features) {
-    logger.noop({ weights, features }, ComputeProbability)
+    logger.dump({ weights, features }, ComputeProbability)
     const dot = DotProduct(weights, features);
     const probability = Sigmoid(dot);
     return probability;
