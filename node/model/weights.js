@@ -32,18 +32,6 @@ async function ReadWeights(redis, features) {
         r[feature] = parseFloat(record)
     }
     return r
-
-    logger.noop({ features }, ReadWeights)
-    var r = {}
-    for (const feature of Object.keys(features)) {
-        const record = await WeightRecord.findOne({ feature })
-        logger.noop({ feature, record }, ReadWeights)
-        if (record) {
-            r[feature] = record.weight
-        }
-    }
-    logger.noop({ r }, ReadWeights)
-    return r
 }
 
 async function SaveWeights(weights) {
