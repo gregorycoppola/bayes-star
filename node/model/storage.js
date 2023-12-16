@@ -63,7 +63,7 @@ class Storage {
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
         const record = JSON.stringify(implication)
-        logger.noop({ searchString, record }, this.StoreImplication)
+        logger.dump({ searchString, record }, this.StoreImplication)
         const recovered = JSON.parse(record)
         logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);

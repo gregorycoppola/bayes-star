@@ -156,8 +156,9 @@ async function main() {
             new RoleMap({ "subject": "subject", "object": "object" })
         ),
     ]
-    logger.noop({ implications }, main)
+    logger.noop({ num_implications: implications.length }, main)
     for (const implication of implications) {
+        logger.dump({implication}, main)
         await storage.StoreImplication(implication)
 
     }
