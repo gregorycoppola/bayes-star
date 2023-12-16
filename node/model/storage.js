@@ -100,4 +100,4 @@ async function CreateStorage(redis) {
     return new Storage(redis)
 }
 
-module.exports = { CreateStorage }
+module.exports = { CreateStorage, Storage }

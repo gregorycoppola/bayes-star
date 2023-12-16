@@ -17,8 +17,8 @@ async function main() {
     const propositions = await storage.GetAllPropositions()
     for (const proposition of propositions) {
         logger.dump({ proposition }, main)
-        const backlinks = await ComputeBacklinks(redis, proposition)
-        await TrainOnExample(redis, proposition, backlinks)
+        const backlinks = await ComputeBacklinks(storage, proposition)
+        await TrainOnExample(storage, proposition, backlinks)
     }
     await DumpWeights()
     await redis.Disconnect();
