@@ -35,7 +35,7 @@ class Storage {
         logger.noop({ allValues }, this.GetAllPropositions)
         var r = []
         for (const [key, value] of Object.entries(allValues)) {
-            logger.dump({ key, value }, this.GetAllPropositions)
+            logger.noop({ key, value }, this.GetAllPropositions)
             const tuple = JSON.parse(value)
             r.push(Proposition.FromTuple(tuple))
         }
@@ -54,7 +54,7 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const r = this.redis.client.hGet('probs', searchString);
-        logger.dump({searchString, r}, this.GetPropositionProbability)
+        logger.noop({searchString, r}, this.GetPropositionProbability)
         return parseFloat(r)
     }
 

@@ -30,7 +30,7 @@ async function FeaturesFromBacklinks(storage, backlinks) {
         const feature = backlink.implication.UniqueKey()
         const searchString = backlink.proposition.SearchString()
         const probability = await storage.GetPropositionProbability(searchString)
-        logger.dump({ feature, searchString, probability }, FeaturesFromBacklinks)
+        logger.noop({ feature, searchString, probability }, FeaturesFromBacklinks)
         result[PositiveFeature(feature)] = probability
         result[NegativeFeature(feature)] = 1 - probability
     }
@@ -67,7 +67,7 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
         assert.isTrue(ev != null)
         const newWeight = wv + LEARNING_RATE * (gv - ev)
         const loss = Math.abs(gv - ev)
-        logger.dump({ feature, wv, gv, ev, loss, newWeight }, DoSGDUpdate)
+        logger.noop({ feature, wv, gv, ev, loss, newWeight }, DoSGDUpdate)
         r[feature] = newWeight
     }
     return r

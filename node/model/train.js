@@ -6,18 +6,18 @@ const { InitializeWeights, TrainOnExample } = require("./maxent")
 const { DumpWeights } = require("./weights")
 
 async function main() {
-    logger.dump({starting: "training"}, main)
+    logger.noop({starting: "training"}, main)
     const redis = await CreateRedisClient()
     const storage = await CreateStorage(redis)
     const implications = await storage.GetAllImplications()
     for (const implication of implications) {
-        logger.dump({ implication }, main)
+        logger.noop({ implication }, main)
         await InitializeWeights(redis, implication)
     }
 
     const propositions = await storage.GetAllPropositions()
     for (const proposition of propositions) {
-        logger.dump({ proposition }, main)
+        logger.noop({ proposition }, main)
         const backlinks = await ComputeBacklinks(storage, proposition)
         await TrainOnExample(storage, proposition, backlinks)
     }
