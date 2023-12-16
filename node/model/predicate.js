@@ -197,7 +197,7 @@ class Implication {
     static FromString(string) {
         const tuple = JSON.parse(string)
         logger.dump({tuple}, this.FromString)
-        process.exit()
+        throw new Error("TBD")
     }
 }
 

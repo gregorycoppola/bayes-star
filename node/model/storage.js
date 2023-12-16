@@ -23,18 +23,18 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const record = JSON.stringify(proposition);
-        logger.dump({record}, this.StoreProposition)
+        logger.noop({record}, this.StoreProposition)
         const recovered = JSON.parse(record)
-        logger.dump({recovered}, this.StoreProposition)
+        logger.noop({recovered}, this.StoreProposition)
         await this.redis.client.hSet('propositions', searchString, record);
     }
 
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
+        logger.dump({allValues}, this.GetAllPropositions)
         for (const [key, value] of Object.entries(allValues)) {
             logger.dump({key, value}, this.GetAllPropositions)
         }
-        process.exit() // TODO: implement this
     }
 
     async StoreImplication(implication) {
@@ -44,15 +44,16 @@ class Storage {
         const record = JSON.stringify(implication)
         logger.noop({searchString, record}, this.StoreImplication)
         const recovered = JSON.parse(record)
-        logger.dump({recovered}, this.StoreImplication)
+        logger.noop({recovered}, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
     }
 
     async GetAllImplications() {
         const allValues = await this.redis.client.hGetAll('implications');
+        logger.dump({allValues}, this.GetAllImplications)
         var r = []
         for (const [key, value] of Object.entries(allValues)) {
-            logger.dump({key, value}, this.GetAllImplications)
+            logger.noop({key, value}, this.GetAllImplications)
             const implication = Implication.FromString(value)
             logger.dump({implication}, this.GetAllImplications)
             r.push(implication)
