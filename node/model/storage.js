@@ -23,18 +23,24 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const record = JSON.stringify(proposition);
-        logger.noop({record}, this.StoreProposition)
+        logger.noop({ record }, this.StoreProposition)
         const recovered = JSON.parse(record)
-        logger.noop({recovered}, this.StoreProposition)
+        logger.noop({ recovered }, this.StoreProposition)
         await this.redis.client.hSet('propositions', searchString, record);
     }
 
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
-        logger.noop({allValues}, this.GetAllPropositions)
+        logger.noop({ allValues }, this.GetAllPropositions)
         for (const [key, value] of Object.entries(allValues)) {
-            logger.noop({key, value}, this.GetAllPropositions)
+            logger.noop({ key, value }, this.GetAllPropositions)
         }
+        throw new Error("TBD")
+    }
+
+    async GetPropositionProbability(searchString) {
+        assert.isType(searchString, "string")
+        logger.noop({ searchString }, GetPropositionProbability)
         throw new Error("TBD")
     }
 
@@ -43,20 +49,20 @@ class Storage {
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
         const record = JSON.stringify(implication)
-        logger.noop({searchString, record}, this.StoreImplication)
+        logger.noop({ searchString, record }, this.StoreImplication)
         const recovered = JSON.parse(record)
-        logger.noop({recovered}, this.StoreImplication)
+        logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
     }
 
     async GetAllImplications() {
         const allValues = await this.redis.client.hGetAll('implications');
-        logger.noop({allValues}, this.GetAllImplications)
+        logger.noop({ allValues }, this.GetAllImplications)
         var r = []
         for (const [key, record] of Object.entries(allValues)) {
-            logger.noop({key, record}, this.GetAllImplications)
+            logger.noop({ key, record }, this.GetAllImplications)
             const implication = Implication.FromTuple(JSON.parse(record))
-            logger.noop({implication}, this.GetAllImplications)
+            logger.noop({ implication }, this.GetAllImplications)
             r.push(implication)
         }
         return r

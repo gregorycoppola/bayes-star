@@ -2,12 +2,6 @@ const logger = require("../logger")
 const assert = require("../assert")
 const {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights} = require("./weights")
 
-async function GetPropositionProbability(searchString) {
-    assert.isType(searchString, "string")
-    logger.noop({searchString}, GetPropositionProbability)
-    throw new Error("TBD")
-}
-
 function Sigmoid(x) {
     return 1 / (1 + Math.exp(-x));
 }
@@ -28,7 +22,7 @@ function DotProduct(dict1, dict2) {
     return result;
 }
 
-async function FeaturesFromBacklinks(backlinks) {
+async function FeaturesFromBacklinks(storage, backlinks) {
     var result = {}
     for (var i = 0; i < backlinks.length; i++) {
         const backlink = backlinks[i]
@@ -82,7 +76,7 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
 async function TrainOnExample(storage, proposition, backlinks) {
     logger.noop({ proposition, backlinks }, TrainOnExample)
 
-    const features = await FeaturesFromBacklinks(backlinks)
+    const features = await FeaturesFromBacklinks(storage, backlinks)
     logger.noop({ proposition, features }, TrainOnExample)
 
     const weightVector = await ReadWeights(features)
