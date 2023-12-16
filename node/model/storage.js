@@ -46,7 +46,7 @@ class Storage {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
-        logger.noop({searchString, probability}, this.StorePropositionProbability)
+        logger.noop({ searchString, probability }, this.StorePropositionProbability)
         await this.redis.client.hSet('probs', searchString, probability);
     }
 
@@ -55,7 +55,7 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const r = this.redis.client.hGet('probs', searchString);
-        logger.noop({searchString, r}, this.GetPropositionProbability)
+        logger.noop({ searchString, r }, this.GetPropositionProbability)
         return parseFloat(r)
     }
 
@@ -67,18 +67,18 @@ class Storage {
         logger.noop({ searchString, record }, this.StoreImplication)
         // const recovered = JSON.parse(record)
         // logger.noop({ recovered }, this.StoreImplication)
-        await this.redis.client.hSet('implications', searchString, record);
+        await this.redis.client.sAdd('implications', record);
         await this.StoreLinks(implication)
     }
 
     async GetAllImplications() {
-        const allValues = await this.redis.client.hGetAll('implications');
-        logger.noop({ allValues }, this.GetAllImplications)
+        const allValues = await this.redis.client.sMembers('implications');
+        logger.dump({ allValues }, this.GetAllImplications)
         var r = []
-        for (const [key, record] of Object.entries(allValues)) {
-            logger.noop({ key, record }, this.GetAllImplications)
+        for (const record of allValues) {
+            logger.dump({ record }, this.GetAllImplications)
             const implication = Implication.FromTuple(JSON.parse(record))
-            logger.noop({ implication }, this.GetAllImplications)
+            logger.dump({ implication }, this.GetAllImplications)
             r.push(implication)
         }
         return r
@@ -95,11 +95,11 @@ class Storage {
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
         let set1Members = await this.redis.client.sMembers(searchString);
-        logger.noop({searchString, set1Members}, this.FindPremises);
+        logger.noop({ searchString, set1Members }, this.FindPremises);
         var r = []
         for (const record of set1Members) {
             const tuple = JSON.parse(record)
-            logger.noop({record, tuple}, this.FindPremises)
+            logger.noop({ record, tuple }, this.FindPremises)
             const implication = Implication.FromTuple(tuple)
             r.push(implication)
         }
