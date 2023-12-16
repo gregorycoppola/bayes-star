@@ -1,10 +1,12 @@
 const logger = require("../logger")
-const { StartRedis } = require("./storage")
+const { CreateStorage } = require("./storage")
+const { CreateRedisClient } = require("./redis")
 const { ComputeBacklinks } = require("./choose")
 const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
 
 async function main() {
-    const storage = await StartRedis()
+    const redis = await CreateRedisClient()
+    const storage = await CreateStorage(redis)
     const implications = await storage.GetAllImplications()
     for (const implication of implications) {
         logger.noop({ implication }, main)
