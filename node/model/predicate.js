@@ -202,7 +202,7 @@ class Implication {
         const conclusion = tuple['conclusion']
         const roleMap = tuple['roleMap']
         logger.noop({premise, conclusion, roleMap}, this.FromTuple)
-        return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(premise), RoleMap.FromTuple(roleMap))
+        return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(conclusion), RoleMap.FromTuple(roleMap))
     }
 }
 
