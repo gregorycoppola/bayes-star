@@ -90,7 +90,7 @@ async function TrainOnExample(storage, proposition, backlinks) {
     const newWeight = DoSGDUpdate(weightVector, features, expected)
     logger.noop({ weightVector, newWeight }, TrainOnExample)
 
-    await SaveWeights(newWeight)
+    await SaveWeights(storage.redis, newWeight)
 }
 
 module.exports = { InitializeWeights, TrainOnExample }

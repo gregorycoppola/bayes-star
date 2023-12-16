@@ -34,7 +34,12 @@ async function ReadWeights(redis, features) {
     return r
 }
 
-async function SaveWeights(weights) {
+async function SaveWeights(redis, weights) {
+    for (const feature of Object.keys(weights)) {
+        const value = weights[feature]
+        logger.dump({feature, value}, SaveWeights)
+        await redis.client.hSet('weights', weights[feature]);
+    }
     logger.noop({ weights }, SaveWeights)
     for (const feature of Object.keys(weights)) {
         const updated = await WeightRecord.findOneAndUpdate({ feature }, { weight: weights[feature] }, { new: true, runValidators: true });
