@@ -186,7 +186,7 @@ class Implication {
         return this.roleMap.ToString()
     }
     ToString() {
-        logger.dump({ToString: this}, this.ToString)
+        logger.noop({ToString: this}, this.ToString)
         var r = {}
         Object.entries(this).forEach(([key, value]) => {
             assert.isTrue(value.ToString())

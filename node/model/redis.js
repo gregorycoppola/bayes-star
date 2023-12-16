@@ -22,7 +22,7 @@ class RedisClient {
     async DropAllDBs() {
         assert.isTrue(this.client)
         const flushResult = await this.client.flushDb();
-        logger.dump({ flushResult }, this.DropAllDBs);
+        logger.noop({ flushResult }, this.DropAllDBs);
     }
 }
 

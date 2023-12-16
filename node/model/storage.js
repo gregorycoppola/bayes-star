@@ -14,7 +14,7 @@ class Storage {
 
     async GetEntitiesInDomain(domain) {
         let set1Members = await this.redis.client.sMembers(domain);
-        logger.dump('Members of set1:', set1Members);
+        logger.noop('Members of set1:', set1Members);
         return set1Members.map(name => new Entity(domain, name))
     }
 
@@ -29,7 +29,7 @@ class Storage {
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
-            console.log(`Key: ${key}, Value: ${value}`);
+            logger.noop(`Key: ${key}, Value: ${value}`);
         }
         process.exit() // TODO: implement this
     }
@@ -39,14 +39,14 @@ class Storage {
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
         const record = implication.ToString();
-        logger.dump({searchString, record}, this.StoreImplication)
+        logger.noop({searchString, record}, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
     }
 
     async GetAllImplications() {
         const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
-            console.log(`Key: ${key}, Value: ${value}`);
+            logger.noop(`Key: ${key}, Value: ${value}`);
         }
         process.exit() // TODO: implement this
     }

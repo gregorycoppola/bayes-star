@@ -50,7 +50,7 @@ async function main() {
 
     const jacks = await storage.GetEntitiesInDomain('jack')
     const jills = await storage.GetEntitiesInDomain('jill')
-    logger.dump({ num_jacks: jacks.length, num_jills: jills.length }, main)
+    logger.noop({ num_jacks: jacks.length, num_jills: jills.length }, main)
 
     function cointoss() {
         return Math.random() < 0.5 ? 1.0 : 0.0;
@@ -68,7 +68,7 @@ async function main() {
         let jack = constant(jackEntity.domain, jackEntity.name);
         const jackLonely = predicate([subject(jack), relation(lonely)]);
         const pJackLonely = cointoss()
-        logger.note({ jackLonely, pJackLonely }, main)
+        logger.noop({ jackLonely, pJackLonely }, main)
         await storage.StoreProposition(jackLonely, pJackLonely)
         independentFactMap[jackLonely.ToString()] = pJackLonely
     }
@@ -77,7 +77,7 @@ async function main() {
         let jill = constant(jillEntity.domain, jillEntity.name);
         const jillExciting = predicate([subject(jill), relation(exciting)]);
         const pJillExciting = cointoss()
-        logger.note({ jillExciting, pJillExciting }, main)
+        logger.noop({ jillExciting, pJillExciting }, main)
         await storage.StoreProposition(jillExciting, pJillExciting)
         independentFactMap[jillExciting.ToString()] = pJillExciting
     }
@@ -90,7 +90,7 @@ async function main() {
             {
                 const jillLikesJack = predicate([subject(jill), relation(like), object(jack)]);
                 const pJillLikesJack = cointoss()
-                logger.note({ jillLikesJack, pJillLikesJack }, main)
+                logger.noop({ jillLikesJack, pJillLikesJack }, main)
                 await storage.StoreProposition(jillLikesJack, pJillLikesJack)
                 independentFactMap[jillLikesJack.ToString()] = pJillLikesJack
             }
@@ -101,7 +101,7 @@ async function main() {
                 logger.noop({ jackLonely, pJackLonely }, main)
                 const jillExciting = predicate([subject(jill), relation(exciting)]);
                 const pJillExciting = independentFactMap[jillExciting.ToString()]
-                logger.note({ jillExciting, pJillExciting }, main)
+                logger.noop({ jillExciting, pJillExciting }, main)
                 function numeric_or(a, b) {
                     return Math.min(a + b, 1)
                 }
@@ -109,7 +109,7 @@ async function main() {
                 const pJackLikesJill = numeric_or(pJackLonely, pJillExciting);
                 logger.noop({ pJackLonely, pJillExciting, pJackLikesJill }, main)
                 await storage.StoreProposition(jackLikesJill, pJackLikesJill)
-                logger.note({ jackLikesJill, pJackLikesJill }, main)
+                logger.noop({ jackLikesJill, pJackLikesJill }, main)
                 independentFactMap[jackLikesJill.ToString()] = pJackLikesJill
             }
             // for each [jill, jack]: deterministically say that "dates(jack, jill)" iff "likes(jack,jill) and likes(jill, jack)"
@@ -123,7 +123,7 @@ async function main() {
                 }
                 const jackDatesJill = predicate([subject(jack), relation(date), object(jill)]);
                 const pJackDatesJill = numeric_and(pJackLikesJill, pJillLikesJack)
-                logger.note({ jackLikesJill, jillLikesJack, pJackLikesJill, pJillLikesJack, pJackDatesJill }, main)
+                logger.noop({ jackLikesJill, jillLikesJack, pJackLikesJill, pJillLikesJack, pJackDatesJill }, main)
                 await storage.StoreProposition(jackDatesJill, pJackDatesJill)
             }
         }
