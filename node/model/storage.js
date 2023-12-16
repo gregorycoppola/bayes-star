@@ -44,9 +44,13 @@ class Storage {
     }
 
     async GetAllImplications() {
-        const allValues = await this.redis.client.hGetAll('propositions');
+        const allValues = await this.redis.client.hGetAll('implications');
+        var r = []
         for (const [key, value] of Object.entries(allValues)) {
             logger.dump({key, value}, this.GetAllImplications)
+            const implication = Implication.FromString(value)
+            logger.dump({implication}, this.GetAllImplications)
+            r.push(implication)
         }
         process.exit() // TODO: implement this
     }

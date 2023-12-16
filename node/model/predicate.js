@@ -194,6 +194,11 @@ class Implication {
         })
         return JSON.stringify(r)
     }
+    static FromString(string) {
+        const tuple = JSON.parse(string)
+        logger.dump({tuple}, this.FromString)
+        process.exit()
+    }
 }
 
 class Entity {
