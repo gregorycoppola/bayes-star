@@ -94,10 +94,11 @@ class Storage {
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
         let set1Members = await this.redis.client.sMembers(searchString);
-        logger.noop('Members of set1:', set1Members);
+        logger.dump({searchString, set1Members}, this.FindPremises);
         var r = []
-        for (const record in set1Members) {
+        for (const record of set1Members) {
             const tuple = JSON.parse(record)
+            logger.dump({record, tuple}, this.FindPremises)
             const implication = Implication.FromTuple(tuple)
             r.push(implication)
         }
