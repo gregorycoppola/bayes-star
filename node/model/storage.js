@@ -90,10 +90,8 @@ class Storage {
         await this.redis.client.sAdd(searchString, record);
     }
 
-    async FindPremises(implication) {
-        assert.isType(implication, Implication)
-        logger.noop({ implication }, this.StoreImplication)
-        const searchString = implication.SearchString();
+    async FindPremises(searchString) {
+        assert.isType(searchString, "string")
         let set1Members = await this.redis.client.sMembers(searchString);
         logger.noop('Members of set1:', set1Members);
         var r = []
