@@ -67,6 +67,7 @@ class Storage {
         const recovered = JSON.parse(record)
         logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
+        await this.StoreLinks(implication)
     }
 
     async GetAllImplications() {
