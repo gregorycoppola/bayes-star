@@ -21,7 +21,7 @@ async function InitializeWeights(redis, implication) {
     const negf = NegativeFeature(feature)
     const weight1 = RandomWeight()
     const weight2 = RandomWeight()
-    logger.dump({implication, feature, posf, negf, weight1, weight2}, InitializeWeights)
+    logger.dump({feature, posf, negf, weight1, weight2}, InitializeWeights)
     await redis.client.hSet('weights', posf, weight1);
     await redis.client.hSet('weights', negf, weight2);
 }
@@ -31,7 +31,7 @@ async function ReadWeights(redis, features) {
     var r = {}
     for (const feature of Object.keys(features)) {
         const record = await redis.client.hGet('weights', feature);
-        logger.noop({feature, record}, ReadWeights)
+        logger.dump({feature, record}, ReadWeights)
         r[feature] = parseFloat(record)
     }
     return r
