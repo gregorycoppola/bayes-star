@@ -84,6 +84,7 @@ class Storage {
 
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
+        throw new Error("TBD")
         // logger.noop({ searchString }, this.FindPremises)
         // logger.noop({ searchString }, this.FindPremises)
         // const rows = await ImplicationRecord.find({ searchString });
