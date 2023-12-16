@@ -35,6 +35,7 @@ async function ReadWeights(redis, features) {
 }
 
 async function SaveWeights(redis, weights) {
+    logger.dump({weights}, SaveWeights)
     for (const feature of Object.keys(weights)) {
         const value = weights[feature]
         logger.dump({feature, value}, SaveWeights)
