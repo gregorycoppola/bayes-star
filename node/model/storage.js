@@ -27,6 +27,7 @@ class Storage {
         const recovered = JSON.parse(record)
         logger.noop({ recovered }, this.StoreProposition)
         await this.redis.client.hSet('propositions', searchString, record);
+        await this.StorePropositionProbability(proposition, probability)
     }
 
     async GetAllPropositions() {
@@ -38,10 +39,20 @@ class Storage {
         throw new Error("TBD")
     }
 
-    async GetPropositionProbability(searchString) {
-        assert.isType(searchString, "string")
-        logger.noop({ searchString }, GetPropositionProbability)
-        throw new Error("TBD")
+    async StorePropositionProbability(proposition, probability) {
+        assert.isType(proposition, Proposition)
+        assert.isTrue(proposition.IsFact())
+        const searchString = proposition.SearchString();
+        await this.redis.client.hSet('probs', searchString, probability);
+    }
+
+    async GetPropositionProbability(proposition) {
+        assert.isType(proposition, Proposition)
+        assert.isTrue(proposition.IsFact())
+        const searchString = proposition.SearchString();
+        const r = this.redis.client.hGet('probs', searchString);
+        logger.dump({searchString, r}, this.GetPropositionProbability)
+        return parseFloat(r)
     }
 
     async StoreImplication(implication) {

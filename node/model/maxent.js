@@ -29,8 +29,8 @@ async function FeaturesFromBacklinks(storage, backlinks) {
         logger.noop({ backlink }, FeaturesFromBacklinks)
         const feature = backlink.implication.UniqueKey()
         const searchString = backlink.proposition.SearchString()
-        const probability = await GetPropositionProbability(searchString)
-        logger.noop({ feature, searchString, probability }, FeaturesFromBacklinks)
+        const probability = await storage.GetPropositionProbability(searchString)
+        logger.dump({ feature, searchString, probability }, FeaturesFromBacklinks)
         result[PositiveFeature(feature)] = probability
         result[NegativeFeature(feature)] = 1 - probability
     }
