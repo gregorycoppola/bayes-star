@@ -45,7 +45,6 @@ class Storage {
         logger.noop({searchString, record}, this.StoreImplication)
         const recovered = JSON.parse(record)
         logger.dump({recovered}, this.StoreImplication)
-        process.exit()
         await this.redis.client.hSet('implications', searchString, record);
     }
 
