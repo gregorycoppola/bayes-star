@@ -1,7 +1,6 @@
 const mongoose = require("mongoose")
 const logger = require("../logger")
 const { Implication } = require("./predicate")
-const models = require("./models")
 const assert = require("../assert")
 
 const weightSchema = new mongoose.Schema({
@@ -36,10 +35,11 @@ async function InitializeWeights(implication) {
 async function GetPropositionProbability(searchString) {
     assert.isType(searchString, "string")
     logger.noop({searchString}, GetPropositionProbability)
-    const record = await models.PropositionRecord.findOne({ searchString })
-    const r = record.probability
-    logger.noop({ searchString, record, r }, GetPropositionProbability)
-    return r
+    throw new Error("TBD")
+    // const record = await models.PropositionRecord.findOne({ searchString })
+    // const r = record.probability
+    // logger.noop({ searchString, record, r }, GetPropositionProbability)
+    // return r
 }
 
 function Sigmoid(x) {

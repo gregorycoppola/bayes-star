@@ -1,6 +1,5 @@
 const assert = require("../assert");
 const logger = require("../logger")
-const { ImplicationRecord } = require("./models")
 const { Proposition, Implication, Entity } = require("./predicate")
 
 class Storage {

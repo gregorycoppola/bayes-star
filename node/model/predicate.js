@@ -1,6 +1,5 @@
 const assert = require("../assert")
 const logger = require("../logger")
-const {ImplicationRecord} = require("./models")
 
 const domainSet = new Set(['jack', 'jill', 'relation', 'predicate'])
 const typeSet = new Set(['constant', 'variable'])
