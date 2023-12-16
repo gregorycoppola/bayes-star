@@ -22,7 +22,10 @@ class Storage {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
-        const record = proposition.ToString();
+        const record = JSON.stringify(proposition);
+        logger.dump({record}, this.StoreProposition)
+        const recovered = JSON.parse(record)
+        logger.dump({recovered}, this.StoreProposition)
         await this.redis.client.hSet('propositions', searchString, record);
     }
 
@@ -38,8 +41,11 @@ class Storage {
         assert.isType(implication, Implication)
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
-        const record = implication.ToString();
+        const record = JSON.stringify(implication)
         logger.noop({searchString, record}, this.StoreImplication)
+        const recovered = JSON.parse(record)
+        logger.dump({recovered}, this.StoreImplication)
+        process.exit()
         await this.redis.client.hSet('implications', searchString, record);
     }
 
