@@ -82,18 +82,27 @@ class Storage {
         return r
     }
 
-    async FindPremises(searchString) {
-        assert.isType(searchString, "string")
-        throw new Error("TBD")
-        // logger.noop({ searchString }, this.FindPremises)
-        // logger.noop({ searchString }, this.FindPremises)
-        // const rows = await ImplicationRecord.find({ searchString });
-        // var result = []
-        // for (const row of rows) {
-        //     result.push(Implication.FromString(row))
-        // }
-        // logger.noop({ result }, this.FindPremises)
-        // return result;
+    async StoreLinks(implication) {
+        assert.isType(implication, Implication)
+        logger.noop({ implication }, this.StoreImplication)
+        const searchString = implication.SearchString();
+        const record = JSON.stringify(implication)
+        await this.redis.client.sAdd(searchString, record);
+    }
+
+    async FindPremises(implication) {
+        assert.isType(implication, Implication)
+        logger.noop({ implication }, this.StoreImplication)
+        const searchString = implication.SearchString();
+        let set1Members = await this.redis.client.sMembers(searchString);
+        logger.noop('Members of set1:', set1Members);
+        var r = []
+        for (const record in set1Members) {
+            const tuple = JSON.parse(record)
+            const implication = Implication.FromTuple(tuple)
+            r.push(implication)
+        }
+        return r
     }
 }
 
