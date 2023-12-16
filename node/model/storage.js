@@ -33,10 +33,13 @@ class Storage {
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
         logger.noop({ allValues }, this.GetAllPropositions)
+        var r = []
         for (const [key, value] of Object.entries(allValues)) {
-            logger.noop({ key, value }, this.GetAllPropositions)
+            logger.dump({ key, value }, this.GetAllPropositions)
+            const tuple = JSON.parse(value)
+            r.push(Proposition.FromTuple(tuple))
         }
-        throw new Error("TBD")
+        return r
     }
 
     async StorePropositionProbability(proposition, probability) {
