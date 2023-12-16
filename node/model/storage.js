@@ -58,7 +58,7 @@ class Storage {
             logger.noop({implication}, this.GetAllImplications)
             r.push(implication)
         }
-        process.exit() // TODO: implement this
+        return r
     }
 
     async FindPremises(searchString) {
