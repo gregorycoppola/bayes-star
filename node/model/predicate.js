@@ -3,7 +3,6 @@ const logger = require("../logger")
 
 // These are the only domains allowed. This can change.
 const domainSet = new Set(['jack', 'jill', 'verb'])
-
 // These are the only types of arguments. This can change, but two might be.
 const typeSet = new Set(['constant', 'variable'])
 class FirstOrderArgument {
