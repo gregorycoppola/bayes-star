@@ -1,57 +1,42 @@
 const mongoose = require("mongoose")
 const assert = require("../assert");
 const logger = require("../logger")
-const {PropositionRecord, ImplicationRecord, EntityRecord} = require("./models")
+const redis = require("redis")
+const { promisify } = require('util');
+const { PropositionRecord, ImplicationRecord, EntityRecord } = require("./models")
 const { Proposition, Implication, Entity } = require("./predicate")
 
 class Storage {
-    constructor(mongoUrl) {
-        this.mongoUrl = mongoUrl
+    constructor() {
+        const client = redis.createClient({
+            url: 'redis://localhost:6379'
+        });
+
+        client.on('error', (err) => console.log('Redis Client Error', err));
+
+        this.client = client
+    }
+
+    async Connect() {
+        await this.client.connect();
     }
 
     async DropAllDBs() {
-        const collections = await mongoose.connection.db.listCollections().toArray();
-        for (const collection of collections) {
-            await mongoose.connection.db.dropCollection(collection.name);
-        }
-        logger.noop('All collections dropped!', this.DropAllDBs);
+        assert.isTrue(this.client)
+        const flushResult = await this.client.flushDb();
+        console.log({ flushResult });
     }
 
     async StoreEntity(entity) {
+        // map from key to list of strings... 
         assert.isType(entity, Entity)
-        const newItem = new EntityRecord({ name: entity.name, domain: entity.domain });
-        await newItem.save();
+        await this.client.sAdd(entity.domain, entity.name);
     }
+
     async GetEntitiesInDomain(domain) {
-        const results = await EntityRecord.find({ domain });
-        var buffer = []
-        for (const record of results) {
-            buffer.push(new Entity(record.domain, record.name))
-        }
-        return buffer
-    }
-
-    async GetAllPropositions() {
-        const results = await PropositionRecord.find({ });
-        logger.noop({results}, this.GetAllPropositions)
-        var buffer = []
-        for (const result of results) {
-            const proposition = Proposition.FromString(result.record)
-            logger.noop({pushing:1, proposition}, this.GetAllPropositions)
-
-            buffer.push(proposition)
-        }
-        logger.noop({size: buffer.length}, this.GetAllPropositions)
-        return buffer
-    }
-
-    async GetAllImplications() {
-        const results = await ImplicationRecord.find({ });
-        var buffer = []
-        for (const record of results) {
-            buffer.push(Implication.FromRecord(record))
-        }
-        return buffer
+        let set1Members = await this.client.sMembers(domain);
+        logger.dump('Members of set1:', set1Members);
+        return set1Members.map(name => new Entity(domain, name))
     }
 
     async StoreProposition(proposition, probability) {
@@ -59,67 +44,57 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const record = proposition.ToString();
-        logger.noop({ searchString, record })
-        const updatedEntry = await PropositionRecord.findOneAndUpdate(
-            { searchString },
-            {
-                searchString,
-                record,
-                probability,
-            },
-            { new: true, upsert: true }
-        );
+        await this.client.hSet('propositions', searchString, record);
+    }
 
-        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreProposition);
-        return updatedEntry;
+    async GetAllPropositions() {
+        const allValues = await this.client.hGetAll('propositions');
+        for (const [key, value] of Object.entries(allValues)) {
+            console.log(`Key: ${key}, Value: ${value}`);
+        }
+        process.exit() // TODO: implement this
     }
 
     async StoreImplication(implication) {
         assert.isType(implication, Implication)
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
-        const UniqueKey = implication.UniqueKey();
-        const updatedEntry = await ImplicationRecord.findOneAndUpdate(
-            { UniqueKey },
-            {
-                UniqueKey,
-                searchString,
-                premiseRecord: implication.premise.ToString(),
-                conclusionRecord: implication.conclusion.ToString(),
-                mappingRecord: implication.MappingString(),
-                featureString: implication.FeatureString()
-            },
-            { new: true, upsert: true }
-        );
-        logger.noop(`Document inserted/updated: ${updatedEntry}`, this.StoreImplication);
-        return updatedEntry;
+        const record = implication.ToString();
+        logger.dump({searchString, record}, this.StoreImplication)
+        await this.client.hSet('implications', searchString, record);
+    }
+
+    async GetAllImplications() {
+        const allValues = await this.client.hGetAll('propositions');
+        for (const [key, value] of Object.entries(allValues)) {
+            console.log(`Key: ${key}, Value: ${value}`);
+        }
+        process.exit() // TODO: implement this
     }
 
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
-        logger.noop({searchString}, this.FindPremises)
-        logger.noop({ searchString}, this.FindPremises)
+        logger.noop({ searchString }, this.FindPremises)
+        logger.noop({ searchString }, this.FindPremises)
         const rows = await ImplicationRecord.find({ searchString });
         var result = []
         for (const row of rows) {
-            result.push(Implication.FromRecord(row))
+            result.push(Implication.FromString(row))
         }
         logger.noop({ result }, this.FindPremises)
         return result;
     }
+
+    async Disconnect() {
+        await this.client.quit();
+    }
 }
 
 async function StartRedis(dbName) {
-    return new Storage();
-}
-
-async function ConnectDB() {
-    const baseUrl = 'mongodb://localhost:27017';
-    const dbName = 'testdb1'
-    const url = baseUrl + '/' + dbName
-    await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-    logger.noop('Connected successfully to server', ConnectDB);
+    const storage = new Storage()
+    await storage.Connect()
+    return storage
 }
 
 
-module.exports = { Storage, StartRedis, ConnectDB }
+module.exports = { Storage, StartRedis }

@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const logger = require("../logger")
 const { ConstantArgument, VariableArgument, Proposition, FilledRole, Implication, Entity, RoleMap } = require("./predicate")
-const { StartRedis, ConnectDB } = require("./storage2")
+const { StartRedis, ConnectDB } = require("./storage")
 
 function implication(premise, conclusion, roleMap) {
     return new Implication(premise, conclusion, roleMap)
