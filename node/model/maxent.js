@@ -19,22 +19,14 @@ async function InitializeWeights(redis, implication) {
     const weight1 = RandomWeight()
     const feature = implication.UniqueKey()
     await redis.client.hSet('weights', PositiveFeature(feature), weight1);
-    // const pwr = WeightRecord({ feature: PositiveFeature(feature), weight })
-    // await pwr.save()
     const weight2 = RandomWeight()
     await redis.client.hSet('weights', NegativeFeature(feature), weight2);
-    // const nwr = WeightRecord({ feature: NegativeFeature(feature), weight })
-    // await nwr.save()
 }
 
 async function GetPropositionProbability(searchString) {
     assert.isType(searchString, "string")
     logger.noop({searchString}, GetPropositionProbability)
     throw new Error("TBD")
-    // const record = await models.PropositionRecord.findOne({ searchString })
-    // const r = record.probability
-    // logger.noop({ searchString, record, r }, GetPropositionProbability)
-    // return r
 }
 
 function Sigmoid(x) {
