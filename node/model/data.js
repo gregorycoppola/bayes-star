@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const logger = require("../logger")
 const { ConstantArgument, VariableArgument, Proposition, FilledRole, Implication, Entity, RoleMap } = require("./predicate")
-const { CreateStorage, ConnectDB } = require("./storage2")
+const { StartRedis, ConnectDB } = require("./storage2")
 
 function implication(premise, conclusion, roleMap) {
     return new Implication(premise, conclusion, roleMap)
@@ -34,7 +34,7 @@ function relation(argument) {
 
 
 async function main() {
-    const storage = await CreateStorage()
+    const storage = await StartRedis()
     await storage.Connect()
     await storage.DropAllDBs()
 

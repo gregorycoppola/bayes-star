@@ -135,7 +135,7 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
     return r
 }
 
-async function TrainOnExample(proposition, backlinks) {
+async function TrainOnExample(storage, proposition, backlinks) {
     logger.noop({ proposition, backlinks }, TrainOnExample)
 
     const features = await FeaturesFromBacklinks(backlinks)

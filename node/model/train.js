@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 const logger = require("../logger")
-const { CreateStorage, ConnectDB } = require("./storage2")
+const { StartRedis, ConnectDB } = require("./storage2")
 const { ComputeBacklinks } = require("./choose")
 const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
 
 async function main() {
-    const storage = await CreateStorage()
+    const storage = await StartRedis()
     const implications = await storage.GetAllImplications()
     for (const implication of implications) {
         logger.noop({ implication }, main)
@@ -16,7 +16,7 @@ async function main() {
     logger.noop({ propositions }, main)
     for (const proposition of propositions) {
         const backlinks = await ComputeBacklinks(storage, proposition)
-        await TrainOnExample(proposition, backlinks)
+        await TrainOnExample(storage, proposition, backlinks)
     }
     await DumpWeights()
     await storage.Disconnect();

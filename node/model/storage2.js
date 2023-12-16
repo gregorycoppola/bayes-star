@@ -90,11 +90,11 @@ class Storage {
     }
 }
 
-async function CreateStorage(dbName) {
+async function StartRedis(dbName) {
     const storage = new Storage()
     await storage.Connect()
     return storage
 }
 
 
-module.exports = { Storage, CreateStorage }
+module.exports = { Storage, StartRedis }

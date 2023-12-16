@@ -109,7 +109,7 @@ class Storage {
     }
 }
 
-async function CreateStorage(dbName) {
+async function StartRedis(dbName) {
     return new Storage();
 }
 
@@ -122,4 +122,4 @@ async function ConnectDB() {
 }
 
 
-module.exports = { Storage, CreateStorage, ConnectDB }
+module.exports = { Storage, StartRedis, ConnectDB }
