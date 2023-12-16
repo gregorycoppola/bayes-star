@@ -91,6 +91,7 @@ class FilledRole {
 
 class Proposition {
     constructor(roles) {
+        logger.dump({roles}, Proposition)
         assert.arrayOf(roles, FilledRole)
         roles.sort((a, b) => {
             if (a.role_name < b.role_name) {
@@ -139,15 +140,8 @@ class Proposition {
         return JSON.stringify(this.roles)
     }
 
-    static FromString(record) {
-        logger.noop({record}, this.FromString)
-        const parsedObj = JSON.parse(record);
-        var roles = []
-        for (const rolePart of parsedObj) {
-            const newRole = FilledRole.FromTuple(rolePart)
-            roles.push(newRole)
-        }
-        return new Proposition(roles)
+    static FromTuple(tuple) {
+        return new Proposition(tuple)
     }
     static equal(a, b) {
         return a.ToString() == b.ToString()
@@ -194,10 +188,10 @@ class Implication {
         })
         return JSON.stringify(r)
     }
-    static FromString(string) {
-        const {premise, conclusion, roleMap} = JSON.parse(string)
-        logger.dump({premise, conclusion, roleMap}, this.FromString)
-        return new Implication(premise, conclusion, roleMap)
+    static FromTuple(tuple) {
+        const {premise, conclusion, roleMap} = tuple
+        logger.dump({premise, conclusion, roleMap}, this.FromTuple)
+        return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(premise), RoleMap.FromTuple(roleMap))
     }
 }
 
@@ -219,6 +213,10 @@ class RoleMap {
     }
     ToString() {
         return ToStringObjectCanonical(this.roleMap)
+    }
+
+    static FromTuple(tuple) {
+        return new RoleMap(tuple)
     }
 }
 

@@ -52,9 +52,9 @@ class Storage {
         const allValues = await this.redis.client.hGetAll('implications');
         logger.dump({allValues}, this.GetAllImplications)
         var r = []
-        for (const [key, value] of Object.entries(allValues)) {
-            logger.noop({key, value}, this.GetAllImplications)
-            const implication = Implication.FromString(value)
+        for (const [key, record] of Object.entries(allValues)) {
+            logger.noop({key, record}, this.GetAllImplications)
+            const implication = Implication.FromTuple(JSON.stringify(record))
             logger.dump({implication}, this.GetAllImplications)
             r.push(implication)
         }
@@ -63,15 +63,15 @@ class Storage {
 
     async FindPremises(searchString) {
         assert.isType(searchString, "string")
-        logger.noop({ searchString }, this.FindPremises)
-        logger.noop({ searchString }, this.FindPremises)
-        const rows = await ImplicationRecord.find({ searchString });
-        var result = []
-        for (const row of rows) {
-            result.push(Implication.FromString(row))
-        }
-        logger.noop({ result }, this.FindPremises)
-        return result;
+        // logger.noop({ searchString }, this.FindPremises)
+        // logger.noop({ searchString }, this.FindPremises)
+        // const rows = await ImplicationRecord.find({ searchString });
+        // var result = []
+        // for (const row of rows) {
+        //     result.push(Implication.FromString(row))
+        // }
+        // logger.noop({ result }, this.FindPremises)
+        // return result;
     }
 }
 
