@@ -1,13 +1,6 @@
-const mongoose = require("mongoose")
 const logger = require("../logger")
 const { Implication } = require("./predicate")
 const assert = require("../assert")
-
-const weightSchema = new mongoose.Schema({
-    feature: { type: String, required: true },
-    weight: { type: Number, required: true },
-})
-const WeightRecord = mongoose.model('Weight', weightSchema);
 
 function RandomWeight() {
     return (Math.random() - Math.random()) / 5
