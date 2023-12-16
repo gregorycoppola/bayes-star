@@ -142,7 +142,11 @@ class Proposition {
 
     static FromTuple(tuple) {
         logger.dump({tuple}, this.FromTuple)
-        return new Proposition(tuple['roles'])
+        var r = []
+        for (const roleTuple of tuple['roles']) {
+            r.push(FilledRole.FromTuple(roleTuple))
+        }
+        return new Proposition(r)
     }
     static equal(a, b) {
         return a.ToString() == b.ToString()
