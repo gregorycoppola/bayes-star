@@ -31,9 +31,9 @@ class Storage {
 
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
-        logger.dump({allValues}, this.GetAllPropositions)
+        logger.noop({allValues}, this.GetAllPropositions)
         for (const [key, value] of Object.entries(allValues)) {
-            logger.dump({key, value}, this.GetAllPropositions)
+            logger.noop({key, value}, this.GetAllPropositions)
         }
     }
 
@@ -50,12 +50,12 @@ class Storage {
 
     async GetAllImplications() {
         const allValues = await this.redis.client.hGetAll('implications');
-        logger.dump({allValues}, this.GetAllImplications)
+        logger.noop({allValues}, this.GetAllImplications)
         var r = []
         for (const [key, record] of Object.entries(allValues)) {
-            logger.dump({key, record}, this.GetAllImplications)
+            logger.noop({key, record}, this.GetAllImplications)
             const implication = Implication.FromTuple(JSON.parse(record))
-            logger.dump({implication}, this.GetAllImplications)
+            logger.noop({implication}, this.GetAllImplications)
             r.push(implication)
         }
         process.exit() // TODO: implement this

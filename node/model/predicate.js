@@ -91,7 +91,7 @@ class FilledRole {
 
 class Proposition {
     constructor(roles) {
-        logger.dump({roles}, Proposition)
+        logger.noop({roles}, Proposition)
         assert.arrayOf(roles, FilledRole)
         roles.sort((a, b) => {
             if (a.role_name < b.role_name) {
@@ -141,7 +141,7 @@ class Proposition {
     }
 
     static FromTuple(tuple) {
-        logger.dump({tuple}, this.FromTuple)
+        logger.noop({tuple}, this.FromTuple)
         var r = []
         for (const roleTuple of tuple['roles']) {
             r.push(FilledRole.FromTuple(roleTuple))
@@ -198,7 +198,7 @@ class Implication {
         const premise = tuple['premise']
         const conclusion = tuple['conclusion']
         const roleMap = tuple['roleMap']
-        logger.dump({premise, conclusion, roleMap}, this.FromTuple)
+        logger.noop({premise, conclusion, roleMap}, this.FromTuple)
         return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(premise), RoleMap.FromTuple(roleMap))
     }
 }
