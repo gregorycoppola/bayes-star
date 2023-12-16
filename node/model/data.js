@@ -37,7 +37,7 @@ async function main() {
     await redis.DropAllDBs()
     const storage = await CreateStorage(redis)
 
-    const TOTAL_MEMBERS_EACH_CLASS = 32
+    const TOTAL_MEMBERS_EACH_CLASS = 32 * 2
     const domains = ['jack', 'jill']
     for (const domain of domains) {
         for (var i = 0; i < TOTAL_MEMBERS_EACH_CLASS; i++) {

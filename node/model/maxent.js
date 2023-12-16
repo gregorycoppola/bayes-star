@@ -69,7 +69,7 @@ function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
         assert.isTrue(ev != null)
         const newWeight = wv + LEARNING_RATE * (gv - ev)
         const loss = Math.abs(gv - ev)
-        logger.noop({ feature, wv, gv, ev, loss, newWeight }, DoSGDUpdate)
+        logger.dump({ feature, wv, gv, ev, loss, newWeight }, DoSGDUpdate)
         r[feature] = newWeight
     }
     return r
