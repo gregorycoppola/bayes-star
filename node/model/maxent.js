@@ -31,7 +31,7 @@ async function FeaturesFromBacklinks(storage, backlinks) {
         const probability = await storage.GetPropositionProbability(backlink.proposition)
         const posf = PositiveFeature(feature)
         const negf = NegativeFeature(feature)
-        logger.dump({ feature,  probability, posf, negf }, FeaturesFromBacklinks)
+        logger.noop({ feature,  probability, posf, negf }, FeaturesFromBacklinks)
         result[posf] = probability
         result[negf] = 1 - probability
     }
@@ -39,7 +39,7 @@ async function FeaturesFromBacklinks(storage, backlinks) {
 }
 
 function ComputeProbability(weights, features) {
-    logger.dump({ weights, features }, ComputeProbability)
+    logger.noop({ weights, features }, ComputeProbability)
     const dot = DotProduct(weights, features);
     const probability = Sigmoid(dot);
     return probability;
