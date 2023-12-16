@@ -78,7 +78,7 @@ async function TrainOnExample(storage, proposition, backlinks) {
     const features = await FeaturesFromBacklinks(storage, backlinks)
     logger.noop({ proposition, features }, TrainOnExample)
 
-    const weightVector = await ReadWeights(features)
+    const weightVector = await ReadWeights(storage.redis, features)
     logger.noop({ features, weightVector }, TrainOnExample)
 
     const probability = ComputeProbability(weightVector, features);
