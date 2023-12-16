@@ -76,7 +76,7 @@ async function TrainOnExample(storage, proposition, backlinks) {
     logger.noop({ proposition, backlinks }, TrainOnExample)
 
     const features = await FeaturesFromBacklinks(storage, backlinks)
-    logger.noop({ proposition, features }, TrainOnExample)
+    logger.dump({ proposition, features }, TrainOnExample)
 
     const weightVector = await ReadWeights(storage.redis, features)
     logger.noop({ features, weightVector }, TrainOnExample)
