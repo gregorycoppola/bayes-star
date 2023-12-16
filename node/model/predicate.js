@@ -1,7 +1,10 @@
 const assert = require("../assert")
 const logger = require("../logger")
 
-const domainSet = new Set(['jack', 'jill', 'relation', 'predicate'])
+// These are the only domains allowed. This can change.
+const domainSet = new Set(['jack', 'jill', 'verb'])
+
+// These are the only types of arguments. This can change, but two might be.
 const typeSet = new Set(['constant', 'variable'])
 class FirstOrderArgument {
     constructor(type, domain) {

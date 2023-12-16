@@ -63,11 +63,13 @@ function ComputeSearchKeys(proposition) {
 }
 
 async function ComputeBacklinks(storage, proposition) {
+    console.clear();
+
     assert.isType(proposition, Proposition)
     assert.isTrue(proposition.IsFact())
     assert.isType(storage, Storage)
     const searchKeys = ComputeSearchKeys(proposition)
-    logger.noop({ proposition, searchKeys }, ComputeBacklinks)
+    logger.dump({ proposition, searchKeys }, ComputeBacklinks)
     var buffer = []
     for (const searchKey of searchKeys) {
         const implications = await storage.FindPremises(searchKey)

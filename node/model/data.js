@@ -56,11 +56,10 @@ async function main() {
         return Math.random() < 0.5 ? 1.0 : 0.0;
     }
 
-    let exciting = constant('predicate', "exciting");
-    let lonely = constant('predicate', "lonely");
-    let like = constant('relation', "like");
-    let date = constant('relation', "date");
-    let is = constant('relation', "is");
+    let exciting = constant('verb', "exciting");
+    let lonely = constant('verb', "lonely");
+    let like = constant('verb', "like");
+    let date = constant('verb', "date");
 
     var independentFactMap = {} // store this locally for efficiency, because the MongoDB is slow rn
     // for each jack: coinflip to determine if "lonely(jill)"
