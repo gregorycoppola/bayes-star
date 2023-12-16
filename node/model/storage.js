@@ -75,9 +75,9 @@ class Storage {
         logger.noop({ allValues }, this.GetAllImplications)
         var r = []
         for (const [key, record] of Object.entries(allValues)) {
-            logger.dump({ key, record }, this.GetAllImplications)
+            logger.noop({ key, record }, this.GetAllImplications)
             const implication = Implication.FromTuple(JSON.parse(record))
-            logger.dump({ implication }, this.GetAllImplications)
+            logger.noop({ implication }, this.GetAllImplications)
             r.push(implication)
         }
         return r

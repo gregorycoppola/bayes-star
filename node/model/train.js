@@ -15,7 +15,6 @@ async function main() {
         await InitializeWeights(redis, implication)
     }
 
-    process.exit()
     const propositions = await storage.GetAllPropositions()
     for (const proposition of propositions) {
         logger.noop({ proposition }, main)
