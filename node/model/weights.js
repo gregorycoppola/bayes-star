@@ -21,6 +21,7 @@ async function InitializeWeights(redis, implication) {
     const negf = NegativeFeature(feature)
     const weight1 = RandomWeight()
     const weight2 = RandomWeight()
+    logger.dump({implication}, InitializeWeights)
     logger.dump({feature, posf, negf, weight1, weight2}, InitializeWeights)
     await redis.client.hSet('weights', posf, weight1);
     await redis.client.hSet('weights', negf, weight2);
