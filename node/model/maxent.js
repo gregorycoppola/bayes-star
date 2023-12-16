@@ -1,5 +1,4 @@
 const logger = require("../logger")
-const { Implication } = require("./predicate")
 const assert = require("../assert")
 const {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights} = require("./weights")
 
