@@ -29,7 +29,7 @@ class Storage {
     async GetAllPropositions() {
         const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
-            logger.noop(`Key: ${key}, Value: ${value}`);
+            logger.dump({key, value}, this.GetAllPropositions)
         }
         process.exit() // TODO: implement this
     }
@@ -46,7 +46,7 @@ class Storage {
     async GetAllImplications() {
         const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
-            logger.noop(`Key: ${key}, Value: ${value}`);
+            logger.dump({key, value}, this.GetAllImplications)
         }
         process.exit() // TODO: implement this
     }
