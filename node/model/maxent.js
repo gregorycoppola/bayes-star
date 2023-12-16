@@ -58,7 +58,7 @@ function ComputeExpectedFeatures(probability, features) {
 const LEARNING_RATE = 0.1
 
 function DoSGDUpdate(weights, goldFeatures, expectedFeatures) {
-    logger.dump({weights, goldFeatures, expectedFeatures}, DoSGDUpdate)
+    logger.noop({weights, goldFeatures, expectedFeatures}, DoSGDUpdate)
     var r = {}
     for (const feature of Object.keys(weights)) {
         const wv = weights[feature]
