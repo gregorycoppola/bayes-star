@@ -28,7 +28,7 @@ async function ReadWeights(redis, features) {
     var r = {}
     for (const feature of Object.keys(features)) {
         const record = await redis.client.hGet('weights', feature);
-        logger.dump({feature, record}, ReadWeights)
+        logger.noop({feature, record}, ReadWeights)
         r[feature] = parseFloat(record)
     }
     return r
