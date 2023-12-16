@@ -158,7 +158,7 @@ async function main() {
     ]
     logger.noop({ num_implications: implications.length }, main)
     for (const implication of implications) {
-        logger.dump({implication}, main)
+        logger.noop({implication}, main)
         await storage.StoreImplication(implication)
 
     }

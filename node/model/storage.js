@@ -63,7 +63,7 @@ class Storage {
         logger.noop({ implication }, this.StoreImplication)
         const searchString = implication.SearchString();
         const record = JSON.stringify(implication)
-        logger.dump({ searchString, record }, this.StoreImplication)
+        logger.noop({ searchString, record }, this.StoreImplication)
         const recovered = JSON.parse(record)
         logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
@@ -75,9 +75,9 @@ class Storage {
         logger.noop({ allValues }, this.GetAllImplications)
         var r = []
         for (const [key, record] of Object.entries(allValues)) {
-            logger.noop({ key, record }, this.GetAllImplications)
+            logger.dump({ key, record }, this.GetAllImplications)
             const implication = Implication.FromTuple(JSON.parse(record))
-            logger.noop({ implication }, this.GetAllImplications)
+            logger.dump({ implication }, this.GetAllImplications)
             r.push(implication)
         }
         return r

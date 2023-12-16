@@ -11,7 +11,7 @@ async function main() {
     const storage = await CreateStorage(redis)
     const implications = await storage.GetAllImplications()
     for (const implication of implications) {
-        logger.dump({ implication }, main)
+        logger.noop({ implication }, main)
         await InitializeWeights(redis, implication)
     }
 
