@@ -14,11 +14,11 @@ function RandomWeight() {
 }
 
 function PositiveFeature(feature) {
-    return '+++' + feature + '+++'
+    return '++' + feature + '++'
 }
 
 function NegativeFeature(feature) {
-    return '---' + feature + '---'
+    return '--' + feature + '--'
 }
 
 async function InitializeWeights(implication) {
