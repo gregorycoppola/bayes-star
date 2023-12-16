@@ -49,14 +49,25 @@ class Storage {
         logger.dump({ searchString, probability }, this.StorePropositionProbability)
         await this.redis.client.hSet('probs', searchString, probability);
     }
+    
 
     async GetPropositionProbability(proposition) {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const r = this.redis.client.hGet('probs', searchString);
-        logger.dump({ searchString, r }, this.GetPropositionProbability)
-        return parseFloat(r)
+
+        function parseOrUseDefault(value, defaultValue) {
+            const parsedValue = parseFloat(value);
+            if (isNaN(parsedValue)) {
+                return defaultValue;
+            }
+            return parsedValue;
+        }
+
+        const rv = parseOrUseDefault(r, 0.5)
+        logger.dump({searchString, r, rv}, this.GetPropositionProbability)
+        return rv
     }
 
     async StoreImplication(implication) {
