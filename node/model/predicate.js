@@ -119,7 +119,7 @@ class Proposition {
         var started = false
         for (const column of this.roles) {
             if (started) {
-                result += ', '
+                result += ','
             }
             result += column.SearchString()
             started = true

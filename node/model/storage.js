@@ -46,7 +46,7 @@ class Storage {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
-        logger.noop({ searchString, probability }, this.StorePropositionProbability)
+        logger.dump({ searchString, probability }, this.StorePropositionProbability)
         await this.redis.client.hSet('probs', searchString, probability);
     }
     
@@ -55,8 +55,9 @@ class Storage {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
-        const r = this.redis.client.hGet('probs', searchString);
+        const r = await this.redis.client.hGet('probs', searchString);
 
+        logger.dump({r}, this.GetPropositionProbability)
         function parseOrUseDefault(value, defaultValue) {
             const parsedValue = parseFloat(value);
             if (isNaN(parsedValue)) {
