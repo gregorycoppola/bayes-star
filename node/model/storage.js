@@ -1,40 +1,20 @@
-const mongoose = require("mongoose")
 const assert = require("../assert");
 const logger = require("../logger")
-const redis = require("redis")
-const { promisify } = require('util');
-const { PropositionRecord, ImplicationRecord, EntityRecord } = require("./models")
+const { ImplicationRecord } = require("./models")
 const { Proposition, Implication, Entity } = require("./predicate")
 
 class Storage {
-    constructor() {
-        const client = redis.createClient({
-            url: 'redis://localhost:6379'
-        });
-
-        client.on('error', (err) => console.log('Redis Client Error', err));
-
-        this.client = client
-    }
-
-    async Connect() {
-        await this.client.connect();
-    }
-
-    async DropAllDBs() {
-        assert.isTrue(this.client)
-        const flushResult = await this.client.flushDb();
-        console.log({ flushResult });
+    constructor(redis) {
+        this.redis = redis
     }
 
     async StoreEntity(entity) {
-        // map from key to list of strings... 
         assert.isType(entity, Entity)
-        await this.client.sAdd(entity.domain, entity.name);
+        await this.redis.client.sAdd(entity.domain, entity.name);
     }
 
     async GetEntitiesInDomain(domain) {
-        let set1Members = await this.client.sMembers(domain);
+        let set1Members = await this.redis.client.sMembers(domain);
         logger.dump('Members of set1:', set1Members);
         return set1Members.map(name => new Entity(domain, name))
     }
@@ -44,11 +24,11 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const record = proposition.ToString();
-        await this.client.hSet('propositions', searchString, record);
+        await this.redis.client.hSet('propositions', searchString, record);
     }
 
     async GetAllPropositions() {
-        const allValues = await this.client.hGetAll('propositions');
+        const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
             console.log(`Key: ${key}, Value: ${value}`);
         }
@@ -61,11 +41,11 @@ class Storage {
         const searchString = implication.SearchString();
         const record = implication.ToString();
         logger.dump({searchString, record}, this.StoreImplication)
-        await this.client.hSet('implications', searchString, record);
+        await this.redis.client.hSet('implications', searchString, record);
     }
 
     async GetAllImplications() {
-        const allValues = await this.client.hGetAll('propositions');
+        const allValues = await this.redis.client.hGetAll('propositions');
         for (const [key, value] of Object.entries(allValues)) {
             console.log(`Key: ${key}, Value: ${value}`);
         }
@@ -84,17 +64,10 @@ class Storage {
         logger.noop({ result }, this.FindPremises)
         return result;
     }
-
-    async Disconnect() {
-        await this.client.quit();
-    }
 }
 
-async function StartRedis(dbName) {
-    const storage = new Storage()
-    await storage.Connect()
-    return storage
+async function CreateStorage(redis) {
+    return new Storage(redis)
 }
 
-
-module.exports = { Storage, StartRedis }
+module.exports = { CreateStorage }

@@ -1,8 +1,7 @@
-const mongoose = require("mongoose")
-
 const logger = require("../logger")
 const { ConstantArgument, VariableArgument, Proposition, FilledRole, Implication, Entity, RoleMap } = require("./predicate")
-const { StartRedis, ConnectDB } = require("./storage")
+const { CreateRedisClient } = require("./redis")
+const { CreateStorage } = require("./storage")
 
 function implication(premise, conclusion, roleMap) {
     return new Implication(premise, conclusion, roleMap)
@@ -34,9 +33,9 @@ function relation(argument) {
 
 
 async function main() {
-    const storage = await StartRedis()
-    await storage.Connect()
-    await storage.DropAllDBs()
+    const redis = await CreateRedisClient()
+    await redis.DropAllDBs()
+    const storage = await CreateStorage(redis)
 
     const TOTAL_MEMBERS_EACH_CLASS = 32
     const domains = ['jack', 'jill']
@@ -48,7 +47,6 @@ async function main() {
             await storage.StoreEntity(entity)
         }
     }
-
 
     const jacks = await storage.GetEntitiesInDomain('jack')
     const jills = await storage.GetEntitiesInDomain('jill')
@@ -165,7 +163,7 @@ async function main() {
 
     }
 
-    await storage.Disconnect()
+    await redis.Disconnect()
 }
 
 main()

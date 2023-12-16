@@ -1,6 +1,5 @@
-const mongoose = require("mongoose")
 const logger = require("../logger")
-const { StartRedis, ConnectDB } = require("./storage")
+const { StartRedis } = require("./storage")
 const { ComputeBacklinks } = require("./choose")
 const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
 
