@@ -2,7 +2,8 @@ const logger = require("../logger")
 const { CreateStorage } = require("./storage")
 const { CreateRedisClient } = require("./redis")
 const { ComputeBacklinks } = require("./choose")
-const { InitializeWeights, TrainOnExample, DumpWeights } = require("./maxent")
+const { InitializeWeights, TrainOnExample } = require("./maxent")
+const { DumpWeights } = require("./weights")
 
 async function main() {
     logger.dump({starting: "training"}, main)
@@ -20,7 +21,7 @@ async function main() {
         const backlinks = await ComputeBacklinks(storage, proposition)
         await TrainOnExample(storage, proposition, backlinks)
     }
-    await DumpWeights()
+    await DumpWeights(redis)
     await redis.Disconnect();
 }
 

@@ -46,4 +46,9 @@ async function SaveWeights(weights) {
     }
 }
 
-module.exports = {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights}
+async function DumpWeights() {
+    // user = await client.hGetAll(userKey);
+    logger.dump({}, DumpWeights)
+}
+
+module.exports = {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights, DumpWeights}
