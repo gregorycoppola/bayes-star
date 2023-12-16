@@ -42,7 +42,7 @@ async function SaveWeights(redis, weights) {
     logger.noop({weights}, SaveWeights)
     for (const feature of Object.keys(weights)) {
         const value = weights[feature]
-        logger.noop({feature, value}, SaveWeights)
+        logger.dump({feature, value}, SaveWeights)
         await redis.client.hSet('weights', weights[feature]);
     }
     logger.noop({ weights }, SaveWeights)

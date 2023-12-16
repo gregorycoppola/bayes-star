@@ -46,6 +46,7 @@ class Storage {
         assert.isType(proposition, Proposition)
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
+        logger.dump({searchString, probability}, this.StorePropositionProbability)
         await this.redis.client.hSet('probs', searchString, probability);
     }
 
@@ -54,7 +55,7 @@ class Storage {
         assert.isTrue(proposition.IsFact())
         const searchString = proposition.SearchString();
         const r = this.redis.client.hGet('probs', searchString);
-        logger.noop({searchString, r}, this.GetPropositionProbability)
+        logger.dump({searchString, r}, this.GetPropositionProbability)
         return parseFloat(r)
     }
 
@@ -64,8 +65,8 @@ class Storage {
         const searchString = implication.SearchString();
         const record = JSON.stringify(implication)
         logger.noop({ searchString, record }, this.StoreImplication)
-        const recovered = JSON.parse(record)
-        logger.noop({ recovered }, this.StoreImplication)
+        // const recovered = JSON.parse(record)
+        // logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.hSet('implications', searchString, record);
         await this.StoreLinks(implication)
     }
