@@ -141,7 +141,8 @@ class Proposition {
     }
 
     static FromTuple(tuple) {
-        return new Proposition(tuple)
+        logger.dump({tuple}, this.FromTuple)
+        return new Proposition(tuple['roles'])
     }
     static equal(a, b) {
         return a.ToString() == b.ToString()
@@ -189,7 +190,10 @@ class Implication {
         return JSON.stringify(r)
     }
     static FromTuple(tuple) {
-        const {premise, conclusion, roleMap} = tuple
+        // const {premise, conclusion, roleMap} = tuple
+        const premise = tuple['premise']
+        const conclusion = tuple['conclusion']
+        const roleMap = tuple['roleMap']
         logger.dump({premise, conclusion, roleMap}, this.FromTuple)
         return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(premise), RoleMap.FromTuple(roleMap))
     }
