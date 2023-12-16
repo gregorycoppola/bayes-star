@@ -67,7 +67,7 @@ async function ComputeBacklinks(storage, proposition) {
     assert.isTrue(proposition.IsFact())
     assert.isType(storage, Storage)
     const searchKeys = ComputeSearchKeys(proposition)
-    logger.noop({ searchKeys }, ComputeBacklinks)
+    logger.dump({ proposition, searchKeys }, ComputeBacklinks)
     var buffer = []
     for (const searchKey of searchKeys) {
         const implications = await storage.FindPremises(searchKey)
@@ -75,7 +75,7 @@ async function ComputeBacklinks(storage, proposition) {
         for (const implication of implications) {
 
             const extractedMapping = ExtractPremiseRoleMap(proposition, implication.roleMap)
-            logger.noop({ extractedMapping }, ComputeBacklinks)
+            logger.dump({ implication, extractedMapping }, ComputeBacklinks)
 
             const quantifiedPremise = implication.premise
             logger.noop({ quantifiedPremise }, ComputeBacklinks)
