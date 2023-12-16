@@ -195,9 +195,9 @@ class Implication {
         return JSON.stringify(r)
     }
     static FromString(string) {
-        const tuple = JSON.parse(string)
-        logger.dump({tuple}, this.FromString)
-        throw new Error("TBD")
+        const {premise, conclusion, roleMap} = JSON.parse(string)
+        logger.dump({premise, conclusion, roleMap}, this.FromString)
+        return new Implication(premise, conclusion, roleMap)
     }
 }
 
