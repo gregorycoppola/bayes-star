@@ -225,7 +225,7 @@ class RoleMap {
     }
 
     static FromTuple(tuple) {
-        return new RoleMap(tuple)
+        return new RoleMap(tuple['roleMap'])
     }
 }
 

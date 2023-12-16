@@ -46,14 +46,14 @@ function ConvertToProposition(predicate, roleMap) {
 function ExtractPremiseRoleMap(proposition, roleMap) {
     assert.isType(proposition, Proposition)
     assert.isType(roleMap, RoleMap)
-    logger.noop({proposition, roleMap}, ExtractPremiseRoleMap)
+    logger.dump({proposition, roleMap}, ExtractPremiseRoleMap)
     var result = {}
     for (let i = 0; i < proposition.roles.length; i++) {
         const crole = proposition.roles[i]
         const role_name = crole.role_name
         const premise_role_name = roleMap.Get(role_name)
 
-        logger.noop({crole, role_name, roleMap, premise_role_name}, ExtractPremiseRoleMap)
+        logger.dump({crole, role_name, roleMap, premise_role_name}, ExtractPremiseRoleMap)
         if (premise_role_name) {
             result[premise_role_name] = crole.argument
         }
