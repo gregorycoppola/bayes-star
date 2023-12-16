@@ -14,15 +14,17 @@ function NegativeFeature(feature) {
     return '--' + feature + '--'
 }
 
-async function InitializeWeights(implication) {
+async function InitializeWeights(redis, implication) {
     assert.isType(implication, Implication)
-    const weight = RandomWeight()
+    const weight1 = RandomWeight()
     const feature = implication.UniqueKey()
-    const pwr = WeightRecord({ feature: PositiveFeature(feature), weight })
-    await pwr.save()
-    const nwr = WeightRecord({ feature: NegativeFeature(feature), weight })
-    await nwr.save()
-    logger.noop({ pwr, nwr }, InitializeWeights)
+    await redis.client.hSet('weights', PositiveFeature(feature), weight1);
+    // const pwr = WeightRecord({ feature: PositiveFeature(feature), weight })
+    // await pwr.save()
+    const weight2 = RandomWeight()
+    await redis.client.hSet('weights', NegativeFeature(feature), weight2);
+    // const nwr = WeightRecord({ feature: NegativeFeature(feature), weight })
+    // await nwr.save()
 }
 
 async function GetPropositionProbability(searchString) {

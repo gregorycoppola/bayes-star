@@ -35,6 +35,7 @@ class Storage {
         for (const [key, value] of Object.entries(allValues)) {
             logger.noop({key, value}, this.GetAllPropositions)
         }
+        throw new Error("TBD")
     }
 
     async StoreImplication(implication) {
