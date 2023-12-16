@@ -16,11 +16,14 @@ function NegativeFeature(feature) {
 
 async function InitializeWeights(redis, implication) {
     assert.isType(implication, Implication)
-    const weight1 = RandomWeight()
     const feature = implication.UniqueKey()
-    await redis.client.hSet('weights', PositiveFeature(feature), weight1);
+    const posf = PositiveFeature(feature)
+    const negf = NegativeFeature(feature)
+    const weight1 = RandomWeight()
     const weight2 = RandomWeight()
-    await redis.client.hSet('weights', NegativeFeature(feature), weight2);
+    logger.dump({feature, posf, negf, weight1, weight2}, InitializeWeights)
+    await redis.client.hSet('weights', posf, weight1);
+    await redis.client.hSet('weights', negf, weight2);
 }
 
 
@@ -35,7 +38,7 @@ async function ReadWeights(redis, features) {
 }
 
 async function SaveWeights(redis, weights) {
-    logger.dump({weights}, SaveWeights)
+    logger.noop({weights}, SaveWeights)
     for (const feature of Object.keys(weights)) {
         const value = weights[feature]
         logger.noop({feature, value}, SaveWeights)

@@ -29,7 +29,7 @@ async function FeaturesFromBacklinks(storage, backlinks) {
         logger.noop({ backlink }, FeaturesFromBacklinks)
         const feature = backlink.implication.UniqueKey()
         const probability = await storage.GetPropositionProbability(backlink.proposition)
-        logger.noop({ feature,  probability }, FeaturesFromBacklinks)
+        logger.dump({ feature,  probability }, FeaturesFromBacklinks)
         result[PositiveFeature(feature)] = probability
         result[NegativeFeature(feature)] = 1 - probability
     }
@@ -76,10 +76,10 @@ async function TrainOnExample(storage, proposition, backlinks) {
     logger.noop({ proposition, backlinks }, TrainOnExample)
 
     const features = await FeaturesFromBacklinks(storage, backlinks)
-    logger.noop({ proposition, features }, TrainOnExample)
+    logger.dump({ proposition, features }, TrainOnExample)
 
     const weightVector = await ReadWeights(storage.redis, features)
-    logger.dump({ features, weightVector }, TrainOnExample)
+    logger.noop({ features, weightVector }, TrainOnExample)
 
     const probability = ComputeProbability(weightVector, features);
     logger.noop({ probability }, TrainOnExample)
