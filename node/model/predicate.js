@@ -141,7 +141,7 @@ class Proposition {
     }
 
     static FromTuple(tuple) {
-        logger.dump({confirm: true, tuple}, this.FromTuple)
+        logger.noop({confirm: true, tuple}, this.FromTuple)
         var r = []
         for (const roleTuple of tuple['roles']) {
             r.push(FilledRole.FromTuple(roleTuple))
@@ -194,12 +194,12 @@ class Implication {
         return JSON.stringify(r)
     }
     static FromTuple(tuple) {
-        logger.dump({tuple}, this.FromTuple)
+        logger.noop({tuple}, this.FromTuple)
         // const {premise, conclusion, roleMap} = tuple
         const premise = tuple['premise']
         const conclusion = tuple['conclusion']
         const roleMap = tuple['roleMap']
-        logger.dump({premise, conclusion, roleMap}, this.FromTuple)
+        logger.noop({premise, conclusion, roleMap}, this.FromTuple)
         return new Implication(Proposition.FromTuple(premise), Proposition.FromTuple(premise), RoleMap.FromTuple(roleMap))
     }
 }
