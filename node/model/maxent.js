@@ -1,6 +1,7 @@
 const logger = require("../logger")
 const assert = require("../assert")
-const {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights} = require("./weights")
+const { ComputeBacklinks } = require("./choose")
+const {PositiveFeature, NegativeFeature, InitializeWeights, ReadWeights, SaveWeights, DumpWeights} = require("./weights")
 
 function Sigmoid(x) {
     return 1 / (1 + Math.exp(-x));
@@ -96,4 +97,23 @@ async function TrainOnExample(storage, proposition, backlinks) {
     await SaveWeights(storage.redis, newWeight)
 }
 
-module.exports = { InitializeWeights, TrainOnExample }
+async function DoTraining(storage) {
+    const redis = storage.redis
+    logger.noop({starting: "training"}, DoTraining)
+    const implications = await storage.GetAllImplications()
+    for (const implication of implications) {
+        logger.noop({ implication }, DoTraining)
+        await InitializeWeights(redis, implication)
+    }
+
+    const propositions = await storage.GetAllPropositions()
+    for (const proposition of propositions) {
+        logger.noop({ proposition }, DoTraining)
+        const backlinks = await ComputeBacklinks(storage, proposition)
+        await TrainOnExample(storage, proposition, backlinks)
+    }
+    await DumpWeights(redis)
+}
+
+
+module.exports = { InitializeWeights, TrainOnExample, DoTraining }
