@@ -1,1 +1,1 @@
-node --no-warnings model/data.js
+node --no-warnings specs/dating1.js

@@ -1,8 +1,8 @@
 const logger = require("../logger")
-const { ConstantArgument, VariableArgument, Proposition, FilledRole, Implication, Entity, RoleMap } = require("./predicate")
-const { CreateRedisClient } = require("./redis")
-const { CreateStorage } = require("./storage")
-const { DoTraining } = require("./maxent")
+const { ConstantArgument, VariableArgument, Proposition, FilledRole, Implication, Entity, RoleMap } = require("../model/predicate")
+const { CreateRedisClient } = require("../model/redis")
+const { CreateStorage } = require("../model/storage")
+const { DoTraining } = require("../model/maxent")
 function implication(premise, conclusion, roleMap) {
     return new Implication(premise, conclusion, roleMap)
 }
