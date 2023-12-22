@@ -22,6 +22,16 @@ How does it do this?
 1. using logic -- the QBN generalizes (though in a complex way) first-order logic
 2. using ideas from classical Bayesian Networks -- allows us to create a generative story based on "causality"
 
+## Did you Literally Build AGI?
+The QBN as I am presented it is trained on **artificial data**.
+
+It will be AGI when the QBN is trained on **real web-scale data**.
+
+Right now, the QBN only "thinks about" very simple worlds that I encoded by hand.
+But, if we assume that the LLM has "world knowledge", then the only problem to get full AGI is to transfer the knowledge from the LLM to the QBN.
+
+That, I claim would be full AGI. Right now, I repeat, the QBN is trained on "toy universes" that I made up programmatically.
+
 ## Documentation
 
 I have the notes for a paper, but have to clean them up. So, the paper is coming.
