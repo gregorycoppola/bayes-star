@@ -32,6 +32,17 @@ But, if we assume that the LLM has "world knowledge", then the only problem to g
 
 That, I claim would be full AGI. Right now, I repeat, the QBN is trained on "toy universes" that I made up programmatically.
 
+## Is it Trivial to Transfer Knowledge from LLM to QBN?
+No. This is not trivial. It will require that the LLM model be re-written to generate a **tree-structured** analysis of a sentence, mapping the **surface form** of the sentence to its **logical form**.
+
+This **logical form** is **latent**--meaning we can't observe it, and neither can actual people (this is why misunderstandings arise).
+
+So, the following new abilities need to be developed before "full AGI" exists:
+1. parse to logical forms, which are:
+    a. latent (not observed)
+    b. structured (recursively tree-structured)
+2. concretize the continuous knowledge of the LLM into the discrete knowledge of the QBN
+
 ## Documentation
 
 I have the notes for a paper, but have to clean them up. So, the paper is coming.
