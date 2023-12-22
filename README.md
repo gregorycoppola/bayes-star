@@ -1,6 +1,11 @@
 # BAYES STAR
 
-## Introduction
+## Why Should I Care About This?
+This **BAYES STAR** software package implements a "QBN" which will allow **AGI**.
+
+So, if you are interested in **AGI** you should be interested in this.
+
+## The Quantified Bayesian Network
 This software package introduces the **Quantified Bayesian Network** (**QBN**).
 The QBN generalizes 1) traditional generative Bayesian Networks, and 2) First-Order Logic.
 
@@ -9,11 +14,12 @@ The end result, I claim, is that:
 
 ## Documentation
 
-I will be adding the documentation starting now. This is a "developing in public" process.
+I have the notes for a paper, but have to clean them up. So, the paper is coming.
 
-I tweet a lot as [@coppola_ai](https://twitter.com/coppola_ai) on **X**.
+I will be adding the informal documentation (markdown, tweets and videos) starting now. This is a "developing in public" process.
 
-And, I will be uploading videos to [@coppola_ai](https://www.youtube.com/@coppola_ai) on **YouTube**.
+Find me online at:
+* twitter: [@coppola_ai](https://twitter.com/coppola_ai)
 
 ## License
 
