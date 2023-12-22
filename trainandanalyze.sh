@@ -1,1 +1,1 @@
-node --no-warnings node/specs/dating1.js
+node --no-warnings node/specs/dating1.js | python3 python/analyze.py

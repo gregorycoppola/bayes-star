@@ -6,16 +6,11 @@ import random
 # Step 1: Read from stdin and process each line
 loss_values = []
 for line in sys.stdin:
-    # Step 2: Randomly decide whether to print the line
-    if random.randint(1, 100) == 1:
-        print(line, end='')
-
-    # Check if the line contains 'loss:'
-    if "loss:" in line:
-        # Parse the loss value
-        match = re.search(r"loss:\s*([0-9.]+)", line)
-        if match:
-            loss_values.append(float(match.group(1)))
+    print(line.strip())
+    match = re.search(r'"loss":\s*([0-9.]+)', line)
+    if match:
+        # Convert the value to double and add it to the result list
+        loss_values.append(float(match.group(1)))
 
 # Step 3: Generate the graph only if there are loss values
 if loss_values:
