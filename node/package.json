@@ -9,11 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fs": "^0.0.1-security",
-    "markdown-pdf": "^11.0.0",
-    "mongoose": "^8.0.2",
-    "path": "^0.12.7",
-    "redis": "^4.6.11",
-    "util": "^0.12.5"
+    "redis": "^4.6.11"
   }
 }
