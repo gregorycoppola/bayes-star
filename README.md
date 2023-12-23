@@ -51,6 +51,8 @@ that is, the **key-value** knowledge of the LLM is actually learning the **seman
 
 I have the notes for a paper, but have to clean them up. So, the paper is coming.
 
+See the [BibTeX File](paper/bibtex.bib) for references.
+
 I will be adding the informal documentation (markdown, tweets and videos) starting now. This is a "developing in public" process.
 
 Find me online at:
