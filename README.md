@@ -43,6 +43,10 @@ So, the following new abilities need to be developed before "full AGI" exists:
     b. structured (recursively tree-structured)
 2. concretize the continuous knowledge of the LLM into the discrete knowledge of the QBN
 
+## Does the QBN Help us Understand the LLM?
+Yes, I believe so. The QBN uses "semantic roles", which might explain why the "key-value" nature of the attention mechanism can learn world knowledge:
+that is, the **key-value** knowledge of the LLM is actually learning the **semantic role** knowledge of linguistics.
+
 ## Documentation
 
 I have the notes for a paper, but have to clean them up. So, the paper is coming.
