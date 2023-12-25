@@ -49,8 +49,10 @@ that is, the **key-value** knowledge of the LLM is actually learning the **seman
 
 ## Documentation
 
-I have the notes for a paper, but have to clean them up. So, the paper is coming.
-
+## Draft Latex Paper
+I am putting all the "real" equations in an academic-style Latex-created [pdf document](paper/symbolic-logic-also-needed-DRAFT.pdf).
+This is still in DRAFT STAGE.
+As noted below, there is also a lot of multi-media content on my Twitter at [@coppola_ai](https://twitter.com/coppola_ai).
 ### Developing in Public
 I am taking a "developing in public" vibe for this project.
 I will ultimately publish a traditional paper to arXiv, if not elsewhere.
