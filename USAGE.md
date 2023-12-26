@@ -56,3 +56,17 @@ or if your system differentiates between Python 2 and Python 3:
 ```bash
 pip3 install matplotlib
 ```
+
+# Running
+
+In order to run training and the eval I used to make the graph in [training loss graph](docs/images/training_loss.png), run:
+
+```
+./trainandanalyze.sh
+```
+
+In order to just run training, run:
+
+```
+./train.sh
+```
