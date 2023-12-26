@@ -11,8 +11,19 @@ For instructions on how to use the software see [USAGE.md](USAGE.md).
 ## The Quantified Bayesian Network
 This software package introduces the **Quantified Bayesian Network** (**QBN**).
 The QBN generalizes:
-1. traditional (generative) Bayesian Networks
+1. Traditional (generative) Bayesian Networks
+    - **Bayesian Networks** are graphical models representing probabilistic relationships among variables. They use directed acyclic graphs to encode joint probability distributions, allowing for efficient reasoning and inference in complex systems. Bayesian Networks are widely used in various fields like machine learning, data analysis, and artificial intelligence for tasks like prediction, anomaly detection, and decision making.
+    - Learn more:
+        - [A Brief Introduction to Bayesian Networks](https://www.analyticsvidhya.com/blog/2021/06/understanding-bayesian-networks/)
+        - [Bayesian Network in Machine Learning](https://towardsdatascience.com/bayesian-networks-introduction-b76bca3e5ec3)
+        - [Bayesian Networks and their Applications](https://www.sciencedirect.com/topics/computer-science/bayesian-network)
 2. First-Order Logic
+    - **First-Order Logic** (FOL), also known as predicate logic or first-order predicate calculus, is a collection of formal systems used in mathematics, philosophy, linguistics, and computer science. It provides a framework for expressing statements with quantifiers and variables, allowing for the formulation of hypotheses about objects and their relationships. FOL is fundamental in formal systems, theorem proving, and is foundational in artificial intelligence for knowledge representation and reasoning.
+    - Learn more:
+        - [First-Order Logic: Basics](https://plato.stanford.edu/entries/logic-classical/)
+        - [Understanding First-Order Logic](https://www.britannica.com/topic/formal-logic/Higher-order-and-modal-logic)
+        - [Applications of First-Order Logic](https://ieeexplore.ieee.org/document/8960287)
+
 
 The end result, I claim, is that:
 * the QBN allows a *generative* model of logical (i.e., linguistic) knowledge **that does not hallucinate**
