@@ -23,11 +23,9 @@ It is a generalization of both first-order predicate logic, as well as the Bayes
 A QBN can represent logical relationships between logical propositions.
 \end{abstract}
 \section{Introduction}
-\subsection{Importance of LLM's}
 The {\bf Large Language Model} ({\bf LLM}) is the hottest data structure in artificial intelligence and computer science right now.
 Pioneered by the product {\em ChatGPT} by {\em OpenAI},
 leading to a robust competition in artificially intelligent agents, often called ``chat bots,'' or simply {\em LLM}'s.
-
 There is widespread agreement that the {\em LLM} is a powerful technology.
 For example, neutral but well-known investor Jason Calanis recently said of the {\em LLM}-based technology boom:
 \begin{quote}
@@ -36,19 +34,7 @@ For example, neutral but well-known investor Jason Calanis recently said of the 
     \cite{Jason2023}
 \end{quote}
 But, there are some major, well-known limitations with {\em LLM}'s that limit their applicability.
-
 The main problem is {\bf hallucinations}: the LLM does not know what it does not know, and this lack of reliability limits the ability of the system to be used fully automatically, i.e., without a human ``in the loop.''
-
-\subsection{Short History of LLM's}
-Bengio et al. \citep{bengio2003neural} introduced a novel neural network-based approach to language modeling, significantly impacting subsequent developments in natural language processing.
-Sutskever et al. \citep{sutskever2014sequence} presented a breakthrough in sequence-to-sequence learning, revolutionizing machine translation and other sequence-based tasks in AI.
-Vaswani et al. \citep{vaswani2017attention} introduced the Transformer model, fundamentally changing the landscape of neural network design for language processing.
-Devlin et al. \citep{devlin2018bert} proposed BERT, setting new standards in natural language understanding tasks.
-Radford et al. \citep{radford2018improving} advanced language understanding through generative pre-training, paving the way for sophisticated language models.
-Radford et al. \citep{radford2019language} demonstrated the versatility of language models as unsupervised multitask learners.
-Brown et al. \citep{brown2020language} showed that language models can be effective few-shot learners, expanding possibilities with minimal training data.
-Kaplan et al. \citep{kaplan2020scaling} explored scaling laws for neural language models, providing insights into model size and performance.
-
 \section{Limitations of LLM's}
 \subsection{Hallucinations}
 The model is ``hallucinating'' when it is answering a question with an answer completely unsuported by the training data.
@@ -64,7 +50,7 @@ But the ability to answer {\em why} implies an understanding of {\em causality}.
 And, {\em causality} is just another way of saying {\em logical inference}, because you cannot have one without the other.
 \section{Existing Approaches to Hallucinations}
 \subsection{Fine-Tuning}
-Fine-tuning is the strategy that {\em ChatGPT} originally used to constrain the generative model,
+Fine-tuning is the strategy that {\em ChatGPT} originally used to constrain the generative model\cite{radford2018improving,radford2019language,brown2020language},
 and is also used in the competing products.
 Fine-tuning is a process by which access to the activation outputs of the underlying LLM generative model are used
 to train a {\em discriminative} model to achieve certain tasks.
@@ -73,16 +59,13 @@ Also, we think we should aesthetically object to the {\em necessity} of a discri
 If the spirit of the LLM is to be {\em generative}, we should push for a generative model that can avoid hallucinations on its own.
 \subsection{Retrieval Augmented Generation}
 {\bf Retrieval Augmented Generation} (RAF) is a process by which access to an extrinsic traditional {\em discrete} database-based information
-product, especially a {\em search engine}.
+product, especially a {\em search engine} \cite{lewis:2020}.
 The idea is that a discriminative or even programmatic process can be created that 1) uses the LLM activations as features, and 2) has access to the discrete outputs of the traditional search engine.
 This way, the content of the answer can be checked against the web page.
 One limitation of this is that {\em it does not let the LLM make its own theory}.
 We are limited to agreeing with the web page.
 Also, as with fine-tuning, we believe it is an aesthetic problem that the {\em generative} part of the model cannot stop hallucinating by itself.
-
-\subsection{Trusted Sources}
-We list {\bf trusted sources} as its own element, for clarity.
-However, the {\em trusted sources} strategy is ultimately a {\em RAG} strategy, so the same arguments would apply.
+RAG can also be referred to as {\em trusted sources}.
 \subsection{Vector Databases}
 Vector databases have been proposed as a solution to hallucinations.
 However, vectors do not have any relation to logical calculus that is established.
