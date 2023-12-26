@@ -4,6 +4,15 @@ This document provides instructions on how to set up and run the Bayes-Star proj
 
 **At any time if you get stuck, just ask your favorite "chat bot"**. Keeping docs up to date has always been impossible but you can just get your favorite chat bot to explain things to you if you know how to ask. I used [ChatGPT](https://chat.openai.com/) in the creation of this project.
 
+# System Overview
+The dependencies are:
+* **NodeJS**: This runs the **JavaScript** code that does inference and training. I want to update this to use Rust. (That's right, I want to "rewrite it in Rust").
+* **REDIS**: This is an in-memory data store (similar to **MEMCACHE**) where the data and theories are stored as **strings**. You can use any store and any serialization method.
+* **python3**: This is **optional** because I wrote my "eval" in python3. But, it is trivial and you can start over in any framework.
+
+# Redis for the Data Store
+See [REDIS.md](REDIS.md).
+
 # Node for the Model
 
 The main program is written in [Node.js](https://nodejs.org).
