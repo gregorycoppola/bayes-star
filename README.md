@@ -1,9 +1,12 @@
 # BAYES STAR
 
-## Why Should I Care About This?
-This **BAYES STAR** software package implements a "QBN" which will allow **AGI**.
+## Abstract
+This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a "logical inference engine" that can do reasoning.
 
-So, if you are interested in **AGI** you should be interested in this.
+If you are interested in **AGI** you should be interested in this.
+
+## Usage
+For instructions on how to use the software see [USAGE.md](USAGE.md).
 
 ## The Quantified Bayesian Network
 This software package introduces the **Quantified Bayesian Network** (**QBN**).
