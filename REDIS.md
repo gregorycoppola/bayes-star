@@ -1,15 +1,8 @@
-# Reminder to Use a Chat Bot
-Here are the instructions I got to install Redis on your computer from ChatGPT.
-Honestly, with so many systems and contexts, the best option is to ask your favorite chat bot:
-
-```
-how do i install the redis key-value store on my system? my system is [your system description]
-```
-
-But, here are some instructions that might work.
 # Installing Redis on Your System
 
 Redis is an advanced key-value store, known for its flexibility, performance, and wide language support. This guide will walk you through the installation process for Redis on various operating systems.
+
+Remember you can always ask your favorite "chat bot" if you get stuck.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
