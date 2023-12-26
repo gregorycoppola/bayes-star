@@ -45,4 +45,14 @@ python3 --version
 ```
 
 ## Install Python Dependencies
-Right now, the only dependency is `matplotlib`.
+Right now, the only dependency is `matplotlib`. Run the following command in your terminal or command prompt to install `matplotlib`:
+
+```bash
+pip install matplotlib
+```
+
+or if your system differentiates between Python 2 and Python 3:
+
+```bash
+pip3 install matplotlib
+```
