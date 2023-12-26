@@ -2,7 +2,10 @@
 
 This document provides instructions on how to set up and run the Bayes-Star project.
 
-**At any time if you get stuck, just ask your favorite "chat bot"**. Keeping docs up to date has always been impossible but you can just get your favorite chat bot to explain things to you if you know how to ask. I used [ChatGPT](https://chat.openai.com/) in the creation of this project.
+# Reminder to "Use a Chat Bot"
+**At any time if you get stuck, just ask your favorite "chat bot"**. 
+
+Keeping docs up to date has always been impossible, and I'm only testing on my own context, but you can just get your favorite chat bot to explain things to you if you know how to ask. I used [ChatGPT](https://chat.openai.com/) in the creation of this project.
 
 # System Overview
 The dependencies are:
