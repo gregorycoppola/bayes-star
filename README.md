@@ -17,7 +17,7 @@ Find the answers to FAQ's at [FAQ.md](FAQ.md).
 
 ## Documentation
 
-## Draft Latex Paper
+### Formal Paper (DRAFT)
 I am putting all the "real" equations in an academic-style Latex-created [pdf document](paper/symbolic-logic-also-needed-DRAFT.pdf).
 This is still in DRAFT STAGE.
 As noted below, there is also a lot of multi-media content on my Twitter at [@coppola_ai](https://twitter.com/coppola_ai).
