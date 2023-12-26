@@ -4,7 +4,7 @@ This document provides instructions on how to set up and run the Bayes-Star proj
 
 **At any time if you get stuck, just ask your favorite "chat bot"**. Keeping docs up to date has always been impossible but you can just get your favorite chat bot to explain things to you if you know how to ask. I used [ChatGPT](https://chat.openai.com/) in the creation of this project.
 
-## Prerequisites
+# Node for the Model
 
 The main program is written in [Node.js](https://nodejs.org).
 
@@ -26,3 +26,23 @@ npm install
 ```
 
 You can find the dependencies in the file [package.json](node/package.json).
+
+# Python for the Analysis
+Note: The analysis currently uses python. But, you can rewrite your own eval. I only putted the simplest eval to make the graph of the training loss.
+
+## Checking Python Installation
+
+Before you begin, you need to ensure that Python 3 is installed on your system. To check if Python is installed and determine its version, open your terminal or command prompt and type:
+
+To see if you have python (before version 3), type:
+```bash
+python --version
+```
+
+To see if you have python3, type
+```
+python3 --version
+```
+
+## Install Python Dependencies
+Right now, the only dependency is `matplotlib`.
