@@ -8,7 +8,7 @@ If you are interested in **AGI** you should be interested in this.
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
 
-## The Quantified Bayesian Network
+## Model Details
 
 For technical details on the **Quantified Bayesian Network**, see [QBN.md](QBN.md).
 
