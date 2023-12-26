@@ -72,8 +72,9 @@ However, vectors do not have any relation to logical calculus that is establishe
 Thus, there is no concept of {\em true} or {\em false} with vectors in a vector database any more than there is truth or falsity in the LLM.
 Also, empirically, this approach has not been gotten to work, despite being suggested as early as {\em ChatGPT}'s hallucination issue was realized.
 \section{Logic}
-\subsection{Propositional Logic}
 Logic comes in a a few forms, varying in their levels of complexity, and scope.
+
+\subsection{Propositional Logic}
 The most basic logic is {\em propositional logic}.
 Propositional logic deals with statements like $A$, $\neg A$, $A \wedge B$, $A \rightarrow B$.
 This is limited because it does not allow different propositions to ``share'' any of their ``meanings''.
@@ -82,12 +83,13 @@ the sentence {\em Mary runs}, there is no way to represents that both sentences 
 in common, because $A$ and $B$ are different letters, with different indices, sharing no reusable parts.
 
 \subsection{First-Order Logic}
+\subsubsection{Compositional Structure}
 First-order logic solves this problem of sharing structure between similar sentences by
 giving us {\em predicates}, {\em entities} and {\em quantifiers}.
 Thus, we can say that {\em John runs} as $run(john)$ and {\em Mary runs} as $run(mary)$,
 and we see that both expression share some part of the structure, $run$, corresponding
 to our idea that the surface forms {\em John runs} and {\em Mary runs} are related.
-
+\subsubsection{Quantification}
 First-Order Logic also makes use of {\em quantifiers}.
 The sentence $\forall x, late(x)\rightarrow runs(x)$ says that {\em for any person, if they are late, they are running}.
 This kind of sentence allows us to identify {\em patterns} between facts, e.g., being late and running.
@@ -98,9 +100,11 @@ Thus, it might be that being late {\em tends to lead} to running, but it doesn't
 \subsection{Beyond First-Order Logic}
 First-order logic is not enough to model all human natural language.
 This is not to say that it should be thrown out, but that there are certain ``extensions'' to first-order logic that are needed to model the most sophisticated examples of natural language.
+\subsubsection{Intensional Logic}
 First of all, {\em intensional logic} is needed in order to allow the ``concept'' of a sentence to be the argument to a predicate, rather than simply its truth value (one of {\em true} or {\em false}).
 Intensional logics are less well-agreed upon that first-order logic.
 But, in any case, they use the same mechanism of universal quantification, only over a specially constructed entity set, based on the logical language.
+\subsubsection{Compositional Logic}
 Second, first-order logic by itself does not tell us how to build up the meanings of complicated expressions, e.g. {\em the Mayor of New York}, {\em the Mayor of New Delhi}, from their simpler parts.
 This is again simply an area where there is less clarity than first-order logic, only because there are more options, but there are many options to choose from.
 \subsection{Conclusion}
