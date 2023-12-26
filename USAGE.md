@@ -9,9 +9,15 @@ Keeping docs up to date has always been impossible, and I'm only testing on my o
 
 # System Overview
 The dependencies are:
-* **NodeJS**: This runs the **JavaScript** code that does inference and training. I want to update this to use Rust. (That's right, I want to "rewrite it in Rust").
-* **REDIS**: This is an in-memory data store (similar to **MEMCACHE**) where the data and theories are stored as **strings**. You can use any store and any serialization method.
-* **python3**: This is **optional** because I wrote my "eval" in python3. But, it is trivial and you can start over in any framework.
+* **NodeJS**
+    * This runs the **JavaScript** code that does inference and training.
+    * I want to update this to use [Rust](https://www.rust-lang.org/). (That's right, I want to "rewrite it in Rust").
+* **REDIS**
+    * This is an in-memory data store (similar to **MEMCACHE**) where the data and theories are stored as **strings**. 
+    * You can use any store and any serialization method.
+* **python3**
+    * This is **optional** because I wrote my "eval" in python3.
+    * But, it is trivial and you can start over in any framework. I'm not that current on the latest data analysis tools.
 
 # Redis for the Data Store
 See [REDIS.md](REDIS.md).
