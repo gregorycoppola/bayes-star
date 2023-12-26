@@ -21,9 +21,6 @@ The QBN generalizes:
         - [First-Order Logic: Basics](https://plato.stanford.edu/entries/logic-classical/)
         - [Understanding First-Order Logic](https://www.britannica.com/topic/formal-logic/Higher-order-and-modal-logic)
 
-The end result, I claim, is that:
-* the QBN allows a *generative* model of logical (i.e., linguistic) knowledge **that does not hallucinate**
-
 ## How Does the QBN Avoid Hallucinations?
 The QBN avoids hallucinations by:
 1. using logic
