@@ -252,20 +252,37 @@ We can conjoin sentences like the following, expressing that $jack1$ and $jill1$
 \end{itemize}
 
 \subsection{Predicates}
-In traditional first-order logic, a predicate would be a statement like $likes(x, y)$ in the overall sentence
-\[ \forall x\in Jack, \forall y \in Jill, likes(x,y) \rightarrow dates(x, y) \]
-
-We will refer to any statement in which the arguments contain at least one variable.
-
-In other words, in our logical language, predicates include functions like:
+A predicate corresponds to a first-order logic with lambda calculus express $\lambda x \in jack, lonely(x)$, which maps an element $x \in jack$ to a truth value.
+\subsubsection{Predicate Over One Variable}
+The simplest predicates have only one variable. These correspond to {\em sets} of entities. Aristotle called them {\em categories}.
+Using the first-order lambda calculus, some unary predicates are:
 \begin{itemize}
-\item $\left\{relation:likes, subject:{x \in Jack}, object:{y \in Jill} \right\}$
-\item $\left\{predicate:lonely, subject:{x \in Jack} \right\}$
-\item $\left\{predicate:exciting, subject:{x \in Jill} \right\}$
+    \item $\lambda x, lonely(x)$
+    \item $\lambda x, exciting(x)$
+    \item $\lambda x, is_jack(x)$
+    \item $\lambda x, is_jill(x)$
+\end{itemize}
+In the semantc-role labeling notation, this would be written as:
+\begin{itemize}
+    \item $\lambda x, \left\{verb: lonely, subject: x\right\}$
+    \item $\lambda x, \left\{verb: exciting, subject: x\right\}$
+    \item $\lambda x, \left\{category: jack, subject: x\right\}$
+    \item $\lambda x, \left\{category: jack, subject: x\right\}$
 \end{itemize}
 
-In other words, a predicate is intuitively a function, where the input types are specified in the predicate defintion, and the output is a binary value.
-
+\subsubsection{Predicates Over Multiple Variables}
+Predicates over multiple variables are often called {\em relations}.
+While a unary predicate demarcates a {\em subet} of its containing domain, a $n$-ary predicate demarcates a subset of the {\em Cartesian Product} of all of the relevant domains.
+Using the first-order lambda calculus, some $n$-ary predicates are:
+\begin{itemize}
+    \item $\lambda x \lambda y, likes(x, y)$
+    \item $\lambda x \lambda y, dates(x, y)$
+\end{itemize}
+In the semantc-role labeling notation, this would be written as:
+\begin{itemize}
+    \item $\lambda x, \lambda y, \left\{verb: likes, subject: x, object: y\right\}$
+    \item $\lambda x, \lambda y, \left\{verb: dates, subject: x, object: y\right\}$
+\end{itemize}
 
 \section{Implementing Implication}
 \subsection{Predicate Matcher}
