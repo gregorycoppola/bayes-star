@@ -284,7 +284,17 @@ In the semantc-role labeling notation, this would be written as:
     \item $\lambda x, \lambda y, \left\{verb: dates, subject: x, object: y\right\}$
 \end{itemize}
 
-\section{Implementing Implication}
+\section{Inference}
+\subsection{The Role of Inference}
+We adopt the view that {\em logical inference} is the basis of thought.
+That is, if we could inspect the neurons of the human brain, we would expect to somehow find some kind of an implementation of something resembling one of the {\em formal logics} created in the field of mathematics.
+We adopt the view that the role of syntax is to map 1) surface form (i.e. spoken or written word) to 2) its semantic interpretation, which is a logical form  \cite{steedman2000}.
+However, one might as: what {\em is} inference?
+To avoid a protracted philosophical discussion, let us just say that a {\em logical} language is one which extends the {\em First-Order Logic}.
+That is, it should be possible to recover first-order reasoning from our network as a special case.
+However, we must go beyond {\em first-order logic}, because FOL only allows us to deal in boolean values (true and false), whereas we need the ability to deal with continuous probabilities, similar to Bayesian Networks.
+
+
 \subsection{Predicate Matcher}
 From one perspective, a predicate is a mapping from inputs to truth values, as we saw.
 From another perspective, we can view a predicate as being mapped one-to-one with a *proposition matcher*.
