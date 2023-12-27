@@ -231,13 +231,21 @@ Thus, the probabilities $P(Jack(x))$ and $P(Jill(y))$ are implicitly part of the
 The only way we can state that quantification ranges over a subset of entities in the basic type is if we are willing to model the probability of membership as definitely $1$.
 
 \subsection{Propositions}
-Propositions are statements in the logical language without quantification.
+\subsubsection{Practical Interpretation}
+Propositions are statements in the logical language that have no variables. In other words, propositions have only constants.
+Because there are no variables, and every constant resolves conceptually to an {\em entity}, a {\em relation} and any other relevant type, a proposition can be assigned a {\em truth value}.
+In practice, {\em prediction} and {\em compression} are more relevant words to use than {\em truth} because, as finite beings, we do not have access to the ``real truth.''
+But, even from the perspective of {\em prediction} and {\em compression}, a proposition must either be 1) {\em true}, 2) false, or 3) some state in between, with probability mass distributed between the two options {\em true} and {\em false} to add up to 1.
 
+\subsubsection{Examples}
+\subsubsection{Atomic Proposition}
 Using this semantic-role notation we represent the traditional first order proposition $likes(jack1, jill1)$ as:
 \begin{itemize}
     \item $\left\{relation:likes, subject:jack1, object:jill1 \right\}$
 \end{itemize}
+Again, the probability that {\em jack1 likes jill1} be inversely related to the probability that {\em jack1 does not like jill1}.
 
+\subsubsection{Complex Propositions}
 We can conjoin sentences like the following, expressing that $jack1$ and $jill1$ both like each other:
 \begin{itemize}
     \item $\left\{relation:likes, subject:jack1, object:jill1 \right\} \wedge \left\{relation:likes, subject:jill1, object:jack1 \right\}$
