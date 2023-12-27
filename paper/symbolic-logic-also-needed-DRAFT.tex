@@ -244,7 +244,8 @@ We can conjoin sentences like the following, expressing that $jack1$ and $jill1$
 \end{itemize}
 
 \subsection{Predicates}
-In traditional first-order logic, a predicate would be a statement like $likes(x, y)$ in the overall sentence $\forall x\in Jack, \forall y \in Jill, likes(x,y) \rightarrow dates(x, y)$.
+In traditional first-order logic, a predicate would be a statement like $likes(x, y)$ in the overall sentence
+\[ \forall x\in Jack, \forall y \in Jill, likes(x,y) \rightarrow dates(x, y) \]
 
 We will refer to any statement in which the arguments contain at least one variable.
 
@@ -265,18 +266,18 @@ From another perspective, we can view a predicate as being mapped one-to-one wit
 The proposition matcher associated with a predicate $q$ matches any proposition $p$ such that $p$ is an instantiation of $q$, with values of the specified types.
 
 For example, 
-$p = \left\{relation:likes, subject:jack1, object:jill1 \right\}$
+\[ p = \left\{relation:likes, subject:jack1, object:jill1 \right\} \]
 is an instantiation of
-$q = \left\{relation:likes, subject:{x \in Jack}, object:{y \in Jill} \right\}$
+\[ q = \left\{relation:likes, subject:{x \in Jack}, object:{y \in Jill} \right\} \]
 using the subsitution $x=jack1$ and $y=jill1$.
 
 Thus, $match(q, p)$ is true.
 However, $p$ does *not* match $q2$, because its values for relation is $dates$, which does not equal $likes$.
-$q2 = \left\{relation:dates, subject:{x \in Jack}, object:{y \in Jill} \right\}$
+\[ q2 = \left\{relation:dates, subject:{x \in Jack}, object:{y \in Jill} \right\} \]
 using the subsitution $x=jack1$ and $y=jill1$.
 
 Similarly, $p$ does not match $q3$, because $q3$ specifies that the subject must be a $Jill$, not a $Jack$.
-$q2 = \left\{relation:dates, subject:{x \in Jill}, object:{y \in Jack} \right\}$
+\[ q2 = \left\{relation:dates, subject:{x \in Jill}, object:{y \in Jack} \right\} \]
 
 \subsection{Substitution}
 \subsection{Implication Links}
