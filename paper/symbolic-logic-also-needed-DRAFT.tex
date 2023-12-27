@@ -164,9 +164,9 @@ However, we note in terms of philosophy that the concept of {\em predicate} was 
 A predicate maps some number of arguments (each of a specified {\em domain}) to a {\em truth value}.
 \subsubsection{Examples}
 In the first-order logic, using the {\em lambda calculus}, a predicate would be something like $\lambda x \in jill, likes(john, x)$, where $x$ is a variable.
-Again, we will be using a ``semantic-role labeling'' syntax instead.
+Again, we will be using a ``semantic-role labeling'' formulation instead.
 
-\section{Semantic Role Labeling}
+\section{Semantic Role Labeling Formulation}
 \subsection{Semantic Roles}
 \subsubsection{Necessity of Role Labeling}
 Semantic roles as they are traditionally named are things like {\em subject}, {\em object}, {\em indirect object}, etc.
@@ -209,7 +209,7 @@ This is equivalent to:
 Thus, the probabilities $P(Jack(x))$ and $P(Jill(y))$ are implicitly part of the model.
 The only way we can state that quantification ranges over a subset of entities in the basic type is if we are willing to model the probability of membership as definitely $1$.
 
-\subsection{Propositions Using Semantic Role Syntax}
+\subsection{Propositions}
 Propositions are statements in the logical language without quantification.
 
 Using this semantic-role notation we represent the traditional first order proposition $likes(jack1, jill1)$ as:
@@ -222,7 +222,7 @@ We can conjoin sentences like the following, expressing that $jack1$ and $jill1$
     \item $\left\{relation:likes, subject:jack1, object:jill1 \right\} \wedge \left\{relation:likes, subject:jill1, object:jack1 \right\}$
 \end{itemize}
 
-\subsection{Predicates Using Semantic Role Syntax}
+\subsection{Predicates}
 In traditional first-order logic, a predicate would be a statement like $likes(x, y)$ in the overall sentence $\forall x\in Jack, \forall y \in Jill, likes(x,y) \rightarrow dates(x, y)$.
 
 We will refer to any statement in which the arguments contain at least one variable.
@@ -236,7 +236,7 @@ In other words, in our logical language, predicates include functions like:
 
 In other words, a predicate is intuitively a function, where the input types are specified in the predicate defintion, and the output is a binary value.
 
-
+\section{Implementing Implication}
 \subsection{Predicate Matcher}
 From one perspective, a predicate is a mapping from inputs to truth values, as we saw.
 From another perspective, we can view a predicate as being mapped one-to-one with a *proposition matcher*.
@@ -256,8 +256,8 @@ using the subsitution $x=jack1$ and $y=jill1$.
 Similarly, $p$ does not match $q3$, because $q3$ specifies that the subject must be a $Jill$, not a $Jack$.
 $q2 = \left\{relation:dates, subject:{x \in Jill}, object:{y \in Jack} \right\}$
 
-\section{Substitution}
-\section{Implication Links}
+\subsection{Substitution}
+\subsection{Implication Links}
 The overall concept of the Quantified Bayesian Network is to allow a trainable network encoding and generalizing the concept of first-order quantification.
 That is, we want to generalize the ability to make statements like $\forall x, y exciting(y) \rightarrow likes(x, y)$.
 However, we must emphasize that the *entire point* of training a machine learned system is that statements of the form ``*all* X are Y'' rarely hold in practice.
@@ -266,7 +266,7 @@ But, advantage is gained merely by noticing a correlation.
 So, what then is first-order implication if we relax the literal logical implication?
 From our perspective, the generalization is simply to say that the premise and conclusion of first-order logic are *related* in some way (or, at least possibly related), and it is up to the model training to decide which.
 
-\section{Matcher}
+\subsection{Matcher}
 A matcher takes a predicate \( q \) and a proposition \( p \) and returns \( \text{match}(p, q) \):
 \begin{enumerate}
     \item None -- if \( p \) does not match \( q \)
