@@ -134,7 +134,7 @@ Bayesian Networks offer several advantages:
     \item They allow for efficient computation of conditional probabilities.
     \item They enable the integration of both prior knowledge and observed data.
 \end{itemize}
-\section{The QBN Model}
+\section{Ontology}
 \subsection{Entities}
 \subsubsection{Philosophical Considerations}
 An entity is an atomic concept in logic.
@@ -151,11 +151,22 @@ Each one of these tracked notable figures would correspond to an {\em entity} in
 It is possible to get very philosophical about the question ``what is {\em truth}.''
 As Kant intimated, and as I can now show more precisely using the mathematics of the 20th century, the concept of ``truth'' in the way most people use the word actually requires the postulation of an {\em omniscient} agent in the universe, i.e., what people would usually call ``God.''
 \subsubsection{Practical Interpretation}
-In prattice, ropositions are statements in a {\em formal language} that can either be {\bf true} or {\bf false}.
+In practice, ropositions are statements in a {\em formal language} that can either be {\bf true} or {\bf false}.
 By {\em formal language}, I mean that a clear algorithm can be given that determines whether a given {\em string} is {\em in} the language or {\em not in} the language.
 \subsubsection{Examples}
 In first order logic, propositions would be statements like $loves(john, mary)$, $loves(mary, john)$, $exciting(mary)$, $charming(john)$.
 For reasons of implementation ease and efficiency, we do not make statements in this syntax, but using a {\em semantic role labeling}-style syntax described below.
+\subsection{Predicates}
+\subsubsection{Philosophical Considerations}
+Once one has absorbed the metaphysical mysteries of what is an ``entity'' and what is ``truth,'' all other concepts are derviative, and so there are no more metaphysical shocks to the system.
+However, we note in terms of philosophy that the concept of {\em predicate} was identified by Aristotle.
+\subsubsection{Practical Interpretation}
+A predicate maps some number of arguments (each of a specified {\em domain}) to a {\em truth value}.
+\subsubsection{Examples}
+In the first-order logic, using the {\em lambda calculus}, a predicate would be something like $\lambda x \in jill, likes(john, x)$, where $x$ is a variable.
+Again, we will be using a ``semantic-role labeling'' syntax instead.
+
+\section{Semantic Role Labeling}
 \subsection{Semantic Roles}
 \subsubsection{Necessity of Role Labeling}
 Semantic roles as they are traditionally named are things like {\em subject}, {\em object}, {\em indirect object}, etc.
@@ -168,7 +179,6 @@ This is why a purely {\em unlabeled} dependency parse is not useful.
 We assume that there are a {\em finite} number of semantic roles.
 This might be because we are literally {\em programmed} with a specific finite set of roles in the style of a Chomskyan {\em Universal Grammar}.
 Or, it might be that an expectational maximization algorithm is {\em allowed to grow} the number of roles until convergence, at which point the number of roles will not grow any more.
-
 
 \subsection{Arguments}
 Each semantic role contains as its argument either:
@@ -199,7 +209,20 @@ This is equivalent to:
 Thus, the probabilities $P(Jack(x))$ and $P(Jill(y))$ are implicitly part of the model.
 The only way we can state that quantification ranges over a subset of entities in the basic type is if we are willing to model the probability of membership as definitely $1$.
 
-\subsection{Predicates}
+\subsection{Propositions Using Semantic Role Syntax}
+Propositions are statements in the logical language without quantification.
+
+Using this semantic-role notation we represent the traditional first order proposition $likes(jack1, jill1)$ as:
+\begin{itemize}
+    \item $\left\{relation:likes, subject:jack1, object:jill1 \right\}$
+\end{itemize}
+
+We can conjoin sentences like the following, expressing that $jack1$ and $jill1$ both like each other:
+\begin{itemize}
+    \item $\left\{relation:likes, subject:jack1, object:jill1 \right\} \wedge \left\{relation:likes, subject:jill1, object:jack1 \right\}$
+\end{itemize}
+
+\subsection{Predicates Using Semantic Role Syntax}
 In traditional first-order logic, a predicate would be a statement like $likes(x, y)$ in the overall sentence $\forall x\in Jack, \forall y \in Jill, likes(x,y) \rightarrow dates(x, y)$.
 
 We will refer to any statement in which the arguments contain at least one variable.
@@ -213,19 +236,6 @@ In other words, in our logical language, predicates include functions like:
 
 In other words, a predicate is intuitively a function, where the input types are specified in the predicate defintion, and the output is a binary value.
 
-
-\subsection{Propositions}
-Propositions are statements in the logical language without quantification.
-
-Using this semantic-role notation we represent the traditional first order proposition $likes(jack1, jill1)$ as:
-\begin{itemize}
-    \item $\left\{relation:likes, subject:jack1, object:jill1 \right\}$
-\end{itemize}
-
-We can conjoin sentences like the following, expressing that $jack1$ and $jill1$ both like each other:
-\begin{itemize}
-    \item $\left\{relation:likes, subject:jack1, object:jill1 \right\} \wedge \left\{relation:likes, subject:jill1, object:jack1 \right\}$
-\end{itemize}
 
 \subsection{Predicate Matcher}
 From one perspective, a predicate is a mapping from inputs to truth values, as we saw.
