@@ -104,7 +104,7 @@ This is not to say that it should be thrown out, but that there are certain ``ex
 First of all, {\em intensional logic} is needed in order to allow the ``concept'' of a sentence to be the argument to a predicate, rather than simply its truth value (one of {\em true} or {\em false}).
 Intensional logics are less well-agreed upon that first-order logic.
 But, in any case, they use the same mechanism of universal quantification, only over a specially constructed entity set, based on the logical language.
-\subsubsection{Compositional Logic}
+\subsubsection{Compositional Semantics}
 Second, first-order logic by itself does not tell us how to build up the meanings of complicated expressions, e.g. {\em the Mayor of New York}, {\em the Mayor of New Delhi}, from their simpler parts.
 This is again simply an area where there is less clarity than first-order logic, only because there are more options, but there are many options to choose from.
 \subsection{Conclusion}
@@ -138,7 +138,7 @@ Bayesian Networks offer several advantages:
 \subsection{Entities}
 An entity is an atomic concept in logic.
 One can get very philosophical and mystical about the question ``what is an entity.''
-However, from an information retrieval system, it is very simple: each entity is associated with a unique identifier (say a string).
+However, from an information retrieval system, it is very simple: each entity is associated with a unique identifier (i.e. a string).
 Associated with this unique identifier we can associate {\em properties}.
 For example, in Google's {\em Knowledge Graph}, starting circa 2012, is a system which will display {\em cards} about a notable person, e.g., {\em Taylor Swift} or {\em Beyonce} is searched for.
 Each one of these tracked notable figures would correspond to an {\em entity} in this information retrieval database.
@@ -146,14 +146,23 @@ Each one of these tracked notable figures would correspond to an {\em entity} in
 \subsection{Propositions}
 Propositions are statements in our logical language that can either be {\bf true} or {\bf false}.
 It is possible to get very philosophical about the question ``what is {\em truth}.''
-In this case, we can side-step philosophico-mystical debates by appealing to a simple notion of ``truth'' that the LLM is not currently offering us, which is that: we want the LGM to be able to accurately represent what was in its training set.
-In other words, if a LGM tells us that a certain piece of information is in its data set, we should be able to find it there.
-In fact, an LGM should be able to tell us why it believes a certain statement, and provide links to all of the data that was in its training set.
+We can discuss the question ``what is truth'' in more detail elsewhere.
+For now, assume that there are two {\em truth values}: {\bf true} and {\em false}.
+In other words, a {\em truth function} maps any {\em proposition} in our logical language to a {\em boolean} truth value.
 
 \subsection{Semantic Roles}
-For us, a \emph{predicate}, which is also a node in the probability graph, is a \emph{key-value} tuple.
-The keys come from a fixed set, called \emph{roles}.
-That is, while the number of different \emph{languages} is not bounded, and, for any given language, the number of words or morphemes is not bounded, the set of roles \emph{is} finite, bounded, and fixed, for all languages.
+\subsubsection{Necessity of Role Labeling}
+Semantic roles as they are traditionally named are things like {\em subject}, {\em object}, {\em indirect object}, etc.
+In the sentence {\em John loves Sally}, {\em John} is the {\em subject} and {\em Sally} is the {\em object}.
+This means that {\em John} has affections for {\em Sally}, but we don't necessarily know how {\em Sally} feels about {\em John}.
+If the roles were reversed, and {\em Sally loves John}, then we would know what {\em Sally} thinks, but not {\em John}.
+This is why a purely {\em unlabeled} dependency parse is not useful.
+
+\subsubsection{Assuming a Finite Number of Role Labels}
+We assume that there are a {\em finite} number of semantic roles.
+This might be because we are literally {\em programmed} with a specific finite set of roles in the style of a Chomskyan {\em Universal Grammar}.
+Or, it might be that an expectational maximization algorithm is {\em allowed to grow} the number of roles until convergence, at which point the number of roles will not grow any more.
+
 
 \subsection{Arguments}
 Each semantic role contains as its argument either:
