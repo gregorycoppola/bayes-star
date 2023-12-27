@@ -136,20 +136,26 @@ Bayesian Networks offer several advantages:
 \end{itemize}
 \section{The QBN Model}
 \subsection{Entities}
+\subsubsection{Philosophical Considerations}
 An entity is an atomic concept in logic.
 One can get very philosophical and mystical about the question ``what is an entity.''
+\subsubsection{Practical Interpretation}
 However, from an information retrieval system, it is very simple: each entity is associated with a unique identifier (i.e. a string).
 Associated with this unique identifier we can associate {\em properties}.
+\subsubsection{Examples}
 For example, in Google's {\em Knowledge Graph}, starting circa 2012, is a system which will display {\em cards} about a notable person, e.g., {\em Taylor Swift} or {\em Beyonce} is searched for.
 Each one of these tracked notable figures would correspond to an {\em entity} in this information retrieval database.
 
 \subsection{Propositions}
-Propositions are statements in our logical language that can either be {\bf true} or {\bf false}.
+\subsubsection{Philosophical Considerations}
 It is possible to get very philosophical about the question ``what is {\em truth}.''
-We can discuss the question ``what is truth'' in more detail elsewhere.
-For now, assume that there are two {\em truth values}: {\bf true} and {\em false}.
-In other words, a {\em truth function} maps any {\em proposition} in our logical language to a {\em boolean} truth value.
-
+As Kant intimated, and as I can now show more precisely using the mathematics of the 20th century, the concept of ``truth'' in the way most people use the word actually requires the postulation of an {\em omniscient} agent in the universe, i.e., what people would usually call ``God.''
+\subsubsection{Practical Interpretation}
+In prattice, ropositions are statements in a {\em formal language} that can either be {\bf true} or {\bf false}.
+By {\em formal language}, I mean that a clear algorithm can be given that determines whether a given {\em string} is {\em in} the language or {\em not in} the language.
+\subsubsection{Examples}
+In first order logic, propositions would be statements like $loves(john, mary)$, $loves(mary, john)$, $exciting(mary)$, $charming(john)$.
+For reasons of implementation ease and efficiency, we do not make statements in this syntax, but using a {\em semantic role labeling}-style syntax described below.
 \subsection{Semantic Roles}
 \subsubsection{Necessity of Role Labeling}
 Semantic roles as they are traditionally named are things like {\em subject}, {\em object}, {\em indirect object}, etc.
