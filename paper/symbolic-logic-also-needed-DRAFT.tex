@@ -27,7 +27,7 @@ The {\bf Large Language Model} ({\bf LLM}) is the hottest data structure in arti
 Pioneered by the product {\em ChatGPT} by {\em OpenAI},
 leading to a robust competition in artificially intelligent agents, often called ``chat bots,'' or simply {\em LLM}'s.
 There is widespread agreement that the {\em LLM} is a powerful technology.
-For example, neutral but well-known investor Jason Calanis recently said of the {\em LLM}-based technology boom:
+For example, neutral but well-known investor Jason Calacanis recently said of the {\em LLM}-based technology boom:
 \begin{quote}
     AI is the opportunity of our lifetimes... 
     bigger than the internet, PCs, mobile, and cloud -- combined.  
@@ -273,7 +273,7 @@ A matcher takes a predicate \( q \) and a proposition \( p \) and returns \( \te
     \item Some(\( r \)) -- where \( r \) is a role mapping \( \{r: a\} \) such that \( \text{substitute}(q, r) = p \)
 \end{enumerate}
 
-\subsection*{Substitution Rule}
+\subsection{Substitution Rule}
 A substitution rule takes in a predicate \( q \) and a role mapping \( r \) and gives back a proposition \( p \), by:
 \begin{enumerate}
     \item type-checking that the role map \( r \) corresponds to the arguments in \( p \)
@@ -286,7 +286,7 @@ is \( \{\text{relation}: \text{predicate}, \text{subject}:\text{jack1}\} \).
 
 
 
-\section{Forwards Links and Backwards Links}
+\subsection{Forwards Links and Backwards Links}
 The generative story proceeds ``forwards''.
 That is, where the nodes of the Quantified Bayesian Network form a Directed Acyclic Graph, we recursively can compute the value of a node \( n \) by doing a depth-first traversal of its ancestors in the DAG.
 We refer to the link from a premise to a conclusion as a \emph{forward} link.
