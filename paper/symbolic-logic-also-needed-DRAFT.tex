@@ -204,21 +204,19 @@ This is why a purely {\em unlabeled} dependency parse is not useful.
 We assume that there are a {\em finite} number of semantic roles.
 This might be because we are literally {\em programmed} with a specific finite set of roles in the style of a Chomskyan {\em Universal Grammar}.
 Or, it might be that an expectational maximization algorithm is {\em allowed to grow} the number of roles until convergence, at which point the number of roles will not grow any more.
+
 \subsection{Arguments}
+\subsubsection{Definitions}
 Each semantic role contains as its argument either:
 \begin{enumerate}
     \item a \emph{constant}, which identifies a concrete element in some universe (or database)
     \item a \emph{variable}, which ranges over some \emph{domain} of entities in the database
 \end{enumerate}
-
+A {\em constant} corresponds to $jack$ in the first-order sentence $lonely(jack)$.
+A {\em variable} corresponds to $x$ in the first-order lambda-calculus predicate $\lambda x \in jack, lonely(x)$.
 A variable specifies a \emph{domain}, each domain being a subset of the entities.
 
-It is important to note that the entities are very high-level type categories, constant, finite and fixed in number ahead of any data.
-We choose the domains \emph{entity}, \emph{relation} and \emph{predicate}.
-Entities refer to ontological \emph{objects}, like \emph{jack1} and \emph{jill1}.
-Relations refer to what we would call \emph{verbs} in linguistic analysis, such as \emph{likes} or \emph{dates}.
-Predicates, in this formulation, are unary predicate words like \emph{lonely} or \emph{exciting}.
-
+\subsection{Determining the Domain of Quantification for Variables}
 It is important to note that any domain quantified over requires an assumption of membership.
 For example, the only thing we can say about a (hypothetical) entity, like \( jack1 \), is that it is an entity, rather than a relation or a predicate.
 To say that \( jack \) is a \emph{man}, \emph{woman}, \emph{human}, etc., is to say something empirical that could, \emph{technically} be true.
@@ -226,10 +224,9 @@ However, it may be that it is more efficient or otherwise beneficial for enginee
 This is what we do in our experiments, where we explicitly denote the set of \( Jacks \) versus the set of \( Jills \) to model a binary dating scenario.
 
 In other words, consider the statement:
-* $\forall x \in Jack, y \in Jill, likes(x, y) \rightarrow dates(x, y)$
+\[ \forall x \in Jack, y \in Jill, likes(x, y) \rightarrow dates(x, y) \]
 This is equivalent to:
-* $\forall x \in  y, Jack(x) \wedge Jill(y) \wedge likes(x, y) \rightarrow dates(x, y)$
-
+\[\forall x \in  y, Jack(x) \wedge Jill(y) \wedge likes(x, y) \rightarrow dates(x, y) \]
 Thus, the probabilities $P(Jack(x))$ and $P(Jill(y))$ are implicitly part of the model.
 The only way we can state that quantification ranges over a subset of entities in the basic type is if we are willing to model the probability of membership as definitely $1$.
 
