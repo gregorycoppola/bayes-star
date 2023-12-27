@@ -50,7 +50,7 @@ But the ability to answer {\em why} implies an understanding of {\em causality}.
 And, {\em causality} is just another way of saying {\em logical inference}, because you cannot have one without the other.
 \section{Existing Approaches to Hallucinations}
 \subsection{Fine-Tuning}
-Fine-tuning is the strategy that {\em ChatGPT} originally used to constrain the generative model\cite{radford2018improving,radford2019language,brown2020language},
+{\em Fine-Tuning} is the strategy that {\em ChatGPT} originally used to constrain the generative model\cite{radford2018improving,radford2019language,brown2020language},
 and is also used in the competing products.
 Fine-tuning is a process by which access to the activation outputs of the underlying LLM generative model are used
 to train a {\em discriminative} model to achieve certain tasks.
@@ -58,7 +58,7 @@ This gives an option to reduce many kinds of LLM erros, but not all, because hal
 Also, we think we should aesthetically object to the {\em necessity} of a discriminative model in order to not hallucinate.
 If the spirit of the LLM is to be {\em generative}, we should push for a generative model that can avoid hallucinations on its own.
 \subsection{Retrieval Augmented Generation}
-{\bf Retrieval Augmented Generation} (RAF) is a process by which access to an extrinsic traditional {\em discrete} database-based information
+{\em Retrieval Augmented Generation} is a process by which access to an extrinsic traditional {\em discrete} database-based information
 product, especially a {\em search engine} \cite{lewis:2020}.
 The idea is that a discriminative or even programmatic process can be created that 1) uses the LLM activations as features, and 2) has access to the discrete outputs of the traditional search engine.
 This way, the content of the answer can be checked against the web page.
@@ -67,7 +67,7 @@ We are limited to agreeing with the web page.
 Also, as with fine-tuning, we believe it is an aesthetic problem that the {\em generative} part of the model cannot stop hallucinating by itself.
 RAG can also be referred to as {\em trusted sources}.
 \subsection{Vector Databases}
-Vector databases have been proposed as a solution to hallucinations.
+{\em Vector Databases} have been proposed as a solution to hallucinations.
 However, vectors do not have any relation to logical calculus that is established.
 Thus, there is no concept of {\em true} or {\em false} with vectors in a vector database any more than there is truth or falsity in the LLM.
 Also, empirically, this approach has not been gotten to work, despite being suggested as early as {\em ChatGPT}'s hallucination issue was realized.
@@ -216,7 +216,7 @@ A {\em constant} corresponds to $jack$ in the first-order sentence $lonely(jack)
 A {\em variable} corresponds to $x$ in the first-order lambda-calculus predicate $\lambda x \in jack, lonely(x)$.
 A variable specifies a \emph{domain}, each domain being a subset of the entities.
 
-\subsection{Determining the Domain of Quantification for Variables}
+\subsection{Domain of Quantification for Variables}
 It is important to note that any domain quantified over requires an assumption of membership.
 For example, the only thing we can say about a (hypothetical) entity, like \( jack1 \), is that it is an entity, rather than a relation or a predicate.
 To say that \( jack \) is a \emph{man}, \emph{woman}, \emph{human}, etc., is to say something empirical that could, \emph{technically} be true.
