@@ -189,6 +189,50 @@
   publisher={Institute of Mathematical Statistics}
 }
 
+@article{Jelinek1997,
+  title={Statistical methods for speech recognition},
+  author={Jelinek, Frederick},
+  journal={Language and Speech},
+  volume={40},
+  number={1},
+  pages={115--118},
+  year={1997},
+  publisher={SAGE Publications Sage UK: London, England}
+}
+
+% phrase structure parsing
+@inproceedings{charniak-johnson-2005-coarse,
+    title = "Coarse-to-Fine n-Best Parsing and {M}ax{E}nt Discriminative Reranking",
+    author = "Charniak, Eugene  and
+      Johnson, Mark",
+    editor = "Knight, Kevin  and
+      Ng, Hwee Tou  and
+      Oflazer, Kemal",
+    booktitle = "Proceedings of the 43rd Annual Meeting of the Association for Computational Linguistics ({ACL}{'}05)",
+    month = jun,
+    year = "2005",
+    address = "Ann Arbor, Michigan",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P05-1022",
+    doi = "10.3115/1219840.1219862",
+    pages = "173--180",
+}
+@inproceedings{huang-chiang-2007-forest,
+    title = "Forest Rescoring: Faster Decoding with Integrated Language Models",
+    author = "Huang, Liang  and
+      Chiang, David",
+    editor = "Zaenen, Annie  and
+      van den Bosch, Antal",
+    booktitle = "Proceedings of the 45th Annual Meeting of the Association of Computational Linguistics",
+    month = jun,
+    year = "2007",
+    address = "Prague, Czech Republic",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P07-1019",
+    pages = "144--151",
+}
+
+
 % dependency parsing
 @article{chen2014fast,
   title={A fast and accurate dependency parser using neural networks},
@@ -308,15 +352,6 @@
   booktitle={Proceedings of the joint SIGDAT conference on Empirical methods in natural language processing and very large corpora},
   pages={100--110},
   year={1999},
-  organization={Association for Computational Linguistics}
-}
-
-@article{mcdonald2006online,
-  title={Online large-margin training of dependency parsers},
-  author={McDonald, Ryan and Pereira, Fernando and Ribarov, Kiril and Haji{\v{c}}, Jan},
-  journal={Proceedings of the 21st International Conference on Computational Linguistics and the 44th annual meeting of the Association for Computational Linguistics},
-  pages={91--98},
-  year={2006},
   organization={Association for Computational Linguistics}
 }
 
@@ -572,7 +607,7 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
   year      = {1996},
 }
 
-@book{Steedman2000,
+@book{steedman2000,
   author    = {Mark Steedman},
   title     = {The Syntactic Process},
   publisher = {The MIT Press},
@@ -628,6 +663,26 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
   booktitle = {Proceedings of The Joint Conference of the Association for Computational Linguistics and International Joint Conference on Natural Language Processing},
   year      = {2009},
 }
+
+
+
+@article{Zettlemoyer2012,
+  author       = {Luke S. Zettlemoyer and
+                  Michael Collins},
+  title        = {Learning to Map Sentences to Logical Form: Structured Classification
+                  with Probabilistic Categorial Grammars},
+  journal      = {CoRR},
+  volume       = {abs/1207.1420},
+  year         = {2012},
+  url          = {http://arxiv.org/abs/1207.1420},
+  eprinttype    = {arXiv},
+  eprint       = {1207.1420},
+  timestamp    = {Mon, 13 Aug 2018 16:46:14 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1207-1420.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
 
 % semantic role labeling
 @article{Fillmore1968,
@@ -698,6 +753,14 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
   pages   = {477--491},
   year    = {2007},
   month   = {Dec}
+}
+
+@inproceedings{smith2008dependency,
+  title={Dependency parsing by belief propagation},
+  author={Smith, David A and Eisner, Jason},
+  booktitle={Proceedings of the 2008 Conference on Empirical Methods in Natural Language Processing},
+  pages={145--156},
+  year={2008}
 }
 
 @inproceedings{CohenSimmonsSmith2008,
@@ -936,7 +999,7 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
 
 @misc{hinton:cbs:2023,
   title = {Full interview: "Godfather of artificial intelligence" talks impact and potential of AI},
-  author = {CBS Mornings},
+  author = {Geoff Hinton},
   year = {2023},
   howpublished = {YouTube video},
   url = {https://youtu.be/qpoRO378qRY},
@@ -945,15 +1008,24 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
 
 @misc{sutskever:huang:2023,
   title = {Ilya Sutskever (OpenAI) and Jensen Huang (NVIDIA CEO) : AI Today and Vision of the Future (3/2023)},
-  author = {999,999 Views},
+  author = {Ilya Sutskever},
   year = {2023},
   howpublished = {YouTube video},
   url = {https://youtu.be/Ckz8XA2hW84},
   note = {Accessed: 2023-12-26, Timestamp: 1966 seconds}
 }
 
+@misc{steedman:2022,
+  title = {AI Quorum: Mark Steedman 2022 NLP Symposium},
+  author = {Mark Steedman},
+  year = {2022},
+  howpublished = {YouTube video},
+  url = {https://youtu.be/isCf61oAU-E},
+  note = {Accessed: 2023-12-29, Timestamp: 7 seconds}
+}
+
 % RAG
-@article{lewis:2020,
+@article{lewis2013combined:2020,
   author       = {Patrick S. H. Lewis and
                   Ethan Perez and
                   Aleksandra Piktus and
@@ -1411,4 +1483,40 @@ publisher = "ASSOC COMPUTATIONAL LINGUISTICS-ACL",
   year = {2023},
   howpublished = {\url{https://en.wikipedia.org/wiki/Freebase_(database)}},
   note = {[Online; accessed 28-December-2023]}
+}
+
+% markov logic network
+@article{richardson2006markov,
+  title={Markov logic networks},
+  author={Richardson, Matthew and Domingos, Pedro},
+  journal={Machine learning},
+  volume={62},
+  pages={107--136},
+  year={2006},
+  publisher={Springer}
+}
+
+% chomsky's rule-based syntax-first approach (for comparison only)
+@book{Chomsky1957SyntacticStructures,
+  author    = {Noam Chomsky},
+  title     = {Syntactic Structures},
+  publisher = {Mouton},
+  year      = {1957},
+  address   = {The Hague},
+}
+
+@book{Chomsky1981GovernmentAndBinding,
+  author    = {Noam Chomsky},
+  title     = {Lectures on Government and Binding},
+  publisher = {Foris Publications},
+  year      = {1981},
+  address   = {Dordrecht},
+}
+
+@book{Chomsky1995MinimalistProgram,
+  author    = {Noam Chomsky},
+  title     = {The Minimalist Program},
+  publisher = {MIT Press},
+  year      = {1995},
+  address   = {Cambridge, MA},
 }

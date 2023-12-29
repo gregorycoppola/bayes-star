@@ -2,11 +2,14 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{natbib}
+\usepackage[authoryear]{natbib}
 \usepackage{amsmath}
 \usepackage{hyperref}
-\title{Symbolic Logic is Also Needed}
-\author{Greg Coppola}
+\title{\bf Symbolic Logic is Also Needed}
+\author{
+    Greg Coppola \\
+    {\em coppola.ai}
+}
 \date{\today}
 
 \begin{document}
@@ -14,64 +17,71 @@
 
 
 \begin{abstract}
-In this paper, we present the {\bf Quantified Bayesian Network} ({\bf QBN}).
-This is a data structure that, we believe, can end the problem of {\em LLM hallucination}.
+Here we present the {\bf Quantified Bayesian Network} ({\bf QBN}).
+This is a data structure that, we argue, can end the problem of {\em LLM hallucination}.
 The {\bf QBN} provides a {\bf generative model} of the {\bf logical structure} behind the sentences in natural language.
-If the world knowledge of the LLM can be transferred into the QBN, we believe that that will constitute AGI.
-The QBN is able to generative model data.
-It is a generalization of both first-order predicate logic, as well as the Bayesian Network.
-A QBN can represent logical relationships between logical propositions.
+If the {\bf world knowledge} of the LLM can be transferred into the QBN, we argue that that will constitute {\bf Artificial General Intelligence}.
+The first insight behind the QBN is to marry {\bf Bayesian Networks} with {\bf First-Order Logic} in an efficient way, to obtain the benefits of both {\bf probabilitic} and {\bf logical} reasoning.
+The second insight behind the QBN is to define a logical calculus directly over the {\bf semantic role labeling} representation of an idea, which greatly simplifies the {\bf implementation} and {\bf learning}.
+The QBN by itself is {\em not} AGI, but we outline {\bf combined generative model} of logic and syntax that might be able to populate the {\bf QBN} from large-scale unlabeled text data.
 \end{abstract}
+
+
+\tableofcontents
+
 \section{Introduction}
 The {\bf Large Language Model} ({\bf LLM}) is the hottest data structure in artificial intelligence and computer science right now.
-Pioneered by the product {\em ChatGPT} by {\em OpenAI},
-leading to a robust competition in artificially intelligent agents, often called ``chat bots,'' or simply {\em LLM}'s.
-There is widespread agreement that the {\em LLM} is a powerful technology.
-For example, neutral but well-known investor Jason Calacanis recently said of the {\em LLM}-based technology boom:
+Developed in \cite{vaswani2017attention, devlin2018bert, radford2018improving, brown2020language}, the LLM has sparked a dynamic industrial effort and competition to create {\em artificially intelligent assistants}, ``chat bots,'' or simply {\em LLM}'s.
+Noted Silivon Valley investor Jason Calacanis recently said of the LLM-based technology boom:
 \begin{quote}
     AI is the opportunity of our lifetimes... 
     bigger than the internet, PCs, mobile, and cloud -- combined.  
     \cite{Jason2023}
 \end{quote}
-But, there are some major, well-known limitations with {\em LLM}'s that limit their applicability.
-The main problem is {\bf hallucinations}: the LLM does not know what it does not know, and this lack of reliability limits the ability of the system to be used fully automatically, i.e., without a human ``in the loop.''
+But, there are some major, well-known limitations with LLM's that limit their applicability.
+The main problem is {\bf hallucinations}: the LLM does not {\em know what it does not know}, and this lack of reliability limits the ability of the system to be used fully automatically, i.e., without a human ``in the loop.''
+Another noted problem is that the LLM does not {\bf reason logically}, and does not have a {\bf logically consistent world view} \cite{hinton:cbs:2023, steedman:2022}.
+We argue that these two problems are causally related.
 \section{Limitations of LLM's}
 \subsection{Hallucinations}
 The model is ``hallucinating'' when it is answering a question with an answer completely unsuported by the training data.
 This is the most commonly listed problem with LLM's.
-Sutskever \cite{sutskever:huang:2023} has said this limits the usefulness of LLM's because there must always be a human ``in the loop'', and so things cannot be fully automated.
+\cite{sutskever:huang:2023} has said this limits the usefulness of LLM's because there must always be a human ``in the loop'', and so things cannot be fully automated.
 \subsection{Cannot Do Reasoning}
 It is known that LLM's cannot do reasoning.
-Hinton \cite{hinton:cbs:2023} has underlined the problem that LLM's 1) do not have a ``logically consistent worldview'' and 2) do not understand how different ``worldviews'' (what we call {\em theories}) lead to different conclusions.
+\cite{hinton:cbs:2023} has underlined the problem that LLM's 1) do not have a ``logically consistent worldview'' and 2) do not understand how different ``worldviews'' (what we call {\em theories}) lead to different conclusions.
+\cite{steedman:2022} has suggested that LLM's are not doing reasoning, and the field should not lose sight of the necessity of symbolic logic.
 \subsection{Our Analysis}
 These two problems are related.
 In order to not hallucinate, a model must be able to explain {\em why} it believes what it does.
 But the ability to answer {\em why} implies an understanding of {\em causality}.
 And, {\em causality} is just another way of saying {\em logical inference}, because you cannot have one without the other.
-\section{Existing Approaches to Hallucinations}
+\section{Existing Approaches to Hallucination}
 \subsection{Fine-Tuning}
 {\em Fine-Tuning} is the strategy that {\em ChatGPT} originally used to constrain the generative model\cite{radford2018improving,radford2019language,brown2020language},
 and is also used in the competing products.
 Fine-tuning is a process by which access to the activation outputs of the underlying LLM generative model are used
 to train a {\em discriminative} model to achieve certain tasks.
 This gives an option to reduce many kinds of LLM erros, but not all, because hallucination remains an unsolved problem.
-Also, we think we should aesthetically object to the {\em necessity} of a discriminative model in order to not hallucinate.
+Also, we aesthetically object to the {\em necessity} of a discriminative model in order to not hallucinate.
 If the spirit of the LLM is to be {\em generative}, we should push for a generative model that can avoid hallucinations on its own.
 \subsection{Retrieval Augmented Generation}
 {\em Retrieval Augmented Generation} is a process by which access to an extrinsic traditional {\em discrete} database-based information
-product, especially a {\em search engine} \cite{lewis:2020}.
+product, especially a {\em search engine} \cite{lewis2013combined:2020}.
 The idea is that a discriminative or even programmatic process can be created that 1) uses the LLM activations as features, and 2) has access to the discrete outputs of the traditional search engine.
 This way, the content of the answer can be checked against the web page.
 One limitation of this is that {\em it does not let the LLM make its own theory}.
 We are limited to agreeing with the web page.
-Also, as with fine-tuning, we believe it is an aesthetic problem that the {\em generative} part of the model cannot stop hallucinating by itself.
+Also, as with fine-tuning, we propose it is an aesthetic problem that the {\em generative} part of the model cannot stop hallucinating by itself.
 RAG can also be referred to as {\em trusted sources}.
 \subsection{Vector Databases}
 {\em Vector Databases} have been proposed as a solution to hallucinations.
 However, vectors do not have any relation to logical calculus that is established.
 Thus, there is no concept of {\em true} or {\em false} with vectors in a vector database any more than there is truth or falsity in the LLM.
 Also, empirically, this approach has not been gotten to work, despite being suggested as early as {\em ChatGPT}'s hallucination issue was realized.
-\section{Logic}
+\section{Background On Logic}
+Our proposal is that, in order to eliminate hallucinations, the generative model must model {\em logical relationships} and the logical {\em reasoning process}.
+{\em Formal Logic} is the rigorous mathematical study of logic itself.
 Logic comes in a a few forms, varying in their levels of complexity, and scope.
 
 \subsection{Propositional Logic}
@@ -95,7 +105,7 @@ The sentence $\forall x, late(x)\rightarrow runs(x)$ says that {\em for any pers
 This kind of sentence allows us to identify {\em patterns} between facts, e.g., being late and running.
 The problem with First-Order Logic is that it is too {\em deterministic}.
 In real-life scenarios, we exploit patterns that are true {\em most} but not {\em all} of the time.
-Thus, it might be that being late {\em tends to lead} to running, but it doesn't always.
+Thus, it might be that being late {\em tends to lead} to running, but it doesn't have to. Also, the data might actually say that being late leads to {\em less} to running, in some possible data set.
 
 \subsection{Beyond First-Order Logic}
 First-order logic is not enough to model all human natural language.
@@ -112,28 +122,189 @@ In the following work, we will focus on the first-order logic.
 First, because all other logics are extensions of the first-order logic, so we can reuse the same techniques for training a first-order system.
 Second, for simplicity.
 Third, because there is not a consensus on the details of the more complicated extended logics.
-\section{Bayesian Networks}
-We want to look at a certain kind of data structure in computer science: the Bayesian Network.
-\subsection{Basic Concepts}
 
-A Bayesian Network, \textbf{B}, consists of:
+\section{Probabilistic Graphical Model}
+\subsection{Introduction to Graphical Models}
+Graphical models are a marriage between probability theory and graph theory. They are used to represent complex distributions in a compact and intuitive manner. A graphical model is typically represented by a graph, where nodes represent random variables and edges represent probabilistic dependencies between these variables.
+The joint probability distribution of a set of random variables 
+\[ \{X_1, X_2, ..., X_n\} \]
+in a graphical model can be factorized as follows:
+\begin{equation}
+    P(X_1, X_2, ..., X_n) = \prod_{i=1}^{n} P(X_i | Pa(X_i))
+\end{equation}
+Here, \( Pa(X_i) \) denotes the set of parent nodes of \( X_i \) in the graph.
 
+\subsection{Bayesian Networks}
+Bayesian Networks are a specific type of graphical model that use Bayesian statistics to represent probabilistic relationships among variables. They are directed acyclic graphs (DAGs), where each edge has a direction, indicating a causal or influence relationship from one variable to another. In a Bayesian Network, the joint probability distribution is defined by the product of conditional probabilities associated with each node, given its parents in the graph.
+The conditional probability of a node \( X_i \) given its parents \( Pa(X_i) \) in a Bayesian Network is typically represented by:
+\begin{equation}
+    P(X_i | Pa(X_i)) = \frac{P(X_i, Pa(X_i))}{P(Pa(X_i))}
+\end{equation}
+This equation shows that the probability of \( X_i \) depends on the joint probability of \( X_i \) and its parents, normalized by the probability of the parents. 
+Bayesian Networks are used in scenarios where we want to model {\bf causal relationships} and perform {\bf reasoning under uncertainty}, e.g. medical diagnosis, genetics, machine learning, and artificial intelligence. 
+One of the key tasks in working with Bayesian Networks is inference, which involves computing the {\bf posterior distribution} of certain {\bf variables} given {\bf evidence} about others.
+This inference {\em is} efficient when compared to undirected graphs \cite{richardson2006markov}, or {\bf loopy belief propagation} \cite{smith2008dependency}.
+
+\subsection{Graphical Structure of the QBN}
+A graphical model is understood in terms of its {\em nodes} and its {\em edges}.
+In the QBN, the nodes and edges are:
 \begin{itemize}
-    \item A set of variables $\textbf{X} = \{X_1, X_2, \ldots, X_n\}$.
-    \item A set of directed edges \textbf{E} between these variables, which represent causal relationships.
+    \item {\bf nodes} -- the nodes are the {\em propositions} (i.e. a sentence with a truth value)
+    \item {\bf edges} -- {\em inferential links} between propositions; these are {\em virtual} in the sense that not every pair of nodes has features that link it together, but instead there are {\em implication patterns} that link any {\em premise} and {\em conclusion} that match the patterns
 \end{itemize}
 
-Each variable \(X_i\) is associated with a probability distribution that quantifies the effects of the parents of \(X_i\) in the graph.
+\subsection{Directed and Acyclic}
+We assume that the graph is both {\em directed} and {\em acyclic}.
+Each assumption contributes greatly to efficiency and simplicity, and the combination results in extreme efficiency, relative to unconstrained graphs.
+\cite{smith2008dependency} explored non-acyclic (i.e. cyclic) graphs, and inference is inefficent and also not even guaranteed to converge.
+\cite{richardson2006markov} presented the {\em Markov Logic Network}, which is a graphical model very similar to this, except they allow the graph to be {\em undirected}, which makes it intractable to compute the normalization term, especially by the standards of modern production.
+Because we assume both directedness and simplicity, the inference is simlar to a neural network.
+The difference is that much symbolic {\em bookkeeping} must be done in order to determine which nodes are related.
 
-\subsection{Advantages of Bayesian Networks}
+\subsection{Conjunctions and Disjunctions}
+Any logical premise can be expressed as a {\em disjunction} (where parts are joined using {\em or}, represented as $\vee$) of {\em conjunctions} (where parts are joined using {\em and}, reprsented as $\land$).
+Consider the first-order statement
+\[ \forall x \in jack, \left[famous(x) \vee \left(rich(x) \wedge handsome(x)\right)\right] \rightarrow likes(jane, x)\]
+Here, the premise 
+\[ famous(x) \vee \left(rich(x) \wedge handsome(x)\right)\]
+is a {\em disjunction} of $famous(x)$ and 
+\[ rich(x) \wedge handsome(x)\]
+which is a {\em conjunction} of $rich(x)$ and $handsome(x)$.
 
-Bayesian Networks offer several advantages:
+\subsection{Maximum Entropy for Disjunctions}
+The probability of any given logical proposition $p$ can be cast as a {\em maximum entropy} problem of the form:
+\begin{equation}
+    p({\bf x}) = \frac{1}{1 + exp\left\{-\mathbf{w} \cdot \phi({\bf x})\right\}}
+\end{equation}
+Here ${\bf x}$ represents the {\em problem context} and {\bf w} reprsent the linear weights.
+That is, currently, we do not make use of non-linear connections between nodes, because the act of splitting the graph into the nodes handles the problem of non-linear functions, and there would seem to be no benefit to using a multi-layer perceptron inside the logical factor, but we can leave the question open.
+The problem context {\bf x} is created based on the 1) structure of the graph, 2) the probability values of the upstream propositions.
+We discuss how the feature vector is created in more detail in \ref{s:inference}.
+\subsection{Conjunctions}
+What is the probability $P(rich(jack) \wedge handsome(jack))$?
+If they are independent, we can simply multiply 
+\[P(rich(jack))\cdot P(handsome(jack))\]
+However, if they are not independent, we must take account of the graphical relationship between them.
+Currently, we have only implemented the disjunction nodes, and leave conjunction nodes for future work.
 
+\section{Inference Directly Over Semantic Roles}
+\subsection{Overview}
+One central innovation of this paper is to show how to {\bf inference} directly over a {\bf semantic role labeling} representation.
+In this section we review the course of {\bf syntactic} and {\bf semantic} research, both {\bf rule-based} and {\bf probabilistic}.
+I discuss that nearest work that this builds on is \cite{steedman2000, kwiatkowski2010, lewis2013combined, Zettlemoyer2012}, which espouses two crucial features: 1) use of {\bf probabilistic models}, and 2) use of a {\bf logically complete} language as the {\bf target language} for {\bf syntactic analysis}.
+Then, I show how multiple phases involved in the computational workflow of \citep{steedman2000} can be ``compiled out'' (i.e. simplified away).
+That is, I show how by simply defining a {\bf logical calculus} directly over the {\bf semantic role labeling} representation, we can save both {\bf implementation} and {\bf learning complexity}.
+\subsection{Phases of Logic and Statistics in A.I. Research}
+Let us review the history of {\bf natural language processing}, and see how it points in the direction of probabilistic, logical models.
+\subsubsection{Rule-Based Syntax}
+Modern symbolic linguistics begins with \cite{Chomsky1957SyntacticStructures}, followed by \citep{Chomsky1981GovernmentAndBinding, Chomsky1995MinimalistProgram}.
+Two features characterize Chomsky's work:
+\begin{enumerate}
+    \item {\bf focus on syntax}: Chomsky believes that {\em syntactic structures} are relevant in and of themselves, and can and should be studied {\em without} reference to the semantics, let alone a {\em complete} logic as the endpoint.
+    \item {\bf anti-probabilistic outlook}: Chomsky has always derided and continues to deride probabilistic methods, including ``machine learning'' and ``artificial intelligence,'' in the understanding of the human mind.
+\end{enumerate}
+By definition, zero practitioners of artificial intelligence or statistical natural language processing join Chomsky in continuing to doubt the relevance of probabilistic models to the study of human language.
+Also, no one who implements a product joins Chomsky in believing is the endpoint of syntax: to build a practical system one must map a natural language sentence to its {\em semantic interpretation}.
+
+\subsubsection{Rule-Based Logic Parsing}
+Several efforts were made to create {\bf logical database representations} of {\bf world-knowledge} using {\bf manual data entry} \cite{lenat1990blk,wiki:freebase}.
+\cite{pereira1987prolog} documents interesting approaches to rule-based logic programming.
+The problem with hand-entered approaches to logical databases is that there are far too many facts to encode manually, no matter what one's budget, or even using crowd-sourcing.
+
+\subsubsection{Probabilistic Syntactic Parsing}
+\cite{rabiner1986maximum, rabiner1989tutorial, Jelinek1997} studied  generative speech recognition and part-of-speech tagging.
+\cite{collins1999head, charniak1997statistical} studied generative phrase-structure parsing.
+\cite{eisner1996bilexical} studied generative dependency parsing.
+\cite{mcdonald2006online, mcdonald2005non} studied discriminative dependency parsing.
+\cite{charniak-johnson-2005-coarse, huang-chiang-2007-forest} studied discriminative phrase-structure parsing.
+The problem with all analyses that end in syntax is the same: we need a semantic interpretation in order to build applications.
+
+\subsubsection{Probabilistic Semantic Parsing}
+\cite{macartney2007natural,steedman2000,lewis2013combined,kwiatkowski2010,Zettlemoyer2012} studied probablistic parsing to semantic structures.
+But, such {\bf semantic} models were never gotten to work directly for {\bf unsupervised} training like the LLM was.
+Thus, the {\em probabilistic} models have always been limited by the same factor as the {\em rule-based} models: the ability to manually input knowledge, whether logical or statistical.
+\subsubsection{Large Language Models}
+LLM's are an interesting an unexpected interpolation of syntax and semantics.
+Going by the $n$-gram prediction nature of the LLM, it is a {\em syntactic} model.
+However, perhaps owing to the query-key-value nature of the attention mechanism, the LLM {\em is} able to acquire something that is close enough to ``world knowledge'' to work in products like {\em ChatGPT}.
+Modeling world knowledge is typically considered the domain of ``semantics.''
+Thus, the LLM combines elements of syntax and semantics.
+However, the hallucination problem, along with our proposed diagnosis as resulting from not modeling causality, underlines the need to explicitly model semantics {\em logically}.
+
+\subsection{The Complexity of Translation to First-Order Logic}
+\subsubsection{Probabilistic Categorial Grammar as a Basis}
+The overall architecture that situates the QBN is based on \cite{BarHillel1953, steedman2000,lewis2013combined,kwiatkowski2010,Zettlemoyer2012}.
+This is characterized by:
+\begin{enumerate}
+    \item {\bf probabilistic models}: the use of {\em probabilistic models} is relevant, both for creating {\em technology} and for understanding {\em psychology}
+    \item {\bf complete logical language} for semantics: the role of {\em syntax} is to map a {\em surface form} (i.e. spoken or written word) to a {\em logical form}, corresponding intuitively to its ``meaning'' or ``semantics,'' in a consistent and complete logical language
+\end{enumerate}
+\cite{Steedman1996,steedman2000} proposes that the role of syntax is to map surface structure to a first-order logical form.
+Theoretically, this is a sound picture, because indeed the first-order logic is complete (and consistent).
+However there are linear and even supra-linear complexity constants inherent in a category grammar-based translation to literally first-order logic.
+\subsubsection{Complexity of Translating Into FOL}
+\cite{lewis2013combined} presents the following graph of how a first-order logic formula can be created from a CCG parse:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/lewis2013.png}
+    \caption{{\em Figure 1} from \cite{lewis2013combined}. Their description included.}
+    \label{fig:lewis2013}
+\end{figure}
+We see that this syntactic analysis maps the natural langauge sentence {\em all dogs bark} to the first-order logic formula $\forall x, dog(x) \rightarrow bark(x)$.
+This is good, but the problem with the approach of getting to first-order logic by the mechanism of complex lexical categories is:
 \begin{itemize}
-    \item They provide a clear and visual representation of causal relationships.
-    \item They allow for efficient computation of conditional probabilities.
-    \item They enable the integration of both prior knowledge and observed data.
+    \item {\bf complex cateogries}: CCG categories are complex. \cite{hockenmaier2007ccgbank} derived over 1200 lexical categories from the {\em Penn Treebank} \cite{Marcus1993}.
+        \begin{itemize}
+            \item more categories are harder to label, when they need to be labeled by hand
+            \item more categories are harder to learn automatically, if they need to be induced
+            \item more categories make it harder to compute normalization factors (and other analogous calculations)
+        \end{itemize}
 \end{itemize}
+
+\subsubsection{Translating Out of FOL}
+The second problem with first-order logic is that we don't usually want to use a ``vanilla'' FOL formulation it directly.
+What we really enjoy about using the first-order calculus is that we know that \cite{Godel1931} proved the {\em completeness} and {\em consistency} of this logic, and it is otherwise well-understood.
+But, practioners typically {\em use} the first-order calculus to encode semantic knowledge in a form very much analogous to semantic role labels.
+
+The following figure from \cite{kwiatkowski2010} shows an example of how knoweldge is written in logical systems in practice:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/kwiatkowski2010.png}
+    \caption{Passage taken from \cite{kwiatkowski2010}. Illustrates that, given first-order logic, we find it easier to start {\em reassembling} the semantic role structure to specify knowledge in practice.}
+    \label{fig:kwiatkowski2010}
+\end{figure}
+In the equation
+\[ \lambda x. state(x) \wedge next\_to(x, tex)\]
+we are starting to recreate a tree structure in logical language using analogous symbols and struture to the directed dependency parse for the system.
+That is, instead of writing {\em x borders Texas} as $next\_to(x, tex)$, we can just use the semantic-role labeling
+\[ \left\{relation: next\_to, subject: x, object: tex \right\}\]
+At least, we {\em could} just use this as a truth-conditional statement, if we had a proof theory and truth conditions for it.
+
+\subsection{Compiling Out the Round Trip to FOL}
+We have observed that the work of \cite{macartney2007natural,steedman2000,lewis2013combined,kwiatkowski2010,Zettlemoyer2012} implies a difficult trip from labeled dependency parse to first-order logic, in which we immediately begin expressing knowledge in a form analogous to a dependency parse.
+Our proposal is that the round trip to first-order logic can be ``compiled out'' by {\em defining a logical calculus directly over the semantic role representation}.
+\subsubsection{Requirements to Create a New Logic}
+According to the theory \cite{Godel1931} and experience \cite{pereira1987prolog} practicing logic, we need to define a logical language and inference scheme that has the following two properties:
+\begin{itemize}
+    \item {\bf consistency} -- anything that is {\em provable} in the system must be necessarily {\em true}
+    \item {\bf completeness} -- anything which is necessarily {\em true} must be {\em provable}
+\end{itemize}
+We must also add a requirement that all human knowledge must be representable in this formalism:
+\begin{itemize}
+    \item {\bf human capabilities} -- anything that is {\em knowable} by {\em humans} should be {\em representable} by the {\em logical language}
+\end{itemize}
+Empirically we know that with the {\em first-order logic} \cite{frege_begriffsschrift}, extended with {\em intensional logic} \cite{Montague1970}, can in fact represent all human language.
+We will show the conditions for completeness and consistency of the {\em QBN} system, but one must remember that one forward pass through the {\em QBN} can correspond only to ``fast thinking'' \cite{Kahneman2011ThinkingFast}, and not all possible theorems require ``slow'' thinking.
+
+\subsubsection{Inference Directly Over Semantic Role Labeling}
+In order to infer directly over the semantic role representation, we just have to define a new calculus, and prove that calculus to be consistent and complete.
+By staying close to the first-order logic formulation, we can inherit the proofs of \cite{Godel1931}.
+We leave a detailed proof to future work.
+\subsection{Difference Between Logic and Probability}
+It is important to remember that first-order logic by itself, without probabilistic modeling, would {\em not} be able to model human knowledge, because human knowledge is probabilistic.
+Thus, when we speak about the {\em completeness} and {\em consistency} of the logic, we mean that, in the {\em special case} where the implications of the theory are {\em rule-based} and {\em deterministic} (i.e., the implications hold 100\% of the time), we should be able to recover perfect first-order reasoning.
+If probabilities are allowed, we should do whatever is rational under Bayesian assumptions.
+
 \section{Ontology}
 \subsection{Entities}
 \subsubsection{Philosophical Considerations}
@@ -186,12 +357,12 @@ Examples of {\em relation} would be things like {\em likes} and {\em dates}.
 
 \subsubsection{Examples}
 The two major categories in language are the {\em entity} and the {\em relation}.
-In the notation of \cite{steedman}, there is category {\em NP} (for noun-phrases) and {\em S} (for sentences).
+In the notation of \cite{steedman2000}, there is category {\em NP} (for noun-phrases) and {\em S} (for sentences).
 This corresponds to the noted ontological distinction between {\em entities} (which are things from an unbounded universe) and {\em propositions} (which either evaluate to true or false).
 
 
 
-\section{Semantic Role Labeling Formulation}
+\section{Semantic Role Labeling Calculus}
 \subsection{Semantic Roles}
 \subsubsection{Necessity of Role Labeling}
 Semantic roles as they are traditionally named are things like {\em subject}, {\em object}, {\em indirect object}, etc.
@@ -283,148 +454,6 @@ In the semantc-role labeling notation, this would be written as:
     \item $\lambda x, \lambda y, \left\{verb: likes, subject: x, object: y\right\}$
     \item $\lambda x, \lambda y, \left\{verb: dates, subject: x, object: y\right\}$
 \end{itemize}
-
-\section{Inference}
-\subsection{The Role of Inference}
-We adopt the view that {\em logical inference} is the basis of thought.
-That is, if we could inspect the neurons of the human brain, we would expect to somehow find some kind of an implementation of something resembling one of the {\em formal logics} created in the field of mathematics.
-We adopt the view that the role of syntax is to map 1) surface form (i.e. spoken or written word) to 2) its semantic interpretation, which is a logical form  \cite{steedman2000}.
-However, one might as: what {\em is} inference?
-To avoid a protracted philosophical discussion, let us just say that a {\em logical} language is one which extends the {\em First-Order Logic}.
-That is, it should be possible to recover first-order reasoning from our network as a special case.
-However, we must go beyond {\em first-order logic}, because FOL only allows us to deal in boolean values (true and false), whereas we need the ability to deal with continuous probabilities, similar to Bayesian Networks.
-
-
-\subsection{Predicate Matcher}
-From one perspective, a predicate is a mapping from inputs to truth values, as we saw.
-From another perspective, we can view a predicate as being mapped one-to-one with a *proposition matcher*.
-The proposition matcher associated with a predicate $q$ matches any proposition $p$ such that $p$ is an instantiation of $q$, with values of the specified types.
-
-For example, 
-\[ p = \left\{relation:likes, subject:jack1, object:jill1 \right\} \]
-is an instantiation of
-\[ q = \left\{relation:likes, subject:{x \in Jack}, object:{y \in Jill} \right\} \]
-using the subsitution $x=jack1$ and $y=jill1$.
-
-Thus, $match(q, p)$ is true.
-However, $p$ does *not* match $q2$, because its values for relation is $dates$, which does not equal $likes$.
-\[ q2 = \left\{relation:dates, subject:{x \in Jack}, object:{y \in Jill} \right\} \]
-using the subsitution $x=jack1$ and $y=jill1$.
-
-Similarly, $p$ does not match $q3$, because $q3$ specifies that the subject must be a $Jill$, not a $Jack$.
-\[ q2 = \left\{relation:dates, subject:{x \in Jill}, object:{y \in Jack} \right\} \]
-
-\subsection{Substitution}
-\subsection{Implication Links}
-The overall concept of the Quantified Bayesian Network is to allow a trainable network encoding and generalizing the concept of first-order quantification.
-That is, we want to generalize the ability to make statements like $\forall x, y exciting(y) \rightarrow likes(x, y)$.
-However, we must emphasize that the *entire point* of training a machine learned system is that statements of the form ``*all* X are Y'' rarely hold in practice.
-But, advantage is gained merely by noticing a correlation.
-
-So, what then is first-order implication if we relax the literal logical implication?
-From our perspective, the generalization is simply to say that the premise and conclusion of first-order logic are *related* in some way (or, at least possibly related), and it is up to the model training to decide which.
-
-\subsection{Matcher}
-A matcher takes a predicate \( q \) and a proposition \( p \) and returns \( \text{match}(p, q) \):
-\begin{enumerate}
-    \item None -- if \( p \) does not match \( q \)
-    \item Some(\( r \)) -- where \( r \) is a role mapping \( \{r: a\} \) such that \( \text{substitute}(q, r) = p \)
-\end{enumerate}
-
-\subsection{Substitution Rule}
-A substitution rule takes in a predicate \( q \) and a role mapping \( r \) and gives back a proposition \( p \), by:
-\begin{enumerate}
-    \item type-checking that the role map \( r \) corresponds to the arguments in \( p \)
-    \item substituting the roles in role map \( r \) as the variables to premise predicate \( q \)
-\end{enumerate}
-
-For example, the value of:
-\[ \text{substitute}(\{\text{relation}: \text{predicate}, \text{subject}:\{x \in \text{Jack}\}\}, \{\text{subject}:\text{jack1}\}) \]
-is \( \{\text{relation}: \text{predicate}, \text{subject}:\text{jack1}\} \).
-
-
-
-\subsection{Forwards Links and Backwards Links}
-The generative story proceeds ``forwards''.
-That is, where the nodes of the Quantified Bayesian Network form a Directed Acyclic Graph, we recursively can compute the value of a node \( n \) by doing a depth-first traversal of its ancestors in the DAG.
-We refer to the link from a premise to a conclusion as a \emph{forward} link.
-
-Thus, in order to find the possible causes of a given node, we must traverse the edge in the opposite direction.
-We call the link from a conclusion to a premise a backwards link.
-
-We will focus on forwards inference in this paper, and leave backwards inference for future work.
-Thus, we are primarily concerned with \emph{backwards} links, and this is what is currently implemented in the BAYES STAR package.
-
-\section{Generalization Results}
-We propose that the {\bf QBN} is a generalization of both:
-\begin{enumerate}
-    \item {\em fast thinking} -- this refers to ``forward'' thinking, with a fixed, trained QBN
-    \item {\em slow thinking} -- this refers to the ability to reason with {\em or} conclusions
-    \item {\em creative thinking} -- this refers to the creation and training of {\em new links}
-\end{enumerate}
-
-We believe it is correct in a ``strong'' sense to say that:
-\begin{itemize}
-    \item the Quantified Bayesian Network {\em generalize} some {\em important faction} of first-order logic
-\end{itemize}
-
-Now, here we require some care because we do {\em not} believe that a practical computational system {\em should} generalize full first-order logic in an overly specific way.
-This is because there are different kind sof thinking.
-
-\subsection{Thinking Fast And Slow}
-\subsubsection{The Literature}
-{\em Thinking Fast and Slow} is a book by TODO that popularized the idea that there are ``fast'' and ``slow'' kinds of thinking.
-Let us put it this way.
-Everyone can speak and locomocate around the world.
-An act as simple as crossing the street requires some kind of logical calculation, based on the goal of {\em not getting hit by a car}.
-
-Thus, we see that all people can think.
-
-
-But, not everyone can do quantum physics and not everyone can do complex mathematics.
-Major mathematical results often take years of collective work by scientists.
-{\em Fermat's Last Theorem} took TODO years to solve.
-Obviously some kinds of thinking are slower than others!
-
-\subsubsection{Our Interpretation}
-We propose that there are three kinds of {\em speeds} of {\em thinking}:
-\begin{enumerate}
-    \item {\em fast thinking} -- this refers to ``forward'' thinking, with a fixed, trained QBN
-    \item {\em slow thinking} -- this refers to the ability to reason with {\em or} conclusions
-    \item {\em creative thinking} -- this refers to the creation and training of {\em new links}
-\end{enumerate}
-
-\subsection{Fast Thinking in a QBN}
-We will use the analogy from psychology to describe the QBN.
-This is not surprising, because the QBN is modeled on the human brain.
-
-We believe that the {\em fast thinking} subset of first-order logic is that part which:
-\begin{enumerate}
-    \item only uses conclusions that do not contain the symbol $\cup$ TODO
-\end{enumerate}
-
-That is, let us look at some {\em complex} and {\em simple} statements:
-\begin{enumerate}
-    \item if A and B, then C -- simple
-    \item if A or B, then C -- simple
-    \item if A, then B and C -- simple
-    \item if A, then B or C -- complex
-\end{enumerate}
-
-Intuitively, the complex situation is when we learn that either one thing is true {\em or another}, and we don't know which.
-
-For example, consider the planning of an outting to the beach.
-If we get reliable information that it {\em will} rain, then we can pick an indoor activity instead.
-If we get reliable information that it {\em will not} rain, then we can plan the trip to the beach.
-If we don't know if there will be rain, we are in a complicated position.
-Now, we must come up with a strategy that works for both cases (rain and not rain).
-A full decision analysis would require us to:
-\begin{enumerate}
-    \item determine the probability of rain
-    \item determine possible courses of action
-    \item define the utility of each possible outcome
-    \item compute the expected utility
-\end{enumerate}
 \section{Knowledge Transfer from LLM to QBN}
 \subsection{Review of Assumptions}
 We have advanced the hypothesis that:
@@ -473,8 +502,8 @@ Now, there are generative models, especially the LLM.
 Before this trend, the most accurate syntactic analysis methods were {\em discriminative}, meaning that they could estimate the {\em conditional} probability of an analysis given a sequence of tokens, but could not generate the tokens based on a generative model.
 
 \subsection{A Generative Transformer-Based Model}
-In order to generate the surface form (words data), there will need to be a {\em recursive tree-structured} generative model in the style of Collins' thesis parser.
-The parses are latent so must be estimated with expectation maximization.
+In order to generate the surface form (words data), there will need to be a {\em generative} model that generates {\em labeled dependency parses}.
+The parses are latent so must be estimated with {\em expectation maximization} \cite{baum1966statistical,Jelinek1997, rabiner1989tutorial}.
 The generative probability of generating a parse is a function of 1) the logical probability according to the QBN that a given logical form would be expressed in a given linguistic context, 2) the syntactic probability that a given logical form would be expressed in a particular way.
 
 \subsection{Syntactic Parses are Latent States}
@@ -506,11 +535,26 @@ In any event, it would seem like the most efficient option for building technolo
 Instead, we would probably want to break with whatever humans do for complex calculations, and instead just use the computer.
 Karpathy TODO has said that in {\em OpenAI}'s strategy is to use hard-coded functions for things like math, and only use the LLM to detect when a math problem is relevant.
 
+\subsection{Distinguish Between {\em AND} and {\em OR} Junctions}
+The maximum entropy junction represents the {\em OR}-junction in the boolean network.
+Future work must support {\em AND}-junctions as well.
+
+\subsection{More Efficient Implementation}
+Currently, the implementation is in {\em NodeJS} but we expect switching to {\em Rust} and using an optimized {\em string serialization} will speed up all operations.
+Also, we must collect more speed data.
+
+\subsection{A Theory of Creativity}
+We believe that the QBN leads to a theory of creativity.
+Creativity is whenever new connections are tried in the network.
+We save a more fine-grained analysis of creativity for future work.
+\subsection{Alignment}
+The problem of aligning the actions of artificial intelligence to the values of humans is one of the most important topics at the intersection of philosophy and computer science today.
+The symbolic approach to artificial intelligence gives us an avenue for alignment because we can interpet a symbolic theory, and plan to force the artificial intelligence to respect values that we give it.
 \section{Conclusion}
 We have presented the Quanified Bayesian Network, a probabilistic graphical model that allows for 1) a generative model of the logical forms behind language, 2) that can explain its reasoning, and so not hallucinate
 We have described how the QBN must be paired with a tree-structured generative model that generates the surface form (words) data from the logical form chosen.
 
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{bibtex}
 
 \end{document}
