@@ -1,25 +1,20 @@
-use std::collections::HashSet;
-
-// Constants
 const BOUND_VARIABLE: &str = "?";
 
-// Helper Enums
 #[derive(Debug)]
-enum ArgumentType {
+pub enum ArgumentType {
     Constant,
     Variable,
 }
 
 #[derive(Debug)]
-enum Domain {
+pub enum Domain {
     Jack,
     Jill,
     Verb,
 }
 
-// Helper functions to convert strings to enums
 impl Domain {
-    fn from_str(s: &str) -> Option<Domain> {
+    pub fn from_str(s: &str) -> Option<Domain> {
         match s {
             "jack" => Some(Domain::Jack),
             "jill" => Some(Domain::Jill),
@@ -29,66 +24,54 @@ impl Domain {
     }
 }
 
-// FirstOrderArgument
 #[derive(Debug)]
-enum FirstOrderArgument {
+pub enum FirstOrderArgument {
     Constant(ConstantArgument),
     Variable(VariableArgument),
 }
 
-// ConstantArgument
 #[derive(Debug)]
-struct ConstantArgument {
-    domain: Domain,
-    entity_id: String,
+pub struct ConstantArgument {
+    pub domain: Domain,
+    pub entity_id: String,
 }
 
-// VariableArgument
 #[derive(Debug)]
-struct VariableArgument {
-    domain: Domain,
+pub struct VariableArgument {
+    pub domain: Domain,
 }
 
-// FilledRole
 #[derive(Debug)]
-struct FilledRole {
-    role_name: String,
-    argument: FirstOrderArgument,
+pub struct FilledRole {
+    pub role_name: String,
+    pub argument: FirstOrderArgument,
 }
 
-// Proposition
 #[derive(Debug)]
-struct Proposition {
-    roles: Vec<FilledRole>,
+pub struct Proposition {
+    pub roles: Vec<FilledRole>,
 }
 
-// Implication
 #[derive(Debug)]
-struct Implication {
-    premise: Proposition,
-    conclusion: Proposition,
-    role_map: RoleMap,
+pub struct Implication {
+    pub premise: Proposition,
+    pub conclusion: Proposition,
+    pub role_map: RoleMap,
 }
 
-// Entity
 #[derive(Debug)]
-struct Entity {
-    domain: Domain,
-    name: String,
+pub struct Entity {
+    pub domain: Domain,
+    pub name: String,
 }
 
-// RoleMap
 #[derive(Debug)]
-struct RoleMap {
-    role_map: std::collections::HashMap<String, String>,
+pub struct RoleMap {
+    pub role_map: std::collections::HashMap<String, String>,
 }
 
-// BackLink
 #[derive(Debug)]
-struct BackLink {
-    implication: Implication,
-    proposition: Proposition,
+pub struct BackLink {
+    pub implication: Implication,
+    pub proposition: Proposition,
 }
-
-// Implementations for each struct go here
-// ...
