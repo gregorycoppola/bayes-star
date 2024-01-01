@@ -1,5 +1,6 @@
-use bayes_star::model::objects::*;
+use bayes_star::scenarios::dating1::SetupScenario;
 
 fn main() {
-    println!("Hello, world!");
+    let result = SetupScenario();
+    println!("{:?}", result);
 }
