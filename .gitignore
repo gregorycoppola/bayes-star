@@ -18,3 +18,10 @@ loss_graph.png
 output.md
 
 temp
+
+
+bazel-bin
+bazel-cpp
+bazel-out
+bazel-testlogs
+
