@@ -104,6 +104,20 @@ impl FirstOrderArgument {
     }
 }
 
+impl fmt::Display for ConstantArgument {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Customize the formatting as needed
+        write!(f, "{:?}", self) // For example, you can use Debug formatting here
+    }
+}
+
+impl fmt::Display for VariableArgument {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Customize the formatting as needed
+        write!(f, "{:?}", self) // For example, you can use Debug formatting here
+    }
+}
+
 impl fmt::Display for FirstOrderArgument {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
