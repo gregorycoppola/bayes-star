@@ -62,6 +62,20 @@ pub struct FilledRole {
     pub argument: FirstOrderArgument,
 }
 
+impl FilledRole {
+    fn new(role_name: String, argument: FirstOrderArgument) -> Self {
+        FilledRole { role_name, argument }
+    }
+
+    pub fn search_string(&self) -> String {
+        format!("{}={}", self.role_name, self.argument.search_string())
+    }
+
+    pub fn convert_to_quantified(&self) -> FilledRole {
+        FilledRole::new(self.role_name.clone(), self.argument.convert_to_quantified())
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Proposition {
     pub roles: Vec<FilledRole>,
