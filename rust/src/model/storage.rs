@@ -1,8 +1,6 @@
 use redis::Commands;
 use std::sync::Arc;
-use serde_json::{json, Value as JsonValue};
 use crate::model::objects::{Domain, Entity, Proposition};
-use serde::{Serialize, Deserialize};
 
 pub struct Storage {
     redis_client: Arc<redis::Client>,
