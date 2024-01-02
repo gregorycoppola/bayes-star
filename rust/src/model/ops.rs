@@ -33,3 +33,16 @@ pub fn convert_to_proposition(predicate: &Proposition, role_map: &RoleMap) -> Re
 
     Ok(Proposition { roles: result_roles })
 }
+
+pub fn extract_premise_role_map(proposition: &Proposition, role_map: &RoleMap) -> RoleMap {
+    let mut result = std::collections::HashMap::new();
+    for crole in &proposition.roles {
+        let role_name = &crole.role_name;
+        if let Some(premise_role_name) = role_map.get(role_name) {
+            result.insert(premise_role_name.clone(), crole.argument.clone());
+        }
+    }
+
+    let rval = RoleMap::new(result);
+    rval
+}
