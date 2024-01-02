@@ -16,7 +16,7 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pro
     Proposition::new(result)
 }
 
-pub fn convert_to_proposition(predicate: &Proposition, role_map: &RoleMap) -> Result<Proposition, Box<dyn Error>> {
+pub fn convert_to_proposition(predicate: &Proposition, role_map: &HashMap<String, FirstOrderArgument>) -> Result<Proposition, Box<dyn Error>> {
     let mut result_roles = Vec::new();
 
     for role in &predicate.roles {
