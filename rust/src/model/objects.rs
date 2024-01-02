@@ -104,6 +104,16 @@ impl FirstOrderArgument {
     }
 }
 
+impl fmt::Display for FirstOrderArgument {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            FirstOrderArgument::Constant(arg) => write!(f, "Constant({})", arg), // Update as needed
+            FirstOrderArgument::Variable(arg) => write!(f, "Variable({})", arg), // Update as needed
+            // Add cases for other variants if they exist
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FilledRole {
     pub role_name: String,
