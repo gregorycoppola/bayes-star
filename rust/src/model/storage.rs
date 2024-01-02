@@ -1,5 +1,5 @@
-use crate::model::objects::{Domain, Entity, Proposition, Implication};
-use redis::{Commands, Client};
+use crate::model::objects::{Domain, Entity, Implication, Proposition};
+use redis::{Client, Commands};
 use std::{error::Error, sync::Arc};
 
 pub struct Storage {
@@ -64,13 +64,14 @@ impl Storage {
         let search_string = proposition.search_string();
         let record =
             serde_json::to_string(proposition).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
         con.hset("propositions", &search_string, &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         self.store_proposition_probability(proposition, probability)
     }
 
     // Store the probability of a proposition
-    fn store_proposition_probability(
+    pub fn store_proposition_probability(
         &self,
         proposition: &Proposition,
         probability: f64,
@@ -79,9 +80,10 @@ impl Storage {
             .redis_client
             .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        // Implement storing the probability
-        // For example, using proposition's search string as a key
-        // ...
+        let search_string = proposition.search_string();
+        con.hset("probs", &search_string, probability.to_string())
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
         Ok(())
     }
 
@@ -105,27 +107,36 @@ impl Storage {
     }
 
     // Get the probability of a proposition
-    pub fn get_proposition_probability(&self, proposition: &Proposition) -> Result<f64, Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()
+    pub fn get_proposition_probability(
+        &self,
+        proposition: &Proposition,
+    ) -> Result<f64, Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         let search_string = proposition.search_string();
-        let probability_str: String = con.hget("probs", &search_string)
+        let probability_str: String = con
+            .hget("probs", &search_string)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        let probability = probability_str.parse::<f64>()
+        let probability = probability_str
+            .parse::<f64>()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         Ok(probability)
     }
 
     pub fn store_implication(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()
+        let mut con = self
+            .redis_client
+            .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        
+
         let search_string = implication.search_string();
-        let record = serde_json::to_string(implication)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let record =
+            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         con.sadd("implications", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
@@ -134,12 +145,14 @@ impl Storage {
     }
 
     pub fn store_links(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()
+        let mut con = self
+            .redis_client
+            .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        
+
         let search_string = implication.search_string();
-        let record = serde_json::to_string(implication)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let record =
+            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         con.sadd(&search_string, &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
@@ -149,28 +162,34 @@ impl Storage {
 
     // Get all Implications
     pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()
+        let mut con = self
+            .redis_client
+            .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        let all_values: Vec<String> = con.smembers("implications")
+        let all_values: Vec<String> = con
+            .smembers("implications")
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        all_values.into_iter().map(|record| {
-            serde_json::from_str(&record)
-                .map_err(|e| Box::new(e) as Box<dyn Error>)
-        }).collect()
+        all_values
+            .into_iter()
+            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .collect()
     }
 
     pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        
-        let set_members: Vec<String> = con.smembers(search_string)
+        let mut con = self
+            .redis_client
+            .get_connection()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        set_members.into_iter().map(|record| {
-            serde_json::from_str(&record)
-                .map_err(|e| Box::new(e) as Box<dyn Error>)
-        }).collect()
+        let set_members: Vec<String> = con
+            .smembers(search_string)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        set_members
+            .into_iter()
+            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .collect()
     }
 }
