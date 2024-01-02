@@ -20,4 +20,6 @@ fn main() {
     let train_result = do_training(&storage);
     println!("{:?}", train_result);
 
+    // Explicitly drop the Redis client
+    std::mem::drop(storage);
 }

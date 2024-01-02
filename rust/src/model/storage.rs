@@ -6,6 +6,15 @@ pub struct Storage {
     redis_client: Arc<redis::Client>,
 }
 
+impl Drop for Storage {
+    fn drop(&mut self) {
+        // The Drop trait for Arc<Client> will automatically be called here,
+        // reducing the reference count. If this Storage instance holds the last 
+        // reference to the client, the client will be dropped and its resources
+        // (like network connections) will be cleaned up.
+    }
+}
+
 impl Storage {
     // Initialize new Storage with a Redis client
     pub fn new(redis_client: Arc<redis::Client>) -> Self {
