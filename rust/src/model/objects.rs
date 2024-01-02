@@ -46,16 +46,31 @@ pub enum FirstOrderArgument {
     Variable(VariableArgument),
 }
 
+impl Hash for Domain {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        std::mem::discriminant(self).hash(state);
+    }
+}
+
+impl Hash for ConstantArgument {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.domain.hash(state);
+        self.entity_id.hash(state);
+    }
+}
+
+impl Hash for VariableArgument {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.domain.hash(state);
+    }
+}
+
 impl Hash for FirstOrderArgument {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        // You can use a custom hashing algorithm or use DefaultHasher
-        let mut hasher = DefaultHasher::new();
-        // Hash the relevant data from your FirstOrderArgument variant
         match self {
-            // Hash logic for each variant
-            _ => unimplemented!("Implement hashing for each variant"),
+            FirstOrderArgument::Constant(arg) => arg.hash(state),
+            FirstOrderArgument::Variable(arg) => arg.hash(state),
         }
-        hasher.finish().hash(state);
     }
 }
 
