@@ -27,4 +27,7 @@ fn main() {
 
     // Explicitly drop the Redis client
     std::mem::drop(storage);
+
+
+    println!("program done");
 }

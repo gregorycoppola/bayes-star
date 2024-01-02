@@ -171,7 +171,7 @@ impl Storage {
     }
 
     pub fn find_premises(&mut self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
-        trace!("find_premises: {:?}", &search_string);
+        println!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self.redis_connection
             .smembers(search_string)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
