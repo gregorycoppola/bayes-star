@@ -92,18 +92,18 @@ pub fn train_on_example(
 ) -> Result<(), Box<dyn Error>> {
     let features = features_from_backlinks(storage, backlinks)?;
     let weight_vector = read_weights(
-        storage.get_redis_client(),
+        storage.get_redis_connection(),
         &features.keys().cloned().collect::<Vec<_>>(),
     )?;
     let probability = compute_probability(&weight_vector, &features);
     let expected = compute_expected_features(probability, &features);
     let new_weight = do_sgd_update(&weight_vector, &features, &expected);
 
-    save_weights(storage.get_redis_client(), &new_weight)
+    save_weights(storage.get_redis_connection(), &new_weight)
 }
 
 pub fn do_training(storage: &Storage) -> Result<(), Box<dyn Error>> {
-    let redis_client = storage.get_redis_client();
+    let redis_client = storage.get_redis_connection();
 
     // Assuming storage has a method to get all implications
     let implications = storage.get_all_implications()?;
