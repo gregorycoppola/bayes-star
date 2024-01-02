@@ -1,5 +1,5 @@
+use serde::{Deserialize, Serialize};
 use std::fmt;
-use serde::{Serialize, Deserialize};
 
 const BOUND_VARIABLE: &str = "?";
 
@@ -33,7 +33,6 @@ impl fmt::Display for Domain {
             Domain::Jack => "Jack",
             Domain::Jill => "Jill",
             Domain::Verb => "Verb",
-            // ... match other variants ...
         };
         write!(f, "{}", domain_str)
     }
@@ -55,36 +54,40 @@ pub struct ConstantArgument {
 pub struct VariableArgument {
     pub domain: Domain,
 }
+
 impl ConstantArgument {
-    fn new(domain: Domain, entity_id: String) -> Self {
+    pub fn new(domain: Domain, entity_id: String) -> Self {
         ConstantArgument { domain, entity_id }
     }
 
-    fn search_string(&self) -> String {
+    pub fn search_string(&self) -> String {
         self.entity_id.clone()
     }
 }
 
 impl VariableArgument {
-    fn new(domain: Domain) -> Self {
+    pub fn new(domain: Domain) -> Self {
         VariableArgument { domain }
     }
 
-    fn search_string(&self) -> String {
+    pub fn search_string(&self) -> String {
         format!("?{}", self.domain)
     }
 }
 
 impl FirstOrderArgument {
-    fn search_string(&self) -> String {
+    pub fn search_string(&self) -> String {
         match self {
             FirstOrderArgument::Constant(arg) => arg.search_string(),
             FirstOrderArgument::Variable(arg) => arg.search_string(),
         }
     }
-    fn convert_to_quantified(&self) -> FirstOrderArgument {
+
+    pub fn convert_to_quantified(&self) -> FirstOrderArgument {
         match self {
-            FirstOrderArgument::Constant(arg) => FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone())),
+            FirstOrderArgument::Constant(arg) => {
+                FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone()))
+            }
             FirstOrderArgument::Variable(arg) => FirstOrderArgument::Variable(arg.clone()),
         }
     }
@@ -97,8 +100,11 @@ pub struct FilledRole {
 }
 
 impl FilledRole {
-    fn new(role_name: String, argument: FirstOrderArgument) -> Self {
-        FilledRole { role_name, argument }
+    pub fn new(role_name: String, argument: FirstOrderArgument) -> Self {
+        FilledRole {
+            role_name,
+            argument,
+        }
     }
 
     pub fn search_string(&self) -> String {
@@ -106,7 +112,10 @@ impl FilledRole {
     }
 
     pub fn convert_to_quantified(&self) -> FilledRole {
-        FilledRole::new(self.role_name.clone(), self.argument.convert_to_quantified())
+        FilledRole::new(
+            self.role_name.clone(),
+            self.argument.convert_to_quantified(),
+        )
     }
 }
 
@@ -116,13 +125,12 @@ pub struct Proposition {
 }
 
 impl Proposition {
-    pub fn search_string(&self) -> String {
-        "dummy_search_string".to_string()
-    }
-}
-impl Proposition {
     pub fn new(roles: Vec<FilledRole>) -> Self {
         Proposition { roles }
+    }
+
+    pub fn search_string(&self) -> String {
+        "dummy_search_string".to_string()
     }
 }
 
