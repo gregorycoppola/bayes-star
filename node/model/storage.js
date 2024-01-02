@@ -67,8 +67,6 @@ class Storage {
         const searchString = implication.SearchString();
         const record = JSON.stringify(implication)
         logger.noop({ searchString, record }, this.StoreImplication)
-        // const recovered = JSON.parse(record)
-        // logger.noop({ recovered }, this.StoreImplication)
         await this.redis.client.sAdd('implications', record);
         await this.StoreLinks(implication)
     }
