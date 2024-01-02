@@ -3,13 +3,13 @@ use serde::{Serialize, Deserialize};
 
 const BOUND_VARIABLE: &str = "?";
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ArgumentType {
     Constant,
     Variable,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Domain {
     Jack,
     Jill,
@@ -39,19 +39,19 @@ impl fmt::Display for Domain {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum FirstOrderArgument {
     Constant(ConstantArgument),
     Variable(VariableArgument),
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ConstantArgument {
     pub domain: Domain,
     pub entity_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct VariableArgument {
     pub domain: Domain,
 }
@@ -84,7 +84,7 @@ impl FirstOrderArgument {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FilledRole {
     pub role_name: String,
     pub argument: FirstOrderArgument,
@@ -104,7 +104,7 @@ impl FilledRole {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Proposition {
     pub roles: Vec<FilledRole>,
 }
@@ -120,7 +120,7 @@ impl Proposition {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Implication {
     pub premise: Proposition,
     pub conclusion: Proposition,
@@ -133,18 +133,18 @@ impl Implication {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Entity {
     pub domain: Domain,
     pub name: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RoleMap {
     pub role_map: std::collections::HashMap<String, String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BackLink {
     pub implication: Implication,
     pub proposition: Proposition,
