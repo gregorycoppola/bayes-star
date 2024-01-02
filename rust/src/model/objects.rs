@@ -80,6 +80,12 @@ pub struct Implication {
     pub role_map: RoleMap,
 }
 
+impl Implication {
+    pub fn search_string(&self) -> String {
+        "dummy_search_string".to_string()
+    }
+}
+
 #[derive(Debug)]
 pub struct Entity {
     pub domain: Domain,
