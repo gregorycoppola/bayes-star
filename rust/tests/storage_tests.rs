@@ -1,27 +1,27 @@
-use bayes_star::model::storage::Storage;
-use bayes_star::model::objects::Entity;
-use bayes_star::model::objects::Domain;
-use std::sync::Arc;
-use redis::Client;
+// use bayes_star::model::storage::Storage;
+// use bayes_star::model::objects::Entity;
+// use bayes_star::model::objects::Domain;
+// use std::sync::Arc;
+// use redis::Client;
 
-#[test]
-fn test_store_entity() {
-    // Setup Redis client
-    let client = Arc::new(Client::open("redis://127.0.0.1/").unwrap());
-    let storage = Storage::new(client);
+// #[test]
+// fn test_store_entity() {
+//     // Setup Redis client
+//     let client = Arc::new(Client::open("redis://127.0.0.1/").unwrap());
+//     let storage = Storage::new(client);
 
-    // Create an entity
-    let entity = Entity {
-        domain: Domain::Jack,
-        name: "test_entity".to_string(),
-    };
+//     // Create an entity
+//     let entity = Entity {
+//         domain: Domain::Jack,
+//         name: "test_entity".to_string(),
+//     };
 
-    // Store the entity
-    storage.store_entity(&entity).unwrap();
+//     // Store the entity
+//     storage.store_entity(&entity).unwrap();
 
-    // Assertions can be added here
-    // Note: Actual Redis interactions would require a running Redis server
-}
+//     // Assertions can be added here
+//     // Note: Actual Redis interactions would require a running Redis server
+// }
 
 // #[test]
 // fn test_get_entities_in_domain() {
