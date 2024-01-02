@@ -73,7 +73,7 @@ impl Proposition {
     }
 }
 impl Proposition {
-    fn new(roles: Vec<FilledRole>) -> Self {
+    pub fn new(roles: Vec<FilledRole>) -> Self {
         Proposition { roles }
     }
 }
