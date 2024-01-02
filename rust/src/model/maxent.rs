@@ -77,7 +77,7 @@ pub fn do_sgd_update(
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
 
-        warn!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+        trace!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
 
         new_weights.insert(feature.clone(), new_weight);
     }
@@ -90,39 +90,69 @@ pub fn train_on_example(
     proposition: &Proposition,
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
-    warn!("train_on_example {:?}", &proposition);
-    let features = features_from_backlinks(storage, backlinks)?;
-    let weight_vector = read_weights(
+    println!("train_on_example - Start: {:?}", proposition);
+
+    println!("train_on_example - Getting features from backlinks");
+    let features = match features_from_backlinks(storage, backlinks) {
+        Ok(f) => f,
+        Err(e) => {
+            println!("train_on_example - Error in features_from_backlinks: {:?}", e);
+            return Err(e);
+        }
+    };
+
+    println!("train_on_example - Reading weights");
+    let weight_vector = match read_weights(
         storage.get_redis_connection(),
         &features.keys().cloned().collect::<Vec<_>>(),
-    )?;
+    ) {
+        Ok(w) => w,
+        Err(e) => {
+            println!("train_on_example - Error in read_weights: {:?}", e);
+            return Err(e);
+        }
+    };
+
+    println!("train_on_example - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
+    println!("train_on_example - Computed probability: {}", probability);
+
+    println!("train_on_example - Computing expected features");
     let expected = compute_expected_features(probability, &features);
+
+    println!("train_on_example - Performing SGD update");
     let new_weight = do_sgd_update(&weight_vector, &features, &expected);
 
-    save_weights(storage.get_redis_connection(), &new_weight)
+    println!("train_on_example - Saving new weights");
+    save_weights(storage.get_redis_connection(), &new_weight)?;
+
+    println!("train_on_example - End");
+    Ok(())
 }
 
 pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
-
-    // Assuming storage has a method to get all implications
+    println!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
-        let redis_client = storage.get_redis_connection();
-
-        trace!("Processing implication: {:?}", implication);
-        initialize_weights(redis_client, &implication)?;
+        println!("do_training - Processing implication: {:?}", implication);
+        initialize_weights(storage.get_redis_connection(), &implication)?;
     }
 
-    // Assuming storage has a method to get all propositions
+    println!("do_training - Getting all propositions");
     let propositions = storage.get_all_propositions()?;
-    for proposition in propositions {
-        trace!("Processing proposition: {:?}", proposition);
-        let backlinks = compute_backlinks(storage, &proposition)?;
-        trace!("backlinks: {:?}", &backlinks);
+    println!("do_training - Processing propositions: {}", propositions.len());
 
-        train_on_example(storage, &proposition, &backlinks)?;
+    for proposition in propositions {
+        println!("do_training - Processing proposition: {:?}", proposition);
+        let backlinks = compute_backlinks(storage, &proposition)?;
+        println!("do_training - Backlinks: {:?}", backlinks);
+
+        match train_on_example(storage, &proposition, &backlinks) {
+            Ok(_) => println!("do_training - Successfully trained on proposition: {:?}", proposition),
+            Err(e) => println!("do_training - Error in train_on_example for proposition {:?}: {:?}", proposition, e),
+        }
     }
 
+    println!("do_training - Training complete");
     Ok(())
 }
