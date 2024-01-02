@@ -1,3 +1,4 @@
+use bayes_star::model::maxent::do_training;
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating1::setup_scenario;
 use redis::Client;
@@ -15,4 +16,8 @@ fn main() {
 
     let result = setup_scenario(&mut storage);
     println!("{:?}", result);
+
+    let train_result = do_training(&storage);
+    println!("{:?}", train_result);
+
 }
