@@ -48,11 +48,17 @@ impl Storage {
     }
 
     // Get all propositions
-    pub fn get_all_propositions(&self) ->  Result<Vec<Proposition>, Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()?;
-        let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions")?;
+    pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn std::error::Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    
+        let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions")
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+    
         all_values.into_iter().map(|(_, value)| {
-            serde_json::from_str(&value).expect("Invalid JSON for Proposition")
+            serde_json::from_str(&value)
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
         }).collect()
     }
+    
 }
