@@ -48,7 +48,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     // Retrieve entities in the Jill domain
     let jill_domain = Domain::Jill.to_string().to_lowercase(); // Convert enum to string and make lowercase
     let jills = storage.get_entities_in_domain(&jill_domain)?;
-    for jill in jills {
+    for jill in jills.clone() {
         println!("Jill entity: {:?}", jill);
     }
 
@@ -71,6 +71,20 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
         // Inserting into the independent fact map
         independent_fact_map.insert(format!("{:?}", jack_lonely), p_jack_lonely);
+    }
+
+    for jill_entity in jills {
+        let jill = constant(jill_entity.domain, jill_entity.name.clone());
+        let jill_exciting = predicate(vec![subject(jill), relation(exciting.clone())]);
+        let p_jill_exciting = cointoss();
+    
+        println!("Jill Exciting: {:?}, Probability: {}", jill_exciting, p_jill_exciting);  // Logging
+    
+        // Assuming `store_proposition` is a method in your Storage struct
+        storage.store_proposition(&jill_exciting, p_jill_exciting)?;
+    
+        // Inserting into the independent fact map
+        independent_fact_map.insert(format!("{:?}", jill_exciting), p_jill_exciting);
     }
 
     Ok(())
