@@ -20,7 +20,7 @@ pub fn convert_to_proposition(predicate: &Proposition, role_map: &RoleMap) -> Re
     for role in &predicate.roles {
         if role.argument.is_variable() {
             if let Some(substitute) = role_map.get(&role.role_name) {
-                let new_role = role.do_substitution(substitute); // Assuming this method exists in FilledRole
+                let new_role = role.do_substitution(substitute.clone()); // Assuming this method exists in FilledRole
                 result_roles.push(new_role);
             } else {
                 // Handle the error if the substitution is not found
