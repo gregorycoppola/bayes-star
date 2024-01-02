@@ -108,12 +108,14 @@ pub fn do_training(storage: &Storage) -> Result<(), Box<dyn Error>> {
     // Assuming storage has a method to get all implications
     let implications = storage.get_all_implications()?;
     for implication in implications {
+        println!("Processing implication: {:?}", implication);
         initialize_weights(redis_client, &implication)?;
     }
 
     // Assuming storage has a method to get all propositions
     let propositions = storage.get_all_propositions()?;
     for proposition in propositions {
+        println!("Processing proposition: {:?}", proposition);
         let backlinks = compute_backlinks(storage, &proposition)?;
         train_on_example(storage, &proposition, &backlinks)?;
     }
