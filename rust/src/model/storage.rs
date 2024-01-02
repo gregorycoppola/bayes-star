@@ -149,4 +149,17 @@ impl Storage {
                 .map_err(|e| Box::new(e) as Box<dyn Error>)
         }).collect()
     }
+
+    pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        
+        let set_members: Vec<String> = con.smembers(search_string)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        set_members.into_iter().map(|record| {
+            serde_json::from_str(&record)
+                .map_err(|e| Box::new(e) as Box<dyn Error>)
+        }).collect()
+    }
 }
