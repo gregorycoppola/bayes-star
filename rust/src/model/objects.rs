@@ -91,6 +91,13 @@ impl FirstOrderArgument {
             FirstOrderArgument::Variable(arg) => FirstOrderArgument::Variable(arg.clone()),
         }
     }
+
+    pub fn is_constant(&self) -> bool {
+        match self {
+            FirstOrderArgument::Constant(_) => true,
+            FirstOrderArgument::Variable(_) => false,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -131,6 +138,12 @@ impl Proposition {
 
     pub fn search_string(&self) -> String {
         "dummy_search_string".to_string()
+    }
+    pub fn role_names(&self) -> Vec<String> {
+        self.roles.iter().map(|role| role.role_name.clone()).collect()
+    }
+    pub fn is_fact(&self) -> bool {
+        self.roles.iter().all(|role| role.argument.is_constant()) // Assuming `is_constant` method exists on Argument
     }
 }
 
