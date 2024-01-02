@@ -1,9 +1,8 @@
 use redis::Commands;
 use std::sync::Arc;
-
-use crate::model::objects::Domain;
-use crate::model::objects::Entity;
-
+use serde_json::{json, Value as JsonValue};
+use crate::model::objects::{Domain, Entity, Proposition};
+use serde::{Serialize, Deserialize};
 
 pub struct Storage {
     redis_client: Arc<redis::Client>,
@@ -30,5 +29,32 @@ impl Storage {
             domain: Domain::from_str(&name).expect("Domain not recognized."),
             name,
         }).collect())
+    }
+
+    pub fn store_proposition(&self, proposition: &Proposition, probability: f64) -> redis::RedisResult<()> {
+        let mut con = self.redis_client.get_connection()?;
+        let search_string = proposition.search_string();
+        let record = serde_json::to_string(proposition)?;
+        con.hset("propositions", &search_string, &record)?;
+        self.store_proposition_probability(proposition, probability)?;
+        Ok(())
+    }
+
+    // Store the probability of a proposition
+    fn store_proposition_probability(&self, proposition: &Proposition, probability: f64) -> redis::RedisResult<()> {
+        let mut con = self.redis_client.get_connection()?;
+        // Implement storing the probability
+        // For example, using proposition's search string as a key
+        // ...
+        Ok(())
+    }
+
+    // Get all propositions
+    pub fn get_all_propositions(&self) -> redis::RedisResult<Vec<Proposition>> {
+        let mut con = self.redis_client.get_connection()?;
+        let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions")?;
+        all_values.into_iter().map(|(_, value)| {
+            serde_json::from_str(&value).expect("Invalid JSON for Proposition")
+        }).collect()
     }
 }
