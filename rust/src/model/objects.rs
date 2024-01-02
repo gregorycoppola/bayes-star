@@ -1,15 +1,17 @@
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::collections::HashMap;
 const BOUND_VARIABLE: &str = "?";
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ArgumentType {
     Constant,
     Variable,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum Domain {
     Jack,
     Jill,
@@ -38,19 +40,32 @@ impl fmt::Display for Domain {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FirstOrderArgument {
     Constant(ConstantArgument),
     Variable(VariableArgument),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+impl Hash for FirstOrderArgument {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // You can use a custom hashing algorithm or use DefaultHasher
+        let mut hasher = DefaultHasher::new();
+        // Hash the relevant data from your FirstOrderArgument variant
+        match self {
+            // Hash logic for each variant
+            _ => unimplemented!("Implement hashing for each variant"),
+        }
+        hasher.finish().hash(state);
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ConstantArgument {
     pub domain: Domain,
     pub entity_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VariableArgument {
     pub domain: Domain,
 }
