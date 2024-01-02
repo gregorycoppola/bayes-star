@@ -35,23 +35,23 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             storage.store_entity(&entity)?;
 
             // Replace logger.noop() with your actual logging if needed
-            trace!("Stored entity: {:?}", entity);
+            println!("Stored entity: {:?}", entity);
         }
     }
 
     // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
     let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
-    trace!("Initial number of jacks: {}", jacks.len());
+    println!("Initial number of jacks: {}", jacks.len());
     for jack in jacks.clone() {
-        trace!("Jack entity: {:?}", jack);
+        println!("Jack entity: {:?}", jack);
     }
 
     // Retrieve entities in the Jill domain
     let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
     let jills = storage.get_entities_in_domain(&jill_domain)?;
     for jill in jills.clone() {
-        trace!("Jill entity: {:?}", jill);
+        println!("Jill entity: {:?}", jill);
     }
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
@@ -61,15 +61,15 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     let mut independent_fact_map: HashMap<String, f64> = HashMap::new();
 
-    trace!("Number of jacks before second loop: {}", jacks.len());
+    println!("Number of jacks before second loop: {}", jacks.len());
     for jack_entity in jacks.clone() {
-        trace!("Jack entity part 2: {:?}", jack_entity);
+        println!("Jack entity part 2: {:?}", jack_entity);
 
         let jack = constant(jack_entity.domain, jack_entity.name.clone());
         let jack_lonely = predicate(vec![subject(jack), relation(lonely.clone())]);
         let p_jack_lonely = cointoss();
 
-        trace!(
+        println!(
             "Jack Lonely: {:?}, Probability: {}",
             jack_lonely, p_jack_lonely
         ); // Logging
@@ -86,7 +86,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         let jill_exciting = predicate(vec![subject(jill), relation(exciting.clone())]);
         let p_jill_exciting = cointoss();
 
-        trace!(
+        println!(
             "Jill Exciting: {:?}, Probability: {}",
             jill_exciting, p_jill_exciting
         ); // Logging
@@ -112,7 +112,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 object(jack.clone()),
             ]);
             let p_jill_likes_jack = cointoss();
-            trace!(
+            println!(
                 "Jill likes Jack: {:?}, Probability: {}",
                 jill_likes_jack, p_jill_likes_jack
             ); // Logging
@@ -134,7 +134,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 object(jill.clone()),
             ]);
             let p_jack_likes_jill = numeric_or(p_jack_lonely, p_jill_exciting);
-            trace!(
+            println!(
                 "Jack likes Jill: {:?}, Probability: {}",
                 jack_likes_jill, p_jack_likes_jill
             ); // Logging
@@ -145,7 +145,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let jack_dates_jill =
                 predicate(vec![subject(jack), relation(date.clone()), object(jill)]);
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
-            trace!(
+            println!(
                 "Jack dates Jill: {:?}, Probability: {}",
                 jack_dates_jill, p_jack_dates_jill
             ); // Logging
@@ -218,7 +218,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     ];
 
     for implication in implications.iter() {
-        trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
+        println!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
     
         // Assuming `store_implication` is a method of your Storage struct
         storage.store_implication(implication)?;
