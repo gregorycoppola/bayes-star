@@ -17,3 +17,9 @@ fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     run(input_array, k, 0, &mut temp_vec, &mut result);
     result
 }
+
+fn compute_choose_configurations(n: usize, k: usize) -> Vec<Vec<usize>> {
+    let input_array: Vec<usize> = (0..n).collect();
+    combine(&input_array, k)
+}
+
