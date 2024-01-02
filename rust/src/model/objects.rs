@@ -1,8 +1,8 @@
-use std::hash::{Hash, Hasher};
-use std::collections::hash_map::DefaultHasher;
 use serde::{Deserialize, Serialize};
-use std::fmt;
+use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
+use std::fmt;
+use std::hash::{Hash, Hasher};
 const BOUND_VARIABLE: &str = "?";
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -138,7 +138,7 @@ impl fmt::Display for FirstOrderArgument {
         match self {
             FirstOrderArgument::Constant(arg) => write!(f, "Constant({})", arg), // Update as needed
             FirstOrderArgument::Variable(arg) => write!(f, "Variable({})", arg), // Update as needed
-            // Add cases for other variants if they exist
+                                                                                  // Add cases for other variants if they exist
         }
     }
 }
@@ -186,7 +186,10 @@ impl Proposition {
         "dummy_search_string".to_string()
     }
     pub fn role_names(&self) -> Vec<String> {
-        self.roles.iter().map(|role| role.role_name.clone()).collect()
+        self.roles
+            .iter()
+            .map(|role| role.role_name.clone())
+            .collect()
     }
     pub fn is_fact(&self) -> bool {
         self.roles.iter().all(|role| role.argument.is_constant()) // Assuming `is_constant` method exists on Argument
@@ -201,11 +204,29 @@ pub struct Implication {
 }
 
 impl Implication {
+    // Return the search string based on the conclusion's search string
     pub fn search_string(&self) -> String {
-        "dummy_search_string".to_string()
-    }    
+        self.conclusion.search_string()
+    }
+
+    // Generate a unique key for the implication
     pub fn unique_key(&self) -> String {
-        "dummy_unique_string".to_string()
+        format!(
+            "{}->{}{}",
+            self.premise.search_string(),
+            self.conclusion.search_string(),
+            self.mapping_string()
+        )
+    }
+
+    // Generate a feature string based on the premise and the role map
+    pub fn feature_string(&self) -> String {
+        format!("{}{}", self.premise.search_string(), self.mapping_string())
+    }
+
+    // Convert the role map to a string
+    fn mapping_string(&self) -> String {
+        self.role_map.to_string() // Assuming RoleMap has a ToString implementation
     }
 }
 
@@ -233,10 +254,12 @@ impl RoleMap {
 impl fmt::Display for RoleMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // Convert the role_map to a string in a canonical format
-        let entries: Vec<String> = self.role_map.iter()
+        let entries: Vec<String> = self
+            .role_map
+            .iter()
             .map(|(key, value)| format!("{}: {}", key, value)) // Assuming FirstOrderArgument implements Display
             .collect();
-        
+
         write!(f, "{{{}}}", entries.join(", "))
     }
 }
