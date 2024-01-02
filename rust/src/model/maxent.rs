@@ -52,3 +52,22 @@ pub fn compute_expected_features(probability: f64, features: &HashMap<String, f6
 
     result
 }
+
+const LEARNING_RATE: f64 = 0.1;
+
+pub fn do_sgd_update(weights: &HashMap<String, f64>, gold_features: &HashMap<String, f64>, expected_features: &HashMap<String, f64>) -> HashMap<String, f64> {
+    let mut new_weights = HashMap::new();
+
+    for (feature, &wv) in weights {
+        let gv = gold_features.get(feature).unwrap_or(&0.0);
+        let ev = expected_features.get(feature).unwrap_or(&0.0);
+        
+        let new_weight = wv + LEARNING_RATE * (gv - ev);
+        // loss calculation is optional, here for completeness
+        let _loss = (gv - ev).abs();
+
+        new_weights.insert(feature.clone(), new_weight);
+    }
+
+    new_weights
+}
