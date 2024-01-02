@@ -72,6 +72,11 @@ impl Proposition {
         "dummy_search_string".to_string()
     }
 }
+impl Proposition {
+    fn new(roles: Vec<FilledRole>) -> Self {
+        Proposition { roles }
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Implication {
