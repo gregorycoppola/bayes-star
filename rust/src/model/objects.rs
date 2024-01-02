@@ -1,15 +1,15 @@
 use std::fmt;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 const BOUND_VARIABLE: &str = "?";
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum ArgumentType {
     Constant,
     Variable,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum Domain {
     Jack,
     Jill,
@@ -39,30 +39,30 @@ impl fmt::Display for Domain {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub enum FirstOrderArgument {
     Constant(ConstantArgument),
     Variable(VariableArgument),
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ConstantArgument {
     pub domain: Domain,
     pub entity_id: String,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct VariableArgument {
     pub domain: Domain,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct FilledRole {
     pub role_name: String,
     pub argument: FirstOrderArgument,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Proposition {
     pub roles: Vec<FilledRole>,
 }
