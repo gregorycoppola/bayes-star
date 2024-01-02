@@ -179,3 +179,12 @@ pub struct BackLink {
     pub implication: Implication,
     pub proposition: Proposition,
 }
+
+impl BackLink {
+    pub fn new(implication: Implication, proposition: Proposition) -> Self {
+        BackLink {
+            implication,
+            proposition,
+        }
+    }
+}
