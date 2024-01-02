@@ -124,6 +124,9 @@ impl FilledRole {
             self.argument.convert_to_quantified(),
         )
     }
+    pub fn do_substitution(&self, value: FirstOrderArgument) -> FilledRole {
+        FilledRole::new(self.role_name.clone(), value)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
