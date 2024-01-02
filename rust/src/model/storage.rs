@@ -11,6 +11,14 @@ impl Storage {
     pub fn new(redis_client: Arc<redis::Client>) -> Self {
         Storage { redis_client }
     }
+    pub fn drop_all_dbs(&self) -> Result<(), Box<dyn Error>> {
+        let mut conn = self.redis_client.get_connection()?;
+        redis::cmd("FLUSHDB").query(&mut conn)?;
+        println!("Database flushed successfully");
+
+        Ok(())
+    }
+
     pub fn get_redis_client(&self) -> &Arc<Client> {
         &self.redis_client
     }
