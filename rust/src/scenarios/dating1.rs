@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::{
     objects::{Domain, Entity},
-    storage::Storage,
+    storage::Storage, creators::constant,
 };
 
 pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
@@ -43,5 +43,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         println!("Jill entity: {:?}", jill);
     }
 
+    let exciting = constant(Domain::Verb, "exciting".to_string());
+    let lonely = constant(Domain::Verb, "lonely".to_string());
+    let like = constant(Domain::Verb, "like".to_string());
+    let date = constant(Domain::Verb, "date".to_string());
+    
     Ok(())
 }
