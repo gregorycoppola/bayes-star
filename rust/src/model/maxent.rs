@@ -1,7 +1,7 @@
-use crate::model::objects::{Domain, Entity, Proposition, Implication, BackLink};
-use crate::model::storage::{Storage};
+use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition};
+use crate::model::storage::Storage;
+use crate::model::weights::{read_weights, save_weights};
 use std::{error::Error, sync::Arc};
-
 
 fn sigmoid(x: f64) -> f64 {
     1.0 / (1.0 + (-x).exp())
@@ -9,7 +9,7 @@ fn sigmoid(x: f64) -> f64 {
 
 use std::collections::HashMap;
 
-use super::weights::{positive_feature, negative_feature};
+use super::weights::{negative_feature, positive_feature};
 
 fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f64 {
     let mut result = 0.0;
@@ -27,7 +27,10 @@ fn compute_probability(weights: &HashMap<String, f64>, features: &HashMap<String
     sigmoid(dot)
 }
 
-pub fn features_from_backlinks(storage: &Storage, backlinks: &[BackLink]) -> Result<HashMap<String, f64>, Box<dyn Error>> {
+pub fn features_from_backlinks(
+    storage: &Storage,
+    backlinks: &[BackLink],
+) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     let mut result = HashMap::new();
 
     for backlink in backlinks {
@@ -43,7 +46,10 @@ pub fn features_from_backlinks(storage: &Storage, backlinks: &[BackLink]) -> Res
     Ok(result)
 }
 
-pub fn compute_expected_features(probability: f64, features: &HashMap<String, f64>) -> HashMap<String, f64> {
+pub fn compute_expected_features(
+    probability: f64,
+    features: &HashMap<String, f64>,
+) -> HashMap<String, f64> {
     let mut result = HashMap::new();
 
     for (key, &value) in features {
@@ -55,13 +61,17 @@ pub fn compute_expected_features(probability: f64, features: &HashMap<String, f6
 
 const LEARNING_RATE: f64 = 0.1;
 
-pub fn do_sgd_update(weights: &HashMap<String, f64>, gold_features: &HashMap<String, f64>, expected_features: &HashMap<String, f64>) -> HashMap<String, f64> {
+pub fn do_sgd_update(
+    weights: &HashMap<String, f64>,
+    gold_features: &HashMap<String, f64>,
+    expected_features: &HashMap<String, f64>,
+) -> HashMap<String, f64> {
     let mut new_weights = HashMap::new();
 
     for (feature, &wv) in weights {
         let gv = gold_features.get(feature).unwrap_or(&0.0);
         let ev = expected_features.get(feature).unwrap_or(&0.0);
-        
+
         let new_weight = wv + LEARNING_RATE * (gv - ev);
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
@@ -72,9 +82,16 @@ pub fn do_sgd_update(weights: &HashMap<String, f64>, gold_features: &HashMap<Str
     new_weights
 }
 
-pub fn train_on_example(storage: &Storage, proposition: &Proposition, backlinks: &[BackLink]) -> Result<(), Box<dyn Error>> {
+pub fn train_on_example(
+    storage: &Storage,
+    proposition: &Proposition,
+    backlinks: &[BackLink],
+) -> Result<(), Box<dyn Error>> {
     let features = features_from_backlinks(storage, backlinks)?;
-    let weight_vector = storage.read_weights(&features)?;
+    let weight_vector = read_weights(
+        storage.get_redis_client(),
+        &features.keys().cloned().collect::<Vec<_>>(),
+    )?;
     let probability = compute_probability(&weight_vector, &features);
     let expected = compute_expected_features(probability, &features);
     let new_weight = do_sgd_update(&weight_vector, &features, &expected);

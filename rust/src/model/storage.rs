@@ -1,5 +1,5 @@
 use crate::model::objects::{Domain, Entity, Proposition, Implication};
-use redis::Commands;
+use redis::{Commands, Client};
 use std::{error::Error, sync::Arc};
 
 pub struct Storage {
@@ -10,6 +10,9 @@ impl Storage {
     // Initialize new Storage with a Redis client
     pub fn new(redis_client: Arc<redis::Client>) -> Self {
         Storage { redis_client }
+    }
+    pub fn get_redis_client(&self) -> &Arc<Client> {
+        &self.redis_client
     }
 
     // Store an entity
