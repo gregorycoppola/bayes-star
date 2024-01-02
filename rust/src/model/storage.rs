@@ -1,6 +1,6 @@
-use redis::Commands;
-use std::{sync::Arc, error::Error};
 use crate::model::objects::{Domain, Entity, Proposition};
+use redis::Commands;
+use std::{error::Error, sync::Arc};
 
 pub struct Storage {
     redis_client: Arc<redis::Client>,
@@ -13,34 +13,61 @@ impl Storage {
     }
 
     // Store an entity
-    pub fn store_entity(&self, entity: &Entity) -> redis::RedisResult<()> {
-        let mut con = self.redis_client.get_connection()?;
-        con.sadd(&entity.domain.to_string(), &entity.name)?;
+    pub fn store_entity(&self, entity: &Entity) -> Result<(), Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        con.sadd(&entity.domain.to_string(), &entity.name)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(())
     }
 
     // Get entities in a domain
-    pub fn get_entities_in_domain(&self, domain: &str) -> redis::RedisResult<Vec<Entity>> {
-        let mut con = self.redis_client.get_connection()?;
-        let names: Vec<String> = con.smembers(domain)?;
-        Ok(names.into_iter().map(|name| Entity {
-            domain: Domain::from_str(&name).expect("Domain not recognized."),
-            name,
-        }).collect())
+    pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let names: Vec<String> = con
+            .smembers(domain)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        Ok(names
+            .into_iter()
+            .map(|name| Entity {
+                domain: Domain::from_str(&name).expect("Domain not recognized."), // Adjust this based on your Domain handling
+                name,
+            })
+            .collect())
     }
 
-    pub fn store_proposition(&self, proposition: &Proposition, probability: f64) -> Result<(), Box<dyn Error>> {
-        let mut con = self.redis_client.get_connection()?;
+    pub fn store_proposition(
+        &self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         let search_string = proposition.search_string();
-        let record = serde_json::to_string(proposition)?;
-        con.hset("propositions", &search_string, &record)?;
-        self.store_proposition_probability(proposition, probability)?;
-        Ok(())
+        let record =
+            serde_json::to_string(proposition).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        con.hset("propositions", &search_string, &record)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        self.store_proposition_probability(proposition, probability)
     }
 
     // Store the probability of a proposition
-    fn store_proposition_probability(&self, proposition: &Proposition, probability: f64) -> redis::RedisResult<()> {
-        let mut con = self.redis_client.get_connection()?;
+    fn store_proposition_probability(
+        &self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         // Implement storing the probability
         // For example, using proposition's search string as a key
         // ...
@@ -48,17 +75,21 @@ impl Storage {
     }
 
     // Get all propositions
-    pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn std::error::Error>> {
-        let mut con = self.redis_client.get_connection()
-            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    
-        let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions")
-            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
-    
-        all_values.into_iter().map(|(_, value)| {
-            serde_json::from_str(&value)
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
-        }).collect()
+    pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        let mut con = self
+            .redis_client
+            .get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        let all_values: std::collections::HashMap<String, String> = con
+            .hgetall("propositions")
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        all_values
+            .into_iter()
+            .map(|(_, value)| {
+                serde_json::from_str(&value).map_err(|e| Box::new(e) as Box<dyn Error>)
+            })
+            .collect()
     }
-    
 }
