@@ -88,7 +88,7 @@ impl Storage {
                 return Err(Box::new(e));
             }
         };
-        println!("Storage::store_proposition - Serialized proposition record: {}", record);
+        println!("Storage::store_proposition - Serialized proposition record: {} {}", &search_string, &record);
     
         if let Err(e) = con.hset::<_, _, _, bool>("propositions", &search_string, &record) {
             println!("Storage::store_proposition - Error storing proposition in Redis: {}", e);
