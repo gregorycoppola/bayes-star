@@ -17,7 +17,7 @@ pub fn negative_feature(feature: &str) -> String {
     format!("--{}--", feature)
 }
 
-pub fn initialize_weights(con: &Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
+pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
     let feature = implication.unique_key(); // Assuming Implication has a unique_key method
     let posf = positive_feature(&feature);
     let negf = negative_feature(&feature);
@@ -46,7 +46,7 @@ pub fn read_weights(con: &mut Connection, features: &[String]) -> Result<HashMap
     Ok(weights)
 }
 
-pub fn save_weights(con: &Connection, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
+pub fn save_weights(con: &mut Connection, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
     for (feature, &value) in weights {
         con.hset("weights", feature, value)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;

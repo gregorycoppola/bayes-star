@@ -60,7 +60,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     Ok(result)
 }
 
-pub fn compute_backlinks(storage: &Storage, proposition: &Proposition) -> Result<Vec<BackLink>, Box<dyn Error>> {
+pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Result<Vec<BackLink>, Box<dyn Error>> {
     if !proposition.is_fact() {
         return Err("Proposition is not a fact".into());
     }

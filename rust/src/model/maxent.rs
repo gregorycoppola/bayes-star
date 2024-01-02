@@ -29,7 +29,7 @@ fn compute_probability(weights: &HashMap<String, f64>, features: &HashMap<String
 }
 
 pub fn features_from_backlinks(
-    storage: &Storage,
+    storage: &mut Storage,
     backlinks: &[BackLink],
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     let mut result = HashMap::new();
@@ -86,7 +86,7 @@ pub fn do_sgd_update(
 }
 
 pub fn train_on_example(
-    storage: &Storage,
+    storage: &mut Storage,
     proposition: &Proposition,
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
@@ -102,7 +102,7 @@ pub fn train_on_example(
     save_weights(storage.get_redis_connection(), &new_weight)
 }
 
-pub fn do_training(storage: &Storage) -> Result<(), Box<dyn Error>> {
+pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let redis_client = storage.get_redis_connection();
 
     // Assuming storage has a method to get all implications
