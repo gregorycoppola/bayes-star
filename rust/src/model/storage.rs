@@ -69,35 +69,67 @@ impl Storage {
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        println!("Storage::store_proposition - Input proposition: {:?}, probability: {}", proposition, probability);
-
-        let mut con = self.redis_client.get_connection().map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition - Start. Input proposition: {:?}, probability: {}", proposition, probability);
+    
+        let mut con = match self.redis_client.get_connection() {
+            Ok(con) => con,
+            Err(e) => {
+                println!("Storage::store_proposition - Error getting Redis connection: {}", e);
+                return Err(Box::new(e));
+            }
+        };
         let search_string = proposition.search_string();
         println!("Storage::store_proposition - Computed search_string: {}", search_string);
-
-        let record = serde_json::to_string(proposition).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+    
+        let record = match serde_json::to_string(proposition) {
+            Ok(record) => record,
+            Err(e) => {
+                println!("Storage::store_proposition - Error serializing proposition: {}", e);
+                return Err(Box::new(e));
+            }
+        };
         println!("Storage::store_proposition - Serialized proposition record: {}", record);
-
-        con.hset("propositions", &search_string, &record).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        self.store_proposition_probability(proposition, probability)
+    
+        if let Err(e) = con.hset::<_, _, _, bool>("propositions", &search_string, &record) {
+            println!("Storage::store_proposition - Error storing proposition in Redis: {}", e);
+            return Err(Box::new(e));
+        }
+    
+        match self.store_proposition_probability(proposition, probability) {
+            Ok(_) => println!("Storage::store_proposition - Completed successfully"),
+            Err(e) => println!("Storage::store_proposition - Error in store_proposition_probability: {}", e),
+        }
+    
+        Ok(())
     }
 
-    // Store the probability of a proposition
     pub fn store_proposition_probability(
         &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        println!("Storage::store_proposition_probability - Input proposition: {:?}, probability: {}", proposition, probability);
-
-        let mut con = self.redis_client.get_connection().map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
+    
+        let mut con = match self.redis_client.get_connection() {
+            Ok(con) => con,
+            Err(e) => {
+                println!("Storage::store_proposition_probability - Error getting Redis connection: {}", e);
+                return Err(Box::new(e));
+            }
+        };
         let search_string = proposition.search_string();
         println!("Storage::store_proposition_probability - Computed search_string: {}", search_string);
-
-        con.hset("probs", &search_string, probability.to_string()).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
+    
+        if let Err(e) = con.hset::<&str, &str, String, bool>("probs", &search_string, probability.to_string()) {
+            println!("Storage::store_proposition_probability - Error storing probability in Redis: {}", e);
+            return Err(Box::new(e));
+        }
+        
+    
+        println!("Storage::store_proposition_probability - Completed successfully");
         Ok(())
     }
+    
 
     // Get all propositions
     pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
