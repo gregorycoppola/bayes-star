@@ -148,70 +148,72 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             storage.store_proposition(&jack_dates_jill, p_jack_dates_jill)?;
         }
 
-        let xjack = variable(Domain::Jack);
-        let xjill = variable(Domain::Jill);
-
-        // ...
-
-        let implications = vec![
-            // if jack is lonely, he will date any jill
-            implication(
-                predicate(vec![subject(xjack.clone()), relation(lonely.clone())]),
-                predicate(vec![
-                    subject(xjack.clone()),
-                    relation(like.clone()),
-                    object(xjill.clone()),
-                ]),
-                RoleMap::new(HashMap::from([(
-                    "subject".to_string(),
-                    "subject".to_string(),
-                )])),
-            ),
-            // if jill is exciting, any jack will date her
-            implication(
-                predicate(vec![subject(xjill.clone()), relation(exciting.clone())]),
-                predicate(vec![
-                    subject(xjack.clone()),
-                    relation(like.clone()),
-                    object(xjill.clone()),
-                ]),
-                RoleMap::new(HashMap::from([(
-                    "object".to_string(),
-                    "subject".to_string(),
-                )])),
-            ),
-            // if jill likes jack, then jack dates jill
-            implication(
-                predicate(vec![
-                    subject(xjill.clone()),
-                    relation(like.clone()),
-                    object(xjack.clone()),
-                ]),
-                predicate(vec![
-                    subject(xjack.clone()),
-                    relation(date.clone()),
-                    object(xjill.clone()),
-                ]),
-                RoleMap::new(HashMap::from([
-                    ("subject".to_string(), "object".to_string()),
-                    ("object".to_string(), "subject".to_string()),
-                ])),
-            ),
-            // if jack likes jill, then jack dates jill
-            implication(
-                predicate(vec![
-                    subject(xjack.clone()),
-                    relation(like.clone()),
-                    object(xjill.clone()),
-                ]),
-                predicate(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
-                RoleMap::new(HashMap::from([
-                    ("subject".to_string(), "subject".to_string()),
-                    ("object".to_string(), "object".to_string()),
-                ])),
-            ),
-        ];
     }
+
+
+    let xjack = variable(Domain::Jack);
+    let xjill = variable(Domain::Jill);
+
+    // ...
+
+    let implications = vec![
+        // if jack is lonely, he will date any jill
+        implication(
+            predicate(vec![subject(xjack.clone()), relation(lonely.clone())]),
+            predicate(vec![
+                subject(xjack.clone()),
+                relation(like.clone()),
+                object(xjill.clone()),
+            ]),
+            RoleMap::new(HashMap::from([(
+                "subject".to_string(),
+                "subject".to_string(),
+            )])),
+        ),
+        // if jill is exciting, any jack will date her
+        implication(
+            predicate(vec![subject(xjill.clone()), relation(exciting.clone())]),
+            predicate(vec![
+                subject(xjack.clone()),
+                relation(like.clone()),
+                object(xjill.clone()),
+            ]),
+            RoleMap::new(HashMap::from([(
+                "object".to_string(),
+                "subject".to_string(),
+            )])),
+        ),
+        // if jill likes jack, then jack dates jill
+        implication(
+            predicate(vec![
+                subject(xjill.clone()),
+                relation(like.clone()),
+                object(xjack.clone()),
+            ]),
+            predicate(vec![
+                subject(xjack.clone()),
+                relation(date.clone()),
+                object(xjill.clone()),
+            ]),
+            RoleMap::new(HashMap::from([
+                ("subject".to_string(), "object".to_string()),
+                ("object".to_string(), "subject".to_string()),
+            ])),
+        ),
+        // if jack likes jill, then jack dates jill
+        implication(
+            predicate(vec![
+                subject(xjack.clone()),
+                relation(like.clone()),
+                object(xjill.clone()),
+            ]),
+            predicate(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
+            RoleMap::new(HashMap::from([
+                ("subject".to_string(), "subject".to_string()),
+                ("object".to_string(), "object".to_string()),
+            ])),
+        ),
+    ];
 
     // Additional functions
     fn numeric_or(a: f64, b: f64) -> f64 {
