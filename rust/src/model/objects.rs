@@ -1,3 +1,5 @@
+use std::fmt;
+
 const BOUND_VARIABLE: &str = "?";
 
 #[derive(Debug)]
@@ -21,6 +23,18 @@ impl Domain {
             "verb" => Some(Domain::Verb),
             _ => None,
         }
+    }
+}
+
+impl fmt::Display for Domain {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let domain_str = match self {
+            Domain::Jack => "Jack",
+            Domain::Jill => "Jill",
+            Domain::Verb => "Verb",
+            // ... match other variants ...
+        };
+        write!(f, "{}", domain_str)
     }
 }
 

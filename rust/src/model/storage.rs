@@ -27,7 +27,7 @@ impl Storage {
         let mut con = self.redis_client.get_connection()?;
         let names: Vec<String> = con.smembers(domain)?;
         Ok(names.into_iter().map(|name| Entity {
-            domain: domain.to_string(),
+            domain: Domain::from_str(&name).expect("Domain not recognized."),
             name,
         }).collect())
     }
