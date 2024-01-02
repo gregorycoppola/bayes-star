@@ -245,14 +245,16 @@ impl RoleMap {
 
 impl fmt::Display for RoleMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // Convert the role_map to a string in a canonical format
-        let entries: Vec<String> = self
-            .role_map
-            .iter()
-            .map(|(key, value)| format!("{}: {}", key, value)) // Assuming FirstOrderArgument implements Display
+        let mut entries: Vec<_> = self.role_map.iter().collect();
+        // Sort the entries by key
+        entries.sort_by(|(a_key, _), (b_key, _)| a_key.cmp(b_key));
+
+        let entries_str: Vec<String> = entries
+            .into_iter()
+            .map(|(key, value)| format!("{}: {}", key, value))
             .collect();
 
-        write!(f, "{{{}}}", entries.join(", "))
+        write!(f, "{{{}}}", entries_str.join(", "))
     }
 }
 
