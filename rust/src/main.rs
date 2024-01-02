@@ -29,5 +29,5 @@ fn main() {
     std::mem::drop(storage);
 
 
-    println!("program done");
+    warn!("program done");
 }
