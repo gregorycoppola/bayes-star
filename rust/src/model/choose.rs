@@ -66,14 +66,14 @@ pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Re
     }
 
     let search_keys = compute_search_keys(proposition)?;
-    println!("search_keys {:?}", &search_keys);
+    trace!("search_keys {:?}", &search_keys);
     let mut backlinks = Vec::new();
 
     for search_key in search_keys {
-        println!("search_key {:?}", &search_key);
+        trace!("search_key {:?}", &search_key);
 
         let implications = storage.find_premises(&search_key)?; // Assuming this method exists in Storage
-        println!("implications {:?}", &implications);
+        trace!("implications {:?}", &implications);
 
         for implication in implications {
             let extracted_mapping = extract_premise_role_map(proposition, &implication.role_map); // Assuming this function exists
@@ -83,7 +83,7 @@ pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Re
         }
     }
 
-    println!("returning backlinks {:?}", &backlinks);
+    trace!("returning backlinks {:?}", &backlinks);
 
     Ok(backlinks)
 }
