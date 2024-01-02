@@ -42,3 +42,13 @@ pub fn features_from_backlinks(storage: &Storage, backlinks: &[BackLink]) -> Res
 
     Ok(result)
 }
+
+pub fn compute_expected_features(probability: f64, features: &HashMap<String, f64>) -> HashMap<String, f64> {
+    let mut result = HashMap::new();
+
+    for (key, &value) in features {
+        result.insert(key.clone(), value * probability);
+    }
+
+    result
+}
