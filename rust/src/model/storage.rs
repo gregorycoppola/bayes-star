@@ -122,10 +122,17 @@ impl Storage {
         self.store_links(implication)
     }
 
-    // Store links for an Implication (placeholder function)
-    fn store_links(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
-        // Implement storing links associated with the implication
-        // ...
+    pub fn store_links(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        
+        let search_string = implication.search_string();
+        let record = serde_json::to_string(implication)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        con.sadd(&search_string, &record)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
         Ok(())
     }
 
