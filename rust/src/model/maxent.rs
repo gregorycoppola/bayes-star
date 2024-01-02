@@ -77,7 +77,7 @@ pub fn do_sgd_update(
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
 
-        println!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+        trace!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
 
         new_weights.insert(feature.clone(), new_weight);
     }
@@ -109,16 +109,16 @@ pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     for implication in implications {
         let redis_client = storage.get_redis_connection();
 
-        println!("Processing implication: {:?}", implication);
+        trace!("Processing implication: {:?}", implication);
         initialize_weights(redis_client, &implication)?;
     }
 
     // Assuming storage has a method to get all propositions
     let propositions = storage.get_all_propositions()?;
     for proposition in propositions {
-        println!("Processing proposition: {:?}", proposition);
+        trace!("Processing proposition: {:?}", proposition);
         let backlinks = compute_backlinks(storage, &proposition)?;
-        println!("backlinks: {:?}", &backlinks);
+        trace!("backlinks: {:?}", &backlinks);
 
         train_on_example(storage, &proposition, &backlinks)?;
     }

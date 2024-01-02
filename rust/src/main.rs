@@ -20,10 +20,10 @@ fn main() {
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
 
     let result = setup_scenario(&mut storage);
-    println!("{:?}", result);
+    trace!("{:?}", result);
 
     let train_result = do_training(&mut storage);
-    println!("{:?}", train_result);
+    trace!("{:?}", train_result);
 
     // Explicitly drop the Redis client
     std::mem::drop(storage);
