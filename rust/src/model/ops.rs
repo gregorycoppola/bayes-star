@@ -41,7 +41,7 @@ pub fn extract_premise_role_map(proposition: &Proposition, role_map: &RoleMap) -
     for crole in &proposition.roles {
         let role_name = &crole.role_name;
         if let Some(premise_role_name) = role_map.get(role_name) {
-            result.insert(premise_role_name.clone(), crole.role_name.clone());
+            result.insert(premise_role_name.clone(), crole.argument.clone());
         }
     }
     result
