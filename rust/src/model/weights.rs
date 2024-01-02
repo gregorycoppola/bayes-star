@@ -9,11 +9,11 @@ fn random_weight() -> f64 {
     (rng.gen::<f64>() - rng.gen::<f64>()) / 5.0
 }
 
-fn positive_feature(feature: &str) -> String {
+pub fn positive_feature(feature: &str) -> String {
     format!("++{}++", feature)
 }
 
-fn negative_feature(feature: &str) -> String {
+pub fn negative_feature(feature: &str) -> String {
     format!("--{}--", feature)
 }
 
