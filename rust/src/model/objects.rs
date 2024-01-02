@@ -98,6 +98,10 @@ impl FirstOrderArgument {
             FirstOrderArgument::Variable(_) => false,
         }
     }
+
+    pub fn is_variable(&self) -> bool {
+        !self.is_constant()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
