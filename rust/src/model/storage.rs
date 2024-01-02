@@ -1,4 +1,4 @@
-use crate::model::objects::{Domain, Entity, Proposition};
+use crate::model::objects::{Domain, Entity, Proposition, Implication};
 use redis::Commands;
 use std::{error::Error, sync::Arc};
 
@@ -106,5 +106,40 @@ impl Storage {
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         Ok(probability)
+    }
+
+    pub fn store_implication(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        
+        let search_string = implication.search_string();
+        let record = serde_json::to_string(implication)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        con.sadd("implications", &record)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        self.store_links(implication)
+    }
+
+    // Store links for an Implication (placeholder function)
+    fn store_links(&self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        // Implement storing links associated with the implication
+        // ...
+        Ok(())
+    }
+
+    // Get all Implications
+    pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        let all_values: Vec<String> = con.smembers("implications")
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        all_values.into_iter().map(|record| {
+            serde_json::from_str(&record)
+                .map_err(|e| Box::new(e) as Box<dyn Error>)
+        }).collect()
     }
 }
