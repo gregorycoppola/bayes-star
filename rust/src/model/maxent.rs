@@ -77,6 +77,8 @@ pub fn do_sgd_update(
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
 
+        println!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+
         new_weights.insert(feature.clone(), new_weight);
     }
 
