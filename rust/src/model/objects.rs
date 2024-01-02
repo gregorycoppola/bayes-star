@@ -55,6 +55,34 @@ pub struct ConstantArgument {
 pub struct VariableArgument {
     pub domain: Domain,
 }
+impl ConstantArgument {
+    fn new(domain: Domain, entity_id: String) -> Self {
+        ConstantArgument { domain, entity_id }
+    }
+
+    fn search_string(&self) -> String {
+        self.entity_id.clone()
+    }
+}
+
+impl VariableArgument {
+    fn new(domain: Domain) -> Self {
+        VariableArgument { domain }
+    }
+
+    fn search_string(&self) -> String {
+        format!("?{}", self.domain)
+    }
+}
+
+impl FirstOrderArgument {
+    fn convert_to_quantified(&self) -> FirstOrderArgument {
+        match self {
+            FirstOrderArgument::Constant(arg) => FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone())),
+            FirstOrderArgument::Variable(arg) => arg.clone(),
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FilledRole {
