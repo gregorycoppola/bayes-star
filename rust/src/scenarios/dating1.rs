@@ -40,14 +40,15 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     }
 
     // Retrieve entities in the Jack domain
-    let jack_domain = Domain::Jack.to_string().to_lowercase(); // Convert enum to string and make lowercase
-    let jacks = storage.get_entities_in_domain(&jack_domain)?;
+    let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
+    let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
+    println!("Initial number of jacks: {}", jacks.len());
     for jack in jacks.clone() {
         println!("Jack entity: {:?}", jack);
     }
 
     // Retrieve entities in the Jill domain
-    let jill_domain = Domain::Jill.to_string().to_lowercase(); // Convert enum to string and make lowercase
+    let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
     let jills = storage.get_entities_in_domain(&jill_domain)?;
     for jill in jills.clone() {
         println!("Jill entity: {:?}", jill);
@@ -60,7 +61,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     let mut independent_fact_map: HashMap<String, f64> = HashMap::new();
 
-    for jack_entity in &jacks {
+    println!("Number of jacks before second loop: {}", jacks.len());
+    for jack_entity in jacks.clone() {
+        println!("Jack entity part 2: {:?}", jack_entity);
+
         let jack = constant(jack_entity.domain, jack_entity.name.clone());
         let jack_lonely = predicate(vec![subject(jack), relation(lonely.clone())]);
         let p_jack_lonely = cointoss();

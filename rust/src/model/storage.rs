@@ -25,6 +25,7 @@ impl Storage {
 
     // Store an entity
     pub fn store_entity(&self, entity: &Entity) -> Result<(), Box<dyn Error>> {
+        println!("Storing entity in domain '{}': {}", entity.domain, entity.name); // Logging
         let mut con = self
             .redis_client
             .get_connection()
@@ -34,8 +35,9 @@ impl Storage {
         Ok(())
     }
 
-    // Get entities in a domain
     pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
+        println!("Getting entities in domain '{}'", domain.clone()); // Logging
+
         let mut con = self
             .redis_client
             .get_connection()
@@ -46,11 +48,12 @@ impl Storage {
         Ok(names
             .into_iter()
             .map(|name| Entity {
-                domain: Domain::from_str(&name).expect("Domain not recognized."), // Adjust this based on your Domain handling
+                domain: Domain::from_str(domain).expect("Domain not recognized."), // Use the provided domain
                 name,
             })
             .collect())
     }
+    
 
     pub fn store_proposition(
         &self,

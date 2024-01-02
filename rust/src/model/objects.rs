@@ -21,9 +21,9 @@ pub enum Domain {
 impl Domain {
     pub fn from_str(s: &str) -> Option<Domain> {
         match s {
-            "jack" => Some(Domain::Jack),
-            "jill" => Some(Domain::Jill),
-            "verb" => Some(Domain::Verb),
+            "Jack" => Some(Domain::Jack),
+            "Jill" => Some(Domain::Jill),
+            "Verb" => Some(Domain::Verb),
             _ => None,
         }
     }
