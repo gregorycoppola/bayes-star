@@ -76,6 +76,12 @@ impl VariableArgument {
 }
 
 impl FirstOrderArgument {
+    fn search_string(&self) -> String {
+        match self {
+            FirstOrderArgument::Constant(arg) => arg.search_string(),
+            FirstOrderArgument::Variable(arg) => arg.search_string(),
+        }
+    }
     fn convert_to_quantified(&self) -> FirstOrderArgument {
         match self {
             FirstOrderArgument::Constant(arg) => FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone())),
