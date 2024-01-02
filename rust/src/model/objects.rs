@@ -79,7 +79,7 @@ impl FirstOrderArgument {
     fn convert_to_quantified(&self) -> FirstOrderArgument {
         match self {
             FirstOrderArgument::Constant(arg) => FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone())),
-            FirstOrderArgument::Variable(arg) => arg.clone(),
+            FirstOrderArgument::Variable(arg) => FirstOrderArgument::Variable(arg.clone()),
         }
     }
 }
