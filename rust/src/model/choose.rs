@@ -1,3 +1,10 @@
+use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition};
+use crate::model::storage::Storage;
+use crate::model::weights::{read_weights, save_weights};
+use std::{error::Error, sync::Arc};
+
+use super::ops::convert_to_quantified;
+
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
     let mut temp_vec = vec![];
@@ -30,4 +37,25 @@ fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String
             if index_set.contains(&i) { Some(role.clone()) } else { None }
         })
         .collect()
+}
+
+pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box<dyn Error>> {
+    if !proposition.is_fact() {
+        return Err("Proposition is not a fact".into());
+    }
+
+    let num_roles = proposition.roles.len();
+    let configurations1 = compute_choose_configurations(num_roles, 1);
+    let configurations2 = compute_choose_configurations(num_roles, 2);
+    let roles = proposition.role_names();
+
+    let mut result = Vec::new();
+    for configuration in configurations1.into_iter().chain(configurations2) {
+        let quantified_roles = extract_roles_from_indices(&roles, &configuration);
+        let quantified = convert_to_quantified(proposition, &quantified_roles); // Assuming this function exists
+        let search_string = quantified.search_string(); // Assuming this method exists
+        result.push(search_string);
+    }
+
+    Ok(result)
 }
