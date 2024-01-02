@@ -67,6 +67,12 @@ pub struct Proposition {
     pub roles: Vec<FilledRole>,
 }
 
+impl Proposition {
+    pub fn search_string(&self) -> String {
+        "dummy_search_string".to_string()
+    }
+}
+
 #[derive(Debug)]
 pub struct Implication {
     pub premise: Proposition,
