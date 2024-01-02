@@ -217,15 +217,15 @@ pub struct Entity {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RoleMap {
-    pub role_map: std::collections::HashMap<String, FirstOrderArgument>,
+    pub role_map: std::collections::HashMap<String, String>,
 }
 
 impl RoleMap {
-    pub fn new(role_map: HashMap<String, FirstOrderArgument>) -> Self {
+    pub fn new(role_map: HashMap<String, String>) -> Self {
         RoleMap { role_map }
     }
 
-    pub fn get(&self, role_name: &str) -> Option<&FirstOrderArgument> {
+    pub fn get(&self, role_name: &str) -> Option<&String> {
         self.role_map.get(role_name)
     }
 }
