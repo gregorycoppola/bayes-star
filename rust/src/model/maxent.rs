@@ -103,11 +103,12 @@ pub fn train_on_example(
 }
 
 pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
-    let redis_client = storage.get_redis_connection();
 
     // Assuming storage has a method to get all implications
     let implications = storage.get_all_implications()?;
     for implication in implications {
+        let redis_client = storage.get_redis_connection();
+
         println!("Processing implication: {:?}", implication);
         initialize_weights(redis_client, &implication)?;
     }
