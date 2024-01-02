@@ -1,5 +1,5 @@
 use crate::model::objects::{Domain, Entity, Implication, Proposition};
-use redis::{Client, Commands};
+use redis::{Client, Commands, Connection};
 use std::{error::Error, sync::Arc};
 
 pub struct Storage {
@@ -18,10 +18,7 @@ impl Drop for Storage {
 
 impl Storage {
     // Initialize new Storage with a Redis connection
-    pub fn new(redis_url: &str) -> Result<Self, redis::RedisError> {
-        let client = redis::Client::open(redis_url)?;
-        let connection = client.get_connection()?;
-
+    pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
         Ok(Storage { redis_connection: connection })
     }
     pub fn drop_all_dbs(&mut self) -> Result<(), Box<dyn Error>> {

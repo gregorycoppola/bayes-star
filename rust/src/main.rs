@@ -8,16 +8,17 @@ fn main() {
     // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
 
-    // Wrap the client in an Arc for shared ownership
-    let arc_client = Arc::new(client);
+    let connection = client.get_connection().expect("Couldn't get connection.");
+    // // Wrap the client in an Arc for shared ownership
+    // let arc_client = Arc::new(client);
 
     // Create a new Storage instance
-    let mut storage = Storage::new(arc_client);
+    let mut storage = Storage::new(connection).expect("Couldn't make storage");
 
     let result = setup_scenario(&mut storage);
     println!("{:?}", result);
 
-    let train_result = do_training(&storage);
+    let train_result = do_training(&mut storage);
     println!("{:?}", train_result);
 
     // Explicitly drop the Redis client
