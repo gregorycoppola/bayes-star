@@ -73,7 +73,7 @@ impl Proposition {
     }
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Implication {
     pub premise: Proposition,
     pub conclusion: Proposition,
@@ -92,7 +92,7 @@ pub struct Entity {
     pub name: String,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RoleMap {
     pub role_map: std::collections::HashMap<String, String>,
 }
