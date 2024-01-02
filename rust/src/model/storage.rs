@@ -57,16 +57,16 @@ impl Storage {
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        let mut con = self
-            .redis_client
-            .get_connection()
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        let search_string = proposition.search_string();
-        let record =
-            serde_json::to_string(proposition).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition - Input proposition: {:?}, probability: {}", proposition, probability);
 
-        con.hset("propositions", &search_string, &record)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let mut con = self.redis_client.get_connection().map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let search_string = proposition.search_string();
+        println!("Storage::store_proposition - Computed search_string: {}", search_string);
+
+        let record = serde_json::to_string(proposition).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition - Serialized proposition record: {}", record);
+
+        con.hset("propositions", &search_string, &record).map_err(|e| Box::new(e) as Box<dyn Error>)?;
         self.store_proposition_probability(proposition, probability)
     }
 
@@ -76,34 +76,28 @@ impl Storage {
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        let mut con = self
-            .redis_client
-            .get_connection()
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition_probability - Input proposition: {:?}, probability: {}", proposition, probability);
+
+        let mut con = self.redis_client.get_connection().map_err(|e| Box::new(e) as Box<dyn Error>)?;
         let search_string = proposition.search_string();
-        con.hset("probs", &search_string, probability.to_string())
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::store_proposition_probability - Computed search_string: {}", search_string);
+
+        con.hset("probs", &search_string, probability.to_string()).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         Ok(())
     }
 
     // Get all propositions
     pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        let mut con = self
-            .redis_client
-            .get_connection()
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        println!("Storage::get_all_propositions - Retrieving all propositions");
 
-        let all_values: std::collections::HashMap<String, String> = con
-            .hgetall("propositions")
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let mut con = self.redis_client.get_connection().map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions").map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        all_values
-            .into_iter()
-            .map(|(_, value)| {
-                serde_json::from_str(&value).map_err(|e| Box::new(e) as Box<dyn Error>)
-            })
-            .collect()
+        all_values.into_iter().map(|(key, value)| {
+            println!("Storage::get_all_propositions - Key: {}, Value: {}", key, value);
+            serde_json::from_str(&value).map_err(|e| Box::new(e) as Box<dyn Error>)
+        }).collect()
     }
 
     // Get the probability of a proposition
