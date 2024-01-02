@@ -11,7 +11,7 @@ pub enum ArgumentType {
     Variable,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Domain {
     Jack,
     Jill,
