@@ -147,9 +147,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             ); // Logging
             storage.store_proposition(&jack_dates_jill, p_jack_dates_jill)?;
         }
-
     }
-
 
     let xjack = variable(Domain::Jack);
     let xjill = variable(Domain::Jill);
@@ -214,6 +212,13 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             ])),
         ),
     ];
+
+    for implication in implications.iter() {
+        println!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
+    
+        // Assuming `store_implication` is a method of your Storage struct
+        storage.store_implication(implication)?;
+    }
 
     // Additional functions
     fn numeric_or(a: f64, b: f64) -> f64 {
