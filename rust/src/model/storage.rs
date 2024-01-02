@@ -1,11 +1,9 @@
 use redis::Commands;
 use std::sync::Arc;
 
-#[derive(Debug, Clone)]
-pub struct Entity {
-    pub domain: String,
-    pub name: String,
-}
+use crate::model::objects::Domain;
+use crate::model::objects::Entity;
+
 
 pub struct Storage {
     redis_client: Arc<redis::Client>,
@@ -20,7 +18,7 @@ impl Storage {
     // Store an entity
     pub fn store_entity(&self, entity: &Entity) -> redis::RedisResult<()> {
         let mut con = self.redis_client.get_connection()?;
-        con.sadd(&entity.domain, &entity.name)?;
+        con.sadd(&entity.domain.to_string(), &entity.name)?;
         Ok(())
     }
 
