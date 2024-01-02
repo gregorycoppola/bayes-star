@@ -3,7 +3,7 @@ use crate::model::storage::Storage;
 use crate::model::weights::{read_weights, save_weights};
 use std::{error::Error, sync::Arc};
 
-use super::ops::convert_to_quantified;
+use super::ops::{convert_to_quantified, convert_to_proposition};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
