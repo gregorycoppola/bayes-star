@@ -77,7 +77,7 @@ pub fn do_sgd_update(
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
 
-        trace!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+        warn!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
 
         new_weights.insert(feature.clone(), new_weight);
     }
@@ -90,6 +90,7 @@ pub fn train_on_example(
     proposition: &Proposition,
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
+    warn!("train_on_example {:?}", &proposition);
     let features = features_from_backlinks(storage, backlinks)?;
     let weight_vector = read_weights(
         storage.get_redis_connection(),
