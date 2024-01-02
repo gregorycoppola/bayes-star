@@ -59,3 +59,24 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 
     Ok(result)
 }
+
+pub fn compute_backlinks(storage: &Storage, proposition: &Proposition) -> Result<Vec<BackLink>, Box<dyn Error>> {
+    if !proposition.is_fact() {
+        return Err("Proposition is not a fact".into());
+    }
+
+    let search_keys = compute_search_keys(proposition)?;
+    let mut backlinks = Vec::new();
+
+    for search_key in search_keys {
+        let implications = storage.find_premises(&search_key)?; // Assuming this method exists in Storage
+        for implication in implications {
+            let extracted_mapping = extract_premise_role_map(proposition, &implication.role_map); // Assuming this function exists
+            let quantified_premise = &implication.premise;
+            let extracted_proposition = convert_to_proposition(quantified_premise, &extracted_mapping)?; // Assuming this function exists
+            backlinks.push(BackLink::new(implication, extracted_proposition)); // Assuming a constructor for BackLink exists
+        }
+    }
+
+    Ok(backlinks)
+}
