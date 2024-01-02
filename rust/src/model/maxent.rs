@@ -142,6 +142,7 @@ pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let propositions = storage.get_all_propositions()?;
     println!("do_training - Processing propositions: {}", propositions.len());
 
+    let mut examples_processed = 0;
     for proposition in propositions {
         println!("do_training - Processing proposition: {:?}", proposition);
         let backlinks = compute_backlinks(storage, &proposition)?;
@@ -149,10 +150,15 @@ pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
         match train_on_example(storage, &proposition, &backlinks) {
             Ok(_) => println!("do_training - Successfully trained on proposition: {:?}", proposition),
-            Err(e) => println!("do_training - Error in train_on_example for proposition {:?}: {:?}", proposition, e),
+            Err(e) => {
+                panic!("do_training - Error in train_on_example for proposition {} {:?}: {:?}", examples_processed, proposition, e)
+            }
+
         }
+
+        examples_processed += 1;
     }
 
-    println!("do_training - Training complete");
+    println!("do_training - Training complete: examples processed {}", examples_processed);
     Ok(())
 }
