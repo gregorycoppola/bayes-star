@@ -96,5 +96,5 @@ pub fn train_on_example(
     let expected = compute_expected_features(probability, &features);
     let new_weight = do_sgd_update(&weight_vector, &features, &expected);
 
-    storage.save_weights(&new_weight)
+    save_weights(storage.get_redis_client(), &new_weight)
 }
