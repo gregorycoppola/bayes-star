@@ -144,6 +144,9 @@ pub struct Implication {
 impl Implication {
     pub fn search_string(&self) -> String {
         "dummy_search_string".to_string()
+    }    
+    pub fn unique_key(&self) -> String {
+        "dummy_unique_string".to_string()
     }
 }
 
