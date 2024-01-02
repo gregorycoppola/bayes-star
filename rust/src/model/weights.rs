@@ -51,3 +51,15 @@ pub fn read_weights(redis_client: &Client, features: &[String]) -> Result<HashMa
 
     Ok(weights)
 }
+
+pub fn save_weights(redis_client: &Client, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
+    let mut con = redis_client.get_connection()
+        .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+    for (feature, &value) in weights {
+        con.hset("weights", feature, value)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+    }
+
+    Ok(())
+}
