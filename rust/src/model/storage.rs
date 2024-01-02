@@ -92,4 +92,19 @@ impl Storage {
             })
             .collect()
     }
+
+    // Get the probability of a proposition
+    pub fn get_proposition_probability(&self, proposition: &Proposition) -> Result<f64, Box<dyn Error>> {
+        let mut con = self.redis_client.get_connection()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        let search_string = proposition.search_string();
+        let probability_str: String = con.hget("probs", &search_string)
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        let probability = probability_str.parse::<f64>()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+
+        Ok(probability)
+    }
 }
