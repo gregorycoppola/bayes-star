@@ -9,7 +9,7 @@ fn sigmoid(x: f64) -> f64 {
 
 use std::collections::HashMap;
 
-use super::weights::{negative_feature, positive_feature};
+use super::weights::{negative_feature, positive_feature, initialize_weights};
 
 fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f64 {
     let mut result = 0.0;
@@ -97,4 +97,23 @@ pub fn train_on_example(
     let new_weight = do_sgd_update(&weight_vector, &features, &expected);
 
     save_weights(storage.get_redis_client(), &new_weight)
+}
+
+pub fn do_training(storage: &Storage) -> Result<(), Box<dyn Error>> {
+    let redis_client = storage.get_redis_client();
+
+    // Assuming storage has a method to get all implications
+    let implications = storage.get_all_implications()?;
+    for implication in implications {
+        initialize_weights(redis_client, &implication)?;
+    }
+
+    // Assuming storage has a method to get all propositions
+    let propositions = storage.get_all_propositions()?;
+    for proposition in propositions {
+        let backlinks = compute_backlinks(storage, &proposition)?;
+        train_on_example(storage, &proposition, &backlinks)?;
+    }
+
+    Ok(())
 }
