@@ -1,8 +1,8 @@
-use std::error::Error;
+use std::{error::Error, collections::HashMap};
 use rand::Rng;  // Import Rng trait
 use crate::model::{
     objects::{Domain, Entity},
-    storage::Storage, creators::constant,
+    storage::Storage, creators::{constant, predicate, subject, relation},
 };
 
 fn cointoss() -> f64 {
@@ -41,7 +41,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string().to_lowercase(); // Convert enum to string and make lowercase
     let jacks = storage.get_entities_in_domain(&jack_domain)?;
-    for jack in jacks {
+    for jack in jacks.clone() {
         println!("Jack entity: {:?}", jack);
     }
 
@@ -57,5 +57,21 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let like = constant(Domain::Verb, "like".to_string());
     let date = constant(Domain::Verb, "date".to_string());
     
+    let mut independent_fact_map: HashMap<String, f64> = HashMap::new();
+
+    for jack_entity in jacks {
+        let jack = constant(jack_entity.domain, jack_entity.name.clone());
+        let jack_lonely = predicate(vec![subject(jack), relation(lonely.clone())]);
+        let p_jack_lonely = cointoss();
+
+        println!("Jack Lonely: {:?}, Probability: {}", jack_lonely, p_jack_lonely);  // Logging
+
+        // Assuming `store_proposition` is a method in your Storage struct
+        storage.store_proposition(&jack_lonely, p_jack_lonely)?;
+
+        // Inserting into the independent fact map
+        independent_fact_map.insert(format!("{:?}", jack_lonely), p_jack_lonely);
+    }
+
     Ok(())
 }
