@@ -1,5 +1,7 @@
 use crate::model::objects::{RoleMap, Entity, Proposition, FilledRole};
-use std::{error::Error};
+use std::{error::Error, collections::HashMap};
+
+use super::objects::FirstOrderArgument;
 
 pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Proposition {
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
@@ -34,15 +36,13 @@ pub fn convert_to_proposition(predicate: &Proposition, role_map: &RoleMap) -> Re
     Ok(Proposition { roles: result_roles })
 }
 
-pub fn extract_premise_role_map(proposition: &Proposition, role_map: &RoleMap) -> RoleMap {
+pub fn extract_premise_role_map(proposition: &Proposition, role_map: &RoleMap) -> HashMap<String, FirstOrderArgument> {
     let mut result = std::collections::HashMap::new();
     for crole in &proposition.roles {
         let role_name = &crole.role_name;
         if let Some(premise_role_name) = role_map.get(role_name) {
-            result.insert(premise_role_name.clone(), crole.argument.clone());
+            result.insert(premise_role_name.clone(), crole.role_name.clone());
         }
     }
-
-    let rval = RoleMap::new(result);
-    rval
+    result
 }
