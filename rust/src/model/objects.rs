@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
-
+use std::collections::HashMap;
 const BOUND_VARIABLE: &str = "?";
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -174,7 +174,28 @@ pub struct Entity {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RoleMap {
-    pub role_map: std::collections::HashMap<String, String>,
+    pub role_map: std::collections::HashMap<String, FirstOrderArgument>,
+}
+
+impl RoleMap {
+    pub fn new(role_map: HashMap<String, FirstOrderArgument>) -> Self {
+        RoleMap { role_map }
+    }
+
+    pub fn get(&self, role_name: &str) -> Option<&FirstOrderArgument> {
+        self.role_map.get(role_name)
+    }
+}
+
+impl fmt::Display for RoleMap {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Convert the role_map to a string in a canonical format
+        let entries: Vec<String> = self.role_map.iter()
+            .map(|(key, value)| format!("{}: {}", key, value)) // Assuming FirstOrderArgument implements Display
+            .collect();
+        
+        write!(f, "{{{}}}", entries.join(", "))
+    }
 }
 
 #[derive(Debug, Clone)]
