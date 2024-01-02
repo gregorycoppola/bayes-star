@@ -15,3 +15,7 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     result
 }
 
+fn compute_probability(weights: &HashMap<String, f64>, features: &HashMap<String, f64>) -> f64 {
+    let dot = dot_product(weights, features);
+    sigmoid(dot)
+}
