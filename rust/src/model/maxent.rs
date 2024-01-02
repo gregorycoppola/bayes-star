@@ -71,3 +71,13 @@ pub fn do_sgd_update(weights: &HashMap<String, f64>, gold_features: &HashMap<Str
 
     new_weights
 }
+
+pub fn train_on_example(storage: &Storage, proposition: &Proposition, backlinks: &[BackLink]) -> Result<(), Box<dyn Error>> {
+    let features = features_from_backlinks(storage, backlinks)?;
+    let weight_vector = storage.read_weights(&features)?;
+    let probability = compute_probability(&weight_vector, &features);
+    let expected = compute_expected_features(probability, &features);
+    let new_weight = do_sgd_update(&weight_vector, &features, &expected);
+
+    storage.save_weights(&new_weight)
+}
