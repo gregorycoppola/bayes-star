@@ -23,3 +23,11 @@ fn compute_choose_configurations(n: usize, k: usize) -> Vec<Vec<usize>> {
     combine(&input_array, k)
 }
 
+fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String> {
+    let index_set: std::collections::HashSet<usize> = indices.iter().cloned().collect();
+    roles.iter().enumerate()
+        .filter_map(|(i, role)| {
+            if index_set.contains(&i) { Some(role.clone()) } else { None }
+        })
+        .collect()
+}
