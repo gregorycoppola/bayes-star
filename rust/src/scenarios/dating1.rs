@@ -1,9 +1,18 @@
 use std::error::Error;
-
+use rand::Rng;  // Import Rng trait
 use crate::model::{
     objects::{Domain, Entity},
     storage::Storage, creators::constant,
 };
+
+fn cointoss() -> f64 {
+    let mut rng = rand::thread_rng(); // Get a random number generator
+    if rng.gen::<f64>() < 0.5 {
+        1.0
+    } else {
+        0.0
+    }
+}
 
 pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     storage.drop_all_dbs().map_err(|e| e.to_string())?;
