@@ -18,77 +18,77 @@ pub fn negative_feature(feature: &str) -> String {
 }
 
 pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
-    println!("initialize_weights - Start: {:?}", implication);
+    trace!("initialize_weights - Start: {:?}", implication);
 
     let feature = implication.unique_key();
-    println!("initialize_weights - Unique key: {}", feature);
+    trace!("initialize_weights - Unique key: {}", feature);
 
     let posf = positive_feature(&feature);
     let negf = negative_feature(&feature);
-    println!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
+    trace!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
 
     let weight1 = random_weight();
     let weight2 = random_weight();
-    println!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
+    trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
 
-    println!("initialize_weights - Setting positive feature weight");
+    trace!("initialize_weights - Setting positive feature weight");
     con.hset("weights", &posf, weight1)
         .map_err(|e| {
-            println!("initialize_weights - Error setting positive feature weight: {:?}", e);
+            trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
             Box::new(e) as Box<dyn Error>
         })?;
 
-    println!("initialize_weights - Setting negative feature weight");
+    trace!("initialize_weights - Setting negative feature weight");
     con.hset("weights", &negf, weight2)
         .map_err(|e| {
-            println!("initialize_weights - Error setting negative feature weight: {:?}", e);
+            trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
             Box::new(e) as Box<dyn Error>
         })?;
 
-    println!("initialize_weights - End");
+    trace!("initialize_weights - End");
     Ok(())
 }
 
 
 pub fn read_weights(con: &mut Connection, features: &[String]) -> Result<HashMap<String, f64>, Box<dyn Error>> {
-    println!("read_weights - Start");
+    trace!("read_weights - Start");
     let mut weights = HashMap::new();
 
     for feature in features {
-        println!("read_weights - Reading weight for feature: {}", feature);
+        trace!("read_weights - Reading weight for feature: {}", feature);
         match con.hget::<_, _, String>("weights", feature) {
             Ok(record) => {
-                println!("read_weights - Retrieved record: {}", record);
+                trace!("read_weights - Retrieved record: {}", record);
                 let weight = record.parse::<f64>()
                     .map_err(|e| {
-                        println!("read_weights - Error parsing weight: {:?}", e);
+                        trace!("read_weights - Error parsing weight: {:?}", e);
                         Box::new(e) as Box<dyn Error>
                     })?;
                 weights.insert(feature.clone(), weight);
             }
             Err(e) => {
-                println!("read_weights - Error retrieving weight for feature {}: {:?}", feature, e);
+                trace!("read_weights - Error retrieving weight for feature {}: {:?}", feature, e);
                 return Err(Box::new(e) as Box<dyn Error>);
             }
         }
     }
 
-    println!("read_weights - End");
+    trace!("read_weights - End");
     Ok(weights)
 }
 
 
 pub fn save_weights(con: &mut Connection, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
-    println!("save_weights - Start");
+    trace!("save_weights - Start");
     for (feature, &value) in weights {
-        println!("save_weights - Saving weight for feature {}: {}", feature, value);
+        trace!("save_weights - Saving weight for feature {}: {}", feature, value);
         con.hset("weights", feature, value)
             .map_err(|e| {
-                println!("save_weights - Error saving weight for feature {}: {:?}", feature, e);
+                trace!("save_weights - Error saving weight for feature {}: {:?}", feature, e);
                 Box::new(e) as Box<dyn Error>
             })?;
     }
 
-    println!("save_weights - End");
+    trace!("save_weights - End");
     Ok(())
 }
