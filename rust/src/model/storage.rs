@@ -1,5 +1,5 @@
 use redis::Commands;
-use std::sync::Arc;
+use std::{sync::Arc, error::Error};
 use crate::model::objects::{Domain, Entity, Proposition};
 
 pub struct Storage {
@@ -29,7 +29,7 @@ impl Storage {
         }).collect())
     }
 
-    pub fn store_proposition(&self, proposition: &Proposition, probability: f64) -> redis::RedisResult<()> {
+    pub fn store_proposition(&self, proposition: &Proposition, probability: f64) -> Result<(), Box<dyn Error>> {
         let mut con = self.redis_client.get_connection()?;
         let search_string = proposition.search_string();
         let record = serde_json::to_string(proposition)?;
@@ -48,7 +48,7 @@ impl Storage {
     }
 
     // Get all propositions
-    pub fn get_all_propositions(&self) -> redis::RedisResult<Vec<Proposition>> {
+    pub fn get_all_propositions(&self) ->  Result<Vec<Proposition>, Box<dyn Error>> {
         let mut con = self.redis_client.get_connection()?;
         let all_values: std::collections::HashMap<String, String> = con.hgetall("propositions")?;
         all_values.into_iter().map(|(_, value)| {
