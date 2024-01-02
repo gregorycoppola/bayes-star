@@ -183,7 +183,12 @@ impl Proposition {
     }
 
     pub fn search_string(&self) -> String {
-        "dummy_search_string".to_string()
+        let role_strings: Vec<String> = self.roles
+            .iter()
+            .map(|role| role.search_string()) // Assuming FilledRole has a search_string method
+            .collect();
+
+        format!("[{}]", role_strings.join(","))
     }
     pub fn role_names(&self) -> Vec<String> {
         self.roles
