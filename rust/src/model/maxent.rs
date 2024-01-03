@@ -10,6 +10,7 @@ fn sigmoid(x: f64) -> f64 {
 use std::collections::HashMap;
 
 use super::choose::compute_backlinks;
+use super::config::CONFIG;
 use super::weights::{negative_feature, positive_feature, initialize_weights};
 
 fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f64 {
@@ -77,7 +78,11 @@ pub fn do_sgd_update(
         // loss calculation is optional, here for completeness
         let _loss = (gv - ev).abs();
 
-        println!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+        let config = CONFIG.get().expect("Config not initialized");
+        if config.print_training_loss {
+            println!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+
+        }
 
         new_weights.insert(feature.clone(), new_weight);
     }

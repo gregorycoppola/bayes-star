@@ -41,7 +41,7 @@ fn main() {
     set_config(Config {
         entities_per_domain,
         print_training_loss,
-    });
+    }).expect("Could not set config.");
 
     // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
