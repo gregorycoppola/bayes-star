@@ -1,5 +1,10 @@
 # BAYES STAR
 
+**Note** This is experimental software and for education and scientific purposes only.
+The user must accept any liability for any mistakes, damage, loss or other suffering that result from the use of this software.
+
+**Do not run this software if you already have a Redis database on 'localhost' because it will get cleared.**
+
 ## Abstract
 This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a "logical inference engine" that can do reasoning.
 
@@ -7,6 +12,8 @@ If you are interested in **AGI** you should be interested in this.
 
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
+
+**Note that running the BAYES STAR package involves clearing out the Redis server on 'localhost'.** Don't run this software as is if you have a *Redis* server on *localhost*.
 
 ## Model Details
 
