@@ -1,5 +1,7 @@
 # Installing Redis on Your System
 
+**Do not run this software if you already have a Redis database on 'localhost' because it will get cleared.**
+
 Redis is an advanced key-value store, known for its flexibility, performance, and wide language support. This guide will walk you through the installation process for Redis on various operating systems.
 
 Remember you can always ask your favorite "chat bot" if you get stuck.
