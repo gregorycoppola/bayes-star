@@ -1,7 +1,7 @@
 use crate::model::{
     creators::{constant, implication, object, predicate, relation, subject, variable},
     objects::{Domain, Entity, RoleMap},
-    storage::Storage,
+    storage::Storage, config::CONFIG,
 };
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
@@ -18,11 +18,12 @@ fn cointoss() -> f64 {
 pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
-    const TOTAL_MEMBERS_EACH_CLASS: usize = 32 * 2;
+    let config = CONFIG.get().expect("Config not initialized");
+    let total_members_each_class = config.entities_per_domain;
     let domains = [Domain::Jack, Domain::Jill];
 
     for domain in domains.iter() {
-        for i in 0..TOTAL_MEMBERS_EACH_CLASS {
+        for i in 0..total_members_each_class {
             let name = format!("{:?}{}", domain, i); // Using Debug formatting for Domain enum
             let entity = Entity {
                 domain: domain.clone(),
