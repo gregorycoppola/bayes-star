@@ -1,9 +1,9 @@
-use bayes_star::model::maxent::do_training;
+use bayes_star::model::config::set_config;
+use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating1::setup_scenario;
-use env_logger::Env;
 use redis::Client;
-use std::sync::Arc; // Replace `your_crate` with the name of your crate
+
 #[macro_use]
 extern crate log;
 use clap::{App, Arg};
@@ -38,9 +38,10 @@ fn main() {
         .expect("entities_per_domain needs to be an integer");
 
     let print_training_loss = matches.is_present("print_training_loss");
-
-    println!("Entities per domain: {}", entities_per_domain);
-    println!("Print training loss: {}", print_training_loss);
+    set_config(Config {
+        entities_per_domain,
+        print_training_loss,
+    });
 
     // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
