@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Array of different TOTAL_MEMBERS_EACH_CLASS values
-members_values=(10 50 100 150 200)
+members_values=(10 50 100 150 200 250 300)
 
 # Loop through each value and run the Node.js script
 for value in "${members_values[@]}"
