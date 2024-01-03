@@ -11,6 +11,7 @@ pub static CONFIG: OnceCell<Config> = OnceCell::new();
 
 // Function to set the configuration
 pub fn set_config(new_config: Config) -> Result<(), &'static str> {
+    println!("BAYES STAR {:?}", &new_config);
     CONFIG.set(new_config)
           .map_err(|_| "Config has already been set")
 }
