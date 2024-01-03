@@ -21,7 +21,13 @@ fn main() {
                 .value_name("NUMBER")
                 .help("Sets the number of entities per domain")
                 .takes_value(true)
-                .default_value("32"), // default value set here
+                .default_value("32"),
+        )
+        .arg(
+            Arg::with_name("print_training_loss")
+                .long("print_training_loss")
+                .help("Enables printing of training loss")
+                .takes_value(false), // No value is expected, presence of flag sets it to true
         )
         .get_matches();
 
@@ -31,7 +37,10 @@ fn main() {
         .parse()
         .expect("entities_per_domain needs to be an integer");
 
+    let print_training_loss = matches.is_present("print_training_loss");
+
     println!("Entities per domain: {}", entities_per_domain);
+    println!("Print training loss: {}", print_training_loss);
 
     // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
