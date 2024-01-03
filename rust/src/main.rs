@@ -1,15 +1,39 @@
 use bayes_star::model::maxent::do_training;
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating1::setup_scenario;
+use env_logger::Env;
 use redis::Client;
 use std::sync::Arc; // Replace `your_crate` with the name of your crate
-use env_logger::Env;
 #[macro_use]
 extern crate log;
+use clap::{App, Arg};
 
 fn main() {
     env_logger::init();
-        // Create a Redis client
+
+    let matches = App::new("BAYES STAR")
+        .version("1.0")
+        .author("Greg Coppola")
+        .about("Efficient combination of First-Order Logic and Bayesian Networks.")
+        .arg(
+            Arg::with_name("entities_per_domain")
+                .long("entities_per_domain")
+                .value_name("NUMBER")
+                .help("Sets the number of entities per domain")
+                .takes_value(true)
+                .default_value("32"), // default value set here
+        )
+        .get_matches();
+
+    let entities_per_domain: i32 = matches
+        .value_of("entities_per_domain")
+        .unwrap() // safe because we have a default value
+        .parse()
+        .expect("entities_per_domain needs to be an integer");
+
+    println!("Entities per domain: {}", entities_per_domain);
+
+    // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
 
     let connection = client.get_connection().expect("Couldn't get connection.");
@@ -27,7 +51,6 @@ fn main() {
 
     // Explicitly drop the Redis client
     std::mem::drop(storage);
-
 
     warn!("program done");
 }
