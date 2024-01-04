@@ -21,7 +21,7 @@ fn main() {
                 .value_name("NUMBER")
                 .help("Sets the number of entities per domain")
                 .takes_value(true)
-                .default_value("32"),
+                .default_value("1024"),
         )
         .arg(
             Arg::with_name("print_training_loss")
