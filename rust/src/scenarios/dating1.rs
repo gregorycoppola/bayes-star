@@ -23,9 +23,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     let config = CONFIG.get().expect("Config not initialized");
     let total_members_each_class = config.entities_per_domain;
-    let domains = [Domain::Jack, Domain::Jill];
+    let entity_domains = [Domain::Jack, Domain::Jill];
 
-    for domain in domains.iter() {
+    for domain in entity_domains.iter() {
         for i in 0..total_members_each_class {
             let name = format!("{:?}{}", domain, i); // Using Debug formatting for Domain enum
             let entity = Entity {
@@ -47,67 +47,55 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
     let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
     trace!("Initial number of jacks: {}", jacks.len());
-    for jack in jacks.clone() {
-        trace!("Jack entity: {:?}", jack);
-    }
-
     // Retrieve entities in the Jill domain
     let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
     let jills = storage.get_entities_in_domain(&jill_domain)?;
-    for jill in jills.clone() {
-        trace!("Jill entity: {:?}", jill);
-    }
+    trace!("Initial number of jills: {}", jills.len());
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
     let like = constant(Domain::Verb, "like".to_string());
     let date = constant(Domain::Verb, "date".to_string());
 
-    let mut independent_fact_map: HashMap<String, f64> = HashMap::new();
+    for i in 0..jacks.len() {
+        let jack_entity = &jacks[i];
+        let jill_entity = &jills[i];
 
-    trace!("Number of jacks before second loop: {}", jacks.len());
-    for jack_entity in jacks.clone() {
-        trace!("Jack entity part 2: {:?}", jack_entity);
-
-        let jack = constant(jack_entity.domain, jack_entity.name.clone());
-        let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
         let p_jack_lonely = cointoss();
+        let p_jill_exciting: f64 = cointoss();
+        let p_jill_likes_jack: f64 = cointoss();
+        let p_jack_likes_jill = numeric_or(p_jack_lonely, p_jill_exciting);
 
-        trace!(
-            "Jack Lonely: {:?}, Probability: {}",
-            jack_lonely,
-            p_jack_lonely
-        ); // Logging
+        {
+            trace!("Jack entity part 2: {:?}", jack_entity);
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+            let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
+    
+            trace!(
+                "Jack Lonely: {:?}, Probability: {}",
+                jack_lonely,
+                p_jack_lonely
+            ); // Logging
+    
+            // Assuming `store_proposition` is a method in your Storage struct
+            storage.store_proposition(&jack_lonely, p_jack_lonely)?;
+        }
 
-        // Assuming `store_proposition` is a method in your Storage struct
-        storage.store_proposition(&jack_lonely, p_jack_lonely)?;
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
+    
+            trace!(
+                "Jill Exciting: {:?}, Probability: {}",
+                jill_exciting,
+                p_jill_exciting
+            ); // Logging
+    
+            // Assuming `store_proposition` is a method in your Storage struct
+            storage.store_proposition(&jill_exciting, p_jill_exciting)?;
+        }
 
-        // Inserting into the independent fact map
-        independent_fact_map.insert(format!("{:?}", jack_lonely), p_jack_lonely);
-    }
-
-    for jill_entity in &jills {
-        let jill = constant(jill_entity.domain, jill_entity.name.clone());
-        let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
-        let p_jill_exciting = cointoss();
-
-        trace!(
-            "Jill Exciting: {:?}, Probability: {}",
-            jill_exciting,
-            p_jill_exciting
-        ); // Logging
-
-        // Assuming `store_proposition` is a method in your Storage struct
-        storage.store_proposition(&jill_exciting, p_jill_exciting)?;
-
-        // Inserting into the independent fact map
-        independent_fact_map.insert(format!("{:?}", jill_exciting), p_jill_exciting);
-    }
-
-    // Assumed imports and setup...
-
-    for jack_entity in jacks.iter() {
-        for jill_entity in jills.iter() {
+        {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
 
@@ -117,37 +105,33 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(jack.clone()),
             ]);
-            let p_jill_likes_jack = cointoss();
             trace!(
                 "Jill likes Jack: {:?}, Probability: {}",
                 jill_likes_jack,
                 p_jill_likes_jack
             ); // Logging
             storage.store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
-            independent_fact_map.insert(format!("{:?}", jill_likes_jack), p_jill_likes_jack);
+        }
 
-            // "likes(jack, jill)" based on "lonely(jack) or exciting(jill)"
-            let jack_lonely = proposition(vec![subject(jack.clone()), relation(lonely.clone())]);
-            let p_jack_lonely = *independent_fact_map
-                .get(&format!("{:?}", jack_lonely))
-                .unwrap_or(&0.0);
-            let jill_exciting = proposition(vec![subject(jill.clone()), relation(exciting.clone())]);
-            let p_jill_exciting = *independent_fact_map
-                .get(&format!("{:?}", jill_exciting))
-                .unwrap_or(&0.0);
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+
             let jack_likes_jill = proposition(vec![
                 subject(jack.clone()),
                 relation(like.clone()),
                 object(jill.clone()),
             ]);
-            let p_jack_likes_jill = numeric_or(p_jack_lonely, p_jill_exciting);
             trace!(
                 "Jack likes Jill: {:?}, Probability: {}",
                 jack_likes_jill,
                 p_jack_likes_jill
             ); // Logging
             storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
-            independent_fact_map.insert(format!("{:?}", jack_likes_jill), p_jack_likes_jill);
+        }
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
 
             // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
             let jack_dates_jill =
@@ -160,12 +144,11 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             ); // Logging
             storage.store_proposition(&jack_dates_jill, p_jack_dates_jill)?;
         }
+
     }
 
     let xjack = variable(Domain::Jack);
     let xjill = variable(Domain::Jill);
-
-    // ...
 
     let implications = vec![
         // if jack is lonely, he will date any jill
