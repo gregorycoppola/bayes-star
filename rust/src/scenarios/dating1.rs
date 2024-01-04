@@ -1,7 +1,10 @@
 use crate::model::{
-    creators::{constant, implication, object, predicate, relation, subject, variable},
+    config::CONFIG,
+    creators::{
+        conjunction, constant, implication, object, predicate, relation, subject, variable,
+    },
     objects::{Domain, Entity, RoleMap},
-    storage::Storage, config::CONFIG,
+    storage::Storage,
 };
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
@@ -72,7 +75,8 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
         trace!(
             "Jack Lonely: {:?}, Probability: {}",
-            jack_lonely, p_jack_lonely
+            jack_lonely,
+            p_jack_lonely
         ); // Logging
 
         // Assuming `store_proposition` is a method in your Storage struct
@@ -89,7 +93,8 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
         trace!(
             "Jill Exciting: {:?}, Probability: {}",
-            jill_exciting, p_jill_exciting
+            jill_exciting,
+            p_jill_exciting
         ); // Logging
 
         // Assuming `store_proposition` is a method in your Storage struct
@@ -115,7 +120,8 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let p_jill_likes_jack = cointoss();
             trace!(
                 "Jill likes Jack: {:?}, Probability: {}",
-                jill_likes_jack, p_jill_likes_jack
+                jill_likes_jack,
+                p_jill_likes_jack
             ); // Logging
             storage.store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
             independent_fact_map.insert(format!("{:?}", jill_likes_jack), p_jill_likes_jack);
@@ -137,7 +143,8 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let p_jack_likes_jill = numeric_or(p_jack_lonely, p_jill_exciting);
             trace!(
                 "Jack likes Jill: {:?}, Probability: {}",
-                jack_likes_jill, p_jack_likes_jill
+                jack_likes_jill,
+                p_jack_likes_jill
             ); // Logging
             storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
             independent_fact_map.insert(format!("{:?}", jack_likes_jill), p_jack_likes_jill);
@@ -148,7 +155,8 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
             trace!(
                 "Jack dates Jill: {:?}, Probability: {}",
-                jack_dates_jill, p_jack_dates_jill
+                jack_dates_jill,
+                p_jack_dates_jill
             ); // Logging
             storage.store_proposition(&jack_dates_jill, p_jack_dates_jill)?;
         }
@@ -162,7 +170,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let implications = vec![
         // if jack is lonely, he will date any jill
         implication(
-            predicate(vec![subject(xjack.clone()), relation(lonely.clone())]),
+            conjunction(vec![predicate(vec![
+                subject(xjack.clone()),
+                relation(lonely.clone()),
+            ])]),
             predicate(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
@@ -175,7 +186,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jill is exciting, any jack will date her
         implication(
-            predicate(vec![subject(xjill.clone()), relation(exciting.clone())]),
+            conjunction(vec![predicate(vec![
+                subject(xjill.clone()),
+                relation(exciting.clone()),
+            ])]),
             predicate(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
@@ -188,11 +202,11 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jill likes jack, then jack dates jill
         implication(
-            predicate(vec![
+            conjunction(vec![predicate(vec![
                 subject(xjill.clone()),
                 relation(like.clone()),
                 object(xjack.clone()),
-            ]),
+            ])]),
             predicate(vec![
                 subject(xjack.clone()),
                 relation(date.clone()),
@@ -205,11 +219,11 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jack likes jill, then jack dates jill
         implication(
-            predicate(vec![
+            conjunction(vec![predicate(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
                 object(xjill.clone()),
-            ]),
+            ])]),
             predicate(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
             RoleMap::new(HashMap::from([
                 ("subject".to_string(), "subject".to_string()),
@@ -220,7 +234,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     for implication in implications.iter() {
         trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
-    
+
         // Assuming `store_implication` is a method of your Storage struct
         storage.store_implication(implication)?;
     }

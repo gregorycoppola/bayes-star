@@ -3,7 +3,10 @@ use crate::model::objects::*;
 // Import the necessary structs and enums
 use crate::model::objects::{Implication, Proposition, FilledRole, VariableArgument, ConstantArgument};
 
-// Function to create an Implication
+pub fn conjunction(terms: Vec<Proposition>) -> Conjunction {
+    Conjunction { terms }
+}
+
 pub fn implication(premise: Conjunction, conclusion: Proposition, role_map: RoleMap) -> Implication {
     Implication { premise, conclusion, role_map }
 }
