@@ -1,15 +1,21 @@
-use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition};
+use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition, Conjunction};
 use crate::model::storage::Storage;
 use crate::model::weights::{read_weights, save_weights};
 use std::{error::Error, sync::Arc};
 
-use super::ops::{convert_to_quantified, convert_to_proposition, extract_premise_role_map};
+use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
     let mut temp_vec = vec![];
 
-    fn run(input_array: &[usize], k: usize, start: usize, temp_vec: &mut Vec<usize>, result: &mut Vec<Vec<usize>>) {
+    fn run(
+        input_array: &[usize],
+        k: usize,
+        start: usize,
+        temp_vec: &mut Vec<usize>,
+        result: &mut Vec<Vec<usize>>,
+    ) {
         if temp_vec.len() == k {
             result.push(temp_vec.clone());
             return;
@@ -32,9 +38,15 @@ fn compute_choose_configurations(n: usize, k: usize) -> Vec<Vec<usize>> {
 
 fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String> {
     let index_set: std::collections::HashSet<usize> = indices.iter().cloned().collect();
-    roles.iter().enumerate()
+    roles
+        .iter()
+        .enumerate()
         .filter_map(|(i, role)| {
-            if index_set.contains(&i) { Some(role.clone()) } else { None }
+            if index_set.contains(&i) {
+                Some(role.clone())
+            } else {
+                None
+            }
         })
         .collect()
 }
@@ -60,7 +72,10 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     Ok(result)
 }
 
-pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Result<Vec<BackLink>, Box<dyn Error>> {
+pub fn compute_backlinks(
+    storage: &mut Storage,
+    proposition: &Proposition,
+) -> Result<Vec<BackLink>, Box<dyn Error>> {
     if !proposition.is_fact() {
         return Err("Proposition is not a fact".into());
     }
@@ -76,13 +91,20 @@ pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Re
         trace!("implications {:?}", &implications);
 
         for implication in implications {
-            // HACK: have to check each role map
-            let extracted_mapping = extract_premise_role_map(proposition, &implication.role_maps.role_maps.last().unwrap()); // Assuming this function exists
-            let quantified_premise = &implication.premise;
-
-            // HACK:.. have to convert each to a proposition
-            let extracted_proposition = convert_to_proposition(quantified_premise.terms.last().unwrap(), &extracted_mapping)?; // Assuming this function exists
-            backlinks.push(BackLink::new(implication, extracted_proposition)); // Assuming a constructor for BackLink exists
+            let mut terms:Vec<Proposition> = vec![];
+            for proposition in &implication.premise.terms {
+                // HACK: have to check each role map
+                let extracted_mapping = extract_premise_role_map(
+                    &proposition,
+                    &implication.role_maps.role_maps.last().unwrap(),
+                ); // Assuming this function exists
+                let extracted_proposition = convert_to_proposition(
+                    &proposition,
+                    &extracted_mapping,
+                )?; // Assuming this function exists
+                terms.push(extracted_proposition);
+            }
+            backlinks.push(BackLink::new(implication,  Conjunction{ terms }));
         }
     }
 
