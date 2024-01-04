@@ -18,7 +18,7 @@ fn cointoss() -> f64 {
     }
 }
 
-pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
+pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
     let config = CONFIG.get().expect("Config not initialized");

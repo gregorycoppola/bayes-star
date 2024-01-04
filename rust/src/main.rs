@@ -1,7 +1,7 @@
 use bayes_star::model::config::set_config;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
-use bayes_star::scenarios::dating1::setup_scenario;
+use bayes_star::scenarios::dating1::setup_train;
 use redis::Client;
 
 #[macro_use]
@@ -53,7 +53,7 @@ fn main() {
     // Create a new Storage instance
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
 
-    let result = setup_scenario(&mut storage);
+    let result = setup_train(&mut storage);
     trace!("{:?}", result);
 
     let train_result = do_training(&mut storage);
