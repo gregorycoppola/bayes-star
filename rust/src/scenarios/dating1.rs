@@ -3,7 +3,7 @@ use crate::model::{
     creators::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
-    objects::{Domain, Entity, RoleMap},
+    objects::{Domain, Entity, RoleMap, Proposition},
     storage::Storage,
 };
 use rand::Rng; // Import Rng trait
@@ -232,4 +232,117 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+// Returns a vector of "test propositions".
+pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    let total_members_each_class = 10; // test size
+    let entity_domains = [Domain::Jack, Domain::Jill];
+
+    for domain in entity_domains.iter() {
+        for i in 0..total_members_each_class {
+            let name = format!("test_{:?}{}", domain, i); // Using Debug formatting for Domain enum
+            let entity = Entity {
+                domain: domain.clone(),
+                name: name.clone(),
+            };
+
+            // Assuming you have a `storage` instance of a struct that can store entities
+            // and a `store_entity` method which handles storage.
+            // Replace `storage.store_entity(entity)?;` with the actual method call
+            storage.store_entity(&entity)?;
+
+            // Replace logger.noop() with your actual logging if needed
+            trace!("Stored entity: {:?}", entity);
+        }
+    }
+
+    // Retrieve entities in the Jack domain
+    let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
+    let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
+    trace!("Initial number of jacks: {}", jacks.len());
+    // Retrieve entities in the Jill domain
+    let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
+    let jills = storage.get_entities_in_domain(&jill_domain)?;
+    trace!("Initial number of jills: {}", jills.len());
+
+    let exciting = constant(Domain::Verb, "exciting".to_string());
+    let lonely = constant(Domain::Verb, "lonely".to_string());
+    let like = constant(Domain::Verb, "like".to_string());
+    let date = constant(Domain::Verb, "date".to_string());
+
+    let mut result = vec![];
+    for i in 0..jacks.len() {
+        let jack_entity = &jacks[i];
+        let jill_entity = &jills[i];
+
+        if jack_entity.name.starts_with("test_") {
+            assert!(jill_entity.name.starts_with("test_"));
+        } else {
+            continue;
+        }
+
+        let p_jack_lonely = cointoss();
+        let p_jill_exciting: f64 = cointoss();
+        let p_jill_likes_jack: f64 = cointoss();
+
+        {
+            trace!("Jack entity part 2: {:?}", jack_entity);
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+            let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
+    
+            trace!(
+                "Jack Lonely: {:?}, Probability: {}",
+                jack_lonely,
+                p_jack_lonely
+            ); // Logging
+    
+            // Assuming `store_proposition` is a method in your Storage struct
+            storage.store_proposition(&jack_lonely, p_jack_lonely)?;
+        }
+
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
+    
+            trace!(
+                "Jill Exciting: {:?}, Probability: {}",
+                jill_exciting,
+                p_jill_exciting
+            ); // Logging
+    
+            // Assuming `store_proposition` is a method in your Storage struct
+            storage.store_proposition(&jill_exciting, p_jill_exciting)?;
+        }
+
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+
+            // "likes(jill, jack)"
+            let jill_likes_jack = proposition(vec![
+                subject(jill.clone()),
+                relation(like.clone()),
+                object(jack.clone()),
+            ]);
+            trace!(
+                "Jill likes Jack: {:?}, Probability: {}",
+                jill_likes_jack,
+                p_jill_likes_jack
+            ); // Logging
+            storage.store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
+        }
+
+        {
+            let jill = constant(jill_entity.domain, jill_entity.name.clone());
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+
+            // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
+            let jack_dates_jill =
+                proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
+            result.push(jack_dates_jill);
+        }
+    }
+
+    Ok(result)
 }
