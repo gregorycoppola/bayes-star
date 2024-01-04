@@ -76,7 +76,8 @@ pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Re
         trace!("implications {:?}", &implications);
 
         for implication in implications {
-            let extracted_mapping = extract_premise_role_map(proposition, &implication.role_map); // Assuming this function exists
+            // HACK: have to check each role map
+            let extracted_mapping = extract_premise_role_map(proposition, &implication.role_maps.role_maps.last().unwrap()); // Assuming this function exists
             let quantified_premise = &implication.premise;
 
             // HACK:.. have to convert each to a proposition

@@ -7,8 +7,9 @@ pub fn conjunction(terms: Vec<Proposition>) -> Conjunction {
     Conjunction { terms }
 }
 
-pub fn implication(premise: Conjunction, conclusion: Proposition, role_map: Vec<RoleMap>) -> Implication {
-    Implication { premise, conclusion, RoleMapList {role_map} }
+pub fn implication(premise: Conjunction, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
+    let role_maps = RoleMapList {role_maps};
+    Implication { premise, conclusion, role_maps }
 }
 
 // Function to create a Proposition

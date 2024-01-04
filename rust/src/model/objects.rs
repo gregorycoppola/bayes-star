@@ -212,7 +212,7 @@ impl Conjunction {
 pub struct Implication {
     pub premise: Conjunction,
     pub conclusion: Proposition,
-    pub role_map: RoleMapList,
+    pub role_maps: RoleMapList,
 }
 
 impl Implication {
@@ -238,7 +238,7 @@ impl Implication {
 
     // Convert the role map to a string
     fn mapping_string(&self) -> String {
-        self.role_map.to_string() // Assuming RoleMap has a ToString implementation
+        self.role_maps.to_string() // Assuming RoleMap has a ToString implementation
     }
 }
 
@@ -286,6 +286,18 @@ pub struct RoleMapList {
 impl RoleMapList {
     pub fn new(role_maps:Vec<RoleMap>) -> Self {
         RoleMapList{role_maps}
+    }
+}
+
+impl fmt::Display for RoleMapList {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let role_maps_str = self.role_maps
+            .iter()
+            .map(|role_map| role_map.to_string()) // Convert each RoleMap to a String using its Display implementation
+            .collect::<Vec<String>>()
+            .join(", "); // Concatenate all the string representations with a comma separator
+
+        write!(f, "[{}]", role_maps_str)
     }
 }
 
