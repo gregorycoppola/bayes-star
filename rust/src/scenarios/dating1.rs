@@ -179,10 +179,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(xjill.clone()),
             ]),
-            RoleMap::new(HashMap::from([(
+            vec![RoleMap::new(HashMap::from([(
                 "subject".to_string(),
                 "subject".to_string(),
-            )])),
+            )]))],
         ),
         // if jill is exciting, any jack will date her
         implication(
@@ -195,10 +195,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(xjill.clone()),
             ]),
-            RoleMap::new(HashMap::from([(
+            vec![RoleMap::new(HashMap::from([(
                 "object".to_string(),
                 "subject".to_string(),
-            )])),
+            )]))],
         ),
         // if jill likes jack, then jack dates jill
         implication(
@@ -212,10 +212,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(date.clone()),
                 object(xjill.clone()),
             ]),
-            RoleMap::new(HashMap::from([
+            vec![RoleMap::new(HashMap::from([
                 ("subject".to_string(), "object".to_string()),
                 ("object".to_string(), "subject".to_string()),
-            ])),
+            ]))],
         ),
         // if jack likes jill, then jack dates jill
         implication(
@@ -225,10 +225,10 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 object(xjill.clone()),
             ])]),
             proposition(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
-            RoleMap::new(HashMap::from([
+            vec![RoleMap::new(HashMap::from([
                 ("subject".to_string(), "subject".to_string()),
                 ("object".to_string(), "object".to_string()),
-            ])),
+            ]))],
         ),
     ];
 
