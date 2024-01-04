@@ -38,7 +38,7 @@ pub fn features_from_backlinks(
 
     for backlink in backlinks {
         let feature = backlink.implication.unique_key(); // Assuming Implication has a unique_key method
-        let probability = get_conjunction_probability(&backlink.conjunction)?;
+        let probability = get_conjunction_probability(storage, &backlink.conjunction)?;
         let posf = positive_feature(&feature);
         let negf = negative_feature(&feature);
 
