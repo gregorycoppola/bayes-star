@@ -189,8 +189,28 @@ impl Proposition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Conjunction {
+    pub terms: Vec<Proposition>,
+}
+
+impl Conjunction {
+    pub fn new(terms: Vec<Proposition>) -> Self {
+        Conjunction { terms }
+    }
+
+    pub fn search_string(&self) -> String {
+        let mut search_strings: Vec<String> = self.terms
+            .iter()
+            .map(|term| term.search_string()) // Map each term to its search string
+            .collect();
+        search_strings.sort(); // Sort the search strings in ascending order
+        search_strings.join(", ") // Join the sorted strings, separated by a comma and a space
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Implication {
-    pub premise: Proposition,
+    pub premise: Conjunction,
     pub conclusion: Proposition,
     pub role_map: RoleMap,
 }
