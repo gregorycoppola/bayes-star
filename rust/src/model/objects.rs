@@ -212,7 +212,7 @@ impl Conjunction {
 pub struct Implication {
     pub premise: Conjunction,
     pub conclusion: Proposition,
-    pub role_map: RoleMap,
+    pub role_map: RoleMapList,
 }
 
 impl Implication {
@@ -275,6 +275,17 @@ impl fmt::Display for RoleMap {
             .collect();
 
         write!(f, "{{{}}}", entries_str.join(", "))
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RoleMapList {
+    pub role_maps:Vec<RoleMap>,
+}
+
+impl RoleMapList {
+    pub fn new(role_maps:Vec<RoleMap>) -> Self {
+        RoleMapList{role_maps}
     }
 }
 
