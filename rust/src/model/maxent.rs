@@ -1,7 +1,7 @@
-use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition};
+use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Storage;
 use crate::model::weights::{read_weights, save_weights};
-use std::{error::Error};
+use std::error::Error;
 
 fn sigmoid(x: f64) -> f64 {
     1.0 / (1.0 + (-x).exp())

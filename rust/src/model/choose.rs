@@ -1,7 +1,6 @@
-use crate::model::objects::{BackLink, Domain, Entity, Implication, Proposition, Conjunction};
+use crate::model::objects::{BackLink, Proposition, Conjunction};
 use crate::model::storage::Storage;
-use crate::model::weights::{read_weights, save_weights};
-use std::{error::Error, sync::Arc};
+use std::error::Error;
 
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 

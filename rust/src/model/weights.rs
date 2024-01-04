@@ -1,6 +1,6 @@
-use redis::{Commands, Client, Connection};
+use redis::{Commands, Connection};
 use std::error::Error;
-use crate::model::objects::{Domain, Entity, Proposition, Implication};
+use crate::model::objects::Implication;
 use rand::Rng;
 use std::collections::HashMap;
 

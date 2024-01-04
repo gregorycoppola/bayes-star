@@ -1,6 +1,6 @@
 use crate::model::objects::{Domain, Entity, Implication, Proposition};
-use redis::{Client, Commands, Connection};
-use std::{error::Error, sync::Arc};
+use redis::{Commands, Connection};
+use std::error::Error;
 
 pub struct Storage {
     redis_connection: redis::Connection,
@@ -137,7 +137,6 @@ impl Storage {
     }
 
     pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
-        let search_string = implication.search_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 

@@ -1,9 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::fmt;
-use std::hash::{Hash, Hasher};
-const BOUND_VARIABLE: &str = "?";
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ArgumentType {

@@ -1,4 +1,4 @@
-use crate::model::objects::{Entity, FilledRole, Proposition, RoleMap};
+use crate::model::objects::{FilledRole, Proposition, RoleMap};
 use std::{collections::HashMap, error::Error};
 
 use super::objects::FirstOrderArgument;
