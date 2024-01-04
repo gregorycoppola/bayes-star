@@ -2,8 +2,11 @@ use std::error::Error;
 
 use crate::model::{maxent::{features_from_backlinks, compute_probability}, weights::read_weights, choose::compute_backlinks};
 
-use super::{objects::Proposition, storage::Storage};
+use super::{objects::{Proposition, Conjunction}, storage::Storage};
 
+fn ensure_probabilities_are_stored(storage:&mut Storage, conjunction:&Conjunction) -> Result<(), Box<dyn Error>> {
+    Ok(())
+}
 pub fn inference_probability(storage:&mut Storage, proposition:&Proposition) -> Result<f64, Box<dyn Error>> {
     trace!("inference_probability - Start: {:?}", proposition);
     trace!("inference_probability - Getting features from backlinks");
