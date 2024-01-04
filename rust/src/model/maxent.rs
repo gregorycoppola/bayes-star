@@ -97,7 +97,6 @@ pub fn train_on_example(
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
     trace!("train_on_example - Start: {:?}", proposition);
-
     trace!("train_on_example - Getting features from backlinks");
     let features = match features_from_backlinks(storage, backlinks) {
         Ok(f) => f,
