@@ -76,38 +76,51 @@ pub fn compute_backlinks(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
+    debug!("Computing backlinks for proposition {:?}", proposition);
+
     if !proposition.is_fact() {
+        error!("Proposition is not a fact");
         return Err("Proposition is not a fact".into());
     }
 
     let search_keys = compute_search_keys(proposition)?;
-    trace!("search_keys {:?}", &search_keys);
+    trace!("Computed search_keys {:?}", &search_keys);
+
     let mut backlinks = Vec::new();
 
-    for search_key in search_keys {
-        trace!("search_key {:?}", &search_key);
+    for search_key in &search_keys {
+        trace!("Processing search_key {:?}", &search_key);
 
-        let implications = storage.find_premises(&search_key)?; // Assuming this method exists in Storage
-        trace!("implications {:?}", &implications);
+        let implications = storage.find_premises(&search_key)?;
+        trace!("Found implications {:?}", &implications);
 
-        for implication in implications {
-            let mut terms:Vec<Proposition> = vec![];
+        for implication in &implications {
+            let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
+                trace!("Processing term {}: {:?}", index, proposition);
+
                 let extracted_mapping = extract_premise_role_map(
                     &proposition,
                     &implication.role_maps.role_maps[index],
                 ); // Assuming this function exists
+
+                trace!("Extracted mapping for term {}: {:?}", index, extracted_mapping);
+
                 let extracted_proposition = convert_to_proposition(
                     &proposition,
                     &extracted_mapping,
                 )?; // Assuming this function exists
+
+                trace!("Converted to proposition for term {}: {:?}", index, extracted_proposition);
+
                 terms.push(extracted_proposition);
             }
-            backlinks.push(BackLink::new(implication,  Conjunction{ terms }));
+            backlinks.push(BackLink::new(implication.clone(), Conjunction { terms }));
         }
     }
 
-    trace!("returning backlinks {:?}", &backlinks);
+    trace!("Returning backlinks {:?}", &backlinks);
+    debug!("Completed computing backlinks, total count: {}", backlinks.len());
 
     Ok(backlinks)
 }
