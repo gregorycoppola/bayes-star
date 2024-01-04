@@ -36,16 +36,33 @@ pub fn features_from_backlinks(
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     let mut result = HashMap::new();
 
-    for backlink in backlinks {
-        let feature = backlink.implication.unique_key(); // Assuming Implication has a unique_key method
-        let probability = get_conjunction_probability(storage, &backlink.conjunction)?;
-        let posf = positive_feature(&feature);
-        let negf = negative_feature(&feature);
+    info!("Starting features_from_backlinks with {} backlinks", backlinks.len());
+    
+    for (i, backlink) in backlinks.iter().enumerate() {
+        debug!("Processing backlink {}", i);
+        
+        let feature = backlink.implication.unique_key(); 
+        debug!("Generated unique key for feature: {}", feature);
 
-        result.insert(posf, probability);
-        result.insert(negf, 1.0 - probability);
+        match get_conjunction_probability(storage, &backlink.conjunction) {
+            Ok(probability) => {
+                debug!("Conjunction probability for backlink {}: {}", i, probability);
+                let posf = positive_feature(&feature);
+                let negf = negative_feature(&feature);
+
+                result.insert(posf.clone(), probability);
+                result.insert(negf.clone(), 1.0 - probability);
+
+                debug!("Inserted features for backlink {}: positive - {}, negative - {}", i, posf, negf);
+            },
+            Err(e) => {
+                error!("Error computing conjunction probability for backlink {}: {}", i, e);
+                return Err(e);
+            },
+        }
     }
 
+    info!("features_from_backlinks completed successfully");
     Ok(result)
 }
 
