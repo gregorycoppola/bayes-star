@@ -16,23 +16,39 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pro
     Proposition::new(result)
 }
 
-pub fn convert_to_proposition(predicate: &Proposition, role_map: &HashMap<String, FirstOrderArgument>) -> Result<Proposition, Box<dyn Error>> {
+pub fn convert_to_proposition(
+    predicate: &Proposition, 
+    role_map: &HashMap<String, FirstOrderArgument>
+) -> Result<Proposition, Box<dyn Error>> {
+    debug!("Converting to proposition: {:?}", predicate);
+
     let mut result_roles = Vec::new();
 
     for role in &predicate.roles {
+        debug!("Processing role: {:?}", role);
+
         if role.argument.is_variable() {
-            if let Some(substitute) = role_map.get(&role.role_name) {
-                let new_role = role.do_substitution(substitute.clone()); // Assuming this method exists in FilledRole
-                result_roles.push(new_role);
-            } else {
-                // Handle the error if the substitution is not found
-                return Err(format!("Substitution not found for role: {}", role.role_name).into());
+            debug!("Role is a variable, attempting substitution.");
+
+            match role_map.get(&role.role_name) {
+                Some(substitute) => {
+                    debug!("Substitution found for role: {}", role.role_name);
+                    let new_role = role.do_substitution(substitute.clone()); // Assuming this method exists in FilledRole
+                    assert!(new_role.argument.is_constant(), "arg must be a constant here");
+                    result_roles.push(new_role);
+                },
+                None => {
+                    error!("Substitution not found for role: {}", role.role_name);
+                    return Err(format!("Substitution not found for role: {}", role.role_name).into());
+                }
             }
         } else {
+            debug!("Role is not a variable, pushing as is.");
             result_roles.push(role.clone());
         }
     }
 
+    debug!("Conversion to proposition completed successfully.");
     Ok(Proposition { roles: result_roles })
 }
 
