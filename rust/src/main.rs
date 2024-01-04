@@ -1,7 +1,7 @@
 use bayes_star::model::config::set_config;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
-use bayes_star::scenarios::dating1::setup_train;
+use bayes_star::scenarios::dating1::{setup_train, setup_test};
 use redis::Client;
 
 #[macro_use]
@@ -58,6 +58,10 @@ fn main() {
 
     let train_result = do_training(&mut storage);
     trace!("{:?}", train_result);
+
+    let test_questions = setup_test(&mut storage);
+
+    trace!("test_questions {:?}", test_questions);
 
     // Explicitly drop the Redis client
     std::mem::drop(storage);
