@@ -72,13 +72,22 @@ pub fn extract_premise_role_map(
     proposition: &Proposition,
     role_map: &RoleMap,
 ) -> HashMap<String, FirstOrderArgument> {
-    let mut result = std::collections::HashMap::new();
+    debug!("Extracting premise role map for proposition: {:?}", proposition);
+
+    let mut result = HashMap::new();
     for crole in &proposition.roles {
+        assert!(crole.argument.is_constant(), "crole must be a constant {:?}", &crole);
         let role_name = &crole.role_name;
+        trace!("Processing role: {:?}", crole);
+
         if let Some(premise_role_name) = role_map.get(role_name) {
+            trace!("Mapping found: {} -> {}", role_name, premise_role_name);
             result.insert(premise_role_name.clone(), crole.argument.clone());
+        } else {
+            trace!("No mapping found for role: {}", role_name);
         }
     }
+
+    debug!("Extraction complete, result: {:?}", result);
     result
 }
-
