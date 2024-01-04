@@ -1,21 +1,67 @@
 use std::error::Error;
 
-use crate::model::{maxent::{features_from_backlinks, compute_probability}, weights::read_weights, choose::compute_backlinks};
+use crate::model::{
+    choose::compute_backlinks,
+    maxent::{compute_probability, features_from_backlinks},
+    weights::read_weights,
+};
 
-use super::{objects::{Proposition, Conjunction}, storage::Storage};
+use super::{
+    objects::{Conjunction, Proposition},
+    storage::Storage,
+};
 
-fn ensure_probabilities_are_stored(storage:&mut Storage, conjunction:&Conjunction) -> Result<(), Box<dyn Error>> {
+fn ensure_probabilities_are_stored(
+    storage: &mut Storage,
+    conjunction: &Conjunction,
+) -> Result<(), Box<dyn Error>> {
+    for (i, term) in conjunction.terms.iter().enumerate() {
+        assert!(term.is_fact());
+        info!("Getting proposition probability for term {}: {:?}", i, term);
+
+        match storage.get_proposition_probability(term) {
+            Ok(term_prob_opt) => {
+                match term_prob_opt {
+                    Some(_term_prob) => {
+                        // exists.. do nothing
+                    }
+                    None => {
+                        // doesn't exist.. recursively compute
+                        inference_probability(storage, &term)?;
+                    }
+                }
+            }
+            Err(e) => {
+                error!(
+                    "Error getting proposition probability for term {}: {}",
+                    i, e
+                );
+                return Err(e);
+            }
+        }
+    }
     Ok(())
 }
-pub fn inference_probability(storage:&mut Storage, proposition:&Proposition) -> Result<f64, Box<dyn Error>> {
+
+pub fn inference_probability(
+    storage: &mut Storage,
+    proposition: &Proposition,
+) -> Result<f64, Box<dyn Error>> {
     trace!("inference_probability - Start: {:?}", proposition);
     trace!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
+    for backlink in &backlinks {
+        ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
+    }
+
     let features = match features_from_backlinks(storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
-            trace!("inference_probability - Error in features_from_backlinks: {:?}", e);
+            trace!(
+                "inference_probability - Error in features_from_backlinks: {:?}",
+                e
+            );
             return Err(e);
         }
     };
