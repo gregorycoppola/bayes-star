@@ -119,21 +119,32 @@ impl Storage {
         }).collect()
     }
 
-    // Get the probability of a proposition
+    // Return Some if the probability exists in the table, or else None.
     pub fn get_proposition_probability(
         &mut self,
         proposition: &Proposition,
-    ) -> Result<f64, Box<dyn Error>> {
+    ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_string = proposition.search_string();
-        let probability_str: String = self.redis_connection
-            .hget("probs", &search_string)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        let probability = probability_str
-            .parse::<f64>()
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        Ok(probability)
+    
+        // Use a match statement to handle the different outcomes
+        match self.redis_connection.hget::<_, _, String>("probs", &search_string) {
+            Ok(probability_str) => {
+                // Found the entry, parse it
+                let probability = probability_str.parse::<f64>()
+                    .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+                Ok(Some(probability))
+            },
+            Err(e) => {
+                // Handle specific "not found" error
+                if e.kind() == redis::ErrorKind::TypeError {
+                    // Entry not found in Redis
+                    Ok(None)
+                } else {
+                    // Other Redis errors
+                    Err(Box::new(e) as Box<dyn Error>)
+                }
+            }
+        }
     }
 
     pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
