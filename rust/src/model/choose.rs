@@ -92,11 +92,10 @@ pub fn compute_backlinks(
 
         for implication in implications {
             let mut terms:Vec<Proposition> = vec![];
-            for proposition in &implication.premise.terms {
-                // HACK: have to check each role map
+            for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 let extracted_mapping = extract_premise_role_map(
                     &proposition,
-                    &implication.role_maps.role_maps.last().unwrap(),
+                    &implication.role_maps.role_maps[index],
                 ); // Assuming this function exists
                 let extracted_proposition = convert_to_proposition(
                     &proposition,
