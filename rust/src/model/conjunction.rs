@@ -13,7 +13,8 @@ pub fn get_conjunction_probability(
         info!("Getting proposition probability for term {}: {:?}", i, term);
         
         match storage.get_proposition_probability(term) {
-            Ok(term_prob) => {
+            Ok(term_prob_opt) => {
+                let term_prob = term_prob_opt.expect("`term_prob` should be Some here.");
                 info!("Term probability for term {}: {}", i, term_prob);
                 min_prob = min_prob.min(term_prob);
                 info!("Updated min probability after term {}: {}", i, min_prob);
