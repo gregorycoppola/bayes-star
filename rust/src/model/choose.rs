@@ -78,7 +78,9 @@ pub fn compute_backlinks(storage: &mut Storage, proposition: &Proposition) -> Re
         for implication in implications {
             let extracted_mapping = extract_premise_role_map(proposition, &implication.role_map); // Assuming this function exists
             let quantified_premise = &implication.premise;
-            let extracted_proposition = convert_to_proposition(quantified_premise, &extracted_mapping)?; // Assuming this function exists
+
+            // HACK:.. have to convert each to a proposition
+            let extracted_proposition = convert_to_proposition(quantified_premise.terms.last().unwrap(), &extracted_mapping)?; // Assuming this function exists
             backlinks.push(BackLink::new(implication, extracted_proposition)); // Assuming a constructor for BackLink exists
         }
     }

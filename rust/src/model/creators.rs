@@ -4,7 +4,7 @@ use crate::model::objects::*;
 use crate::model::objects::{Implication, Proposition, FilledRole, VariableArgument, ConstantArgument};
 
 // Function to create an Implication
-pub fn implication(premise: Proposition, conclusion: Proposition, role_map: RoleMap) -> Implication {
+pub fn implication(premise: Conjunction, conclusion: Proposition, role_map: RoleMap) -> Implication {
     Implication { premise, conclusion, role_map }
 }
 
