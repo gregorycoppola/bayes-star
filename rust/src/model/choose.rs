@@ -74,16 +74,16 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 
 pub fn compute_backlinks(
     storage: &mut Storage,
-    proposition: &Proposition,
+    conclusion: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
-    debug!("Computing backlinks for proposition {:?}", proposition);
+    debug!("Computing backlinks for proposition {:?}", conclusion);
 
-    if !proposition.is_fact() {
+    if !conclusion.is_fact() {
         error!("Proposition is not a fact");
         return Err("Proposition is not a fact".into());
     }
 
-    let search_keys = compute_search_keys(proposition)?;
+    let search_keys = compute_search_keys(conclusion)?;
     trace!("Computed search_keys {:?}", &search_keys);
 
     let mut backlinks = Vec::new();
@@ -98,10 +98,8 @@ pub fn compute_backlinks(
             let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
-
-                assert!(proposition.is_fact(), "proposition must be a fact");
                 let extracted_mapping = extract_premise_role_map(
-                    &proposition,
+                    &conclusion,
                     &implication.role_maps.role_maps[index],
                 ); // Assuming this function exists
 
