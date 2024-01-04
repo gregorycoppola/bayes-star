@@ -99,6 +99,7 @@ pub fn compute_backlinks(
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
 
+                assert!(proposition.is_fact(), "proposition must be a fact");
                 let extracted_mapping = extract_premise_role_map(
                     &proposition,
                     &implication.role_maps.role_maps[index],
