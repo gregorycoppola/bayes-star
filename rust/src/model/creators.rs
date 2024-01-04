@@ -12,7 +12,7 @@ pub fn implication(premise: Conjunction, conclusion: Proposition, role_map: Role
 }
 
 // Function to create a Proposition
-pub fn predicate(roles: Vec<FilledRole>) -> Proposition {
+pub fn proposition(roles: Vec<FilledRole>) -> Proposition {
     Proposition { roles }
 }
 

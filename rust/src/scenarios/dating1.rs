@@ -1,7 +1,7 @@
 use crate::model::{
     config::CONFIG,
     creators::{
-        conjunction, constant, implication, object, predicate, relation, subject, variable,
+        conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap},
     storage::Storage,
@@ -70,7 +70,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         trace!("Jack entity part 2: {:?}", jack_entity);
 
         let jack = constant(jack_entity.domain, jack_entity.name.clone());
-        let jack_lonely = predicate(vec![subject(jack), relation(lonely.clone())]);
+        let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
         let p_jack_lonely = cointoss();
 
         trace!(
@@ -88,7 +88,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     for jill_entity in &jills {
         let jill = constant(jill_entity.domain, jill_entity.name.clone());
-        let jill_exciting = predicate(vec![subject(jill), relation(exciting.clone())]);
+        let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
         let p_jill_exciting = cointoss();
 
         trace!(
@@ -112,7 +112,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
 
             // "likes(jill, jack)"
-            let jill_likes_jack = predicate(vec![
+            let jill_likes_jack = proposition(vec![
                 subject(jill.clone()),
                 relation(like.clone()),
                 object(jack.clone()),
@@ -127,15 +127,15 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             independent_fact_map.insert(format!("{:?}", jill_likes_jack), p_jill_likes_jack);
 
             // "likes(jack, jill)" based on "lonely(jack) or exciting(jill)"
-            let jack_lonely = predicate(vec![subject(jack.clone()), relation(lonely.clone())]);
+            let jack_lonely = proposition(vec![subject(jack.clone()), relation(lonely.clone())]);
             let p_jack_lonely = *independent_fact_map
                 .get(&format!("{:?}", jack_lonely))
                 .unwrap_or(&0.0);
-            let jill_exciting = predicate(vec![subject(jill.clone()), relation(exciting.clone())]);
+            let jill_exciting = proposition(vec![subject(jill.clone()), relation(exciting.clone())]);
             let p_jill_exciting = *independent_fact_map
                 .get(&format!("{:?}", jill_exciting))
                 .unwrap_or(&0.0);
-            let jack_likes_jill = predicate(vec![
+            let jack_likes_jill = proposition(vec![
                 subject(jack.clone()),
                 relation(like.clone()),
                 object(jill.clone()),
@@ -151,7 +151,7 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
             // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
             let jack_dates_jill =
-                predicate(vec![subject(jack), relation(date.clone()), object(jill)]);
+                proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
             trace!(
                 "Jack dates Jill: {:?}, Probability: {}",
@@ -170,11 +170,11 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let implications = vec![
         // if jack is lonely, he will date any jill
         implication(
-            conjunction(vec![predicate(vec![
+            conjunction(vec![proposition(vec![
                 subject(xjack.clone()),
                 relation(lonely.clone()),
             ])]),
-            predicate(vec![
+            proposition(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
                 object(xjill.clone()),
@@ -186,11 +186,11 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jill is exciting, any jack will date her
         implication(
-            conjunction(vec![predicate(vec![
+            conjunction(vec![proposition(vec![
                 subject(xjill.clone()),
                 relation(exciting.clone()),
             ])]),
-            predicate(vec![
+            proposition(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
                 object(xjill.clone()),
@@ -202,12 +202,12 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jill likes jack, then jack dates jill
         implication(
-            conjunction(vec![predicate(vec![
+            conjunction(vec![proposition(vec![
                 subject(xjill.clone()),
                 relation(like.clone()),
                 object(xjack.clone()),
             ])]),
-            predicate(vec![
+            proposition(vec![
                 subject(xjack.clone()),
                 relation(date.clone()),
                 object(xjill.clone()),
@@ -219,12 +219,12 @@ pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jack likes jill, then jack dates jill
         implication(
-            conjunction(vec![predicate(vec![
+            conjunction(vec![proposition(vec![
                 subject(xjack.clone()),
                 relation(like.clone()),
                 object(xjill.clone()),
             ])]),
-            predicate(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
+            proposition(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
             RoleMap::new(HashMap::from([
                 ("subject".to_string(), "subject".to_string()),
                 ("object".to_string(), "object".to_string()),
