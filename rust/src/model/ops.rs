@@ -24,7 +24,7 @@ pub fn convert_to_proposition(
     predicate: &Proposition,
     role_map: &HashMap<String, FirstOrderArgument>,
 ) -> Result<Proposition, Box<dyn Error>> {
-    debug!("Converting to proposition: {:?}", predicate);
+    debug!("Converting to proposition: {:?}, role_map {:?}", predicate, &role_map);
 
     let mut result_roles = Vec::new();
 
@@ -81,3 +81,4 @@ pub fn extract_premise_role_map(
     }
     result
 }
+
