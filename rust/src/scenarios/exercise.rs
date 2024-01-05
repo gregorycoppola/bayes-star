@@ -1,7 +1,7 @@
 use crate::model::{
     config::CONFIG,
     creators::{
-        conjunction, constant, implication, object, proposition, relation, subject, variable,
+        conjunction, constant, implication, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap, Proposition},
     storage::Storage,
