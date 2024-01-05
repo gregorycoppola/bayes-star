@@ -104,7 +104,7 @@ impl PropositionProbability for MapBackedProbabilityStorage {
     }
 }
 
-pub fn compute_join_probability(
+pub fn compute_joint_probability(
     boolean_assignment: &HashMap<String, bool>,
     assumed_probabilities: &HashMap<String, f64>,
 ) -> Result<f64, Box<dyn Error>> {
@@ -229,7 +229,7 @@ pub fn marginalized_inference_probability(
 
     let mut direct_parents = vec![];
     for backlink in &backlinks {
-        read_in_parent_probabilities(storage, &backlink.conjunction)?;
+        let part_map = read_in_parent_probabilities(storage, &backlink.conjunction)?;
         print_premise_probabilities(storage, &backlink.conjunction)?;
         for term in &backlink.conjunction.terms {
             direct_parents.push(term.clone());
@@ -251,6 +251,8 @@ pub fn marginalized_inference_probability(
             proposition.search_string(),
             &combination
         );
+
+        let join_parent_probability = compute_joint_probability(combination, todo!());
     }
 
     let probability = 0f64;
