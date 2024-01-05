@@ -1,5 +1,5 @@
 use bayes_star::model::config::set_config;
-use bayes_star::model::inference::inference_probability;
+use bayes_star::model::inference::marginalized_inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating_prob2::{setup_train, setup_test};
@@ -74,7 +74,7 @@ fn main() {
     for test_question in &test_questions {
         trace!("test_question {:?}", &test_question);
 
-        let inference_result = inference_probability(&mut storage, &test_question);
+        let inference_result = marginalized_inference_probability(&mut storage, &test_question);
         trace!("inference_result {:?}", &inference_result);
     }
 

@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, collections::HashMap};
 
 use crate::model::{
     choose::compute_backlinks,
@@ -7,7 +7,7 @@ use crate::model::{
 };
 
 use super::{
-    objects::{Conjunction, Proposition},
+    objects::{Conjunction, Proposition, BackLink},
     storage::Storage,
 };
 
@@ -27,7 +27,7 @@ fn ensure_probabilities_are_stored(
                     }
                     None => {
                         // doesn't exist.. recursively compute
-                        inference_probability(storage, &term)?;
+                        marginalized_inference_probability(storage, &term)?;
                     }
                 }
             }
@@ -72,19 +72,11 @@ fn print_premise_probabilities(
     Ok(())
 }
 
-pub fn inference_probability(
+pub fn local_inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
+    backlinks: &[BackLink],
 ) -> Result<f64, Box<dyn Error>> {
-    info!("\n\n\n\n\n\n\n\n\ninference_probability - Start: {:?}", proposition.search_string());
-    info!("inference_probability - Getting features from backlinks");
-    let backlinks = compute_backlinks(storage, &proposition)?;
-
-    for backlink in &backlinks {
-        ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
-        print_premise_probabilities(storage, &backlink.conjunction)?;
-    }
-
     let features = match features_from_backlinks(storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
@@ -128,6 +120,24 @@ pub fn inference_probability(
     let probability = potentials[1] / normalization;
     info!("\x1b[33minference_probability - Computed probability {} {:?}\x1b[0m", probability, proposition.search_string());
 
+
+    Ok(probability)
+}
+
+pub fn marginalized_inference_probability(
+    storage: &mut Storage,
+    proposition: &Proposition,
+) -> Result<f64, Box<dyn Error>> {
+    info!("\n\n\n\n\n\n\n\n\ninference_probability - Start: {:?}", proposition.search_string());
+    info!("inference_probability - Getting features from backlinks");
+    let backlinks = compute_backlinks(storage, &proposition)?;
+
+    for backlink in &backlinks {
+        ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
+        print_premise_probabilities(storage, &backlink.conjunction)?;
+    }
+
+    let probability = local_inference_probability(storage, proposition, &backlinks)?;
     storage.store_proposition(proposition, probability)?;
 
     Ok(probability)
