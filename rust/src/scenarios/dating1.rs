@@ -237,26 +237,6 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 // Returns a vector of "test propositions".
 pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Error>> {
     let total_members_each_class = 10; // test size
-    let entity_domains = [Domain::Jack, Domain::Jill];
-
-    for domain in entity_domains.iter() {
-        for i in 0..total_members_each_class {
-            let name = format!("test_{:?}{}", domain, i); // Using Debug formatting for Domain enum
-            let entity = Entity {
-                domain: domain.clone(),
-                name: name.clone(),
-            };
-
-            // Assuming you have a `storage` instance of a struct that can store entities
-            // and a `store_entity` method which handles storage.
-            // Replace `storage.store_entity(entity)?;` with the actual method call
-            storage.store_entity(&entity)?;
-
-            // Replace logger.noop() with your actual logging if needed
-            trace!("Stored entity: {:?}", entity);
-        }
-    }
-
     // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
     let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
@@ -272,15 +252,20 @@ pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Err
     let date = constant(Domain::Verb, "date".to_string());
 
     let mut result = vec![];
-    for i in 0..jacks.len() {
-        let jack_entity = &jacks[i];
-        let jill_entity = &jills[i];
+    for i in 0..total_members_each_class {
+        let jack_name = format!("test_{:?}{}", "jack", i); // Using Debug formatting for Domain enum
+        let jack_entity = Entity {
+            domain: Domain::Jack.clone(),
+            name: jack_name.clone(),
+        };
+        let jill_name = format!("test_{:?}{}", "jill", i); // Using Debug formatting for Domain enum
+        let jill_entity = Entity {
+            domain: Domain::Jill.clone(),
+            name: jill_name.clone(),
+        };
+        storage.store_entity(&jack_entity)?;
+        storage.store_entity(&jill_entity)?;
 
-        if jack_entity.name.starts_with("test_") {
-            assert!(jill_entity.name.starts_with("test_"));
-        } else {
-            continue;
-        }
 
         let p_jack_lonely = cointoss();
         let p_jill_exciting: f64 = cointoss();
