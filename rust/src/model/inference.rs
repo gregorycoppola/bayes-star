@@ -228,8 +228,10 @@ pub fn marginalized_inference_probability(
     let backlinks = compute_backlinks(storage, &proposition)?;
 
     let mut direct_parents = vec![];
+    let mut parent_probabilities: HashMap<String, f64> = HashMap::new();
     for backlink in &backlinks {
         let part_map = read_in_parent_probabilities(storage, &backlink.conjunction)?;
+        parent_probabilities.extend(part_map);
         print_premise_probabilities(storage, &backlink.conjunction)?;
         for term in &backlink.conjunction.terms {
             direct_parents.push(term.clone());
