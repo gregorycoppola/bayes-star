@@ -1,4 +1,5 @@
 use bayes_star::model::config::set_config;
+use bayes_star::model::inference::inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating1::{setup_train, setup_test};
@@ -59,9 +60,15 @@ fn main() {
     let train_result = do_training(&mut storage);
     trace!("{:?}", train_result);
 
-    let test_questions = setup_test(&mut storage);
+    let test_questions = setup_test(&mut storage).expect("Couldn't set up test.");
 
-    trace!("test_questions {:?}", test_questions);
+
+    for test_question in &test_questions {
+        info!("test_question {:?}", &test_question);
+
+        let inference_result = inference_probability(&mut storage, &test_question);
+        info!("inference_result {:?}", &inference_result);
+    }
 
     // Explicitly drop the Redis client
     std::mem::drop(storage);
