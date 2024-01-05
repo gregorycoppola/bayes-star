@@ -2,7 +2,7 @@ use bayes_star::model::config::set_config;
 use bayes_star::model::inference::inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
-use bayes_star::scenarios::exercise::{setup_train, setup_test};
+use bayes_star::scenarios::dating_prob2::{setup_train, setup_test};
 use env_logger::{Builder, Env};
 use redis::Client;
 use std::io::Write;
