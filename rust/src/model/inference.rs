@@ -109,15 +109,18 @@ pub fn compute_joint_probability(
     assumed_probabilities: &HashMap<String, f64>,
 ) -> Result<f64, Box<dyn Error>> {
     let mut joint_probability = 1.0;
+    info!("\x1b[94mStarting computation of joint probability\x1b[0m");
 
     for (event, &is_true) in boolean_assignment {
+        info!("\x1b[94mProcessing event: {}\x1b[0m", event);
         match assumed_probabilities.get(event) {
             Some(&prob_true) => {
                 let prob = if is_true { prob_true } else { 1.0 - prob_true };
                 joint_probability *= prob;
-            }
+                info!("\x1b[94mEvent: {}, Probability: {}, Cumulative Probability: {}\x1b[0m", event, prob, joint_probability);
+            },
             None => {
-                // Handle the error case where the probability is not found
+                error!("\x1b[94mError: Probability not found for event: {}\x1b[0m", event);
                 return Err(Box::new(std::io::Error::new(
                     std::io::ErrorKind::NotFound,
                     format!("Probability not found for event: {}", event),
@@ -126,8 +129,10 @@ pub fn compute_joint_probability(
         }
     }
 
+    info!("\x1b[94mFinal joint probability: {}\x1b[0m", joint_probability);
     Ok(joint_probability)
 }
+
 
 pub fn local_inference_probability(
     storage: &mut Storage,
