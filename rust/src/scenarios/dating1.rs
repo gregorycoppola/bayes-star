@@ -65,15 +65,16 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         let p_jill_exciting: f64 = cointoss();
         let p_jill_likes_jack: f64 = cointoss();
         let p_jack_likes_jill = numeric_or(p_jack_lonely, p_jill_exciting);
+        let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
         {
             trace!("Jack entity part 2: {:?}", jack_entity);
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
     
-            trace!(
+            info!(
                 "Jack Lonely: {:?}, Probability: {}",
-                jack_lonely,
+                jack_lonely.search_string(),
                 p_jack_lonely
             ); // Logging
     
@@ -85,9 +86,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
     
-            trace!(
+            info!(
                 "Jill Exciting: {:?}, Probability: {}",
-                jill_exciting,
+                jill_exciting.search_string(),
                 p_jill_exciting
             ); // Logging
     
@@ -105,9 +106,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(jack.clone()),
             ]);
-            trace!(
+            info!(
                 "Jill likes Jack: {:?}, Probability: {}",
-                jill_likes_jack,
+                jill_likes_jack.search_string(),
                 p_jill_likes_jack
             ); // Logging
             storage.store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
@@ -122,9 +123,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(jill.clone()),
             ]);
-            trace!(
+            info!(
                 "Jack likes Jill: {:?}, Probability: {}",
-                jack_likes_jill,
+                jack_likes_jill.search_string(),
                 p_jack_likes_jill
             ); // Logging
             storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
@@ -136,10 +137,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
             let jack_dates_jill =
                 proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
-            let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
-            trace!(
+            info!(
                 "Jack dates Jill: {:?}, Probability: {}",
-                jack_dates_jill,
+                jack_dates_jill.search_string(),
                 p_jack_dates_jill
             ); // Logging
             storage.store_proposition(&jack_dates_jill, p_jack_dates_jill)?;
