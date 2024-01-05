@@ -73,17 +73,22 @@ fn print_premise_probabilities(
 }
 
 struct MapBackedProbabilityStorage {
-    underlying:Vec<HashMap<String, bool>>
+    underlying:HashMap<String, bool>
 }
 
 impl PropositionProbability for MapBackedProbabilityStorage {
-
-    // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &mut self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        todo!("implement")
+        let search_key = proposition.search_string();
+
+        if let Some(&value) = self.underlying.get(&search_key) {
+            // Assuming true = 1.0 probability and false = 0.0
+            Ok(Some(if value { 1.0 } else { 0.0 }))
+        } else {
+            panic!("proposition key not found in local map {:?}", &search_key);
+        }
     }
 }
 
@@ -91,7 +96,7 @@ pub fn local_inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
     backlinks: &[BackLink],
-    assumed_probabilities: Vec<HashMap<String, bool>>,
+    assumed_probabilities: HashMap<String, bool>,
 ) -> Result<f64, Box<dyn Error>> {
     let map_storage = MapBackedProbabilityStorage { underlying: assumed_probabilities};
     let features = match features_from_backlinks(storage, &backlinks) {
@@ -182,9 +187,13 @@ pub fn marginalized_inference_probability(
     for combination in &combinations {
         info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
 
+        let probability = local_inference_probability(storage, proposition, &backlinks, combination.clone())?;
+
+        info!("\x1b[35mdirect probability {} {:?}\x1b[0m", probability, &combination);
+
     }
 
-    let probability = local_inference_probability(storage, proposition, &backlinks, combinations)?;
+    let probability = 0f64;
     storage.store_proposition(proposition, probability)?;
 
     Ok(probability)
