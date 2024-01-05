@@ -9,12 +9,19 @@ fn random_weight() -> f64 {
     (rng.gen::<f64>() - rng.gen::<f64>()) / 5.0
 }
 
-pub fn positive_feature(feature: &str) -> String {
-    format!("++{}++", feature)
+fn class_as_char(class_label: bool) -> String {
+    if class_label {
+        "+".to_string()
+    } else {
+        "-".to_string()
+    }
+}
+pub fn positive_feature(feature: &str, class_label:bool) -> String {
+    format!("+ -> {} {}", class_as_char(class_label), feature)
 }
 
-pub fn negative_feature(feature: &str) -> String {
-    format!("--{}--", feature)
+pub fn negative_feature(feature: &str, class_label : bool) -> String {
+    format!("- -> {} {}", class_as_char(class_label), feature)
 }
 
 pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
@@ -23,27 +30,30 @@ pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Re
     let feature = implication.unique_key();
     trace!("initialize_weights - Unique key: {}", feature);
 
-    let posf = positive_feature(&feature);
-    let negf = negative_feature(&feature);
-    trace!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
+    for class_label in [true, false] {
+        let posf = positive_feature(&feature, class_label);
+        let negf = negative_feature(&feature, class_label);
+        trace!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
+    
+        let weight1 = random_weight();
+        let weight2 = random_weight();
+        trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
+    
+        trace!("initialize_weights - Setting positive feature weight");
+        con.hset("weights", &posf, weight1)
+            .map_err(|e| {
+                trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
+                Box::new(e) as Box<dyn Error>
+            })?;
+    
+        trace!("initialize_weights - Setting negative feature weight");
+        con.hset("weights", &negf, weight2)
+            .map_err(|e| {
+                trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
+                Box::new(e) as Box<dyn Error>
+            })?;
+    }
 
-    let weight1 = random_weight();
-    let weight2 = random_weight();
-    trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
-
-    trace!("initialize_weights - Setting positive feature weight");
-    con.hset("weights", &posf, weight1)
-        .map_err(|e| {
-            trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
-            Box::new(e) as Box<dyn Error>
-        })?;
-
-    trace!("initialize_weights - Setting negative feature weight");
-    con.hset("weights", &negf, weight2)
-        .map_err(|e| {
-            trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
-            Box::new(e) as Box<dyn Error>
-        })?;
 
     trace!("initialize_weights - End");
     Ok(())
