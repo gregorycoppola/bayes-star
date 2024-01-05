@@ -248,6 +248,7 @@ pub fn marginalized_inference_probability(
     }
 
     let combinations = each_combination(&direct_parents);
+    let mut cumulative_probability = 0f64;
     for combination in &combinations {
         info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
         let local_probability =
@@ -264,11 +265,13 @@ pub fn marginalized_inference_probability(
             "\x1b[31mjoint parent probability {} {:?}\x1b[0m",
             joint_parent_probability,
             combination,
-        )
+        );
+
+        let combined = local_probability * joint_parent_probability;
+        cumulative_probability += combined;
     }
 
-    let probability = 0f64;
-    storage.store_proposition(proposition, probability)?;
+    storage.store_proposition(proposition, cumulative_probability)?;
 
-    Ok(probability)
+    Ok(cumulative_probability)
 }
