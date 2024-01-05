@@ -17,7 +17,7 @@ fn ensure_probabilities_are_stored(
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
-        info!("Getting proposition probability for term {}: {:?}", i, term);
+        info!("Getting proposition probability for term {}: {:?}", i, term.search_string());
 
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
@@ -47,7 +47,7 @@ pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    info!("inference_probability - Start: {:?}", proposition);
+    info!("inference_probability - Start: {:?}", proposition.search_string());
     info!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
@@ -80,6 +80,10 @@ pub fn inference_probability(
 
     info!("inference_probability - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
+
+    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+
+    storage.store_proposition(proposition, probability)?;
 
     Ok(probability)
 }
