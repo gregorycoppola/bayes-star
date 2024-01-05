@@ -13,8 +13,13 @@ use clap::{App, Arg};
 
 fn main() {
     Builder::from_env(Env::default().default_filter_or("info"))
-        .format(|buf, record| writeln!(buf, "{} {}", record.level(), record.args()))
-        .init();
+    .format(|buf, record| {
+        let file = record.file().unwrap_or("unknown");
+        let line = record.line().unwrap_or(0);
+
+        writeln!(buf, "{} [{}:{}] {}", record.level(), file, line, record.args())
+    })
+    .init();
     let matches = App::new("BAYES STAR")
         .version("1.0")
         .author("Greg Coppola")
