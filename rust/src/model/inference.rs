@@ -3,7 +3,7 @@ use std::error::Error;
 use crate::model::{
     choose::compute_backlinks,
     maxent::{compute_potential, features_from_backlinks},
-    weights::read_weights,
+    weights::{read_weights, CLASS_LABELS},
 };
 
 use super::{
@@ -95,29 +95,37 @@ pub fn inference_probability(
             return Err(e);
         }
     };
-    for (feature, weight) in features.iter() {
-        info!("feature {:?} {}", &feature, weight);
-    }
 
-    trace!("inference_probability - Reading weights");
-    let weight_vector = match read_weights(
-        storage.get_redis_connection(),
-        &features.keys().cloned().collect::<Vec<_>>(),
-    ) {
-        Ok(w) => w,
-        Err(e) => {
-            trace!("inference_probability - Error in read_weights: {:?}", e);
-            return Err(e);
+    let mut potentials = vec![];
+    for class_label in CLASS_LABELS {
+        let this_features = &features[class_label];
+        for (feature, weight) in this_features.iter() {
+            info!("feature {:?} {}", &feature, weight);
         }
-    };
-    for (feature, weight) in weight_vector.iter() {
-        info!("weight {:?} {}", &feature, weight);
+    
+        trace!("inference_probability - Reading weights");
+        let weight_vector = match read_weights(
+            storage.get_redis_connection(),
+            &this_features.keys().cloned().collect::<Vec<_>>(),
+        ) {
+            Ok(w) => w,
+            Err(e) => {
+                trace!("inference_probability - Error in read_weights: {:?}", e);
+                return Err(e);
+            }
+        };
+        for (feature, weight) in weight_vector.iter() {
+            info!("weight {:?} {}", &feature, weight);
+        }
+    
+        trace!("inference_probability - Computing probability");
+        let potential = compute_potential(&weight_vector, &this_features);
+        potentials.push(potential);
+        info!("inference_probability - Computed probability {} {:?}", potential, proposition.search_string());
     }
 
-    trace!("inference_probability - Computing probability");
-    let probability = compute_potential(&weight_vector, &features);
-
-    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    let normalization = potentials[0] + potentials[1];
+    let probability = potentials[1] / normalization;
 
     storage.store_proposition(proposition, probability)?;
 
