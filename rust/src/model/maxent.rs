@@ -33,37 +33,42 @@ pub fn compute_probability(weights: &HashMap<String, f64>, features: &HashMap<St
 pub fn features_from_backlinks(
     storage: &mut Storage,
     backlinks: &[BackLink],
-) -> Result<HashMap<String, f64>, Box<dyn Error>> {
-    let mut result = HashMap::new();
+) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
+    let mut pair_result = vec![];
+    for class_label in [false, true] {
+        let mut result = HashMap::new();
 
-    trace!("Starting features_from_backlinks with {} backlinks", backlinks.len());
+        for (i, backlink) in backlinks.iter().enumerate() {
+            debug!("Processing backlink {}", i);
+            
+            let feature = backlink.implication.unique_key(); 
+            debug!("Generated unique key for feature: {}", feature);
     
-    for (i, backlink) in backlinks.iter().enumerate() {
-        debug!("Processing backlink {}", i);
-        
-        let feature = backlink.implication.unique_key(); 
-        debug!("Generated unique key for feature: {}", feature);
-
-        match get_conjunction_probability(storage, &backlink.conjunction) {
-            Ok(probability) => {
-                debug!("Conjunction probability for backlink {}: {}", i, probability);
-                let posf = positive_feature(&feature);
-                let negf = negative_feature(&feature);
-
-                result.insert(posf.clone(), probability);
-                result.insert(negf.clone(), 1.0 - probability);
-
-                debug!("Inserted features for backlink {}: positive - {}, negative - {}", i, posf, negf);
-            },
-            Err(e) => {
-                error!("Error computing conjunction probability for backlink {}: {}", i, e);
-                return Err(e);
-            },
+            match get_conjunction_probability(storage, &backlink.conjunction) {
+                Ok(probability) => {
+                    debug!("Conjunction probability for backlink {}: {}", i, probability);
+                    let posf = positive_feature(&feature);
+                    let negf = negative_feature(&feature);
+    
+                    result.insert(posf.clone(), probability);
+                    result.insert(negf.clone(), 1.0 - probability);
+    
+                    debug!("Inserted features for backlink {}: positive - {}, negative - {}", i, posf, negf);
+                },
+                Err(e) => {
+                    error!("Error computing conjunction probability for backlink {}: {}", i, e);
+                    return Err(e);
+                },
+            }
         }
+        pair_result.push(result);
     }
 
+    trace!("Starting features_from_backlinks with {} backlinks", backlinks.len());
+
+
     trace!("features_from_backlinks completed successfully");
-    Ok(result)
+    Ok(pair_result)
 }
 
 pub fn compute_expected_features(
@@ -122,6 +127,8 @@ pub fn train_on_example(
             return Err(e);
         }
     };
+
+
     for (feature, weight) in &features {
         info!("feature {:?} {}", feature, weight);
 
