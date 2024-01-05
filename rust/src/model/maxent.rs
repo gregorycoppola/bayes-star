@@ -20,7 +20,7 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     result
 }
 
-pub fn compute_exponentiation(weights: &HashMap<String, f64>, features: &HashMap<String, f64>) -> f64 {
+pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<String, f64>) -> f64 {
     let dot = dot_product(weights, features);
     dot.exp()
 }
@@ -124,6 +124,8 @@ pub fn train_on_example(
         }
     };
 
+    let mut weight_vectors = vec![];
+    let mut potentials = vec![];
     for class_label in CLASS_LABELS {
         for (feature, weight) in &features[class_label] {
             info!("feature {:?} {}", feature, weight);
@@ -140,20 +142,27 @@ pub fn train_on_example(
                 return Err(e);
             }
         };
+        weight_vectors.push(weight_vector);
+
+        trace!("train_on_example - Computing probability");
+        let potential = compute_potential(&weight_vector, &features[class_label]);
+        trace!("train_on_example - Computed probability: {}", potential);
+        potentials.push(potential);
     }
 
-    trace!("train_on_example - Computing probability");
-    let probability = compute_exponentiation(&weight_vector, &features);
-    trace!("train_on_example - Computed probability: {}", probability);
+    let normalization = potentials[0] + potentials[1];
 
-    trace!("train_on_example - Computing expected features");
-    let expected = compute_expected_features(probability, &features);
-
-    trace!("train_on_example - Performing SGD update");
-    let new_weight = do_sgd_update(&weight_vector, &features, &expected);
-
-    trace!("train_on_example - Saving new weights");
-    save_weights(storage.get_redis_connection(), &new_weight)?;
+    for class_label in CLASS_LABELS {
+        let probability = potentials[class_label] / normalization;
+        trace!("train_on_example - Computing expected features");
+        let expected = compute_expected_features(probability, &features[class_label]);
+    
+        trace!("train_on_example - Performing SGD update");
+        let new_weight = do_sgd_update(&weight_vectors[class_label], &features[class_label], &expected);
+    
+        trace!("train_on_example - Saving new weights");
+        save_weights(storage.get_redis_connection(), &new_weight)?;
+    }
 
     trace!("train_on_example - End");
     Ok(())
