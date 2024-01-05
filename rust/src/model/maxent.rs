@@ -99,7 +99,7 @@ pub fn do_sgd_update(
 
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
-            info!("feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}", feature, gv, ev, _loss, wv, new_weight);
+            trace!("feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}", feature, gv, ev, _loss, wv, new_weight);
 
         }
 
@@ -114,7 +114,7 @@ pub fn train_on_example(
     proposition: &Proposition,
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
-    info!("train_on_example - Start: {:?}", proposition.search_string());
+    trace!("train_on_example - Start: {:?}", proposition.search_string());
     trace!("train_on_example - Getting features from backlinks");
     let features = match features_from_backlinks(storage, backlinks) {
         Ok(f) => f,
@@ -128,7 +128,7 @@ pub fn train_on_example(
     let mut potentials = vec![];
     for class_label in CLASS_LABELS {
         for (feature, weight) in &features[class_label] {
-            info!("feature {:?} {}", feature, weight);
+            trace!("feature {:?} {}", feature, weight);
     
         }
         trace!("train_on_example - Reading weights for class {}", class_label);

@@ -72,7 +72,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
     
-            info!(
+            trace!(
                 "Jack Lonely: {:?}, Probability: {}",
                 jack_lonely.search_string(),
                 p_jack_lonely
@@ -86,7 +86,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
     
-            info!(
+            trace!(
                 "Jill Exciting: {:?}, Probability: {}",
                 jill_exciting.search_string(),
                 p_jill_exciting
@@ -106,7 +106,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(jack.clone()),
             ]);
-            info!(
+            trace!(
                 "Jill likes Jack: {:?}, Probability: {}",
                 jill_likes_jack.search_string(),
                 p_jill_likes_jack
@@ -123,7 +123,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 relation(like.clone()),
                 object(jill.clone()),
             ]);
-            info!(
+            trace!(
                 "Jack likes Jill: {:?}, Probability: {}",
                 jack_likes_jill.search_string(),
                 p_jack_likes_jill
@@ -137,7 +137,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
             let jack_dates_jill =
                 proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
-            info!(
+            trace!(
                 "Jack dates Jill: {:?}, Probability: {}",
                 jack_dates_jill.search_string(),
                 p_jack_dates_jill

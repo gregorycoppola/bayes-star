@@ -53,7 +53,7 @@ fn print_premise_probabilities(
             Ok(term_prob_opt) => {
                 match term_prob_opt {
                     Some(term_prob) => {
-                        info!("activation: {} {}", term.search_string(), term_prob);
+                        trace!("activation: {} {}", term.search_string(), term_prob);
                     }
                     None => {
                         panic!("Should have the probability by now");
@@ -76,7 +76,7 @@ pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    info!("inference_probability - Start: {:?}", proposition.search_string());
+    trace!("inference_probability - Start: {:?}", proposition.search_string());
     trace!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
@@ -100,7 +100,7 @@ pub fn inference_probability(
     for class_label in CLASS_LABELS {
         let this_features = &features[class_label];
         for (feature, weight) in this_features.iter() {
-            info!("feature {:?} {}", &feature, weight);
+            trace!("feature {:?} {}", &feature, weight);
         }
     
         trace!("inference_probability - Reading weights");
@@ -115,18 +115,18 @@ pub fn inference_probability(
             }
         };
         for (feature, weight) in weight_vector.iter() {
-            info!("weight {:?} {}", &feature, weight);
+            trace!("weight {:?} {}", &feature, weight);
         }
     
         trace!("inference_probability - Computing probability");
         let potential = compute_potential(&weight_vector, &this_features);
         potentials.push(potential);
-        info!("inference_probability - Computed potential {} {:?}", potential, proposition.search_string());
+        trace!("inference_probability - Computed potential {} {:?}", potential, proposition.search_string());
     }
 
     let normalization = potentials[0] + potentials[1];
     let probability = potentials[1] / normalization;
-    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    trace!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
