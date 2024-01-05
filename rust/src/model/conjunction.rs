@@ -15,9 +15,9 @@ pub fn get_conjunction_probability(
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
                 let term_prob = term_prob_opt.expect("`term_prob` should be Some here.");
-                trace!("Term probability for term {}: {}", i, term_prob);
+                info!("Term probability for term {}: {}", term.search_string(), term_prob);
                 min_prob = min_prob.min(term_prob);
-                trace!("Updated min probability after term {}: {}", i, min_prob);
+                trace!("Updated min probability after term {}: {}", term.search_string(), min_prob);
             },
             Err(e) => {
                 error!("Error getting proposition probability for term {}: {}", i, e);
@@ -26,6 +26,6 @@ pub fn get_conjunction_probability(
         }
     }
 
-    trace!("Conjunction probability calculated: {}", min_prob);
+    info!("Conjunction probability calculated: {}", min_prob);
     Ok(min_prob)
 }

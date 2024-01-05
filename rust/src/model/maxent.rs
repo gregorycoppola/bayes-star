@@ -98,7 +98,7 @@ pub fn do_sgd_update(
 
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
-            info!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+            info!("feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}", feature, gv, ev, _loss, wv, new_weight);
 
         }
 
