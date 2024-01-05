@@ -17,7 +17,7 @@ fn ensure_probabilities_are_stored(
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
-        info!("Getting proposition probability for term {}: {:?}", i, term.search_string());
+        trace!("Getting proposition probability for term {}: {:?}", i, term.search_string());
 
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
@@ -47,8 +47,8 @@ pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    info!("inference_probability - Start: {:?}", proposition.search_string());
-    info!("inference_probability - Getting features from backlinks");
+    trace!("inference_probability - Start: {:?}", proposition.search_string());
+    trace!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
     for backlink in &backlinks {
@@ -58,7 +58,7 @@ pub fn inference_probability(
     let features = match features_from_backlinks(storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
-            info!(
+            trace!(
                 "inference_probability - Error in features_from_backlinks: {:?}",
                 e
             );
@@ -66,22 +66,22 @@ pub fn inference_probability(
         }
     };
 
-    info!("inference_probability - Reading weights");
+    trace!("inference_probability - Reading weights");
     let weight_vector = match read_weights(
         storage.get_redis_connection(),
         &features.keys().cloned().collect::<Vec<_>>(),
     ) {
         Ok(w) => w,
         Err(e) => {
-            info!("inference_probability - Error in read_weights: {:?}", e);
+            trace!("inference_probability - Error in read_weights: {:?}", e);
             return Err(e);
         }
     };
 
-    info!("inference_probability - Computing probability");
+    trace!("inference_probability - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
 
-    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    trace!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
