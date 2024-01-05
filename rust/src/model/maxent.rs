@@ -98,7 +98,7 @@ pub fn do_sgd_update(
 
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
-            trace!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+            info!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
 
         }
 
@@ -113,7 +113,7 @@ pub fn train_on_example(
     proposition: &Proposition,
     backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
-    trace!("train_on_example - Start: {:?}", proposition);
+    info!("train_on_example - Start: {:?}", proposition.search_string());
     trace!("train_on_example - Getting features from backlinks");
     let features = match features_from_backlinks(storage, backlinks) {
         Ok(f) => f,
@@ -122,6 +122,10 @@ pub fn train_on_example(
             return Err(e);
         }
     };
+    for (feature, weight) in &features {
+        info!("feature {:?} {}", feature, weight);
+
+    }
 
     trace!("train_on_example - Reading weights");
     let weight_vector = match read_weights(

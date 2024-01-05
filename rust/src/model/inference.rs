@@ -76,7 +76,7 @@ pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    trace!("inference_probability - Start: {:?}", proposition.search_string());
+    info!("inference_probability - Start: {:?}", proposition.search_string());
     trace!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
@@ -95,6 +95,9 @@ pub fn inference_probability(
             return Err(e);
         }
     };
+    for (feature, weight) in features.iter() {
+        info!("feature {:?} {}", &feature, weight);
+    }
 
     trace!("inference_probability - Reading weights");
     let weight_vector = match read_weights(
@@ -107,6 +110,9 @@ pub fn inference_probability(
             return Err(e);
         }
     };
+    for (feature, weight) in weight_vector.iter() {
+        info!("weight {:?} {}", &feature, weight);
+    }
 
     trace!("inference_probability - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
