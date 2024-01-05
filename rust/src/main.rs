@@ -3,15 +3,18 @@ use bayes_star::model::inference::inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
 use bayes_star::scenarios::dating1::{setup_train, setup_test};
+use env_logger::{Builder, Env};
 use redis::Client;
+use std::io::Write;
 
 #[macro_use]
 extern crate log;
 use clap::{App, Arg};
 
 fn main() {
-    env_logger::init();
-
+    Builder::from_env(Env::default().default_filter_or("info"))
+        .format(|buf, record| writeln!(buf, "{} {}", record.level(), record.args()))
+        .init();
     let matches = App::new("BAYES STAR")
         .version("1.0")
         .author("Greg Coppola")
