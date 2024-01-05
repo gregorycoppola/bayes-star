@@ -14,7 +14,9 @@ use super::{
 fn ensure_probabilities_are_stored(
     storage: &mut Storage,
     conjunction: &Conjunction,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<HashMap<String, f64>, Box<dyn Error>> {
+    let mut probabilities = HashMap::new();
+
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
         info!("Getting proposition probability for term {}: {:?}", i, term.search_string());
@@ -22,25 +24,25 @@ fn ensure_probabilities_are_stored(
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
                 match term_prob_opt {
-                    Some(_term_prob) => {
-                        // exists.. do nothing
+                    Some(term_prob) => {
+                        // Insert into the hashmap
+                        probabilities.insert(term.search_string(), term_prob);
                     }
                     None => {
-                        // doesn't exist.. recursively compute
-                        marginalized_inference_probability(storage, &term)?;
+                        // doesn't exist.. recursively compute and insert
+                        let computed_prob = marginalized_inference_probability(storage, &term)?;
+                        probabilities.insert(term.search_string(), computed_prob);
                     }
                 }
             }
             Err(e) => {
-                error!(
-                    "Error getting proposition probability for term {}: {}",
-                    i, e
-                );
+                error!("Error getting proposition probability for term {}: {}", i, e);
                 return Err(e);
             }
         }
     }
-    Ok(())
+
+    Ok(probabilities)
 }
 
 fn print_premise_probabilities(
