@@ -109,7 +109,7 @@ pub fn compute_joint_probability(
     assumed_probabilities: &HashMap<String, f64>,
 ) -> Result<f64, Box<dyn Error>> {
     let mut joint_probability = 1.0;
-    info!("\x1b[94mStarting computation of joint probability\x1b[0m");
+    info!("\x1b[94mStarting computation of joint probability\x1b[0m {:?}", assumed_probabilities);
 
     for (event, &is_true) in boolean_assignment {
         info!("\x1b[94mProcessing event: {}\x1b[0m", event);
