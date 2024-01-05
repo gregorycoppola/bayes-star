@@ -11,7 +11,7 @@ use super::{
     storage::Storage,
 };
 
-fn ensure_probabilities_are_stored(
+fn read_in_parent_probabilities(
     storage: &mut Storage,
     conjunction: &Conjunction,
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
@@ -179,7 +179,7 @@ pub fn marginalized_inference_probability(
 
     let mut direct_parents = vec![];
     for backlink in &backlinks {
-        ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
+        read_in_parent_probabilities(storage, &backlink.conjunction)?;
         print_premise_probabilities(storage, &backlink.conjunction)?;
         for term in &backlink.conjunction.terms {
             direct_parents.push(term.clone());
