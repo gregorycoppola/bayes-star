@@ -43,6 +43,35 @@ fn ensure_probabilities_are_stored(
     Ok(())
 }
 
+fn print_premise_probabilities(
+    storage: &mut Storage,
+    conjunction: &Conjunction,
+) -> Result<(), Box<dyn Error>> {
+    for (i, term) in conjunction.terms.iter().enumerate() {
+        assert!(term.is_fact());
+        match storage.get_proposition_probability(term) {
+            Ok(term_prob_opt) => {
+                match term_prob_opt {
+                    Some(term_prob) => {
+                        info!("activation: {} {}", term.search_string(), term_prob);
+                    }
+                    None => {
+                        panic!("Should have the probability by now");
+                    }
+                }
+            }
+            Err(e) => {
+                error!(
+                    "Error getting proposition probability for term {}: {}",
+                    i, e
+                );
+                return Err(e);
+            }
+        }
+    }
+    Ok(())
+}
+
 pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
@@ -53,6 +82,7 @@ pub fn inference_probability(
 
     for backlink in &backlinks {
         ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
+        print_premise_probabilities(storage, &backlink.conjunction)?;
     }
 
     let features = match features_from_backlinks(storage, &backlinks) {
@@ -81,7 +111,7 @@ pub fn inference_probability(
     trace!("inference_probability - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
 
-    trace!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
