@@ -253,12 +253,12 @@ pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Err
 
     let mut result = vec![];
     for i in 0..total_members_each_class {
-        let jack_name = format!("test_{:?}{}", "jack", i); // Using Debug formatting for Domain enum
+        let jack_name = format!("test_{:?}{}", Domain::Jack, i); // Using Debug formatting for Domain enum
         let jack_entity = Entity {
             domain: Domain::Jack.clone(),
             name: jack_name.clone(),
         };
-        let jill_name = format!("test_{:?}{}", "jill", i); // Using Debug formatting for Domain enum
+        let jill_name = format!("test_{:?}{}", Domain::Jill, i); // Using Debug formatting for Domain enum
         let jill_entity = Entity {
             domain: Domain::Jill.clone(),
             name: jill_name.clone(),
