@@ -142,12 +142,13 @@ pub fn train_on_example(
                 return Err(e);
             }
         };
-        weight_vectors.push(weight_vector);
 
         trace!("train_on_example - Computing probability");
         let potential = compute_potential(&weight_vector, &features[class_label]);
         trace!("train_on_example - Computed probability: {}", potential);
         potentials.push(potential);
+        weight_vectors.push(weight_vector);
+
     }
 
     let normalization = potentials[0] + potentials[1];
