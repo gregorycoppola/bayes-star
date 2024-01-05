@@ -17,7 +17,7 @@ fn ensure_probabilities_are_stored(
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
-        trace!("Getting proposition probability for term {}: {:?}", i, term);
+        info!("Getting proposition probability for term {}: {:?}", i, term);
 
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
@@ -47,8 +47,8 @@ pub fn inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    trace!("inference_probability - Start: {:?}", proposition);
-    trace!("inference_probability - Getting features from backlinks");
+    info!("inference_probability - Start: {:?}", proposition);
+    info!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
     for backlink in &backlinks {
@@ -58,7 +58,7 @@ pub fn inference_probability(
     let features = match features_from_backlinks(storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
-            trace!(
+            info!(
                 "inference_probability - Error in features_from_backlinks: {:?}",
                 e
             );
@@ -66,19 +66,19 @@ pub fn inference_probability(
         }
     };
 
-    trace!("inference_probability - Reading weights");
+    info!("inference_probability - Reading weights");
     let weight_vector = match read_weights(
         storage.get_redis_connection(),
         &features.keys().cloned().collect::<Vec<_>>(),
     ) {
         Ok(w) => w,
         Err(e) => {
-            trace!("inference_probability - Error in read_weights: {:?}", e);
+            info!("inference_probability - Error in read_weights: {:?}", e);
             return Err(e);
         }
     };
 
-    trace!("inference_probability - Computing probability");
+    info!("inference_probability - Computing probability");
     let probability = compute_probability(&weight_vector, &features);
 
     Ok(probability)
