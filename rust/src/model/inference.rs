@@ -53,7 +53,7 @@ fn print_premise_probabilities(
             Ok(term_prob_opt) => {
                 match term_prob_opt {
                     Some(term_prob) => {
-                        info!("activation: {} {}", term.search_string(), term_prob);
+                        info!("\x1b[32mactivation: {} {}\x1b[0m", term.search_string(), term_prob);
                     }
                     None => {
                         panic!("Should have the probability by now");
