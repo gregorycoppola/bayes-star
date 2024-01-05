@@ -98,8 +98,10 @@ pub fn local_inference_probability(
     backlinks: &[BackLink],
     assumed_probabilities: HashMap<String, bool>,
 ) -> Result<f64, Box<dyn Error>> {
-    let map_storage = MapBackedProbabilityStorage { underlying: assumed_probabilities};
-    let features = match features_from_backlinks(storage, &backlinks) {
+    info!("\x1b[31mlocal_inference_probability - Start: {:?}\x1b[0m", proposition.search_string());
+
+    let mut map_storage = MapBackedProbabilityStorage { underlying: assumed_probabilities};
+    let features = match features_from_backlinks(&mut map_storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
             info!(
@@ -140,7 +142,7 @@ pub fn local_inference_probability(
 
     let normalization = potentials[0] + potentials[1];
     let probability = potentials[1] / normalization;
-    info!("\x1b[33minference_probability - Computed probability {} {:?}\x1b[0m", probability, proposition.search_string());
+    info!("\x1b[33mlocal_inference_probability - Computed probability {} {:?}\x1b[0m", probability, proposition.search_string());
 
 
     Ok(probability)
@@ -189,7 +191,7 @@ pub fn marginalized_inference_probability(
 
         let probability = local_inference_probability(storage, proposition, &backlinks, combination.clone())?;
 
-        info!("\x1b[35mdirect probability {} {:?}\x1b[0m", probability, &combination);
+        info!("\x1b[31mdirect probability {} {:?}, {:?}\x1b[0m", probability, proposition.search_string(), &combination);
 
     }
 
