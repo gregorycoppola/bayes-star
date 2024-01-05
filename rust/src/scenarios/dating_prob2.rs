@@ -3,7 +3,7 @@ use crate::model::{
     creators::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
-    objects::{Domain, Entity, RoleMap, Proposition},
+    objects::{Domain, Entity, Proposition, RoleMap},
     storage::Storage,
 };
 use rand::Rng; // Import Rng trait
@@ -80,13 +80,13 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             trace!("Jack entity part 2: {:?}", jack_entity);
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
-    
+
             trace!(
                 "Jack Lonely: {:?}, Probability: {}",
                 jack_lonely.search_string(),
                 p_jack_lonely
             ); // Logging
-    
+
             // Assuming `store_proposition` is a method in your Storage struct
             storage.store_proposition(&jack_lonely, p_jack_lonely)?;
         }
@@ -94,13 +94,13 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
-    
+
             trace!(
                 "Jill Exciting: {:?}, Probability: {}",
                 jill_exciting.search_string(),
                 p_jill_exciting
             ); // Logging
-    
+
             // Assuming `store_proposition` is a method in your Storage struct
             storage.store_proposition(&jill_exciting, p_jill_exciting)?;
         }
@@ -156,7 +156,6 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let effective_p = weighted_cointoss(adusted_p);
             storage.store_proposition(&jack_dates_jill, effective_p)?;
         }
-
     }
 
     let xjack = variable(Domain::Jack);
@@ -197,33 +196,33 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         ),
         // if jill likes jack, then jack dates jill
         implication(
-            conjunction(vec![proposition(vec![
-                subject(xjill.clone()),
-                relation(like.clone()),
-                object(xjack.clone()),
-            ])]),
+            conjunction(vec![
+                proposition(vec![
+                    subject(xjill.clone()),
+                    relation(like.clone()),
+                    object(xjack.clone()),
+                ]),
+                proposition(vec![
+                    subject(xjack.clone()),
+                    relation(like.clone()),
+                    object(xjill.clone()),
+                ]),
+            ]),
             proposition(vec![
                 subject(xjack.clone()),
                 relation(date.clone()),
                 object(xjill.clone()),
             ]),
-            vec![RoleMap::new(HashMap::from([
-                ("subject".to_string(), "object".to_string()),
-                ("object".to_string(), "subject".to_string()),
-            ]))],
-        ),
-        // if jack likes jill, then jack dates jill
-        implication(
-            conjunction(vec![proposition(vec![
-                subject(xjack.clone()),
-                relation(like.clone()),
-                object(xjill.clone()),
-            ])]),
-            proposition(vec![subject(xjack), relation(date.clone()), object(xjill)]), // clone `date` here
-            vec![RoleMap::new(HashMap::from([
-                ("subject".to_string(), "subject".to_string()),
-                ("object".to_string(), "object".to_string()),
-            ]))],
+            vec![
+                RoleMap::new(HashMap::from([
+                    ("subject".to_string(), "object".to_string()),
+                    ("object".to_string(), "subject".to_string()),
+                ])),
+                RoleMap::new(HashMap::from([
+                    ("subject".to_string(), "subject".to_string()),
+                    ("object".to_string(), "object".to_string()),
+                ])),
+            ],
         ),
     ];
 
@@ -249,7 +248,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 // Returns a vector of "test propositions".
 pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Error>> {
     let total_members_each_class = 10; // test size
-    // Retrieve entities in the Jack domain
+                                       // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
     let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
     trace!("Initial number of jacks: {}", jacks.len());
@@ -278,7 +277,6 @@ pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Err
         storage.store_entity(&jack_entity)?;
         storage.store_entity(&jill_entity)?;
 
-
         let p_jack_lonely = cointoss();
         let p_jill_exciting: f64 = cointoss();
         let p_jill_likes_jack: f64 = cointoss();
@@ -287,13 +285,13 @@ pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Err
             trace!("Jack entity part 2: {:?}", jack_entity);
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_lonely = proposition(vec![subject(jack), relation(lonely.clone())]);
-    
+
             trace!(
                 "Jack Lonely: {:?}, Probability: {}",
                 jack_lonely,
                 p_jack_lonely
             ); // Logging
-    
+
             // Assuming `store_proposition` is a method in your Storage struct
             storage.store_proposition(&jack_lonely, p_jack_lonely)?;
         }
@@ -301,13 +299,13 @@ pub fn setup_test(storage: &mut Storage) -> Result<Vec<Proposition>, Box<dyn Err
         {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jill_exciting = proposition(vec![subject(jill), relation(exciting.clone())]);
-    
+
             trace!(
                 "Jill Exciting: {:?}, Probability: {}",
                 jill_exciting,
                 p_jill_exciting
             ); // Logging
-    
+
             // Assuming `store_proposition` is a method in your Storage struct
             storage.store_proposition(&jill_exciting, p_jill_exciting)?;
         }
