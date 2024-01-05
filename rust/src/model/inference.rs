@@ -126,7 +126,7 @@ pub fn inference_probability(
 
     let normalization = potentials[0] + potentials[1];
     let probability = potentials[1] / normalization;
-    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    info!("\x1b[33minference_probability - Computed probability {} {:?}\x1b[0m", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
