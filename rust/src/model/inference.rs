@@ -243,11 +243,11 @@ pub fn marginalized_inference_probability(
     let combinations = each_combination(&direct_parents);
     for combination in &combinations {
         info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
-        let probability =
+        let local_probability =
             local_inference_probability(storage, proposition, &backlinks, combination.clone())?;
         info!(
             "\x1b[31mdirect probability {} {:?}, {:?}\x1b[0m",
-            probability,
+            local_probability,
             proposition.search_string(),
             &combination
         );
