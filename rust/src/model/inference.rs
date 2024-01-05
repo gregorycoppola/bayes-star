@@ -132,9 +132,14 @@ pub fn marginalized_inference_probability(
     info!("inference_probability - Getting features from backlinks");
     let backlinks = compute_backlinks(storage, &proposition)?;
 
+    let mut direct_parents = vec![];
     for backlink in &backlinks {
         ensure_probabilities_are_stored(storage, &backlink.conjunction)?;
         print_premise_probabilities(storage, &backlink.conjunction)?;
+        for term in &backlink.conjunction.terms {
+            direct_parents.push(term.clone());
+            info!("\x1b[34mdirect dependency {:?}\x1b[0m", term.search_string());
+        }
     }
 
     let probability = local_inference_probability(storage, proposition, &backlinks)?;
