@@ -124,6 +124,25 @@ pub fn local_inference_probability(
     Ok(probability)
 }
 
+fn each_combination(propositions: &Vec<Proposition>) -> Vec<HashMap<String, bool>> {
+    let n = propositions.len();
+    let mut all_combinations = Vec::new();
+
+    for i in 0..(1 << n) {
+        let mut current_combination = HashMap::new();
+
+        for j in 0..n {
+            let prop = &propositions[j];
+            let state = i & (1 << j) != 0;
+            current_combination.insert(prop.search_string(), state);
+        }
+
+        all_combinations.push(current_combination);
+    }
+
+    all_combinations
+}
+
 pub fn marginalized_inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
@@ -140,6 +159,12 @@ pub fn marginalized_inference_probability(
             direct_parents.push(term.clone());
             info!("\x1b[34mdirect dependency {:?}\x1b[0m", term.search_string());
         }
+    }
+
+    let combinations = each_combination(&direct_parents);
+    for combination in &combinations {
+        info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
+
     }
 
     let probability = local_inference_probability(storage, proposition, &backlinks)?;
