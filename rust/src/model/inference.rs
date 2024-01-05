@@ -53,7 +53,7 @@ fn print_premise_probabilities(
             Ok(term_prob_opt) => {
                 match term_prob_opt {
                     Some(term_prob) => {
-                        trace!("activation: {} {}", term.search_string(), term_prob);
+                        info!("activation: {} {}", term.search_string(), term_prob);
                     }
                     None => {
                         panic!("Should have the probability by now");
@@ -126,7 +126,7 @@ pub fn inference_probability(
 
     let normalization = potentials[0] + potentials[1];
     let probability = potentials[1] / normalization;
-    trace!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
+    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
