@@ -27,8 +27,8 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_backlinks(
-    storage: &mut Storage,
+pub fn features_from_backlinks<T: PropositionProbability>(
+    storage: &mut T,
     backlinks: &[BackLink],
 ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
 
