@@ -254,7 +254,12 @@ pub fn marginalized_inference_probability(
             &combination
         );
 
-        let join_parent_probability = compute_joint_probability(combination, todo!());
+        let joint_parent_probability = compute_joint_probability(combination, &parent_probabilities)?;
+        info!(
+            "\x1b[31mjoint parent probability {} {:?}\x1b[0m",
+            joint_parent_probability,
+            combination,
+        )
     }
 
     let probability = 0f64;
