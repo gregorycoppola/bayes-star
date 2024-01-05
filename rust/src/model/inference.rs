@@ -17,7 +17,7 @@ fn ensure_probabilities_are_stored(
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
-        info!("Getting proposition probability for term {}: {:?}", i, term);
+        trace!("Getting proposition probability for term {}: {:?}", i, term);
 
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {

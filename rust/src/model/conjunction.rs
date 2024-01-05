@@ -6,18 +6,18 @@ pub fn get_conjunction_probability(
     storage: &mut Storage,
     conjunction: &Conjunction,
 ) -> Result<f64, Box<dyn Error>> {
-    info!("Calculating conjunction probability for a conjunction with {} terms", conjunction.terms.len());
+    trace!("Calculating conjunction probability for a conjunction with {} terms", conjunction.terms.len());
     let mut min_prob = 1f64;
 
     for (i, term) in conjunction.terms.iter().enumerate() {
-        info!("Getting proposition probability for term {}: {:?}", i, term);
+        trace!("Getting proposition probability for term {}: {:?}", i, term);
         
         match storage.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
                 let term_prob = term_prob_opt.expect("`term_prob` should be Some here.");
-                info!("Term probability for term {}: {}", i, term_prob);
+                trace!("Term probability for term {}: {}", i, term_prob);
                 min_prob = min_prob.min(term_prob);
-                info!("Updated min probability after term {}: {}", i, min_prob);
+                trace!("Updated min probability after term {}: {}", i, min_prob);
             },
             Err(e) => {
                 error!("Error getting proposition probability for term {}: {}", i, e);
@@ -26,6 +26,6 @@ pub fn get_conjunction_probability(
         }
     }
 
-    info!("Conjunction probability calculated: {}", min_prob);
+    trace!("Conjunction probability calculated: {}", min_prob);
     Ok(min_prob)
 }

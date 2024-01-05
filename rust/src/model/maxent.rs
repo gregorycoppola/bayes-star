@@ -36,7 +36,7 @@ pub fn features_from_backlinks(
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     let mut result = HashMap::new();
 
-    info!("Starting features_from_backlinks with {} backlinks", backlinks.len());
+    trace!("Starting features_from_backlinks with {} backlinks", backlinks.len());
     
     for (i, backlink) in backlinks.iter().enumerate() {
         debug!("Processing backlink {}", i);
@@ -62,7 +62,7 @@ pub fn features_from_backlinks(
         }
     }
 
-    info!("features_from_backlinks completed successfully");
+    trace!("features_from_backlinks completed successfully");
     Ok(result)
 }
 
@@ -98,7 +98,7 @@ pub fn do_sgd_update(
 
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
-            println!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
+            trace!("feature: {}, gv: {}, ev: {}, loss: {}, new_weight: {}", feature, gv, ev, _loss, new_weight);
 
         }
 

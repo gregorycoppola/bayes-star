@@ -64,10 +64,10 @@ fn main() {
 
 
     for test_question in &test_questions {
-        info!("test_question {:?}", &test_question);
+        trace!("test_question {:?}", &test_question);
 
         let inference_result = inference_probability(&mut storage, &test_question);
-        info!("inference_result {:?}", &inference_result);
+        trace!("inference_result {:?}", &inference_result);
     }
 
     // Explicitly drop the Redis client
