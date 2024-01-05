@@ -2,11 +2,6 @@ use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Storage;
 use crate::model::weights::{read_weights, save_weights, CLASS_LABELS};
 use std::error::Error;
-
-fn sigmoid(x: f64) -> f64 {
-    1.0 / (1.0 + (-x).exp())
-}
-
 use std::collections::HashMap;
 
 use super::choose::compute_backlinks;
@@ -25,9 +20,9 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     result
 }
 
-pub fn compute_probability(weights: &HashMap<String, f64>, features: &HashMap<String, f64>) -> f64 {
+pub fn compute_exponentiation(weights: &HashMap<String, f64>, features: &HashMap<String, f64>) -> f64 {
     let dot = dot_product(weights, features);
-    sigmoid(dot)
+    dot.exp()
 }
 
 pub fn features_from_backlinks(
@@ -128,25 +123,27 @@ pub fn train_on_example(
             return Err(e);
         }
     };
-    for (feature, weight) in &features {
-        info!("feature {:?} {}", feature, weight);
 
+    for class_label in CLASS_LABELS {
+        for (feature, weight) in &features[class_label] {
+            info!("feature {:?} {}", feature, weight);
+    
+        }
+        trace!("train_on_example - Reading weights for class {}", class_label);
+        let weight_vector = match read_weights(
+            storage.get_redis_connection(),
+            &features[class_label].keys().cloned().collect::<Vec<_>>(),
+        ) {
+            Ok(w) => w,
+            Err(e) => {
+                trace!("train_on_example - Error in read_weights: {:?}", e);
+                return Err(e);
+            }
+        };
     }
 
-    trace!("train_on_example - Reading weights");
-    let weight_vector = match read_weights(
-        storage.get_redis_connection(),
-        &features.keys().cloned().collect::<Vec<_>>(),
-    ) {
-        Ok(w) => w,
-        Err(e) => {
-            trace!("train_on_example - Error in read_weights: {:?}", e);
-            return Err(e);
-        }
-    };
-
     trace!("train_on_example - Computing probability");
-    let probability = compute_probability(&weight_vector, &features);
+    let probability = compute_exponentiation(&weight_vector, &features);
     trace!("train_on_example - Computed probability: {}", probability);
 
     trace!("train_on_example - Computing expected features");

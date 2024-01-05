@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::{
     choose::compute_backlinks,
-    maxent::{compute_probability, features_from_backlinks},
+    maxent::{compute_exponentiation, features_from_backlinks},
     weights::read_weights,
 };
 
@@ -115,7 +115,7 @@ pub fn inference_probability(
     }
 
     trace!("inference_probability - Computing probability");
-    let probability = compute_probability(&weight_vector, &features);
+    let probability = compute_exponentiation(&weight_vector, &features);
 
     info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 

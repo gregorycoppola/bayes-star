@@ -4,26 +4,19 @@ use crate::model::objects::Implication;
 use rand::Rng;
 use std::collections::HashMap;
 
-pub const CLASS_LABELS: [bool; 2] = [false, true];
+pub const CLASS_LABELS: [usize; 2] = [0, 1];
 
 fn random_weight() -> f64 {
     let mut rng = rand::thread_rng();
     (rng.gen::<f64>() - rng.gen::<f64>()) / 5.0
 }
 
-fn class_as_char(class_label: bool) -> String {
-    if class_label {
-        "+".to_string()
-    } else {
-        "-".to_string()
-    }
-}
-pub fn positive_feature(feature: &str, class_label:bool) -> String {
-    format!("+>{} {}", class_as_char(class_label), feature)
+pub fn positive_feature(feature: &str, class_label:usize) -> String {
+    format!("+>{} {}", class_label, feature)
 }
 
-pub fn negative_feature(feature: &str, class_label : bool) -> String {
-    format!("->{} {}", class_as_char(class_label), feature)
+pub fn negative_feature(feature: &str, class_label : usize) -> String {
+    format!("->{} {}", class_label, feature)
 }
 
 pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
