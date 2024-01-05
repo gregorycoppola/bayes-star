@@ -116,6 +116,8 @@ pub fn train_on_example(
 ) -> Result<(), Box<dyn Error>> {
     trace!("train_on_example - Start: {:?}", proposition.search_string());
     trace!("train_on_example - Getting features from backlinks");
+
+    let true_label = storage.get_proposition_probability(proposition)?.expect("True probability should exist");
     let features = match features_from_backlinks(storage, backlinks) {
         Ok(f) => f,
         Err(e) => {
@@ -156,10 +158,16 @@ pub fn train_on_example(
     for class_label in CLASS_LABELS {
         let probability = potentials[class_label] / normalization;
         trace!("train_on_example - Computing expected features");
+        let this_true_prob = if class_label == 0 {
+            1f64 - true_label
+        } else {
+            true_label
+        };
+        let gold = compute_expected_features(this_true_prob, &features[class_label]);
         let expected = compute_expected_features(probability, &features[class_label]);
     
         trace!("train_on_example - Performing SGD update");
-        let new_weight = do_sgd_update(&weight_vectors[class_label], &features[class_label], &expected);
+        let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
     
         trace!("train_on_example - Saving new weights");
         save_weights(storage.get_redis_connection(), &new_weight)?;
