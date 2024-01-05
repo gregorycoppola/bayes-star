@@ -121,11 +121,12 @@ pub fn inference_probability(
         trace!("inference_probability - Computing probability");
         let potential = compute_potential(&weight_vector, &this_features);
         potentials.push(potential);
-        info!("inference_probability - Computed probability {} {:?}", potential, proposition.search_string());
+        info!("inference_probability - Computed potential {} {:?}", potential, proposition.search_string());
     }
 
     let normalization = potentials[0] + potentials[1];
     let probability = potentials[1] / normalization;
+    info!("inference_probability - Computed probability {} {:?}", probability, proposition.search_string());
 
     storage.store_proposition(proposition, probability)?;
 
