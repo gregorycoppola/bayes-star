@@ -60,7 +60,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             };
             storage.store_entity(&entity)?;
             trace!("Stored entity: {:?}", &entity);
-            domain_entity_map[&domain.to_string()] = entity;
+            domain_entity_map.insert(domain.to_string(), entity);
         }
 
         let jack_entity = domain_entity_map[&Domain::Jack.to_string()];
