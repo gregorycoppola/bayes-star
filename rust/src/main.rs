@@ -52,14 +52,8 @@ fn main() {
         print_training_loss,
     }).expect("Could not set config.");
 
-    // Create a Redis client
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
-
     let connection = client.get_connection().expect("Couldn't get connection.");
-    // // Wrap the client in an Arc for shared ownership
-    // let arc_client = Arc::new(client);
-
-    // Create a new Storage instance
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
 
     let result = setup_train(&mut storage);
