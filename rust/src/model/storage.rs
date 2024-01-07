@@ -225,14 +225,11 @@ impl Storage {
             .collect()
     }
 
-    pub fn maybe_add_to_training(
+    pub fn add_proposition_to_queue(
         &mut self,
-        is_training: bool,
+        queue_name: &String,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        if !is_training {
-            return Ok(())
-        }
         trace!(
             "Storage::add_to_training_queue - Start. Input proposition: {:?}",
             proposition
@@ -255,7 +252,7 @@ impl Storage {
 
         if let Err(e) = self
             .redis_connection
-            .rpush::<_, _, bool>("training_propositions", &serialized_proposition)
+            .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
             trace!("Storage::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
             return Err(Box::new(e));
@@ -265,7 +262,19 @@ impl Storage {
 
         Ok(())
     }
-    
+
+    pub fn maybe_add_to_training(
+        &mut self,
+        is_training: bool,
+        proposition: &Proposition,
+    ) -> Result<(), Box<dyn Error>> {
+        if is_training {
+            self.add_proposition_to_queue(&"training_queue".to_string(), &proposition)
+        } else {
+            Ok(())
+        }
+    }
+
     pub fn maybe_add_to_test(
         &mut self,
         is_test: bool,
