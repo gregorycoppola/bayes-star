@@ -291,13 +291,21 @@ impl Storage {
         &mut self,
         queue_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        trace!("Storage::get_propositions_from_queue - Start. Queue name: {}", queue_name);
-    
+        trace!(
+            "Storage::get_propositions_from_queue - Start. Queue name: {}",
+            queue_name
+        );
+
         let mut propositions = Vec::new();
-    
+
         // Attempt to pop one element at a time from the Redis queue
-        while let Some(serialized_proposition) = self.redis_connection.lpop::<_, Option<String>>(queue_name, None)? {
-            match serde_json::from_str(&serialized_proposition).map_err(|e| Box::new(e) as Box<dyn Error>) {
+        while let Some(serialized_proposition) = self
+            .redis_connection
+            .lpop::<_, Option<String>>(queue_name, None)?
+        {
+            match serde_json::from_str(&serialized_proposition)
+                .map_err(|e| Box::new(e) as Box<dyn Error>)
+            {
                 Ok(proposition) => propositions.push(proposition),
                 Err(e) => {
                     trace!("Storage::get_propositions_from_queue - Error deserializing proposition: {}", e);
@@ -305,15 +313,20 @@ impl Storage {
                 }
             }
         }
-    
+
         trace!("Storage::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
-    
+
         Ok(propositions)
     }
-    
+
+    pub fn get_training_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        let training_queue_name = String::from("training_questions");
+        self.get_propositions_from_queue(&training_queue_name)
+    }
 
     pub fn get_test_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        todo!()
+        let test_queue_name = String::from("test_questions");
+        self.get_propositions_from_queue(&test_queue_name)
     }
 }
 
