@@ -320,12 +320,12 @@ impl Storage {
     }
 
     pub fn get_training_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        let training_queue_name = String::from("training_questions");
+        let training_queue_name = String::from("training_queue");
         self.get_propositions_from_queue(&training_queue_name)
     }
 
     pub fn get_test_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        let test_queue_name = String::from("test_questions");
+        let test_queue_name = String::from("test_queue");
         self.get_propositions_from_queue(&test_queue_name)
     }
 }
