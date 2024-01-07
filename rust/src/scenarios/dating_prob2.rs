@@ -129,7 +129,9 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 jack_likes_jill.search_string(),
                 p_jack_likes_jill
             ); // Logging
-            storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
+            if is_training {
+                storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
+            }
             storage.maybe_add_to_training(is_training, &jack_likes_jill)?;
         }
         {
