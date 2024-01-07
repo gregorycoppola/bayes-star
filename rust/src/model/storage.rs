@@ -182,6 +182,11 @@ impl Storage {
     ) -> Result<(), Box<dyn Error>> {
         todo!()
     }
+    pub fn get_test_questions(
+        &mut self,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 impl PropositionProbability for Storage {
