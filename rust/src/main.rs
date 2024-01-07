@@ -2,7 +2,7 @@ use bayes_star::model::config::set_config;
 use bayes_star::model::inference::marginalized_inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
 use bayes_star::model::storage::Storage;
-use bayes_star::scenarios::dating_prob2::setup_train;
+use bayes_star::scenarios::dating_prob2::setup_scenario;
 use env_logger::{Builder, Env};
 use redis::Client;
 use std::io::Write;
@@ -56,7 +56,7 @@ fn main() {
     let connection = client.get_connection().expect("Couldn't get connection.");
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
 
-    let result = setup_train(&mut storage);
+    let result = setup_scenario(&mut storage);
     trace!("{:?}", result);
 
     let train_result = do_training(&mut storage);
