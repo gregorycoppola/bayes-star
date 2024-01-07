@@ -188,7 +188,7 @@ pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     }
 
     trace!("do_training - Getting all propositions");
-    let propositions = storage.get_all_propositions()?;
+    let propositions = storage.get_training_questions()?;
     trace!("do_training - Processing propositions: {}", propositions.len());
 
     let mut examples_processed = 0;

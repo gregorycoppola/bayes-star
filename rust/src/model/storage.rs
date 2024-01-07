@@ -152,27 +152,6 @@ impl Storage {
         Ok(())
     }
 
-    // Get all propositions
-    pub fn get_all_propositions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        trace!("Storage::get_all_propositions - Retrieving all propositions");
-        let all_values: std::collections::HashMap<String, String> = self
-            .redis_connection
-            .hgetall("propositions")
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        all_values
-            .into_iter()
-            .map(|(key, value)| {
-                trace!(
-                    "Storage::get_all_propositions - Key: {}, Value: {}",
-                    key,
-                    value
-                );
-                serde_json::from_str(&value).map_err(|e| Box::new(e) as Box<dyn Error>)
-            })
-            .collect()
-    }
-
     pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
