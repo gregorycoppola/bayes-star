@@ -64,7 +64,8 @@ fn main() {
 
     let test_questions = storage.get_test_questions().expect("Couldn't get test questions.");
     for test_question in &test_questions {
-        trace!("test_question {:?}", &test_question);
+        println!("\n\n\n\n\n\n");
+        info!("test_question {:?}", &test_question.search_string());
 
         let inference_result = marginalized_inference_probability(&mut storage, &test_question);
         trace!("inference_result {:?}", &inference_result);
