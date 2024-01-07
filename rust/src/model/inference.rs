@@ -163,10 +163,10 @@ pub fn local_inference_probability(
     for class_label in CLASS_LABELS {
         let this_features = &features[class_label];
         for (feature, weight) in this_features.iter() {
-            info!("feature {:?} {}", &feature, weight);
+            trace!("feature {:?} {}", &feature, weight);
         }
 
-        info!("inference_probability - Reading weights");
+        trace!("inference_probability - Reading weights");
         let weight_vector = match read_weights(
             storage.get_redis_connection(),
             &this_features.keys().cloned().collect::<Vec<_>>(),
@@ -178,10 +178,10 @@ pub fn local_inference_probability(
             }
         };
         for (feature, weight) in weight_vector.iter() {
-            info!("weight {:?} {}", &feature, weight);
+            trace!("weight {:?} {}", &feature, weight);
         }
 
-        info!("inference_probability - Computing probability");
+        trace!("inference_probability - Computing probability");
         let potential = compute_potential(&weight_vector, &this_features);
         potentials.push(potential);
         info!(
@@ -226,7 +226,7 @@ pub fn marginalized_inference_probability(
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
     info!(
-        "\n\n\n\n\n\n\n\n\ninference_probability - Start: {:?}",
+        "inference_probability - Start: {:?}",
         proposition.search_string()
     );
     info!("inference_probability - Getting features from backlinks");

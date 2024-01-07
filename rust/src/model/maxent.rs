@@ -14,7 +14,7 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     for (key, &v1) in dict1 {
         if let Some(&v2) = dict2.get(key) {
             let product = v1 * v2;
-            info!("\x1b[33mpotential {} for {:?}\x1b[0m", product, key);
+            trace!("\x1b[33mpotential {} for {:?}\x1b[0m", product, key);
             result += product;
         }
         // In case of null (None), we skip the key as per the original JavaScript logic.
