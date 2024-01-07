@@ -3,7 +3,7 @@ use crate::model::{
     creators::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
-    objects::{Domain, Entity, Proposition, RoleMap},
+    objects::{Domain, Entity, RoleMap},
     storage::Storage,
 };
 use rand::Rng; // Import Rng trait
