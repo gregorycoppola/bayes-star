@@ -280,7 +280,11 @@ impl Storage {
         is_test: bool,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        todo!()
+        if is_test {
+            self.add_proposition_to_queue(&"test_queue".to_string(), &proposition)
+        } else {
+            Ok(())
+        }
     }
     pub fn get_test_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
