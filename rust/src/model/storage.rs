@@ -295,9 +295,8 @@ impl Storage {
     
         let mut propositions = Vec::new();
     
-        // Replace this loop with your logic to retrieve all elements from the Redis queue.
-        // This is a placeholder loop to demonstrate the process of deserialization.
-        while let Some(serialized_proposition) = self.redis_connection.lpop::<_, Option<String>>(queue_name)? {
+        // Attempt to pop one element at a time from the Redis queue
+        while let Some(serialized_proposition) = self.redis_connection.lpop::<_, Option<String>>(queue_name, None)? {
             match serde_json::from_str(&serialized_proposition).map_err(|e| Box::new(e) as Box<dyn Error>) {
                 Ok(proposition) => propositions.push(proposition),
                 Err(e) => {
@@ -311,6 +310,7 @@ impl Storage {
     
         Ok(propositions)
     }
+    
 
     pub fn get_test_questions(&mut self) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
