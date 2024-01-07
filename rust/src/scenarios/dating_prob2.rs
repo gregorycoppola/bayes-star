@@ -34,24 +34,6 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let total_members_each_class = config.entities_per_domain;
     let entity_domains = [Domain::Jack, Domain::Jill];
 
-    for domain in entity_domains.iter() {
-        for i in 0..total_members_each_class {
-            let name = format!("{:?}{}", domain, i); // Using Debug formatting for Domain enum
-            let entity = Entity {
-                domain: domain.clone(),
-                name: name.clone(),
-            };
-
-            // Assuming you have a `storage` instance of a struct that can store entities
-            // and a `store_entity` method which handles storage.
-            // Replace `storage.store_entity(entity)?;` with the actual method call
-            storage.store_entity(&entity)?;
-
-            // Replace logger.noop() with your actual logging if needed
-            trace!("Stored entity: {:?}", entity);
-        }
-    }
-
     // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
     let jacks: Vec<Entity> = storage.get_entities_in_domain(&jack_domain)?;
@@ -66,9 +48,23 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
     let like = constant(Domain::Verb, "like".to_string());
     let date = constant(Domain::Verb, "date".to_string());
 
-    for i in 0..jacks.len() {
-        let jack_entity = &jacks[i];
-        let jill_entity = &jills[i];
+    for i in 0..total_members_each_class {
+        let is_test = i % 10 == 9;
+        let mut domain_entity_map:HashMap<String, Entity> = HashMap::new();
+        for domain in entity_domains.iter() {
+            let prefix = if is_test { "test" } else { "train" };
+            let name = format!("{}_{:?}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
+            let entity = Entity {
+                domain: domain.clone(),
+                name: name.clone(),
+            };
+            storage.store_entity(&entity)?;
+            trace!("Stored entity: {:?}", &entity);
+            domain_entity_map[&domain.to_string()] = entity;
+        }
+
+        let jack_entity = domain_entity_map[&Domain::Jack.to_string()];
+        let jill_entity = domain_entity_map[&Domain::Jill.to_string()];
 
         let p_jack_lonely = cointoss();
         let p_jill_exciting: f64 = cointoss();
