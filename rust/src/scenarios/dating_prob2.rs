@@ -50,6 +50,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
 
     for i in 0..total_members_each_class {
         let is_test = i % 10 == 9;
+        let is_training = !is_test;
         let mut domain_entity_map:HashMap<String, Entity> = HashMap::new();
         for domain in entity_domains.iter() {
             let prefix = if is_test { "test" } else { "train" };
@@ -81,9 +82,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 "Jack Lonely: {:?}, Probability: {}",
                 jack_lonely.search_string(),
                 p_jack_lonely
-            ); // Logging
-
-            // Assuming `store_proposition` is a method in your Storage struct
+            );
             storage.store_proposition(&jack_lonely, p_jack_lonely)?;
         }
 
@@ -95,9 +94,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 "Jill Exciting: {:?}, Probability: {}",
                 jill_exciting.search_string(),
                 p_jill_exciting
-            ); // Logging
-
-            // Assuming `store_proposition` is a method in your Storage struct
+            ); 
             storage.store_proposition(&jill_exciting, p_jill_exciting)?;
         }
 
@@ -122,7 +119,6 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
-
             let jack_likes_jill = proposition(vec![
                 subject(jack.clone()),
                 relation(like.clone()),
@@ -134,6 +130,7 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
                 p_jack_likes_jill
             ); // Logging
             storage.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
+            storage.maybe_add_to_training(is_training, &jack_likes_jill)?;
         }
         {
             let jill = constant(jill_entity.domain, jill_entity.name.clone());
@@ -151,6 +148,8 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             let adusted_p = p_jack_dates_jill * 0.7;
             let effective_p = weighted_cointoss(adusted_p);
             storage.store_proposition(&jack_dates_jill, effective_p)?;
+            storage.maybe_add_to_training(is_training, &jack_dates_jill)?;
+            storage.maybe_add_to_test(is_test, &jack_dates_jill)?;
         }
     }
 

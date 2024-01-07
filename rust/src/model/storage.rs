@@ -167,6 +167,21 @@ impl Storage {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
+
+    pub fn maybe_add_to_training(
+        &mut self,
+        is_training: bool,
+        proposition: &Proposition,
+    ) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }    
+    pub fn maybe_add_to_test(
+        &mut self,
+        is_test: bool,
+        proposition: &Proposition,
+    ) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
 }
 
 impl PropositionProbability for Storage {
