@@ -63,8 +63,8 @@ pub fn setup_train(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
             domain_entity_map.insert(domain.to_string(), entity);
         }
 
-        let jack_entity = domain_entity_map[&Domain::Jack.to_string()];
-        let jill_entity = domain_entity_map[&Domain::Jill.to_string()];
+        let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
+        let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
 
         let p_jack_lonely = cointoss();
         let p_jill_exciting: f64 = cointoss();
