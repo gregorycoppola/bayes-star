@@ -114,7 +114,7 @@ impl BeliefPropagator {
 
     pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
         let root = self.find_root()?;
-        self.initialize_pi_node(&root);
+        self.initialize_pi_node(&root)?;
         Ok(())
     }
 
