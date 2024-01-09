@@ -19,22 +19,24 @@ impl BeliefPropagationData {
     }
 
     // Getter for pi values
-    pub fn get_pi_value(&self, key: &str) -> Option<f64> {
-        self.pi_values.get(key).cloned()
+    pub fn get_pi_value(&self, key: &Proposition) -> Option<f64> {
+        self.pi_values.get(&key.search_string()).cloned()
     }
 
     // Setter for pi values
-    pub fn set_pi_value(&mut self, key: String, value: f64) {
-        self.pi_values.insert(key, value);
+    pub fn set_pi_value(&mut self, key: Proposition, value: f64) {
+        self.pi_values.insert(key.search_string(), value);
     }
 
     // Getter for lambda values
-    pub fn get_lambda_value(&self, key: &(String, usize)) -> Option<f64> {
-        self.lambda_values.get(key).cloned()
+    pub fn get_lambda_value(&self, node:&Proposition, outcome:usize) -> Option<f64> {
+        let key = (node.search_string(), outcome);
+        self.lambda_values.get(&key).cloned()
     }
 
     // Setter for lambda values
-    pub fn set_lambda_value(&mut self, key: (String, usize), value: f64) {
+    pub fn set_lambda_value(&mut self, node:&Proposition, outcome:usize, value: f64) {
+        let key = (node.search_string(), outcome);
         self.lambda_values.insert(key, value);
     }
 }
