@@ -114,15 +114,14 @@ impl BeliefPropagator {
 
     pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
         let root = self.find_root()?;
-        self.initialize_pi_node(&root)?;
+        self.initialize_pi_node(&root, true)?;
         Ok(())
     }
 
-    pub fn initialize_pi_node(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
-        // step 1: initialize
+    pub fn initialize_pi_node(&mut self, node:&Proposition, is_root:bool) -> Result<(), Box<dyn Error>> {
         let children = self.find_children(node)?;
         for child in &children {
-            self.initialize_pi_node(child)?;
+            self.initialize_pi_node(child, false)?;
         }
         Ok(())
     }
@@ -130,15 +129,15 @@ impl BeliefPropagator {
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         let root = self.find_root()?;
-        self.initialize_lambda_node(&root)?;
+        self.initialize_lambda_node(&root, true)?;
         Ok(())
     }
 
-    pub fn initialize_lambda_node(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_lambda_node(&mut self, node:&Proposition, is_root:bool) -> Result<(), Box<dyn Error>> {
         // step 1: initialize
         let children = self.find_children(node)?;
         for child in &children {
-            self.initialize_lambda_node(child)?;
+            self.initialize_lambda_node(child, false)?;
         }
         Ok(())
     }
