@@ -7,6 +7,8 @@ use crate::model::{objects::Proposition, weights::CLASS_LABELS};
 pub struct BeliefPropagationData {
     pi_values: HashMap<(String, usize), f64>,
     lambda_values: HashMap<(String, usize), f64>,
+    pi_messages: HashMap<(String, String, usize), f64>,
+    lambda_messages: HashMap<(String, String, usize), f64>,
 }
 
 impl BeliefPropagationData {
@@ -15,6 +17,8 @@ impl BeliefPropagationData {
         BeliefPropagationData {
             pi_values: HashMap::new(),
             lambda_values: HashMap::new(),
+            pi_messages: HashMap::new(),
+            lambda_messages: HashMap::new(),
         }
     }
 
@@ -40,6 +44,52 @@ impl BeliefPropagationData {
     pub fn set_lambda_value(&mut self, node: &Proposition, outcome: usize, value: f64) {
         let key = (node.search_string(), outcome);
         self.lambda_values.insert(key, value);
+    }
+
+    // Getter for pi messages
+    pub fn get_pi_message(
+        &self,
+        from: &Proposition,
+        to: &Proposition,
+        outcome: usize,
+    ) -> Option<f64> {
+        let key = (from.search_string(), to.search_string(), outcome);
+        self.pi_messages.get(&key).cloned()
+    }
+
+    // Setter for pi messages
+    pub fn set_pi_message(
+        &mut self,
+        from: &Proposition,
+        to: &Proposition,
+        outcome: usize,
+        value: f64,
+    ) {
+        let key = (from.search_string(), to.search_string(), outcome);
+        self.pi_messages.insert(key, value);
+    }
+
+    // Getter for lambda messages
+    pub fn get_lambda_message(
+        &self,
+        from: &Proposition,
+        to: &Proposition,
+        outcome: usize,
+    ) -> Option<f64> {
+        let key = (from.search_string(), to.search_string(), outcome);
+        self.lambda_messages.get(&key).cloned()
+    }
+
+    // Setter for lambda messages
+    pub fn set_lambda_message(
+        &mut self,
+        from: &Proposition,
+        to: &Proposition,
+        outcome: usize,
+        value: f64,
+    ) {
+        let key = (from.search_string(), to.search_string(), outcome);
+        self.lambda_messages.insert(key, value);
     }
 }
 
