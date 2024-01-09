@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 
 use redis::Connection;
 
-use crate::model::{objects::Proposition, weights::CLASS_LABELS};
+use crate::model::{objects::Proposition, weights::CLASS_LABELS, storage::PropositionProbability};
 
 pub struct BeliefPropagationData {
     pi_values: HashMap<(String, usize), f64>,
@@ -105,17 +105,17 @@ impl BeliefPropagator {
         })
     }
 
-    pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
-        self.initialize_lambda()?;
-        self.initialize_lambda()?;
+    pub fn initialize(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
+        self.initialize_lambda(evidence)?;
+        self.initialize_lambda(evidence)?;
         Ok(())
     }
 
-    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_pi(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
-    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_lambda(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
