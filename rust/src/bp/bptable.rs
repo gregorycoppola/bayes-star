@@ -129,6 +129,17 @@ impl BeliefPropagator {
 
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
+        let root = self.find_root()?;
+        self.initialize_lambda_node(&root)?;
+        Ok(())
+    }
+
+    pub fn initialize_lambda_node(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
+        // step 1: initialize
+        let children = self.find_children(node)?;
+        for child in &children {
+            self.initialize_lambda_node(child)?;
+        }
         Ok(())
     }
 
