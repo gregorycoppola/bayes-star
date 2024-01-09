@@ -27,8 +27,8 @@ impl BeliefPropagator {
 
     // have to depend on graph, and Propositions -> values
     pub fn initialize(&self) -> Result<(), Box<dyn Error>> {
-        let mut lambda_values:HashMap<(String, usize), f64> = HashMap::new();
-        let mut pi_values:HashMap<String, f64> = HashMap::new();
+        let mut lambda_values: HashMap<(String, usize), f64> = HashMap::new();
+        let mut pi_values: HashMap<String, f64> = HashMap::new();
 
         // Assuming each Proposition is an enum or struct that can be iterated over its values
         let all_propositions = self.get_all_propositions();
@@ -64,46 +64,46 @@ impl BeliefPropagator {
     }
 
     // A stub implementation for `send_pi_msg`.
-pub fn send_pi_msg(
-    &self,
-    from: &Proposition,
-    to: &Proposition,
-    pi_values: &HashMap<String, f64>,
-    lambda_values: &mut HashMap<(String, usize), f64>,
-) -> Result<(), Box<dyn Error>> {
-    // Get the pi value for the 'from' Proposition.
-    let from_pi = pi_values.get(&from.search_string())
-        .ok_or_else(|| "Pi value for 'from' Proposition not found")?;
-    
-    // Get the conditional probability of 'to' given 'from'.
-    // This function `get_conditional_probability` is assumed to be defined elsewhere.
-    let conditional_probability = self.get_conditional_probability(from, to);
+    pub fn send_pi_msg(
+        &self,
+        from: &Proposition,
+        to: &Proposition,
+        pi_values: &HashMap<String, f64>,
+        lambda_values: &mut HashMap<(String, usize), f64>,
+    ) -> Result<(), Box<dyn Error>> {
+        // Get the pi value for the 'from' Proposition.
+        let from_pi = pi_values
+            .get(&from.search_string())
+            .ok_or_else(|| "Pi value for 'from' Proposition not found")?;
 
-    // Calculate the new pi value for 'to'.
-    // In a real scenario, this should be more complex, taking into account all possible values of 'from'.
-    // For simplicity, we assume binary propositions.
-    let to_pi = from_pi * conditional_probability;
+        // Get the conditional probability of 'to' given 'from'.
+        // This function `get_conditional_probability` is assumed to be defined elsewhere.
+        let conditional_probability = self.get_conditional_probability(from, to);
 
-    // Update the pi value for 'to' in `pi_values`.
-    // Since `pi_values` is not mutable, we cannot update it directly.
-    // If it needs to be updated, consider changing the function signature or using another method.
-    
-    // Update lambda values for 'to'. This involves combining the new pi value with existing lambda values.
-    for value_index in CLASS_LABELS.iter() {
-        let lambda_key = (to.search_string(), *value_index);
-        if let Some(lambda) = lambda_values.get_mut(&lambda_key) {
-            // Combine the existing lambda value with the new pi value.
-            // This is a placeholder for the actual combination logic, which will depend on your specific use case.
-            *lambda *= to_pi;
-        } else {
-            // If there is no lambda value for 'to', insert a new one.
-            lambda_values.insert(lambda_key, to_pi);
+        // Calculate the new pi value for 'to'.
+        // In a real scenario, this should be more complex, taking into account all possible values of 'from'.
+        // For simplicity, we assume binary propositions.
+        let to_pi = from_pi * conditional_probability;
+
+        // Update the pi value for 'to' in `pi_values`.
+        // Since `pi_values` is not mutable, we cannot update it directly.
+        // If it needs to be updated, consider changing the function signature or using another method.
+
+        // Update lambda values for 'to'. This involves combining the new pi value with existing lambda values.
+        for value_index in CLASS_LABELS.iter() {
+            let lambda_key = (to.search_string(), *value_index);
+            if let Some(lambda) = lambda_values.get_mut(&lambda_key) {
+                // Combine the existing lambda value with the new pi value.
+                // This is a placeholder for the actual combination logic, which will depend on your specific use case.
+                *lambda *= to_pi;
+            } else {
+                // If there is no lambda value for 'to', insert a new one.
+                lambda_values.insert(lambda_key, to_pi);
+            }
         }
+
+        Ok(())
     }
-
-    Ok(())
-}
-
 
     pub fn send_lambda_message(
         &self,
@@ -119,7 +119,11 @@ pub fn send_pi_msg(
     pub fn get_proposition_probability(&self, proposition: &Proposition) -> f64 {
         todo!()
     }
-    pub fn get_conditional_probability(&self, conclusion: &Proposition, premise:&Proposition) -> f64 {
+    pub fn get_conditional_probability(
+        &self,
+        conclusion: &Proposition,
+        premise: &Proposition,
+    ) -> f64 {
         todo!()
     }
     fn find_parent(&self, x: &Proposition) -> Option<Proposition> {
