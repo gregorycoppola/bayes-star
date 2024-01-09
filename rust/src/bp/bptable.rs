@@ -134,7 +134,13 @@ impl BeliefPropagator {
     }
 
     pub fn initialize_lambda_node(&mut self, node:&Proposition, is_root:bool) -> Result<(), Box<dyn Error>> {
-        // step 1: initialize
+        for outcome in CLASS_LABELS {
+            self.data.set_lambda_value(node, outcome, 1f64);
+            let parents =  &self.find_parent(node).expect("Error finding paerents").expect("No parents");
+            for parent in &[parents] {
+                self.data.set_lambda_message(node, parent, outcome, 1f64);
+            }
+        }
         let children = self.find_children(node)?;
         for child in &children {
             self.initialize_lambda_node(child, false)?;
