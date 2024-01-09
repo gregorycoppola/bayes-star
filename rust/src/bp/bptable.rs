@@ -97,15 +97,6 @@ pub struct BeliefPropagator {
     data: BeliefPropagationData,
 }
 
-impl Drop for BeliefPropagator {
-    fn drop(&mut self) {
-        // The Drop trait for Arc<Client> will automatically be called here,
-        // reducing the reference count. If this Storage instance holds the last
-        // reference to the client, the client will be dropped and its resources
-        // (like network connections) will be cleaned up.
-    }
-}
-
 impl BeliefPropagator {
     // Initialize new Storage with a Redis connection
     pub fn new() -> Result<Self, redis::RedisError> {
@@ -115,111 +106,16 @@ impl BeliefPropagator {
     }
 
     pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
-        // let all_propositions = self.get_all_propositions()?;
-
-        // // Initialize lambda values
-        // for x in all_propositions.iter() {
-        //     for x_value in CLASS_LABELS {
-        //         self.data.set_lambda_value(x, x_value, 1.0);
-        //     }
-
-        //     // Initialize parent lambda values
-        //     if let Some(parent) = self.find_parent(x)? {
-        //         for z_value in CLASS_LABELS {
-        //             self.data.set_lambda_value(&parent, z_value, 1.0);
-        //         }
-        //     }
-        // }
-
-        // // Initialize pi values for the root
-        // let root = self.find_root()?;
-        // let probability = self.get_proposition_probability(&root)?;
-        // self.data.set_pi_value(root.clone(), probability);
-
-        // // Send pi messages to children of the root
-        // for child in self.find_children(&root)? {
-        //     self.send_pi_msg(&root, &child)?;
-        // }
-
+        self.initialize_lambda()?;
+        self.initialize_lambda()?;
         Ok(())
     }
 
-    // have to depend on graph, and Propositions -> values
-    pub fn update_tree(&self) -> Result<(), Box<dyn Error>> {
-        todo!()
-    }
-
-    // A stub implementation for `send_pi_msg`.
-    pub fn send_pi_msg(
-        &mut self, // Changed to mutable reference
-        from: &Proposition,
-        to: &Proposition,
-    ) -> Result<(), Box<dyn Error>> {
-        // // Get the pi value for the 'from' Proposition using the new interface
-        // let from_pi = self
-        //     .data
-        //     .get_pi_value(from)
-        //     .expect("Value not found in map");
-
-        // // Get the conditional probability of 'to' given 'from'
-        // let conditional_probability = self.get_conditional_probability(from, to)?;
-
-        // // Calculate the new pi value for 'to'
-        // let to_pi = from_pi * conditional_probability;
-
-        // // Update the pi value for 'to' using the new interface
-        // self.data.set_pi_value(to.clone(), to_pi); // Assuming Proposition is Cloneable
-
-        // // Update lambda values for 'to'
-        // for value_index in CLASS_LABELS {
-        //     // Fetch the current lambda value, defaulting to 1 if not present
-        //     let current_lambda = self.data.get_lambda_value(to, value_index).unwrap_or(1.0);
-
-        //     // Combine the existing lambda value with the new pi value
-        //     let new_lambda = current_lambda * to_pi;
-
-        //     // Set the new lambda value
-        //     self.data.set_lambda_value(to, value_index, new_lambda);
-        // }
-
+    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
-    // A stub implementation for `send_lambda_message`.
-    pub fn send_lambda_message(
-        &mut self, // Changed to mutable reference
-        from: &Proposition,
-        to: &Proposition,
-    ) -> Result<(), Box<dyn Error>> {
-        // // Calculate the product of lambda values for 'from'
-        // let mut from_lambda = 1.0;
-        // for value_index in CLASS_LABELS {
-        //     let lambda = self
-        //         .data
-        //         .get_lambda_value(from, value_index)
-        //         .expect("Lambda value not in map");
-        //     from_lambda *= lambda;
-        // }
-
-        // // Get the conditional probability of 'from' given 'to'
-        // let conditional_probability = self.get_conditional_probability(to, from)?;
-
-        // // Calculate the new lambda value for 'to'
-        // let to_lambda = from_lambda * conditional_probability;
-
-        // // Update the lambda values for 'to'
-        // for value_index in CLASS_LABELS {
-        //     let new_lambda = to_lambda; // Adjust according to your specific combination logic
-        //     self.data.set_lambda_value(to, value_index, new_lambda);
-        // }
-
-        // // Update the pi value for 'to', adjusting with new lambda value
-        // if let Some(to_pi) = self.data.get_pi_value(to) {
-        //     self.data.set_pi_value(to.clone(), to_pi * to_lambda); // Assuming Proposition is Cloneable
-        // } else {
-        //     return Err("Pi value for 'to' Proposition not found".into());
-        // }
-
+    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
