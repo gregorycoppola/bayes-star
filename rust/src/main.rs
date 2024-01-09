@@ -1,3 +1,4 @@
+use bayes_star::bp::bptable::BeliefPropagator;
 use bayes_star::model::config::set_config;
 use bayes_star::model::inference::marginalized_inference_probability;
 use bayes_star::model::{maxent::do_training, config::Config};
@@ -55,7 +56,9 @@ fn main() {
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
     let connection = client.get_connection().expect("Couldn't get connection.");
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
+    let connection2 = client.get_connection().expect("Couldn't get connection.");
 
+    let mut belief_propagator = BeliefPropagator::new(connection2);
     let result = setup_scenario(&mut storage);
     trace!("{:?}", result);
 
