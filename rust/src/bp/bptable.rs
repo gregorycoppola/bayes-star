@@ -82,7 +82,7 @@ impl BeliefPropagator {
         // Initialize pi values for the root
         let root = self.find_root()?;
         let probability = self.get_proposition_probability(&root)?;
-        self.data.set_pi_value(root, probability);
+        self.data.set_pi_value(root.clone(), probability);
 
         // Send pi messages to children of the root
         for child in self.find_children(&root)? {
@@ -99,39 +99,32 @@ impl BeliefPropagator {
 
     // A stub implementation for `send_pi_msg`.
     pub fn send_pi_msg(
-        &self,
+        &mut self,  // Changed to mutable reference
         from: &Proposition,
         to: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        // Get the pi value for the 'from' Proposition.
-        let from_pi = pi_values
-            .get(&from.search_string())
-            .ok_or_else(|| "Pi value for 'from' Proposition not found")?;
+        // Get the pi value for the 'from' Proposition using the new interface
+        let from_pi = self.data.get_pi_value(from).expect("Value not found in map");
 
-        // Get the conditional probability of 'to' given 'from'.
-        // This function `get_conditional_probability` is assumed to be defined elsewhere.
+        // Get the conditional probability of 'to' given 'from'
         let conditional_probability = self.get_conditional_probability(from, to)?;
 
-        // Calculate the new pi value for 'to'.
-        // In a real scenario, this should be more complex, taking into account all possible values of 'from'.
-        // For simplicity, we assume binary propositions.
+        // Calculate the new pi value for 'to'
         let to_pi = from_pi * conditional_probability;
 
-        // Update the pi value for 'to' in `pi_values`.
-        // Since `pi_values` is not mutable, we cannot update it directly.
-        // If it needs to be updated, consider changing the function signature or using another method.
+        // Update the pi value for 'to' using the new interface
+        self.data.set_pi_value(to.clone(), to_pi);  // Assuming Proposition is Cloneable
 
-        // Update lambda values for 'to'. This involves combining the new pi value with existing lambda values.
-        for value_index in CLASS_LABELS.iter() {
-            let lambda_key = (to.search_string(), *value_index);
-            if let Some(lambda) = lambda_values.get_mut(&lambda_key) {
-                // Combine the existing lambda value with the new pi value.
-                // This is a placeholder for the actual combination logic, which will depend on your specific use case.
-                *lambda *= to_pi;
-            } else {
-                // If there is no lambda value for 'to', insert a new one.
-                lambda_values.insert(lambda_key, to_pi);
-            }
+        // Update lambda values for 'to'
+        for value_index in CLASS_LABELS {
+            // Fetch the current lambda value, defaulting to 1 if not present
+            let current_lambda = self.data.get_lambda_value(to, value_index).unwrap_or(1.0);
+
+            // Combine the existing lambda value with the new pi value
+            let new_lambda = current_lambda * to_pi;
+
+            // Set the new lambda value
+            self.data.set_lambda_value(to, value_index, new_lambda);
         }
 
         Ok(())

@@ -56,9 +56,7 @@ fn main() {
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
     let connection = client.get_connection().expect("Couldn't get connection.");
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
-    let connection2 = client.get_connection().expect("Couldn't get connection.");
 
-    let mut belief_propagator = BeliefPropagator::new(connection2);
     let result = setup_scenario(&mut storage);
     trace!("{:?}", result);
 
