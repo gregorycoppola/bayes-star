@@ -123,6 +123,15 @@ impl BeliefPropagator {
         for child in &children {
             self.initialize_pi_node(child, false)?;
         }
+
+        for outcome in CLASS_LABELS {
+            self.data.set_pi_value(node, outcome, 1f64);
+            let children =  self.find_children(node).expect("Error finding children");
+            for child in &children {
+                self.data.set_lambda_message(node, child, outcome, 1f64);
+            }
+        }
+    
         Ok(())
     }
 
