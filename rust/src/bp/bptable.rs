@@ -110,7 +110,7 @@ impl BeliefPropagator {
         &self,
         from: &Proposition,
         to: &Proposition,
-        lambda_values: &HashMap<(String, usize), f64>,
+        lambda_values: &mut HashMap<(String, usize), f64>,
         pi_values: &mut HashMap<String, f64>,
     ) -> Result<(), Box<dyn Error>> {
         // Get the lambda value for the 'from' Proposition.
