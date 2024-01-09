@@ -105,12 +105,53 @@ impl BeliefPropagator {
         Ok(())
     }
 
+    // A stub implementation for `send_lambda_message`.
     pub fn send_lambda_message(
         &self,
         from: &Proposition,
         to: &Proposition,
+        lambda_values: &HashMap<(String, usize), f64>,
+        pi_values: &mut HashMap<String, f64>,
     ) -> Result<(), Box<dyn Error>> {
-        todo!()
+        // Get the lambda value for the 'from' Proposition.
+        let mut from_lambda = 1.0;
+        for value_index in CLASS_LABELS.iter() {
+            let lambda_key = (from.search_string(), *value_index);
+            from_lambda *= lambda_values
+                .get(&lambda_key)
+                .ok_or_else(|| "Lambda value for 'from' Proposition not found")?;
+        }
+
+        // Get the conditional probability of 'from' given 'to'.
+        // This function `get_conditional_probability` is assumed to be defined elsewhere.
+        let conditional_probability = self.get_conditional_probability(to, from);
+
+        // Calculate the new lambda value for 'to'.
+        // The lambda value is a product of the lambda value from 'from' and the conditional probability.
+        let to_lambda = from_lambda * conditional_probability;
+
+        // Update the lambda value for 'to' in `lambda_values`.
+        // This is a simplified version, assuming binary propositions.
+        for value_index in CLASS_LABELS.iter() {
+            let lambda_key = (to.search_string(), *value_index);
+            if let Some(lambda) = lambda_values.get_mut(&lambda_key) {
+                // Combine the existing lambda value with the new lambda value.
+                // This is a placeholder for the actual combination logic, which will depend on your specific use case.
+                *lambda *= to_lambda;
+            } else {
+                // If there is no lambda value for 'to', insert a new one.
+                lambda_values.insert(lambda_key, to_lambda);
+            }
+        }
+
+        // Assuming pi_values need to be updated with new lambda values.
+        // Here we adjust the pi_values for 'to' Proposition, though the specific update rule will depend on your use case.
+        let to_pi = pi_values
+            .get(&to.search_string())
+            .ok_or_else(|| "Pi value for 'to' Proposition not found")?;
+        pi_values.insert(to.search_string(), to_pi * to_lambda);
+
+        Ok(())
     }
 
     pub fn get_all_propositions(&self) -> Vec<Proposition> {
