@@ -122,7 +122,7 @@ impl BeliefPropagator {
         // step 1: initialize
         let children = self.find_children(node)?;
         for child in &children {
-            self.initialize_pi_node(node)?;
+            self.initialize_pi_node(child)?;
         }
         Ok(())
     }
