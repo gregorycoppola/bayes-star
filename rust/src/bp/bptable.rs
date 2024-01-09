@@ -187,3 +187,42 @@ impl BeliefPropagator {
         Ok(Vec::new()) // Placeholder
     }
 }
+
+impl BeliefPropagator {
+    // ... (other methods unchanged)
+
+    // Function to perform the upward pass recursively.
+    pub fn do_upward_pass(&self, node: &Proposition, lambda_values: &mut HashMap<(String, usize), f64>) -> Result<(), Box<dyn Error>> {
+        // Base case: If the node is a leaf, initialize its lambda values to 1.0.
+        if self.find_children(node)?.is_empty() {
+            for value in CLASS_LABELS {
+                lambda_values.insert((node.search_string(), *value), 1.0);
+            }
+            return Ok(());
+        }
+
+        // Recursive case: Process all children first.
+        for child in self.find_children(node)? {
+            self.do_upward_pass(&child, lambda_values)?;
+
+            // After processing a child, send the lambda message from the child to the current node.
+            self.send_lambda_message(&child, node, lambda_values)?;
+        }
+
+        Ok(())
+    }
+
+    // Entry point for the upward pass. 
+    // This function initializes the process and should be called from outside with the root node.
+    pub fn start_upward_pass(&self) -> Result<HashMap<(String, usize), f64>, Box<dyn Error>> {
+        let root = self.find_root()?;
+        let mut lambda_values = HashMap::new();
+
+        // Start the recursive upward pass from the root.
+        self.do_upward_pass(&root, &mut lambda_values)?;
+
+        Ok(lambda_values)
+    }
+
+    // ... (other methods unchanged)
+}
