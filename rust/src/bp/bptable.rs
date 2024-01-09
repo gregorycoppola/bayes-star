@@ -95,27 +95,28 @@ impl BeliefPropagationData {
 
 pub struct BeliefPropagator {
     data: BeliefPropagationData,
+    evidence: Box<dyn PropositionProbability>,
 }
 
 impl BeliefPropagator {
     // Initialize new Storage with a Redis connection
-    pub fn new() -> Result<Self, redis::RedisError> {
+    pub fn new(evidence: Box<dyn PropositionProbability>) -> Result<Self, redis::RedisError> {
         Ok(BeliefPropagator {
-            data: BeliefPropagationData::new(),
+            data: BeliefPropagationData::new(), evidence,
         })
     }
 
     pub fn initialize(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
-        self.initialize_pi(evidence)?;
-        self.initialize_lambda(evidence)?;
+        self.initialize_pi()?;
+        self.initialize_lambda()?;
         Ok(())
     }
 
-    pub fn initialize_pi(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
-    pub fn initialize_lambda(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
