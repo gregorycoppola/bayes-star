@@ -62,36 +62,33 @@ impl BeliefPropagator {
         })
     }
 
-    // have to depend on graph, and Propositions -> values
-    pub fn initialize(&self) -> Result<(), Box<dyn Error>> {
-        let mut lambda_values: HashMap<(String, usize), f64> = HashMap::new();
-        let mut pi_values: HashMap<String, f64> = HashMap::new();
-
-        // Assuming each Proposition is an enum or struct that can be iterated over its values
+    pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
         let all_propositions = self.get_all_propositions()?;
+
+        // Initialize lambda values
         for x in all_propositions.iter() {
             for x_value in CLASS_LABELS {
-                lambda_values.insert((x.search_string(), x_value.clone()), 1.0);
+                self.data.set_lambda_value(x, x_value, 1.0);
             }
-            // Assuming you have a way to find the parent of a Proposition `x`
-            if let Some(parent) = self.find_parent(&x)? {
+
+            // Initialize parent lambda values
+            if let Some(parent) = self.find_parent(x)? {
                 for z_value in CLASS_LABELS {
-                    lambda_values.insert((parent.search_string(), z_value.clone()), 1.0);
+                    self.data.set_lambda_value(&parent, z_value, 1.0);
                 }
             }
         }
 
-        // Assuming `root` is a special Proposition that is the root of the Bayesian Network
+        // Initialize pi values for the root
         let root = self.find_root()?;
-        for r_value in CLASS_LABELS {
-            let probability = self.get_proposition_probability(&root)?; // This would need to be defined
-            pi_values.insert(root.search_string(), probability);
+        let probability = self.get_proposition_probability(&root)?;
+        self.data.set_pi_value(root, probability);
+
+        // Send pi messages to children of the root
+        for child in self.find_children(&root)? {
+            self.send_pi_msg(&root, &child)?;
         }
 
-        // Assuming `send_pi_msg` is defined to handle sending the \(\pi\) message
-        for child in self.find_children(&root)? {
-            self.send_pi_msg(&root, &child, &pi_values, &mut lambda_values);
-        }
         Ok(())
     }
 
@@ -105,8 +102,6 @@ impl BeliefPropagator {
         &self,
         from: &Proposition,
         to: &Proposition,
-        pi_values: &HashMap<String, f64>,
-        lambda_values: &mut HashMap<(String, usize), f64>,
     ) -> Result<(), Box<dyn Error>> {
         // Get the pi value for the 'from' Proposition.
         let from_pi = pi_values
