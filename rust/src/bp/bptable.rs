@@ -124,8 +124,12 @@ impl BeliefPropagator {
             self.initialize_pi_node(child, false)?;
         }
 
+        if is_root {
+            let prior_prob = self.get_proposition_probability(node)?;
+            self.data.set_pi_value(node, 1, prior_prob);
+            self.data.set_pi_value(node, 0, 1f64 - prior_prob);
+        }
         for outcome in CLASS_LABELS {
-            self.data.set_pi_value(node, outcome, 1f64);
             let children =  self.find_children(node).expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(node, child, outcome, 1f64);
