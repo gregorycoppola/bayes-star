@@ -42,7 +42,7 @@ impl BeliefPropagationData {
 }
 
 pub struct BeliefPropagator {
-    redis_connection: redis::Connection,
+    data: BeliefPropagationData,
 }
 
 impl Drop for BeliefPropagator {
@@ -56,9 +56,9 @@ impl Drop for BeliefPropagator {
 
 impl BeliefPropagator {
     // Initialize new Storage with a Redis connection
-    pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
+    pub fn new() -> Result<Self, redis::RedisError> {
         Ok(BeliefPropagator {
-            redis_connection: connection,
+            data: BeliefPropagationData::new(),
         })
     }
 
