@@ -142,11 +142,11 @@ impl BeliefPropagator {
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         let root = self.find_root()?;
-        self.initialize_lambda_node(&root, true)?;
+        self.initialize_lambda_node(&root)?;
         Ok(())
     }
 
-    pub fn initialize_lambda_node(&mut self, node:&Proposition, is_root:bool) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_lambda_node(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data.set_lambda_value(node, outcome, 1f64);
             let parents =  &self.find_parent(node).expect("Error finding paerents").expect("No parents");
@@ -156,7 +156,7 @@ impl BeliefPropagator {
         }
         let children = self.find_children(node)?;
         for child in &children {
-            self.initialize_lambda_node(child, false)?;
+            self.initialize_lambda_node(child)?;
         }
         Ok(())
     }
