@@ -31,13 +31,13 @@ impl BeliefPropagator {
         let mut pi_values: HashMap<String, f64> = HashMap::new();
 
         // Assuming each Proposition is an enum or struct that can be iterated over its values
-        let all_propositions = self.get_all_propositions();
+        let all_propositions = self.get_all_propositions()?;
         for x in all_propositions.iter() {
             for x_value in CLASS_LABELS {
                 lambda_values.insert((x.search_string(), x_value.clone()), 1.0);
             }
             // Assuming you have a way to find the parent of a Proposition `x`
-            if let Some(parent) = self.find_parent(&x) {
+            if let Some(parent) = self.find_parent(&x)? {
                 for z_value in CLASS_LABELS {
                     lambda_values.insert((parent.search_string(), z_value.clone()), 1.0);
                 }
@@ -45,14 +45,14 @@ impl BeliefPropagator {
         }
 
         // Assuming `root` is a special Proposition that is the root of the Bayesian Network
-        let root = self.find_root();
+        let root = self.find_root()?;
         for r_value in CLASS_LABELS {
-            let probability = self.get_proposition_probability(&root); // This would need to be defined
+            let probability = self.get_proposition_probability(&root)?; // This would need to be defined
             pi_values.insert(root.search_string(), probability);
         }
 
         // Assuming `send_pi_msg` is defined to handle sending the \(\pi\) message
-        for child in self.find_children(&root) {
+        for child in self.find_children(&root)? {
             self.send_pi_msg(&root, &child, &pi_values, &mut lambda_values);
         }
         Ok(())
@@ -78,7 +78,7 @@ impl BeliefPropagator {
 
         // Get the conditional probability of 'to' given 'from'.
         // This function `get_conditional_probability` is assumed to be defined elsewhere.
-        let conditional_probability = self.get_conditional_probability(from, to);
+        let conditional_probability = self.get_conditional_probability(from, to)?;
 
         // Calculate the new pi value for 'to'.
         // In a real scenario, this should be more complex, taking into account all possible values of 'from'.
@@ -124,7 +124,7 @@ impl BeliefPropagator {
 
         // Get the conditional probability of 'from' given 'to'.
         // This function `get_conditional_probability` is assumed to be defined elsewhere.
-        let conditional_probability = self.get_conditional_probability(to, from);
+        let conditional_probability = self.get_conditional_probability(to, from)?;
 
         // Calculate the new lambda value for 'to'.
         // The lambda value is a product of the lambda value from 'from' and the conditional probability.
@@ -153,31 +153,37 @@ impl BeliefPropagator {
 
         Ok(())
     }
+    pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        // Your implementation here
+        todo!()
+    }
 
-    pub fn get_all_propositions(&self) -> Vec<Proposition> {
+    pub fn get_proposition_probability(&self, proposition: &Proposition) -> Result<f64, Box<dyn Error>> {
+        // Your implementation here
         todo!()
     }
-    pub fn get_proposition_probability(&self, proposition: &Proposition) -> f64 {
-        todo!()
-    }
+
     pub fn get_conditional_probability(
         &self,
         conclusion: &Proposition,
         premise: &Proposition,
-    ) -> f64 {
-        todo!()
-    }
-    fn find_parent(&self, x: &Proposition) -> Option<Proposition> {
-        // Implementation goes here
-        None
-    }
-
-    fn find_root(&self) -> Proposition {
+    ) -> Result<f64, Box<dyn Error>> {
+        // Your implementation here
         todo!()
     }
 
-    fn find_children(&self, root: &Proposition) -> Vec<Proposition> {
-        // Implementation goes here
-        Vec::new() // Placeholder
+    fn find_parent(&self, x: &Proposition) -> Result<Option<Proposition>, Box<dyn Error>> {
+        // Your implementation here
+        Ok(None) // Placeholder
+    }
+
+    fn find_root(&self) -> Result<Proposition, Box<dyn Error>> {
+        // Your implementation here
+        todo!()
+    }
+
+    fn find_children(&self, root: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        // Your implementation here
+        Ok(Vec::new()) // Placeholder
     }
 }
