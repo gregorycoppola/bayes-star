@@ -196,7 +196,7 @@ impl BeliefPropagator {
         // Base case: If the node is a leaf, initialize its lambda values to 1.0.
         if self.find_children(node)?.is_empty() {
             for value in CLASS_LABELS {
-                lambda_values.insert((node.search_string(), *value), 1.0);
+                lambda_values.insert((node.search_string(), value), 1.0);
             }
             return Ok(());
         }
