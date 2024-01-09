@@ -106,7 +106,7 @@ impl BeliefPropagator {
     }
 
     pub fn initialize(&mut self, evidence:&dyn PropositionProbability) -> Result<(), Box<dyn Error>> {
-        self.initialize_lambda(evidence)?;
+        self.initialize_pi(evidence)?;
         self.initialize_lambda(evidence)?;
         Ok(())
     }
