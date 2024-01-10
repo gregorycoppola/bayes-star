@@ -1,11 +1,9 @@
-use std::borrow::BorrowMut;
 use std::error::Error;
 
 use redis::Client;
 
 use crate::model::maxent::ExponentialModel;
 use crate::model::{storage::Graph, inference::marginalized_inference_probability};
-use crate::model::choose::compute_backlinks;
 use super::interface::{ScenarioMaker, LogicalModel};
 
 fn create_model(model_name:&String) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
