@@ -153,10 +153,6 @@ impl FactorModel for ExponentialModel {
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
         todo!()
-        // trace!("do_training - Processing proposition: {:?}", proposition);
-        // let backlinks = compute_backlinks(storage, &proposition)?;
-        // trace!("do_training - Backlinks: {:?}", backlinks);
-
         // trace!(
         //     "train_on_example - Start: {:?}",
         //     proposition.search_string()

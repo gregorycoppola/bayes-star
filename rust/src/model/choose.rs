@@ -1,4 +1,4 @@
-use crate::model::objects::{BackLink, Proposition, Conjunction};
+use crate::{model::objects::{BackLink, Proposition, Conjunction}, common::model::Graph};
 use std::error::Error;
 use crate::common::model::GraphicalModel;
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
@@ -71,7 +71,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 }
 
 pub fn compute_backlinks(
-    storage: &GraphicalModel,
+    graph: &Graph,
     conclusion: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
@@ -89,7 +89,7 @@ pub fn compute_backlinks(
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
 
-        let implications = storage.graph.find_premises(&search_key)?;
+        let implications = graph.find_premises(&search_key)?;
         trace!("Found implications {:?}", &implications);
 
         for implication in &implications {
