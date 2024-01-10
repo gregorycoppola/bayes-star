@@ -2,6 +2,23 @@ use redis::Commands;
 use redis::Connection;
 use std::error::Error;
 
+struct RedisClient {
+    client: redis::Client,
+}
+
+impl RedisClient {
+    pub fn new() -> Result<RedisClient, Box<dyn Error>> {
+        let client = redis::Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
+
+        todo!()
+    }
+
+    pub fn get_connection(&self) -> Result<redis::Connection, Box<dyn Error>> {
+        let connection = self.client.get_connection().expect("Couldn't get connection.");
+        Ok(connection)
+    }
+}
+
 pub fn map_insert(conn: &mut Connection, key: &str, field: &str, value: &str) -> Result<(), Box<dyn Error>> {
     conn.hset(key, field, value)?;
     Ok(())
