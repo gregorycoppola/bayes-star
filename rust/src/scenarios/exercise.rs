@@ -4,7 +4,7 @@ use crate::model::{
         conjunction, constant, implication, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap, Proposition},
-    storage::Graph,
+    storage::GraphicalModel,
 };
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
@@ -27,7 +27,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
     }
 }
 
-pub fn setup_scenario(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
+pub fn setup_scenario(storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
     storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
     let config = CONFIG.get().expect("Config not initialized");
@@ -81,7 +81,7 @@ pub fn setup_scenario(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
                 p_jack_educated
             ); // Logging
 
-            // Assuming `store_proposition` is a method in your Graph struct
+            // Assuming `store_proposition` is a method in your GraphicalModel struct
             storage.store_proposition(&jack_educated, p_jack_educated)?;
         }
         {
@@ -95,7 +95,7 @@ pub fn setup_scenario(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
                 p_jack_rich
             ); // Logging
 
-            // Assuming `store_proposition` is a method in your Graph struct
+            // Assuming `store_proposition` is a method in your GraphicalModel struct
             storage.store_proposition(&jack_rich, p_jack_rich)?;
         }
     }
@@ -121,7 +121,7 @@ pub fn setup_scenario(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
 
     for implication in implications.iter() {
         trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
-        // Assuming `store_implication` is a method of your Graph struct
+        // Assuming `store_implication` is a method of your GraphicalModel struct
         storage.store_implication(implication)?;
     }
 
@@ -129,7 +129,7 @@ pub fn setup_scenario(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
 }
 
 // Returns a vector of "test propositions".
-pub fn setup_test(storage: &mut Graph) -> Result<Vec<Proposition>, Box<dyn Error>> {
+pub fn setup_test(storage: &mut GraphicalModel) -> Result<Vec<Proposition>, Box<dyn Error>> {
     let total_members_each_class = 10; // test size
     // Retrieve entities in the Jack domain
     let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
@@ -191,7 +191,7 @@ pub fn setup_test(storage: &mut Graph) -> Result<Vec<Proposition>, Box<dyn Error
                 p_jack_educated
             ); // Logging
 
-            // Assuming `store_proposition` is a method in your Graph struct
+            // Assuming `store_proposition` is a method in your GraphicalModel struct
             storage.store_proposition(&jack_educated, p_jack_educated)?;
         }
         {
@@ -205,7 +205,7 @@ pub fn setup_test(storage: &mut Graph) -> Result<Vec<Proposition>, Box<dyn Error
                 p_jack_rich
             ); // Logging
 
-            // Assuming `store_proposition` is a method in your Graph struct
+            // Assuming `store_proposition` is a method in your GraphicalModel struct
             storage.store_proposition(&jack_rich, p_jack_rich)?;
             result.push(jack_rich);
         }

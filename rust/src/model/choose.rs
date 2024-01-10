@@ -1,5 +1,5 @@
 use crate::model::objects::{BackLink, Proposition, Conjunction};
-use crate::model::storage::Graph;
+use crate::model::storage::GraphicalModel;
 use std::error::Error;
 
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
@@ -72,7 +72,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 }
 
 pub fn compute_backlinks(
-    storage: &Graph,
+    storage: &GraphicalModel,
     conclusion: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);

@@ -4,7 +4,7 @@ use crate::{model::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap},
-    storage::Graph,
+    storage::GraphicalModel,
 }, common::interface::ScenarioMaker};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
@@ -30,7 +30,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    fn setup_scenario(&self, storage: &mut Graph) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
         storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
         let config = CONFIG.get().expect("Config not initialized");
@@ -230,7 +230,7 @@ impl ScenarioMaker for DatingProb2 {
         for implication in implications.iter() {
             trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
 
-            // Assuming `store_implication` is a method of your Graph struct
+            // Assuming `store_implication` is a method of your GraphicalModel struct
             storage.store_implication(implication)?;
         }
 

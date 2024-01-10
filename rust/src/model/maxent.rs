@@ -1,6 +1,6 @@
 use crate::common::interface::{FactorModel, PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
-use crate::model::storage::Graph;
+use crate::model::storage::GraphicalModel;
 use crate::model::weights::CLASS_LABELS;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -149,7 +149,7 @@ impl FactorModel for ExponentialModel {
 
     fn train(
         &mut self,
-        storage: &Graph,
+        storage: &GraphicalModel,
         proposition: &Proposition,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
         trace!("do_training - Processing proposition: {:?}", proposition);
@@ -228,7 +228,7 @@ impl FactorModel for ExponentialModel {
     }
     fn predict(
         &self,
-        storage: &Graph,
+        storage: &GraphicalModel,
         evidence: &dyn PropositionProbability,
         proposition: &Proposition,
     ) -> Result<PredictStatistics, Box<dyn Error>> {

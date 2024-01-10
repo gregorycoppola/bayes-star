@@ -5,7 +5,7 @@ use redis::{Client, Connection};
 
 use super::interface::{FactorModel, ScenarioMaker};
 use crate::model::maxent::ExponentialModel;
-use crate::model::{inference::marginalized_inference_probability, storage::Graph};
+use crate::model::{inference::marginalized_inference_probability, storage::GraphicalModel};
 
 fn create_model(
     model_name: &String,
@@ -16,7 +16,7 @@ fn create_model(
 
 pub fn do_training(
     model: &mut Box<dyn FactorModel>,
-    storage: &Graph,
+    storage: &GraphicalModel,
 ) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
@@ -56,7 +56,7 @@ pub fn do_training(
     Ok(())
 }
 
-fn run_test_loop(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
+fn run_test_loop(storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
     let test_questions = storage
         .get_test_questions()
         .expect("Couldn't get test questions.");
@@ -73,7 +73,7 @@ fn run_test_loop(storage: &mut Graph) -> Result<(), Box<dyn Error>> {
 pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
     let connection = client.get_connection().expect("Couldn't get connection.");
-    let mut storage = Graph::new(connection).expect("Couldn't make storage");
+    let mut storage = GraphicalModel::new(connection).expect("Couldn't make storage");
     let result = scenario_maker.setup_scenario(&mut storage);
     info!("scenario result: {:?}", result);
 

@@ -2,23 +2,23 @@ use crate::{model::objects::{Domain, Entity, Implication, Proposition}, common::
 use redis::{Commands, Connection};
 use std::{error::Error, cell::RefCell};
 
-pub struct Graph {
+pub struct GraphicalModel {
     redis_connection: RefCell<redis::Connection>,
 }
 
-impl Drop for Graph {
+impl Drop for GraphicalModel {
     fn drop(&mut self) {
         // The Drop trait for Arc<Client> will automatically be called here,
-        // reducing the reference count. If this Graph instance holds the last
+        // reducing the reference count. If this GraphicalModel instance holds the last
         // reference to the client, the client will be dropped and its resources
         // (like network connections) will be cleaned up.
     }
 }
 
-impl Graph {
-    // Initialize new Graph with a Redis connection
+impl GraphicalModel {
+    // Initialize new GraphicalModel with a Redis connection
     pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
-        Ok(Graph {
+        Ok(GraphicalModel {
             redis_connection: RefCell::new(connection),
         })
     }
@@ -64,14 +64,14 @@ impl Graph {
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         trace!(
-            "Graph::store_proposition - Start. Input proposition: {:?}, probability: {}",
+            "GraphicalModel::store_proposition - Start. Input proposition: {:?}, probability: {}",
             proposition,
             probability
         );
 
         let search_string = proposition.search_string();
         trace!(
-            "Graph::store_proposition - Computed search_string: {}",
+            "GraphicalModel::store_proposition - Computed search_string: {}",
             search_string
         );
 
@@ -79,14 +79,14 @@ impl Graph {
             Ok(record) => record,
             Err(e) => {
                 trace!(
-                    "Graph::store_proposition - Error serializing proposition: {}",
+                    "GraphicalModel::store_proposition - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
         trace!(
-            "Graph::store_proposition - Serialized proposition record: {} {}",
+            "GraphicalModel::store_proposition - Serialized proposition record: {} {}",
             &search_string,
             &record
         );
@@ -96,16 +96,16 @@ impl Graph {
                 .hset::<_, _, _, bool>("propositions", &search_string, &record)
         {
             trace!(
-                "Graph::store_proposition - Error storing proposition in Redis: {}",
+                "GraphicalModel::store_proposition - Error storing proposition in Redis: {}",
                 e
             );
             return Err(Box::new(e));
         }
 
         match self.store_proposition_probability(proposition, probability) {
-            Ok(_) => trace!("Graph::store_proposition - Completed successfully"),
+            Ok(_) => trace!("GraphicalModel::store_proposition - Completed successfully"),
             Err(e) => trace!(
-                "Graph::store_proposition - Error in store_proposition_probability: {}",
+                "GraphicalModel::store_proposition - Error in store_proposition_probability: {}",
                 e
             ),
         }
@@ -118,11 +118,11 @@ impl Graph {
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        trace!("Graph::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
+        trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
 
         let search_string = proposition.search_string();
         trace!(
-            "Graph::store_proposition_probability - Computed search_string: {}",
+            "GraphicalModel::store_proposition_probability - Computed search_string: {}",
             search_string
         );
 
@@ -132,13 +132,13 @@ impl Graph {
             probability.to_string(),
         ) {
             trace!(
-                "Graph::store_proposition_probability - Error storing probability in Redis: {}",
+                "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
                 e
             );
             return Err(Box::new(e));
         }
 
-        trace!("Graph::store_proposition_probability - Completed successfully");
+        trace!("GraphicalModel::store_proposition_probability - Completed successfully");
         Ok(())
     }
 
@@ -200,7 +200,7 @@ impl Graph {
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         trace!(
-            "Graph::add_to_training_queue - Start. Input proposition: {:?}",
+            "GraphicalModel::add_to_training_queue - Start. Input proposition: {:?}",
             proposition
         );
 
@@ -208,14 +208,14 @@ impl Graph {
             Ok(record) => record,
             Err(e) => {
                 trace!(
-                    "Graph::add_to_training_queue - Error serializing proposition: {}",
+                    "GraphicalModel::add_to_training_queue - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
         trace!(
-            "Graph::add_to_training_queue - Serialized proposition: {}",
+            "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
 
@@ -223,11 +223,11 @@ impl Graph {
             .redis_connection.borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
-            trace!("Graph::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
+            trace!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
             return Err(Box::new(e));
         }
 
-        trace!("Graph::add_to_training_queue - Proposition added to training queue successfully");
+        trace!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
 
         Ok(())
     }
@@ -262,7 +262,7 @@ impl Graph {
         queue_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         trace!(
-            "Graph::get_propositions_from_queue - Start. Queue name: {}",
+            "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             queue_name
         );
 
@@ -278,13 +278,13 @@ impl Graph {
             {
                 Ok(proposition) => propositions.push(proposition),
                 Err(e) => {
-                    trace!("Graph::get_propositions_from_queue - Error deserializing proposition: {}", e);
+                    trace!("GraphicalModel::get_propositions_from_queue - Error deserializing proposition: {}", e);
                     return Err(e);
                 }
             }
         }
 
-        trace!("Graph::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
+        trace!("GraphicalModel::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
 
         Ok(propositions)
     }
@@ -300,7 +300,7 @@ impl Graph {
     }
 }
 
-impl PropositionProbability for Graph {
+impl PropositionProbability for GraphicalModel {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
