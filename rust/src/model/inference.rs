@@ -4,7 +4,7 @@ use crate::common::interface::PropositionProbability;
 use crate::model::{
     choose::compute_backlinks,
     maxent::{compute_potential, features_from_backlinks},
-    weights::{read_weights, CLASS_LABELS},
+    weights::{CLASS_LABELS},
 };
 
 use super::{

@@ -1,7 +1,7 @@
 use crate::common::interface::PropositionProbability;
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Storage;
-use crate::model::weights::{read_weights, save_weights, CLASS_LABELS};
+use crate::model::weights::{CLASS_LABELS};
 use std::error::Error;
 use std::collections::HashMap;
 
