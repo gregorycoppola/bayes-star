@@ -2,23 +2,23 @@ use crate::{model::objects::{Domain, Entity, Implication, Proposition}, common::
 use redis::{Commands, Connection};
 use std::{error::Error, cell::RefCell};
 
-pub struct Storage {
+pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
 
-impl Drop for Storage {
+impl Drop for Graph {
     fn drop(&mut self) {
         // The Drop trait for Arc<Client> will automatically be called here,
-        // reducing the reference count. If this Storage instance holds the last
+        // reducing the reference count. If this Graph instance holds the last
         // reference to the client, the client will be dropped and its resources
         // (like network connections) will be cleaned up.
     }
 }
 
-impl Storage {
-    // Initialize new Storage with a Redis connection
+impl Graph {
+    // Initialize new Graph with a Redis connection
     pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
-        Ok(Storage {
+        Ok(Graph {
             redis_connection: RefCell::new(connection),
         })
     }
@@ -64,14 +64,14 @@ impl Storage {
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         trace!(
-            "Storage::store_proposition - Start. Input proposition: {:?}, probability: {}",
+            "Graph::store_proposition - Start. Input proposition: {:?}, probability: {}",
             proposition,
             probability
         );
 
         let search_string = proposition.search_string();
         trace!(
-            "Storage::store_proposition - Computed search_string: {}",
+            "Graph::store_proposition - Computed search_string: {}",
             search_string
         );
 
@@ -79,14 +79,14 @@ impl Storage {
             Ok(record) => record,
             Err(e) => {
                 trace!(
-                    "Storage::store_proposition - Error serializing proposition: {}",
+                    "Graph::store_proposition - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
         trace!(
-            "Storage::store_proposition - Serialized proposition record: {} {}",
+            "Graph::store_proposition - Serialized proposition record: {} {}",
             &search_string,
             &record
         );
@@ -96,16 +96,16 @@ impl Storage {
                 .hset::<_, _, _, bool>("propositions", &search_string, &record)
         {
             trace!(
-                "Storage::store_proposition - Error storing proposition in Redis: {}",
+                "Graph::store_proposition - Error storing proposition in Redis: {}",
                 e
             );
             return Err(Box::new(e));
         }
 
         match self.store_proposition_probability(proposition, probability) {
-            Ok(_) => trace!("Storage::store_proposition - Completed successfully"),
+            Ok(_) => trace!("Graph::store_proposition - Completed successfully"),
             Err(e) => trace!(
-                "Storage::store_proposition - Error in store_proposition_probability: {}",
+                "Graph::store_proposition - Error in store_proposition_probability: {}",
                 e
             ),
         }
@@ -118,11 +118,11 @@ impl Storage {
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        trace!("Storage::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
+        trace!("Graph::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
 
         let search_string = proposition.search_string();
         trace!(
-            "Storage::store_proposition_probability - Computed search_string: {}",
+            "Graph::store_proposition_probability - Computed search_string: {}",
             search_string
         );
 
@@ -132,13 +132,13 @@ impl Storage {
             probability.to_string(),
         ) {
             trace!(
-                "Storage::store_proposition_probability - Error storing probability in Redis: {}",
+                "Graph::store_proposition_probability - Error storing probability in Redis: {}",
                 e
             );
             return Err(Box::new(e));
         }
 
-        trace!("Storage::store_proposition_probability - Completed successfully");
+        trace!("Graph::store_proposition_probability - Completed successfully");
         Ok(())
     }
 
@@ -200,7 +200,7 @@ impl Storage {
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         trace!(
-            "Storage::add_to_training_queue - Start. Input proposition: {:?}",
+            "Graph::add_to_training_queue - Start. Input proposition: {:?}",
             proposition
         );
 
@@ -208,14 +208,14 @@ impl Storage {
             Ok(record) => record,
             Err(e) => {
                 trace!(
-                    "Storage::add_to_training_queue - Error serializing proposition: {}",
+                    "Graph::add_to_training_queue - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
         trace!(
-            "Storage::add_to_training_queue - Serialized proposition: {}",
+            "Graph::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
 
@@ -223,11 +223,11 @@ impl Storage {
             .redis_connection.borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
-            trace!("Storage::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
+            trace!("Graph::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
             return Err(Box::new(e));
         }
 
-        trace!("Storage::add_to_training_queue - Proposition added to training queue successfully");
+        trace!("Graph::add_to_training_queue - Proposition added to training queue successfully");
 
         Ok(())
     }
@@ -262,7 +262,7 @@ impl Storage {
         queue_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         trace!(
-            "Storage::get_propositions_from_queue - Start. Queue name: {}",
+            "Graph::get_propositions_from_queue - Start. Queue name: {}",
             queue_name
         );
 
@@ -278,13 +278,13 @@ impl Storage {
             {
                 Ok(proposition) => propositions.push(proposition),
                 Err(e) => {
-                    trace!("Storage::get_propositions_from_queue - Error deserializing proposition: {}", e);
+                    trace!("Graph::get_propositions_from_queue - Error deserializing proposition: {}", e);
                     return Err(e);
                 }
             }
         }
 
-        trace!("Storage::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
+        trace!("Graph::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
 
         Ok(propositions)
     }
@@ -300,7 +300,7 @@ impl Storage {
     }
 }
 
-impl PropositionProbability for Storage {
+impl PropositionProbability for Graph {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,

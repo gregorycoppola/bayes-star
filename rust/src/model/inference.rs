@@ -10,11 +10,11 @@ use crate::model::{
 use super::weights::ExponentialWeights;
 use super::{
     objects::{BackLink, Conjunction, Proposition},
-    storage::Storage,
+    storage::Graph,
 };
 
 fn read_in_parent_probabilities(
-    storage: &mut Storage,
+    storage: &mut Graph,
     conjunction: &Conjunction,
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     let mut probabilities = HashMap::new();
@@ -55,7 +55,7 @@ fn read_in_parent_probabilities(
 }
 
 fn print_premise_probabilities(
-    storage: &mut Storage,
+    storage: &mut Graph,
     conjunction: &Conjunction,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
@@ -137,7 +137,7 @@ pub fn compute_joint_probability(
 
 pub fn local_inference_probability(
     weights: &ExponentialWeights,
-    storage: &mut Storage,
+    storage: &mut Graph,
     proposition: &Proposition,
     backlinks: &[BackLink],
     assumed_probabilities: HashMap<String, bool>,
@@ -223,7 +223,7 @@ fn each_combination(propositions: &Vec<Proposition>) -> Vec<HashMap<String, bool
 }
 
 pub fn marginalized_inference_probability(
-    storage: &mut Storage,
+    storage: &mut Graph,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
     todo!("Do we still need this?")

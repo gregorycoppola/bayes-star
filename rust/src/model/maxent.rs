@@ -1,6 +1,6 @@
 use crate::common::interface::{LogicalModel, PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
-use crate::model::storage::Storage;
+use crate::model::storage::Graph;
 use crate::model::weights::CLASS_LABELS;
 use std::collections::HashMap;
 use std::error::Error;
@@ -11,7 +11,7 @@ use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 
-struct ExponentialModel {
+pub struct ExponentialModel {
     weights: ExponentialWeights,
 }
 
@@ -141,7 +141,7 @@ impl LogicalModel for ExponentialModel {
 
     fn train(
         &mut self,
-        storage: &Storage,
+        storage: &Graph,
         proposition: &Proposition,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
         trace!("do_training - Processing proposition: {:?}", proposition);
@@ -220,7 +220,7 @@ impl LogicalModel for ExponentialModel {
     }
     fn predict(
         &self,
-        storage: &Storage,
+        storage: &Graph,
         evidence: &dyn PropositionProbability,
         proposition: &Proposition,
     ) -> Result<PredictStatistics, Box<dyn Error>> {
