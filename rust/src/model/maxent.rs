@@ -10,7 +10,7 @@ use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
-use crate::common::model::GraphicalModel;
+use crate::common::model::{GraphicalModel, Factor};
 use crate::common::model::FactorModel;
 pub struct ExponentialModel {
     weights: ExponentialWeights,
@@ -149,88 +149,87 @@ impl FactorModel for ExponentialModel {
 
     fn train(
         &mut self,
-        storage: &GraphicalModel,
-        proposition: &Proposition,
+        factor: &Factor,
+        probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
-        trace!("do_training - Processing proposition: {:?}", proposition);
-        let backlinks = compute_backlinks(storage, &proposition)?;
-        trace!("do_training - Backlinks: {:?}", backlinks);
+        todo!()
+        // trace!("do_training - Processing proposition: {:?}", proposition);
+        // let backlinks = compute_backlinks(storage, &proposition)?;
+        // trace!("do_training - Backlinks: {:?}", backlinks);
 
-        trace!(
-            "train_on_example - Start: {:?}",
-            proposition.search_string()
-        );
-        trace!("train_on_example - Getting features from backlinks");
+        // trace!(
+        //     "train_on_example - Start: {:?}",
+        //     proposition.search_string()
+        // );
+        // trace!("train_on_example - Getting features from backlinks");
 
-        let true_label = storage
-            .get_proposition_probability(proposition)?
-            .expect("True probability should exist");
-        let features = match features_from_backlinks(storage, &backlinks) {
-            Ok(f) => f,
-            Err(e) => {
-                trace!(
-                    "train_on_example - Error in features_from_backlinks: {:?}",
-                    e
-                );
-                return Err(e);
-            }
-        };
+        // let true_label = storage
+        //     .get_proposition_probability(proposition)?
+        //     .expect("True probability should exist");
+        // let features = match features_from_backlinks(storage, &backlinks) {
+        //     Ok(f) => f,
+        //     Err(e) => {
+        //         trace!(
+        //             "train_on_example - Error in features_from_backlinks: {:?}",
+        //             e
+        //         );
+        //         return Err(e);
+        //     }
+        // };
 
-        let mut weight_vectors = vec![];
-        let mut potentials = vec![];
-        for class_label in CLASS_LABELS {
-            for (feature, weight) in &features[class_label] {
-                trace!("feature {:?} {}", feature, weight);
-            }
-            trace!(
-                "train_on_example - Reading weights for class {}",
-                class_label
-            );
-            let weight_vector = match self.weights.read_weights(
-                &features[class_label].keys().cloned().collect::<Vec<_>>(),
-            ) {
-                Ok(w) => w,
-                Err(e) => {
-                    trace!("train_on_example - Error in read_weights: {:?}", e);
-                    return Err(e);
-                }
-            };
+        // let mut weight_vectors = vec![];
+        // let mut potentials = vec![];
+        // for class_label in CLASS_LABELS {
+        //     for (feature, weight) in &features[class_label] {
+        //         trace!("feature {:?} {}", feature, weight);
+        //     }
+        //     trace!(
+        //         "train_on_example - Reading weights for class {}",
+        //         class_label
+        //     );
+        //     let weight_vector = match self.weights.read_weights(
+        //         &features[class_label].keys().cloned().collect::<Vec<_>>(),
+        //     ) {
+        //         Ok(w) => w,
+        //         Err(e) => {
+        //             trace!("train_on_example - Error in read_weights: {:?}", e);
+        //             return Err(e);
+        //         }
+        //     };
 
-            trace!("train_on_example - Computing probability");
-            let potential = compute_potential(&weight_vector, &features[class_label]);
-            trace!("train_on_example - Computed probability: {}", potential);
-            potentials.push(potential);
-            weight_vectors.push(weight_vector);
-        }
+        //     trace!("train_on_example - Computing probability");
+        //     let potential = compute_potential(&weight_vector, &features[class_label]);
+        //     trace!("train_on_example - Computed probability: {}", potential);
+        //     potentials.push(potential);
+        //     weight_vectors.push(weight_vector);
+        // }
 
-        let normalization = potentials[0] + potentials[1];
+        // let normalization = potentials[0] + potentials[1];
 
-        for class_label in CLASS_LABELS {
-            let probability = potentials[class_label] / normalization;
-            trace!("train_on_example - Computing expected features");
-            let this_true_prob = if class_label == 0 {
-                1f64 - true_label
-            } else {
-                true_label
-            };
-            let gold = compute_expected_features(this_true_prob, &features[class_label]);
-            let expected = compute_expected_features(probability, &features[class_label]);
+        // for class_label in CLASS_LABELS {
+        //     let probability = potentials[class_label] / normalization;
+        //     trace!("train_on_example - Computing expected features");
+        //     let this_true_prob = if class_label == 0 {
+        //         1f64 - true_label
+        //     } else {
+        //         true_label
+        //     };
+        //     let gold = compute_expected_features(this_true_prob, &features[class_label]);
+        //     let expected = compute_expected_features(probability, &features[class_label]);
 
-            trace!("train_on_example - Performing SGD update");
-            let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
+        //     trace!("train_on_example - Performing SGD update");
+        //     let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
 
-            trace!("train_on_example - Saving new weights");
-            self.weights.save_weights(&new_weight)?;
-        }
+        //     trace!("train_on_example - Saving new weights");
+        //     self.weights.save_weights(&new_weight)?;
+        // }
 
-        trace!("train_on_example - End");
-        Ok(TrainStatistics{ loss: 1f64})
+        // trace!("train_on_example - End");
+        // Ok(TrainStatistics{ loss: 1f64})
     }
     fn predict(
         &self,
-        storage: &GraphicalModel,
-        evidence: &dyn PropositionProbability,
-        proposition: &Proposition,
+        factor:&Factor,
     ) -> Result<PredictStatistics, Box<dyn Error>> {
         todo!()
     }
