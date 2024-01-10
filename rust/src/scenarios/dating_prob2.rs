@@ -27,7 +27,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
     }
 }
 
-struct DatingProb2 {}
+pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
     fn setup_scenario(&self, storage: &mut Storage) -> Result<(), Box<dyn Error>> {
