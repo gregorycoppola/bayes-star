@@ -36,14 +36,10 @@ impl GraphicalModel {
 }
 
 #[derive(Debug)]
-pub struct Factor {
+pub struct  Factor {
     pub conjunctions: Vec<Conjunction>,
     pub conclusion: Proposition,
 }
-
-// pub trait FactorModel {
-//     fn score_factor(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>>;
-// }
 
 pub trait FactorModel {
     fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
