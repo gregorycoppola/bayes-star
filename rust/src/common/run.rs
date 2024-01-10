@@ -4,15 +4,17 @@ use redis::Client;
 
 use crate::model::{storage::Storage, inference::marginalized_inference_probability};
 use crate::model::choose::compute_backlinks;
-use super::interface::ScenarioMaker;
+use super::interface::{ScenarioMaker, LogicalModel};
 
-
-pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
+fn create_model(model_name:&String) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
+    todo!()
+}
+pub fn do_training(model:Box<dyn LogicalModel>, storage: &Storage) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
         trace!("do_training - Processing implication: {:?}", implication);
-        initialize_weights(storage.get_redis_connection(), &implication)?;
+        model.initialize_connection( &implication)?;
     }
 
     trace!("do_training - Getting all propositions");
@@ -58,6 +60,8 @@ pub fn train_and_test(scenario_maker:&dyn ScenarioMaker) -> Result<(), Box<dyn E
     let mut storage = Storage::new(connection).expect("Couldn't make storage");
     let result = scenario_maker.setup_scenario(&mut storage);
     info!("scenario result: {:?}", result);
+
+    let model = 
     let train_result = do_training(&mut storage);
     info!("train result: {:?}", train_result);
 

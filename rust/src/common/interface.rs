@@ -17,13 +17,15 @@ pub trait PropositionProbability {
 }
 
 pub trait LogicalModel {
-    fn initialize_weight(implication:&Implication) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>>;
     
     fn train(
+        &mut self,
         storage: &mut Storage,
         proposition: &Proposition,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
     fn predict(
+        &self,
         storage: &mut Storage,
         evidence: &dyn PropositionProbability,
         proposition: &Proposition,
