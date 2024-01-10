@@ -45,17 +45,17 @@ pub fn do_training(
 }
 
 fn run_test_loop(model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
-    let test_questions = model.graph
-        .get_test_questions()
-        .expect("Couldn't get test questions.");
-    for test_question in &test_questions {
-        println!("\n\n\n\n\n\n");
-        info!("test_question {:?}", &test_question.search_string());
-        let inference_result = marginalized_inference_probability(model, &test_question);
-        trace!("inference_result {:?}", &inference_result);
-    }
+    // let test_questions = model.graph
+    //     .get_test_questions()
+    //     .expect("Couldn't get test questions.");
+    // for test_question in &test_questions {
+    //     println!("\n\n\n\n\n\n");
+    //     info!("test_question {:?}", &test_question.search_string());
+    //     let inference_result = marginalized_inference_probability(model, &test_question);
+    //     trace!("inference_result {:?}", &inference_result);
+    // }
 
-    Ok(())
+    todo!()
 }
 
 pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {

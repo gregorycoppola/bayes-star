@@ -11,6 +11,7 @@ use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::model::GraphicalModel;
+use crate::common::model::FactorModel;
 pub struct ExponentialModel {
     weights: ExponentialWeights,
 }
