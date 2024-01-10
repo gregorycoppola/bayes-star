@@ -398,6 +398,7 @@ impl FactDB for RedisFactDB {
         &self,
         conjunction: &Conjunction,
     ) -> Result<Option<f64>, Box<dyn Error>> {
+        // Note: Assumes independence. Have to use belief propagation to get this in arbitrary DAG.
         let mut result = 1f64;
         for term in &conjunction.terms {
             let probability = self.get_proposition_probability(term)?.expect("Probability not found.");
