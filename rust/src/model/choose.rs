@@ -89,7 +89,7 @@ pub fn compute_backlinks(
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
 
-        let implications = storage.find_premises(&search_key)?;
+        let implications = storage.graph.find_premises(&search_key)?;
         trace!("Found implications {:?}", &implications);
 
         for implication in &implications {
