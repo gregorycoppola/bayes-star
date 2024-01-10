@@ -75,7 +75,7 @@ pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn 
     let redis_client = RedisClient::new()?;
     let model_spec = "dummy_model_spec";
     let mut storage = GraphicalModel::new(
-        &model_spec, &redis_client).expect("Couldn't make storage");
+        model_spec, &redis_client).expect("Couldn't make storage");
     let result = scenario_maker.setup_scenario(&mut storage);
     info!("scenario result: {:?}", result);
 

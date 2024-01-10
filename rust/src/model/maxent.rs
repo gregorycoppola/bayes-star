@@ -16,9 +16,9 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new(connection: RefCell<Connection>) -> Result<ExponentialModel, Box<dyn Error>> {
+    pub fn new(connection: RefCell<Connection>) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let weights = ExponentialWeights::new(connection);
-        Ok(ExponentialModel{ weights })
+        Ok(Box::new(ExponentialModel{ weights }))
     }
 }
 
