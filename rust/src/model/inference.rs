@@ -102,6 +102,13 @@ impl FactDB for MapBackedProbabilityStorage {
             panic!("proposition key not found in local map {:?}", &search_key);
         }
     }
+
+    fn get_conjunction_probability(
+        &self,
+        conjunction: &Conjunction,
+    ) -> Result<Option<f64>, Box<dyn Error>> {
+        todo!("tbd")
+    }
 }
 
 pub fn compute_joint_probability(
