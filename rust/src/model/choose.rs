@@ -1,7 +1,16 @@
-use crate::{model::objects::{BackLink, Proposition, Conjunction}, common::{model::{Graph, Factor}, interface::FactDB}};
-use std::error::Error;
+use super::{
+    conjunction,
+    ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
+};
 use crate::common::model::GraphicalModel;
-use super::{ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map}, conjunction};
+use crate::{
+    common::{
+        interface::FactDB,
+        model::{Factor, Graph},
+    },
+    model::objects::{BackLink, Conjunction, Proposition},
+};
+use std::error::Error;
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
@@ -85,28 +94,35 @@ pub fn compute_backlinks(
             let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
-                let extracted_mapping = extract_premise_role_map(
-                    &conclusion,
-                    &implication.role_maps.role_maps[index],
-                ); // Assuming this function exists
-                trace!("Extracted mapping for term {}: {:?}", index, extracted_mapping);
-                let extracted_proposition = convert_to_proposition(
-                    &proposition,
-                    &extracted_mapping,
-                )?; // Assuming this function exists
-                trace!("Converted to proposition for term {}: {:?}", index, extracted_proposition);
+                let extracted_mapping =
+                    extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]); // Assuming this function exists
+                trace!(
+                    "Extracted mapping for term {}: {:?}",
+                    index,
+                    extracted_mapping
+                );
+                let extracted_proposition =
+                    convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
+                trace!(
+                    "Converted to proposition for term {}: {:?}",
+                    index,
+                    extracted_proposition
+                );
                 terms.push(extracted_proposition);
             }
             backlinks.push(BackLink::new(implication.clone(), Conjunction { terms }));
         }
     }
     trace!("Returning backlinks {:?}", &backlinks);
-    debug!("Completed computing backlinks, total count: {}", backlinks.len());
+    debug!(
+        "Completed computing backlinks, total count: {}",
+        backlinks.len()
+    );
     Ok(backlinks)
 }
 
 pub fn compute_factor(
-    fact_db:&Box<dyn FactDB>,
+    fact_db: &Box<dyn FactDB>,
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
@@ -114,13 +130,18 @@ pub fn compute_factor(
     let mut conjunctions = vec![];
     let mut conjunction_probabilities = vec![];
     for backlink in backlinks {
-        let conclusion_probability = fact_db.get_proposition_probability(&conclusion)?.expect("No conclusion probability.");
+        let conjunction_probability = fact_db
+            .get_conjunction_probability(&backlink.conjunction)?
+            .expect("No conclusion probability.");
+        conjunction_probabilities.push(conjunction_probability);
         conjunctions.push(backlink.conjunction);
     }
-    let conclusion_probability = fact_db.get_proposition_probability(&conclusion)?.expect("No conclusion probability.");
+    let conclusion_probability = fact_db
+        .get_proposition_probability(&conclusion)?
+        .expect("No conclusion probability.");
     Ok(Factor {
-        conjunctions, 
-        conclusion, 
+        conjunctions,
+        conclusion,
         conjunction_probabilities,
         conclusion_probability,
     })
