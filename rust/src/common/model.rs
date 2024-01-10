@@ -37,8 +37,8 @@ impl GraphicalModel {
 
 #[derive(Debug)]
 pub struct Factor {
-    conjunctions: Vec<Conjunction>,
-    conclusion: Proposition,
+    pub conjunctions: Vec<Conjunction>,
+    pub conclusion: Proposition,
 }
 
 // pub trait FactorModel {

@@ -107,7 +107,15 @@ pub fn compute_backlinks(
 
 pub fn compute_factor(
     graph: &Graph,
-    conclusion: &Proposition,
+    conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
-    todo!()
+    let backlinks = compute_backlinks(graph, &conclusion)?;
+    let mut conjunctions = vec![];
+    for backlink in backlinks {
+        conjunctions.push(backlink.conjunction);
+    }
+    Ok(Factor {
+        conjunctions, 
+        conclusion, 
+    })
 }
