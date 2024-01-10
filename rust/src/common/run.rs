@@ -51,7 +51,7 @@ pub fn do_training(
     Ok(())
 }
 
-pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
+pub fn setup_and_train(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
     let mut redis_client = RedisClient::new()?;
     redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();

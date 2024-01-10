@@ -2,7 +2,7 @@
 use bayes_star::model::config::set_config;
 use bayes_star::model::config::Config;
 use bayes_star::scenarios::dating_prob2::DatingProb2;
-use bayes_star::common::run::train_and_test;
+use bayes_star::common::run::setup_and_train;
 use env_logger::{Builder, Env};
 use std::io::Write;
 
@@ -52,6 +52,6 @@ fn main() {
     }).expect("Could not set config.");
 
     let scenario_maker = DatingProb2{};
-    train_and_test(&scenario_maker).expect("Error in training.");
+    setup_and_train(&scenario_maker).expect("Error in training.");
     warn!("program done");
 }
