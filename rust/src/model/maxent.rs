@@ -1,4 +1,4 @@
-use crate::common::interface::{LogicalModel, PropositionProbability, TrainStatistics};
+use crate::common::interface::{LogicalModel, PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Storage;
 use crate::model::weights::CLASS_LABELS;
@@ -8,6 +8,7 @@ use std::error::Error;
 use super::choose::compute_backlinks;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
+use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 
 struct ExponentialModel {
@@ -134,6 +135,10 @@ pub fn do_sgd_update(
 }
 
 impl LogicalModel for ExponentialModel {
+    fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     fn train(
         &mut self,
         storage: &Storage,
@@ -212,5 +217,13 @@ impl LogicalModel for ExponentialModel {
 
         trace!("train_on_example - End");
         Ok(TrainStatistics{ loss: 1f64})
+    }
+    fn predict(
+        &self,
+        storage: &Storage,
+        evidence: &dyn PropositionProbability,
+        proposition: &Proposition,
+    ) -> Result<PredictStatistics, Box<dyn Error>> {
+        todo!()
     }
 }
