@@ -39,6 +39,8 @@ impl GraphicalModel {
 pub struct  Factor {
     pub conjunctions: Vec<Conjunction>,
     pub conclusion: Proposition,
+    pub conjunction_probabilities: Vec<f64>,
+    pub conclusion_probability: f64,
 }
 
 pub trait FactorModel {
