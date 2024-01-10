@@ -16,7 +16,7 @@ pub trait PropositionProbability {
     ) -> Result<Option<f64>, Box<dyn Error>>;
 }
 
-pub trait LogicalModel {
+pub trait FactorModel {
     fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>>;
     
     fn 

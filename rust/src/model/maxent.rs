@@ -1,4 +1,4 @@
-use crate::common::interface::{LogicalModel, PropositionProbability, TrainStatistics, PredictStatistics};
+use crate::common::interface::{FactorModel, PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Graph;
 use crate::model::weights::CLASS_LABELS;
@@ -142,7 +142,7 @@ pub fn do_sgd_update(
     new_weights
 }
 
-impl LogicalModel for ExponentialModel {
+impl FactorModel for ExponentialModel {
     fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>> {
         todo!()
     }

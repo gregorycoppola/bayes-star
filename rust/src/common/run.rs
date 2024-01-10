@@ -3,19 +3,19 @@ use std::error::Error;
 
 use redis::{Client, Connection};
 
-use super::interface::{LogicalModel, ScenarioMaker};
+use super::interface::{FactorModel, ScenarioMaker};
 use crate::model::maxent::ExponentialModel;
 use crate::model::{inference::marginalized_inference_probability, storage::Graph};
 
 fn create_model(
     model_name: &String,
     connection: RefCell<Connection>,
-) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
+) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
     Ok(Box::new(ExponentialModel::new(connection)))
 }
 
 pub fn do_training(
-    model: &mut Box<dyn LogicalModel>,
+    model: &mut Box<dyn FactorModel>,
     storage: &Graph,
 ) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
