@@ -1,7 +1,7 @@
 use crate::{model::objects::{BackLink, Proposition, Conjunction}, common::{model::{Graph, Factor}, interface::FactDB}};
 use std::error::Error;
 use crate::common::model::GraphicalModel;
-use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
+use super::{ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map}, conjunction};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
@@ -112,11 +112,16 @@ pub fn compute_factor(
 ) -> Result<Factor, Box<dyn Error>> {
     let backlinks = compute_backlinks(graph, &conclusion)?;
     let mut conjunctions = vec![];
+    let mut conjunction_probabilities = vec![];
     for backlink in backlinks {
+        let conclusion_probability = fact_db.get_proposition_probability(&conclusion)?.expect("No conclusion probability.");
         conjunctions.push(backlink.conjunction);
     }
+    let conclusion_probability = fact_db.get_proposition_probability(&conclusion)?.expect("No conclusion probability.");
     Ok(Factor {
         conjunctions, 
         conclusion, 
+        conjunction_probabilities,
+        conclusion_probability,
     })
 }
