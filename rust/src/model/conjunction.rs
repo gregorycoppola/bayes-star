@@ -18,7 +18,7 @@ pub fn get_conjunction_probability<T: PropositionProbability>(
                 let term_prob = term_prob_opt.expect("`term_prob` should be Some here.");
                 trace!("Term probability for term {}: {}", term.search_string(), term_prob);
                 product *= term_prob;
-                trace!("Updated min probability after term {}: {}", term.search_string(), min_prob);
+                trace!("Updated min probability after term {}: {}", term.search_string(), product);
             },
             Err(e) => {
                 error!("Error getting proposition probability for term {}: {}", i, e);
@@ -27,6 +27,6 @@ pub fn get_conjunction_probability<T: PropositionProbability>(
         }
     }
 
-    trace!("Conjunction probability calculated: {}", min_prob);
+    trace!("Conjunction probability calculated: {}", product);
     Ok(product)
 }
