@@ -225,7 +225,7 @@ pub fn marginalized_inference_probability(
     storage: &mut GraphicalModel,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    todo!("Do we still need this?")
+    todo!("This method should become a baseline.")
     // info!(
     //     "inference_probability - Start: {:?}",
     //     proposition.search_string()
