@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::{objects::Proposition, storage::Storage};
+use crate::model::{objects::{Proposition, Implication}, storage::Storage};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -17,6 +17,8 @@ pub trait PropositionProbability {
 }
 
 pub trait LogicalModel {
+    fn initialize_weight(implication:&Implication) -> Result<(), Box<dyn Error>>;
+    
     fn train(
         storage: &mut Storage,
         proposition: &Proposition,

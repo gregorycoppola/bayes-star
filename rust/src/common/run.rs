@@ -2,9 +2,43 @@ use std::error::Error;
 
 use redis::Client;
 
-use crate::model::{storage::Storage, maxent::do_training, inference::marginalized_inference_probability};
+use crate::model::{storage::Storage, inference::marginalized_inference_probability};
 
 use super::interface::ScenarioMaker;
+
+
+pub fn do_training(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
+    trace!("do_training - Getting all implications");
+    let implications = storage.get_all_implications()?;
+    for implication in implications {
+        trace!("do_training - Processing implication: {:?}", implication);
+        initialize_weights(storage.get_redis_connection(), &implication)?;
+    }
+
+    trace!("do_training - Getting all propositions");
+    let propositions = storage.get_training_questions()?;
+    trace!("do_training - Processing propositions: {}", propositions.len());
+
+    let mut examples_processed = 0;
+    for proposition in propositions {
+        trace!("do_training - Processing proposition: {:?}", proposition);
+        let backlinks = compute_backlinks(storage, &proposition)?;
+        trace!("do_training - Backlinks: {:?}", backlinks);
+
+        match train_on_example(storage, &proposition, &backlinks) {
+            Ok(_) => trace!("do_training - Successfully trained on proposition: {:?}", proposition),
+            Err(e) => {
+                panic!("do_training - Error in train_on_example for proposition {} {:?}: {:?}", examples_processed, proposition, e)
+            }
+
+        }
+
+        examples_processed += 1;
+    }
+
+    trace!("do_training - Training complete: examples processed {}", examples_processed);
+    Ok(())
+}
 
 fn run_test_loop(storage:&mut Storage) -> Result<(), Box<dyn Error>> {
     let test_questions = storage.get_test_questions().expect("Couldn't get test questions.");
