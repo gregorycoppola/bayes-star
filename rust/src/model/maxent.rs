@@ -34,7 +34,7 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
 }
 
 pub fn features_from_backlinks<T: PropositionProbability>(
-    storage: &mut T,
+    storage: &T,
     backlinks: &[BackLink],
 ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
     trace!(

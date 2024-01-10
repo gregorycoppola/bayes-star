@@ -302,7 +302,7 @@ impl Storage {
 impl PropositionProbability for Storage {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_string = proposition.search_string();

@@ -91,7 +91,7 @@ struct MapBackedProbabilityStorage {
 
 impl PropositionProbability for MapBackedProbabilityStorage {
     fn get_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_key = proposition.search_string();

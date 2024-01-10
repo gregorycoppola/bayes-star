@@ -4,7 +4,7 @@ use crate::common::interface::PropositionProbability;
 use super::objects::Conjunction;
 
 pub fn get_conjunction_probability<T: PropositionProbability>(
-    storage: &mut T,
+    storage: &T,
     conjunction: &Conjunction,
 ) -> Result<f64, Box<dyn Error>> {
     trace!("Calculating conjunction probability for a conjunction with {} terms", conjunction.terms.len());

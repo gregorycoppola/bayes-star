@@ -11,7 +11,7 @@ pub struct PredictStatistics {
 
 pub trait PropositionProbability {
     fn get_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 }
