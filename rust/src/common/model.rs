@@ -54,9 +54,9 @@ impl Drop for Graph {
 
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
+    pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
         Ok(Graph {
-            redis_connection: RefCell::new(connection),
+            redis_connection,
         })
     }
     pub fn drop_all_dbs(&mut self) -> Result<(), Box<dyn Error>> {
