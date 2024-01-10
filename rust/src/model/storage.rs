@@ -19,11 +19,11 @@ impl Storage {
     // Initialize new Storage with a Redis connection
     pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
         Ok(Storage {
-            redis_connection: connection,
+            redis_connection: RefCell::new(connection),
         })
     }
     pub fn drop_all_dbs(&mut self) -> Result<(), Box<dyn Error>> {
-        redis::cmd("FLUSHDB").query(&mut self.redis_connection)?;
+        redis::cmd("FLUSHDB").query(&mut self.redis_connection.borrow_mut())?;
         trace!("Database flushed successfully");
 
         Ok(())
@@ -36,7 +36,7 @@ impl Storage {
             entity.domain,
             entity.name
         ); // Logging
-        self.redis_connection
+        self.redis_connection.borrow_mut()
             .sadd(&entity.domain.to_string(), &entity.name)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(())
@@ -46,7 +46,7 @@ impl Storage {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
 
         let names: Vec<String> = self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .smembers(domain)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(names
@@ -92,7 +92,7 @@ impl Storage {
         );
 
         if let Err(e) =
-            self.redis_connection
+            self.redis_connection.borrow_mut()
                 .hset::<_, _, _, bool>("propositions", &search_string, &record)
         {
             trace!(
@@ -126,7 +126,7 @@ impl Storage {
             search_string
         );
 
-        if let Err(e) = self.redis_connection.hset::<&str, &str, String, bool>(
+        if let Err(e) = self.redis_connection.borrow_mut().hset::<&str, &str, String, bool>(
             "probs",
             &search_string,
             probability.to_string(),
@@ -146,7 +146,7 @@ impl Storage {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.redis_connection
+        self.redis_connection.borrow_mut()
             .sadd("implications", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -158,7 +158,7 @@ impl Storage {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.redis_connection
+        self.redis_connection.borrow_mut()
             .sadd(&search_string, &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -168,7 +168,7 @@ impl Storage {
     // Get all Implications
     pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .smembers("implications")
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -184,7 +184,7 @@ impl Storage {
     ) -> Result<Vec<Implication>, Box<dyn Error>> {
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .smembers(search_string)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -220,7 +220,7 @@ impl Storage {
         );
 
         if let Err(e) = self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
             trace!("Storage::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
@@ -269,7 +269,7 @@ impl Storage {
 
         // Attempt to pop one element at a time from the Redis queue
         while let Some(serialized_proposition) = self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .lpop::<_, Option<String>>(queue_name, None)?
         {
             match serde_json::from_str(&serialized_proposition)
@@ -309,7 +309,7 @@ impl PropositionProbability for Storage {
 
         // Use a match statement to handle the different outcomes
         match self
-            .redis_connection
+            .redis_connection.borrow_mut()
             .hget::<_, _, String>("probs", &search_string)
         {
             Ok(probability_str) => {
