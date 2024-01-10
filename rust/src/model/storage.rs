@@ -15,13 +15,6 @@ impl Drop for Storage {
     }
 }
 
-pub trait PropositionProbability {
-    fn get_proposition_probability(
-        &mut self,
-        proposition: &Proposition,
-    ) -> Result<Option<f64>, Box<dyn Error>>;
-}
-
 impl Storage {
     // Initialize new Storage with a Redis connection
     pub fn new(connection: Connection) -> Result<Self, redis::RedisError> {
