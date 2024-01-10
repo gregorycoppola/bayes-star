@@ -70,6 +70,5 @@ pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn 
     info!("train result: {:?}", train_result);
     run_test_loop(&mut model)?;
     std::mem::drop(model);
-
     Ok(())
 }
