@@ -26,7 +26,7 @@ fn read_in_parent_probabilities(
             term.search_string()
         );
 
-        match storage.get_proposition_probability(term) {
+        match storage.fact_db.get_proposition_probability(term) {
             Ok(term_prob_opt) => {
                 match term_prob_opt {
                     Some(term_prob) => {
@@ -59,7 +59,7 @@ fn print_premise_probabilities(
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());
-        match storage.get_proposition_probability(term) {
+        match storage.fact_db.get_proposition_probability(term) {
             Ok(term_prob_opt) => match term_prob_opt {
                 Some(term_prob) => {
                     info!(

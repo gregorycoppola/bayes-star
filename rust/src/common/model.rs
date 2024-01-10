@@ -18,15 +18,16 @@ pub struct GraphicalModel {
 
 impl GraphicalModel {
     pub fn new(
-        model_spec: &String,
+        _model_spec: &String,
         redis_client: &RedisClient,
     ) -> Result<Self, Box<dyn Error>> {
         let graph_connection = redis_client.get_connection()?;
         let model_connection = redis_client.get_connection()?;
         let graph = Graph::new(graph_connection)?;
         let model = ExponentialModel::new(model_connection)?;
+        let fact_db = RedisFactDB::new(redis_client)?;
         Ok(GraphicalModel {
-            graph, model
+            graph, model, fact_db,
         })
     }
 }
@@ -363,7 +364,7 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new() -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+    pub fn new(client:&RedisClient) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
         todo!()
     }
 }
