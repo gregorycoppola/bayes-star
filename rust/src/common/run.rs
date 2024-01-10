@@ -5,21 +5,15 @@ use redis::{Client, Connection};
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
 use super::interface::{FactorModel, ScenarioMaker};
+use super::model::Graph;
 use crate::model::maxent::ExponentialModel;
 use crate::model::{inference::marginalized_inference_probability};
 
-fn create_model(
-    model_name: &String,
-    connection: RefCell<Connection>,
-) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
-    Ok(Box::new(ExponentialModel::new(connection)))
-}
-
 pub fn do_training(
+    graph: &Graph,
     model: &mut Box<dyn FactorModel>,
-    graph: &GraphicalModel,
 ) -> Result<(), Box<dyn Error>> {
-    let storage = graph.graph;
+    let storage = graph;
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
@@ -75,21 +69,14 @@ fn run_test_loop(model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
 pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
     let redis_client = RedisClient::new()?;
     let model_spec = "dummy_model_spec".to_string();
-    let mut storage = GraphicalModel::new(
+    let mut model = GraphicalModel::new(
         &model_spec, &redis_client).expect("Couldn't make storage");
-    let result = scenario_maker.setup_scenario(&mut storage);
+    let result = scenario_maker.setup_scenario(&mut model);
     info!("scenario result: {:?}", result);
-
-    let mut model = create_model(
-        &"model_name".to_string(),
-        RefCell::new(client.get_connection().expect("Couldn't get connection.")),
-    )?;
-    let train_result = do_training(&mut model, &storage);
+    let train_result = do_training(&model.graph, &mut model.model);
     info!("train result: {:?}", train_result);
-
-    run_test_loop(&mut storage)?;
-    // Explicitly drop the Redis client
-    std::mem::drop(storage);
+    run_test_loop(&mut model)?;
+    std::mem::drop(model);
 
     Ok(())
 }

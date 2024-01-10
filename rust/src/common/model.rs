@@ -8,7 +8,7 @@ use crate::{
 use redis::{Commands, Connection};
 use std::{cell::RefCell, error::Error};
 
-use super::{interface::PredictStatistics, redis::RedisClient};
+use super::{interface::{PredictStatistics, TrainStatistics}, redis::RedisClient};
 
 pub struct GraphicalModel {
     pub graph: Graph,
@@ -35,8 +35,21 @@ pub struct Factor {
     conclusion: Proposition,
 }
 
+// pub trait FactorModel {
+//     fn score_factor(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>>;
+// }
+
 pub trait FactorModel {
-    fn score_factor(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>>;
+    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
+    fn train(
+        &mut self,
+        factor:&Factor,
+        probability:f64,
+    ) -> Result<TrainStatistics, Box<dyn Error>>;
+    fn predict(
+        &self,
+        factor:&Factor,
+    ) -> Result<PredictStatistics, Box<dyn Error>>;
 }
 
 pub struct Graph {
