@@ -1,4 +1,4 @@
-use crate::common::interface::{FactorModel, PropositionProbability, TrainStatistics, PredictStatistics};
+use crate::common::interface::{PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::weights::CLASS_LABELS;
 use std::cell::RefCell;

@@ -1,13 +1,8 @@
-use std::cell::RefCell;
 use std::error::Error;
-
-use redis::{Client, Connection};
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
-use super::interface::{FactorModel, ScenarioMaker};
-use super::model::Graph;
-use crate::model::maxent::ExponentialModel;
-use crate::model::{inference::marginalized_inference_probability};
+use super::interface::ScenarioMaker;
+use super::model::{Graph, FactorModel};
 
 pub fn do_training(
     graph: &Graph,
@@ -20,14 +15,12 @@ pub fn do_training(
         trace!("do_training - Processing implication: {:?}", implication);
         model.initialize_connection(&implication)?;
     }
-
     trace!("do_training - Getting all propositions");
     let propositions = storage.get_training_questions()?;
     trace!(
         "do_training - Processing propositions: {}",
         propositions.len()
     );
-
     let mut examples_processed = 0;
     for proposition in propositions {
         match model.train(storage, &proposition) {
@@ -44,7 +37,6 @@ pub fn do_training(
         }
         examples_processed += 1;
     }
-
     trace!(
         "do_training - Training complete: examples processed {}",
         examples_processed
