@@ -23,9 +23,9 @@ impl GraphicalModel {
         let graph_connection = redis_client.get_connection()?;
         let model_connection = redis_client.get_connection()?;
         let graph = Graph::new(graph_connection)?;
-        let exponential = ExponentialModel::new(model_connection)?;
+        let model = ExponentialModel::new(model_connection)?;
         Ok(GraphicalModel {
-            graph, model: Box::new(exponential)
+            graph, model
         })
     }
 }
