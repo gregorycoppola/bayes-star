@@ -1,5 +1,6 @@
 use redis::Commands;
 use redis::Connection;
+use std::cell::RefCell;
 use std::error::Error;
 
 pub struct RedisClient {
@@ -13,9 +14,10 @@ impl RedisClient {
         Ok(redis_client)
     }
 
-    pub fn get_connection(&self) -> Result<redis::Connection, Box<dyn Error>> {
+    pub fn get_connection(&self) -> Result<RefCell<redis::Connection>, Box<dyn Error>> {
         let connection = self.client.get_connection().expect("Couldn't get connection.");
-        Ok(connection)
+        let refcell = RefCell::new(connection);
+        Ok(refcell)
     }
 }
 
