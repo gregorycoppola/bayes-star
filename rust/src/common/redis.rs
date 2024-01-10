@@ -2,7 +2,7 @@ use redis::Commands;
 use redis::Connection;
 use std::error::Error;
 
-struct RedisClient {
+pub struct RedisClient {
     client: redis::Client,
 }
 

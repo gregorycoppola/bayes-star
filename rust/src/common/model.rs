@@ -2,13 +2,13 @@ use crate::{
     common::interface::PropositionProbability,
     model::{
         maxent::ExponentialModel,
-        objects::{Conjunction, Domain, Entity, Implication, Proposition},
+        objects::{Conjunction, Domain, Entity, Implication, Proposition}, self,
     },
 };
 use redis::{Commands, Connection};
 use std::{cell::RefCell, error::Error};
 
-use super::interface::PredictStatistics;
+use super::{interface::PredictStatistics, redis::RedisClient};
 
 pub struct GraphicalModel {
     graph: Graph,
@@ -18,12 +18,14 @@ pub struct GraphicalModel {
 impl GraphicalModel {
     pub fn new(
         model_spec: String,
-        connection1: RefCell<redis::Connection>,
-        connection2: RefCell<redis::Connection>,
+        redis_client: &RedisClient,
     ) -> Result<Self, Box<dyn Error>> {
-        let model = ExponentialModel::new(connection);
+        let graph_connection = redis_client.get_connection()?;
+        let model_connection = redis_client.get_connection()?;
+        let graph = Graph::new(graph_connection)?;
+        let model = ExponentialModel::new(model_connection)?;
         Ok(GraphicalModel {
-            graph: Graph::new(connection),
+            graph, model
         })
     }
 }
