@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::error::Error;
 
 use redis::Client;
@@ -9,7 +10,7 @@ use super::interface::{ScenarioMaker, LogicalModel};
 fn create_model(model_name:&String) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
     todo!()
 }
-pub fn do_training(model:Box<dyn LogicalModel>, storage: &Storage) -> Result<(), Box<dyn Error>> {
+pub fn do_training(model:&mut dyn LogicalModel, storage: &Storage) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
@@ -56,8 +57,8 @@ pub fn train_and_test(scenario_maker:&dyn ScenarioMaker) -> Result<(), Box<dyn E
     let result = scenario_maker.setup_scenario(&mut storage);
     info!("scenario result: {:?}", result);
 
-    let model = create_model(&"model_name".to_string())?;
-    let train_result = do_training(model, &storage);
+    let mut model = create_model(&"model_name".to_string())?;
+    let train_result = do_training(model.borrow_mut(), &storage);
     info!("train result: {:?}", train_result);
 
     run_test_loop(&mut storage)?;
