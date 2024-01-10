@@ -10,7 +10,7 @@ use super::interface::{ScenarioMaker, LogicalModel};
 fn create_model(model_name:&String) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
     todo!()
 }
-pub fn do_training(model:&mut dyn LogicalModel, storage: &Storage) -> Result<(), Box<dyn Error>> {
+pub fn do_training(model:&mut Box<dyn LogicalModel>, storage: &Storage) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
@@ -58,7 +58,7 @@ pub fn train_and_test(scenario_maker:&dyn ScenarioMaker) -> Result<(), Box<dyn E
     info!("scenario result: {:?}", result);
 
     let mut model = create_model(&"model_name".to_string())?;
-    let train_result = do_training(model.borrow_mut(), &storage);
+    let train_result = do_training(&mut model, &storage);
     info!("train result: {:?}", train_result);
 
     run_test_loop(&mut storage)?;
