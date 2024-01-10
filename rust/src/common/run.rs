@@ -60,7 +60,8 @@ fn run_test_loop(model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
-    let redis_client = RedisClient::new()?;
+    let mut redis_client = RedisClient::new()?;
+    redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let mut model = GraphicalModel::new(
         &model_spec, &redis_client).expect("Couldn't make storage");
