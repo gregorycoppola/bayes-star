@@ -1,9 +1,9 @@
 use crate::{model::objects::{Domain, Entity, Implication, Proposition}, common::interface::PropositionProbability};
 use redis::{Commands, Connection};
-use std::error::Error;
+use std::{error::Error, cell::RefCell};
 
 pub struct Storage {
-    redis_connection: redis::Connection,
+    redis_connection: RefCell<redis::Connection>,
 }
 
 impl Drop for Storage {
@@ -29,9 +29,6 @@ impl Storage {
         Ok(())
     }
 
-    pub fn get_redis_connection(&mut self) -> &mut redis::Connection {
-        &mut self.redis_connection
-    }
     // Store an entity
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
@@ -45,7 +42,7 @@ impl Storage {
         Ok(())
     }
 
-    pub fn get_entities_in_domain(&mut self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
+    pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
 
         let names: Vec<String> = self
@@ -169,7 +166,7 @@ impl Storage {
     }
 
     // Get all Implications
-    pub fn get_all_implications(&mut self) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .smembers("implications")
@@ -182,7 +179,7 @@ impl Storage {
     }
 
     pub fn find_premises(
-        &mut self,
+        &self,
         search_string: &str,
     ) -> Result<Vec<Implication>, Box<dyn Error>> {
         trace!("find_premises: {:?}", &search_string);
