@@ -15,6 +15,13 @@ pub struct ExponentialModel {
     weights: ExponentialWeights,
 }
 
+impl ExponentialModel {
+    pub fn new() -> ExponentialModel {
+        let weights = ExponentialWeights{};
+        ExponentialModel{ weights }
+    }
+}
+
 fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f64 {
     let mut result = 0.0;
     for (key, &v1) in dict1 {

@@ -9,7 +9,7 @@ use crate::model::choose::compute_backlinks;
 use super::interface::{ScenarioMaker, LogicalModel};
 
 fn create_model(model_name:&String) -> Result<Box<dyn LogicalModel>, Box<dyn Error>> {
-    Ok(Box::new(ExponentialModel {} ))
+    Ok(Box::new(ExponentialModel::new()))
 }
 pub fn do_training(model:&mut Box<dyn LogicalModel>, storage: &Graph) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all implications");
