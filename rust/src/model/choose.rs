@@ -6,7 +6,6 @@ use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
     let mut temp_vec = vec![];
-
     fn run(
         input_array: &[usize],
         k: usize,
@@ -24,7 +23,6 @@ fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
             temp_vec.pop();
         }
     }
-
     run(input_array, k, 0, &mut temp_vec, &mut result);
     result
 }
@@ -53,12 +51,10 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     if !proposition.is_fact() {
         return Err("Proposition is not a fact".into());
     }
-
     let num_roles = proposition.roles.len();
     let configurations1 = compute_choose_configurations(num_roles, 1);
     let configurations2 = compute_choose_configurations(num_roles, 2);
     let roles = proposition.role_names();
-
     let mut result = Vec::new();
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
@@ -66,7 +62,6 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
         let search_string = quantified.search_string(); // Assuming this method exists
         result.push(search_string);
     }
-
     Ok(result)
 }
 
@@ -75,23 +70,17 @@ pub fn compute_backlinks(
     conclusion: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
-
     if !conclusion.is_fact() {
         error!("Proposition is not a fact");
         return Err("Proposition is not a fact".into());
     }
-
     let search_keys = compute_search_keys(conclusion)?;
     trace!("Computed search_keys {:?}", &search_keys);
-
     let mut backlinks = Vec::new();
-
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
-
         let implications = graph.find_premises(&search_key)?;
         trace!("Found implications {:?}", &implications);
-
         for implication in &implications {
             let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
@@ -100,24 +89,18 @@ pub fn compute_backlinks(
                     &conclusion,
                     &implication.role_maps.role_maps[index],
                 ); // Assuming this function exists
-
                 trace!("Extracted mapping for term {}: {:?}", index, extracted_mapping);
-
                 let extracted_proposition = convert_to_proposition(
                     &proposition,
                     &extracted_mapping,
                 )?; // Assuming this function exists
-
                 trace!("Converted to proposition for term {}: {:?}", index, extracted_proposition);
-
                 terms.push(extracted_proposition);
             }
             backlinks.push(BackLink::new(implication.clone(), Conjunction { terms }));
         }
     }
-
     trace!("Returning backlinks {:?}", &backlinks);
     debug!("Completed computing backlinks, total count: {}", backlinks.len());
-
     Ok(backlinks)
 }
