@@ -1,6 +1,6 @@
 use crate::model::objects::{BackLink, Proposition, Conjunction};
 use std::error::Error;
-
+use crate::common::model::GraphicalModel;
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {

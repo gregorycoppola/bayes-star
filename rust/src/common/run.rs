@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::error::Error;
 
 use redis::{Client, Connection};
-
+use crate::common::model::GraphicalModel;
 use super::interface::{FactorModel, ScenarioMaker};
 use crate::model::maxent::ExponentialModel;
 use crate::model::{inference::marginalized_inference_probability};

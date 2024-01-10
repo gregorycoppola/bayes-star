@@ -7,7 +7,7 @@ use crate::{model::{
 }, common::interface::ScenarioMaker};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
-
+use crate::common::model::GraphicalModel;
 fn cointoss() -> f64 {
     let mut rng = rand::thread_rng(); // Get a random number generator
     if rng.gen::<f64>() < 0.5 {

@@ -1,6 +1,6 @@
 use std::{collections::HashMap, error::Error};
 use crate::common::interface::PropositionProbability;
-
+use crate::common::model::GraphicalModel;
 use crate::model::{
     choose::compute_backlinks,
     maxent::{compute_potential, features_from_backlinks},
