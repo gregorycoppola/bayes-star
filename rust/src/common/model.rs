@@ -1,12 +1,31 @@
-use crate::{model::objects::{Domain, Entity, Implication, Proposition, Conjunction}, common::interface::PropositionProbability};
+use crate::{
+    common::interface::PropositionProbability,
+    model::{
+        maxent::ExponentialModel,
+        objects::{Conjunction, Domain, Entity, Implication, Proposition},
+    },
+};
 use redis::{Commands, Connection};
-use std::{error::Error, cell::RefCell};
+use std::{cell::RefCell, error::Error};
 
 use super::interface::PredictStatistics;
 
 pub struct GraphicalModel {
     graph: Graph,
     model: Box<dyn FactorModel>,
+}
+
+impl GraphicalModel {
+    pub fn new(
+        model_spec: String,
+        connection1: RefCell<redis::Connection>,
+        connection2: RefCell<redis::Connection>,
+    ) -> Result<Self, Box<dyn Error>> {
+        let model = ExponentialModel::new(connection);
+        Ok(GraphicalModel {
+            graph: Graph::new(connection),
+        })
+    }
 }
 
 pub struct Factor {
@@ -52,7 +71,8 @@ impl Graph {
             entity.domain,
             entity.name
         ); // Logging
-        self.redis_connection.borrow_mut()
+        self.redis_connection
+            .borrow_mut()
             .sadd(&entity.domain.to_string(), &entity.name)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(())
@@ -62,7 +82,8 @@ impl Graph {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
 
         let names: Vec<String> = self
-            .redis_connection.borrow_mut()
+            .redis_connection
+            .borrow_mut()
             .smembers(domain)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(names
@@ -107,10 +128,11 @@ impl Graph {
             &record
         );
 
-        if let Err(e) =
-            self.redis_connection.borrow_mut()
-                .hset::<_, _, _, bool>("propositions", &search_string, &record)
-        {
+        if let Err(e) = self.redis_connection.borrow_mut().hset::<_, _, _, bool>(
+            "propositions",
+            &search_string,
+            &record,
+        ) {
             trace!(
                 "GraphicalModel::store_proposition - Error storing proposition in Redis: {}",
                 e
@@ -142,11 +164,11 @@ impl Graph {
             search_string
         );
 
-        if let Err(e) = self.redis_connection.borrow_mut().hset::<&str, &str, String, bool>(
-            "probs",
-            &search_string,
-            probability.to_string(),
-        ) {
+        if let Err(e) = self
+            .redis_connection
+            .borrow_mut()
+            .hset::<&str, &str, String, bool>("probs", &search_string, probability.to_string())
+        {
             trace!(
                 "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
                 e
@@ -162,7 +184,8 @@ impl Graph {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.redis_connection.borrow_mut()
+        self.redis_connection
+            .borrow_mut()
             .sadd("implications", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -174,7 +197,8 @@ impl Graph {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.redis_connection.borrow_mut()
+        self.redis_connection
+            .borrow_mut()
             .sadd(&search_string, &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -184,7 +208,8 @@ impl Graph {
     // Get all Implications
     pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
-            .redis_connection.borrow_mut()
+            .redis_connection
+            .borrow_mut()
             .smembers("implications")
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -194,13 +219,11 @@ impl Graph {
             .collect()
     }
 
-    pub fn find_premises(
-        &self,
-        search_string: &str,
-    ) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
-            .redis_connection.borrow_mut()
+            .redis_connection
+            .borrow_mut()
             .smembers(search_string)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -236,7 +259,8 @@ impl Graph {
         );
 
         if let Err(e) = self
-            .redis_connection.borrow_mut()
+            .redis_connection
+            .borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
             trace!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
@@ -286,7 +310,8 @@ impl Graph {
 
         // Attempt to pop one element at a time from the Redis queue
         while let Some(serialized_proposition) = self
-            .redis_connection.borrow_mut()
+            .redis_connection
+            .borrow_mut()
             .lpop::<_, Option<String>>(queue_name, None)?
         {
             match serde_json::from_str(&serialized_proposition)
@@ -325,8 +350,10 @@ impl PropositionProbability for GraphicalModel {
         let search_string = proposition.search_string();
 
         // Use a match statement to handle the different outcomes
-        match self.graph
-            .redis_connection.borrow_mut()
+        match self
+            .graph
+            .redis_connection
+            .borrow_mut()
             .hget::<_, _, String>("probs", &search_string)
         {
             Ok(probability_str) => {
