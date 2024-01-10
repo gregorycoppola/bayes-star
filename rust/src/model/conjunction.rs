@@ -1,5 +1,6 @@
 use std::error::Error;
-use crate::model::storage::PropositionProbability;
+use crate::common::interface::PropositionProbability;
+
 use super::objects::Conjunction;
 
 pub fn get_conjunction_probability<T: PropositionProbability>(

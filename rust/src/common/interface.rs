@@ -1,12 +1,12 @@
 use std::error::Error;
 
-use crate::model::{storage::Storage, objects::Proposition};
+use crate::model::{objects::Proposition, storage::Storage};
 
 pub struct TrainStatistics {
-    loss: f64,
+    pub loss: f64,
 }
 pub struct PredictStatistics {
-    marginal:f64,
+    pub marginal: f64,
 }
 
 pub trait PropositionProbability {
@@ -17,8 +17,13 @@ pub trait PropositionProbability {
 }
 
 pub trait LogicalModel {
-
-    fn train(storage:&mut Storage, proposition:&Proposition) -> Result<TrainStatistics, Box<dyn Error>>;
-    fn predict(storage:&mut Storage, evidence:&PropositionProbability, proposition:&Proposition) -> Result<PredictStatistics, Box<dyn Error>>;
-
+    fn train(
+        storage: &mut Storage,
+        proposition: &Proposition,
+    ) -> Result<TrainStatistics, Box<dyn Error>>;
+    fn predict(
+        storage: &mut Storage,
+        evidence: &dyn PropositionProbability,
+        proposition: &Proposition,
+    ) -> Result<PredictStatistics, Box<dyn Error>>;
 }

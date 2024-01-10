@@ -1,4 +1,4 @@
-use crate::model::objects::{Domain, Entity, Implication, Proposition};
+use crate::{model::objects::{Domain, Entity, Implication, Proposition}, common::interface::PropositionProbability};
 use redis::{Commands, Connection};
 use std::error::Error;
 
