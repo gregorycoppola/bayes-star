@@ -1,12 +1,14 @@
+use std::borrow::BorrowMut;
 use std::error::Error;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
-use super::interface::ScenarioMaker;
+use super::interface::{ScenarioMaker, FactDB};
 use super::model::{Graph, FactorModel};
 
 pub fn do_training(
-    graph: &Graph,
-    model: &mut Box<dyn FactorModel>,
+    model: &Graph,
+    fact_db: &Box<dyn FactDB>,
+    factor_model: &mut Box<dyn FactorModel>,
 ) -> Result<(), Box<dyn Error>> {
     todo!()
     // let storage = graph;
@@ -67,7 +69,7 @@ pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn 
         &model_spec, &redis_client).expect("Couldn't make storage");
     let result = scenario_maker.setup_scenario(&mut model);
     info!("scenario result: {:?}", result);
-    let train_result = do_training(&model.graph, &mut model.model);
+    let train_result = do_training(&model.graph, &model.fact_db,  model.model.borrow_mut());
     info!("train result: {:?}", train_result);
     run_test_loop(&mut model)?;
     std::mem::drop(model);
