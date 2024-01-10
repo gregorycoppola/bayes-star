@@ -393,4 +393,11 @@ impl FactDB for RedisFactDB {
             }
         }
     }
+
+    fn get_conjunction_probability(
+        &self,
+        conjunction: &Conjunction,
+    ) -> Result<Option<f64>, Box<dyn Error>> {
+        todo!()
+    }
 }
