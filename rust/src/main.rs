@@ -1,3 +1,4 @@
+
 use bayes_star::model::config::set_config;
 use bayes_star::model::config::Config;
 use bayes_star::scenarios::dating_prob2::DatingProb2;
