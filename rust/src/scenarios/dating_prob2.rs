@@ -29,7 +29,8 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    fn setup_scenario(&self, storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
+        let storage = model.graph;
         storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
         let config = CONFIG.get().expect("Config not initialized");

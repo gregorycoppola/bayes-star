@@ -17,8 +17,9 @@ fn create_model(
 
 pub fn do_training(
     model: &mut Box<dyn FactorModel>,
-    storage: &GraphicalModel,
+    graph: &GraphicalModel,
 ) -> Result<(), Box<dyn Error>> {
+    let storage = graph.graph;
     trace!("do_training - Getting all implications");
     let implications = storage.get_all_implications()?;
     for implication in implications {
