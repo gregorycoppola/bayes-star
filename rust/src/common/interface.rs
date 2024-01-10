@@ -4,6 +4,8 @@ use crate::model::{
     objects::{Implication, Proposition},
 };
 
+use super::model::GraphicalModel;
+
 pub struct TrainStatistics {
     pub loss: f64,
 }

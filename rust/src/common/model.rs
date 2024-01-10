@@ -4,17 +4,17 @@ use std::{error::Error, cell::RefCell};
 
 use super::interface::PredictStatistics;
 
-struct GraphicalModel {
+pub struct GraphicalModel {
     graph: Graph,
     model: Box<dyn FactorModel>,
 }
 
-struct Factor {
+pub struct Factor {
     conjunctions: Vec<Conjunction>,
     conclusion: Proposition,
 }
 
-trait FactorModel {
+pub trait FactorModel {
     fn score_factor(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>>;
 }
 
