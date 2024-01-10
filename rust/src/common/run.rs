@@ -3,7 +3,7 @@ use std::error::Error;
 use redis::Client;
 
 use crate::model::{storage::Storage, inference::marginalized_inference_probability};
-
+use crate::model::choose::compute_backlinks;
 use super::interface::ScenarioMaker;
 
 
