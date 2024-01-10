@@ -2,7 +2,7 @@ use super::interface::{FactDB, ScenarioMaker};
 use super::model::{FactorModel, Graph};
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
-use crate::model::choose::compute_backlinks;
+use crate::model::choose::{compute_backlinks, compute_factor};
 use std::borrow::BorrowMut;
 use std::error::Error;
 
@@ -24,12 +24,13 @@ pub fn do_training(
         propositions.len()
     );
     let mut examples_processed = 0;
-    for proposition in propositions {
+    for proposition in &propositions {
         trace!("do_training - Processing proposition: {:?}", proposition);
-        let backlinks = compute_backlinks(graph, &proposition)?;
-        trace!("do_training - Backlinks: {:?}", backlinks);
-
-        match model.train(&factor, probability) {
+        let factor = compute_factor(graph, &proposition)?;
+        trace!("do_training - Backlinks: {:?}", &factor);
+        let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
+        let probability = probabiity_opt.expect("Probability should exist.");
+        match factor_model.train(&factor, probability) {
             Ok(_) => trace!(
                 "do_training - Successfully trained on proposition: {:?}",
                 proposition

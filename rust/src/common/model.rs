@@ -32,6 +32,7 @@ impl GraphicalModel {
     }
 }
 
+#[derive(Debug)]
 pub struct Factor {
     conjunctions: Vec<Conjunction>,
     conclusion: Proposition,
