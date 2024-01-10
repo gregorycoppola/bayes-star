@@ -74,13 +74,6 @@ impl Graph {
             redis_connection,
         })
     }
-    pub fn drop_all_dbs(&mut self) -> Result<(), Box<dyn Error>> {
-        todo!("move this out of Graph class")
-        // redis::cmd("FLUSHDB").query(&mut self.redis_connection.borrow_mut())?;
-        // trace!("Database flushed successfully");
-
-        // Ok(())
-    }
 
     // Store an entity
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
