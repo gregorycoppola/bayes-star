@@ -1,14 +1,18 @@
 use crate::{
     common::interface::FactDB,
     model::{
+        self,
         maxent::ExponentialModel,
-        objects::{Conjunction, Domain, Entity, Implication, Proposition}, self,
+        objects::{Conjunction, Domain, Entity, Implication, Proposition},
     },
 };
 use redis::{Commands, Connection};
 use std::{cell::RefCell, error::Error};
 
-use super::{interface::{PredictStatistics, TrainStatistics}, redis::RedisClient};
+use super::{
+    interface::{PredictStatistics, TrainStatistics},
+    redis::RedisClient,
+};
 
 pub struct GraphicalModel {
     pub graph: Graph,
@@ -17,17 +21,16 @@ pub struct GraphicalModel {
 }
 
 impl GraphicalModel {
-    pub fn new(
-        _model_spec: &String,
-        redis_client: &RedisClient,
-    ) -> Result<Self, Box<dyn Error>> {
+    pub fn new(_model_spec: &String, redis_client: &RedisClient) -> Result<Self, Box<dyn Error>> {
         let graph_connection = redis_client.get_connection()?;
         let model_connection = redis_client.get_connection()?;
         let graph = Graph::new(graph_connection)?;
         let model = ExponentialModel::new(model_connection)?;
         let fact_db = RedisFactDB::new(redis_client)?;
         Ok(GraphicalModel {
-            graph, model, fact_db,
+            graph,
+            model,
+            fact_db,
         })
     }
 }
@@ -46,13 +49,10 @@ pub trait FactorModel {
     fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
-        factor:&Factor,
-        probability:f64,
+        factor: &Factor,
+        probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
-    fn predict(
-        &self,
-        factor:&Factor,
-    ) -> Result<PredictStatistics, Box<dyn Error>>;
+    fn predict(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>>;
 }
 
 pub struct Graph {
@@ -71,9 +71,7 @@ impl Drop for Graph {
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
-        Ok(Graph {
-            redis_connection,
-        })
+        Ok(Graph { redis_connection })
     }
 
     // Store an entity
@@ -358,8 +356,9 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new(client:&RedisClient) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
-        todo!()
+    pub fn new(client: &RedisClient) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+        let redis_connection = client.get_connection()?;
+        Ok(Box::new(RedisFactDB { redis_connection }))
     }
 }
 
