@@ -27,3 +27,8 @@ pub trait LogicalModel {
         proposition: &Proposition,
     ) -> Result<PredictStatistics, Box<dyn Error>>;
 }
+
+
+pub trait ScenarioMaker {
+    fn setup_scenario(&self, storage:&mut Storage) -> Result<(), Box<dyn Error>>;
+}

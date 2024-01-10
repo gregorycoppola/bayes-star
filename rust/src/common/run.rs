@@ -4,9 +4,7 @@ use redis::Client;
 
 use crate::model::{storage::Storage, maxent::do_training, inference::marginalized_inference_probability};
 
-pub trait ScenarioMaker {
-    fn setup_scenario(&self, storage:&mut Storage) -> Result<(), Box<dyn Error>>;
-}
+use super::interface::ScenarioMaker;
 
 pub fn train_and_test(scenario_maker:&dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
     let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL

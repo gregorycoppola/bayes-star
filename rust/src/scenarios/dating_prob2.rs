@@ -1,11 +1,11 @@
-use crate::model::{
+use crate::{model::{
     config::CONFIG,
     creators::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap},
     storage::Storage,
-};
+}, common::interface::ScenarioMaker};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
 
@@ -30,7 +30,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    pub fn setup_scenario(storage: &mut Storage) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, storage: &mut Storage) -> Result<(), Box<dyn Error>> {
         storage.drop_all_dbs().map_err(|e| e.to_string())?;
 
         let config = CONFIG.get().expect("Config not initialized");
