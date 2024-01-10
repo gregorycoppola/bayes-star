@@ -149,7 +149,8 @@ pub fn do_sgd_update(
 
 impl FactorModel for ExponentialModel {
     fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
-        todo!()
+        self.weights.initialize_weights(implication)?;
+        Ok(())
     }
 
     fn train(
