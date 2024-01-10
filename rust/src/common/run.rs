@@ -27,7 +27,7 @@ pub fn do_training(model:Box<dyn LogicalModel>, storage: &Storage) -> Result<(),
         let backlinks = compute_backlinks(storage, &proposition)?;
         trace!("do_training - Backlinks: {:?}", backlinks);
 
-        match train_on_example(storage, &proposition, &backlinks) {
+        match model.train(storage, &proposition, &backlinks) {
             Ok(_) => trace!("do_training - Successfully trained on proposition: {:?}", proposition),
             Err(e) => {
                 panic!("do_training - Error in train_on_example for proposition {} {:?}: {:?}", examples_processed, proposition, e)
@@ -61,8 +61,8 @@ pub fn train_and_test(scenario_maker:&dyn ScenarioMaker) -> Result<(), Box<dyn E
     let result = scenario_maker.setup_scenario(&mut storage);
     info!("scenario result: {:?}", result);
 
-    let model = 
-    let train_result = do_training(&mut storage);
+    let model = create_model(&"model_name".to_string())?;
+    let train_result = do_training(model, &storage);
     info!("train result: {:?}", train_result);
 
     run_test_loop(&mut storage)?;

@@ -72,7 +72,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 }
 
 pub fn compute_backlinks(
-    storage: &mut Storage,
+    storage: &Storage,
     conclusion: &Proposition,
 ) -> Result<Vec<BackLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
