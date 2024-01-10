@@ -51,20 +51,6 @@ pub fn do_training(
     Ok(())
 }
 
-fn run_test_loop(model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
-    // let test_questions = model.graph
-    //     .get_test_questions()
-    //     .expect("Couldn't get test questions.");
-    // for test_question in &test_questions {
-    //     println!("\n\n\n\n\n\n");
-    //     info!("test_question {:?}", &test_question.search_string());
-    //     let inference_result = marginalized_inference_probability(model, &test_question);
-    //     trace!("inference_result {:?}", &inference_result);
-    // }
-
-    todo!()
-}
-
 pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
     let mut redis_client = RedisClient::new()?;
     redis_client.drop_all_dbs()?;
@@ -74,7 +60,6 @@ pub fn train_and_test(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn 
     info!("scenario result: {:?}", result);
     let train_result = do_training(&model.graph, &model.fact_db, model.model.borrow_mut());
     info!("train result: {:?}", train_result);
-    run_test_loop(&mut model)?;
     std::mem::drop(model);
     Ok(())
 }
