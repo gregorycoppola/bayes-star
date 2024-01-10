@@ -8,40 +8,41 @@ pub fn do_training(
     graph: &Graph,
     model: &mut Box<dyn FactorModel>,
 ) -> Result<(), Box<dyn Error>> {
-    let storage = graph;
-    trace!("do_training - Getting all implications");
-    let implications = storage.get_all_implications()?;
-    for implication in implications {
-        trace!("do_training - Processing implication: {:?}", implication);
-        model.initialize_connection(&implication)?;
-    }
-    trace!("do_training - Getting all propositions");
-    let propositions = storage.get_training_questions()?;
-    trace!(
-        "do_training - Processing propositions: {}",
-        propositions.len()
-    );
-    let mut examples_processed = 0;
-    for proposition in propositions {
-        match model.train(storage, &proposition) {
-            Ok(_) => trace!(
-                "do_training - Successfully trained on proposition: {:?}",
-                proposition
-            ),
-            Err(e) => {
-                panic!(
-                    "do_training - Error in train_on_example for proposition {} {:?}: {:?}",
-                    examples_processed, proposition, e
-                )
-            }
-        }
-        examples_processed += 1;
-    }
-    trace!(
-        "do_training - Training complete: examples processed {}",
-        examples_processed
-    );
-    Ok(())
+    todo!()
+    // let storage = graph;
+    // trace!("do_training - Getting all implications");
+    // let implications = storage.get_all_implications()?;
+    // for implication in implications {
+    //     trace!("do_training - Processing implication: {:?}", implication);
+    //     model.initialize_connection(&implication)?;
+    // }
+    // trace!("do_training - Getting all propositions");
+    // let propositions = storage.get_training_questions()?;
+    // trace!(
+    //     "do_training - Processing propositions: {}",
+    //     propositions.len()
+    // );
+    // let mut examples_processed = 0;
+    // for proposition in propositions {
+    //     match model.train(storage, &proposition) {
+    //         Ok(_) => trace!(
+    //             "do_training - Successfully trained on proposition: {:?}",
+    //             proposition
+    //         ),
+    //         Err(e) => {
+    //             panic!(
+    //                 "do_training - Error in train_on_example for proposition {} {:?}: {:?}",
+    //                 examples_processed, proposition, e
+    //             )
+    //         }
+    //     }
+    //     examples_processed += 1;
+    // }
+    // trace!(
+    //     "do_training - Training complete: examples processed {}",
+    //     examples_processed
+    // );
+    // Ok(())
 }
 
 fn run_test_loop(model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
