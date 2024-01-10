@@ -23,18 +23,13 @@ pub fn do_training(model:Box<dyn LogicalModel>, storage: &Storage) -> Result<(),
 
     let mut examples_processed = 0;
     for proposition in propositions {
-        trace!("do_training - Processing proposition: {:?}", proposition);
-        let backlinks = compute_backlinks(storage, &proposition)?;
-        trace!("do_training - Backlinks: {:?}", backlinks);
 
-        match model.train(storage, &proposition, &backlinks) {
+        match model.train(storage, &proposition) {
             Ok(_) => trace!("do_training - Successfully trained on proposition: {:?}", proposition),
             Err(e) => {
                 panic!("do_training - Error in train_on_example for proposition {} {:?}: {:?}", examples_processed, proposition, e)
             }
-
         }
-
         examples_processed += 1;
     }
 

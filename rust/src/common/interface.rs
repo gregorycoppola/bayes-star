@@ -19,14 +19,15 @@ pub trait PropositionProbability {
 pub trait LogicalModel {
     fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>>;
     
-    fn train(
+    fn 
+    train(
         &mut self,
-        storage: &mut Storage,
+        storage: &Storage,
         proposition: &Proposition,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
     fn predict(
         &self,
-        storage: &mut Storage,
+        storage: &Storage,
         evidence: &dyn PropositionProbability,
         proposition: &Proposition,
     ) -> Result<PredictStatistics, Box<dyn Error>>;

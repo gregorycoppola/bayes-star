@@ -115,13 +115,16 @@ pub fn do_sgd_update(
 pub fn train_on_example(
     storage: &mut Storage,
     proposition: &Proposition,
-    backlinks: &[BackLink],
 ) -> Result<(), Box<dyn Error>> {
+    trace!("do_training - Processing proposition: {:?}", proposition);
+    let backlinks = compute_backlinks(storage, &proposition)?;
+    trace!("do_training - Backlinks: {:?}", backlinks);
+
     trace!("train_on_example - Start: {:?}", proposition.search_string());
     trace!("train_on_example - Getting features from backlinks");
 
     let true_label = storage.get_proposition_probability(proposition)?.expect("True probability should exist");
-    let features = match features_from_backlinks(storage, backlinks) {
+    let features = match features_from_backlinks(storage, &backlinks) {
         Ok(f) => f,
         Err(e) => {
             trace!("train_on_example - Error in features_from_backlinks: {:?}", e);
