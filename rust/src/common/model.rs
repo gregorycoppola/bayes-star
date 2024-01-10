@@ -11,21 +11,21 @@ use std::{cell::RefCell, error::Error};
 use super::{interface::PredictStatistics, redis::RedisClient};
 
 pub struct GraphicalModel {
-    graph: Graph,
-    model: Box<dyn FactorModel>,
+    pub graph: Graph,
+    pub model: Box<dyn FactorModel>,
 }
 
 impl GraphicalModel {
     pub fn new(
-        model_spec: String,
+        model_spec: &String,
         redis_client: &RedisClient,
     ) -> Result<Self, Box<dyn Error>> {
         let graph_connection = redis_client.get_connection()?;
         let model_connection = redis_client.get_connection()?;
         let graph = Graph::new(graph_connection)?;
-        let model = ExponentialModel::new(model_connection)?;
+        let exponential = ExponentialModel::new(model_connection)?;
         Ok(GraphicalModel {
-            graph, model
+            graph, model: Box::new(exponential)
         })
     }
 }
