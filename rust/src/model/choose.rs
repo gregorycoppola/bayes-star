@@ -1,4 +1,4 @@
-use crate::{model::objects::{BackLink, Proposition, Conjunction}, common::model::{Graph, Factor}};
+use crate::{model::objects::{BackLink, Proposition, Conjunction}, common::{model::{Graph, Factor}, interface::FactDB}};
 use std::error::Error;
 use crate::common::model::GraphicalModel;
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
@@ -106,6 +106,7 @@ pub fn compute_backlinks(
 }
 
 pub fn compute_factor(
+    fact_db:&Box<dyn FactDB>,
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
