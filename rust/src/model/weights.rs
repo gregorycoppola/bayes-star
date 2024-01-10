@@ -19,40 +19,40 @@ pub fn negative_feature(feature: &str, class_label : usize) -> String {
     format!("->{} {}", class_label, feature)
 }
 
-pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
-    trace!("initialize_weights - Start: {:?}", implication);
+// pub fn initialize_weights(con: &mut Connection, implication: &Implication) -> Result<(), Box<dyn Error>> {
+//     trace!("initialize_weights - Start: {:?}", implication);
 
-    let feature = implication.unique_key();
-    trace!("initialize_weights - Unique key: {}", feature);
+//     let feature = implication.unique_key();
+//     trace!("initialize_weights - Unique key: {}", feature);
 
-    for class_label in CLASS_LABELS {
-        let posf = positive_feature(&feature, class_label);
-        let negf = negative_feature(&feature, class_label);
-        trace!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
+//     for class_label in CLASS_LABELS {
+//         let posf = positive_feature(&feature, class_label);
+//         let negf = negative_feature(&feature, class_label);
+//         trace!("initialize_weights - Positive feature: {}, Negative feature: {}", posf, negf);
     
-        let weight1 = random_weight();
-        let weight2 = random_weight();
-        trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
+//         let weight1 = random_weight();
+//         let weight2 = random_weight();
+//         trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
     
-        trace!("initialize_weights - Setting positive feature weight");
-        con.hset("weights", &posf, weight1)
-            .map_err(|e| {
-                trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
-                Box::new(e) as Box<dyn Error>
-            })?;
+//         trace!("initialize_weights - Setting positive feature weight");
+//         con.hset("weights", &posf, weight1)
+//             .map_err(|e| {
+//                 trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
+//                 Box::new(e) as Box<dyn Error>
+//             })?;
     
-        trace!("initialize_weights - Setting negative feature weight");
-        con.hset("weights", &negf, weight2)
-            .map_err(|e| {
-                trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
-                Box::new(e) as Box<dyn Error>
-            })?;
-    }
+//         trace!("initialize_weights - Setting negative feature weight");
+//         con.hset("weights", &negf, weight2)
+//             .map_err(|e| {
+//                 trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
+//                 Box::new(e) as Box<dyn Error>
+//             })?;
+//     }
 
 
-    trace!("initialize_weights - End");
-    Ok(())
-}
+//     trace!("initialize_weights - End");
+//     Ok(())
+// }
 
 
 pub fn read_weights(con: &mut Connection, features: &[String]) -> Result<HashMap<String, f64>, Box<dyn Error>> {
