@@ -1,3 +1,3 @@
 pub mod redis;
 pub mod interface;
-mod run;
+pub mod run;
