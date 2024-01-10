@@ -19,7 +19,7 @@ pub fn negative_feature(feature: &str, class_label : usize) -> String {
     format!("->{} {}", class_label, feature)
 }
 
-struct ExponentialWeights {
+pub struct ExponentialWeights {
     connection:RefCell<Connection>,
 }
 

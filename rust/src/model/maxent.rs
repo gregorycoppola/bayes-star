@@ -8,7 +8,11 @@ use std::collections::HashMap;
 use super::choose::compute_backlinks;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
-use super::weights::{negative_feature, positive_feature};
+use super::weights::{negative_feature, positive_feature, ExponentialWeights};
+
+struct ExponentialModel {
+    weights: ExponentialWeights,
+}
 
 fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f64 {
     let mut result = 0.0;
