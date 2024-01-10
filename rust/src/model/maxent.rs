@@ -1,17 +1,18 @@
-use crate::common::interface::{FactDB, TrainStatistics, PredictStatistics};
-use crate::model::objects::{BackLink, Proposition};
-use crate::model::weights::CLASS_LABELS;
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::error::Error;
-use redis::Connection;
 use super::choose::compute_backlinks;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
-use crate::common::model::{GraphicalModel, Factor};
+use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
 use crate::common::model::FactorModel;
+use crate::common::model::{Factor, GraphicalModel};
+use crate::model::inference::MapBackedProbabilityStorage;
+use crate::model::objects::{BackLink, Proposition};
+use crate::model::weights::CLASS_LABELS;
+use redis::Connection;
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::error::Error;
 pub struct ExponentialModel {
     weights: ExponentialWeights,
 }
@@ -19,7 +20,7 @@ pub struct ExponentialModel {
 impl ExponentialModel {
     pub fn new(connection: RefCell<Connection>) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let weights = ExponentialWeights::new(connection);
-        Ok(Box::new(ExponentialModel{ weights }))
+        Ok(Box::new(ExponentialModel { weights }))
     }
 }
 
@@ -41,9 +42,7 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_factor(
-    factor:&Factor,
-) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
+pub fn features_from_factor(factor: &Factor) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
     todo!()
 }
 
@@ -149,7 +148,7 @@ pub fn do_sgd_update(
 }
 
 impl FactorModel for ExponentialModel {
-    fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>> {
+    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         todo!()
     }
 
@@ -180,9 +179,10 @@ impl FactorModel for ExponentialModel {
                 "train_on_example - Reading weights for class {}",
                 class_label
             );
-            let weight_vector = match self.weights.read_weights(
-                &features[class_label].keys().cloned().collect::<Vec<_>>(),
-            ) {
+            let weight_vector = match self
+                .weights
+                .read_weights(&features[class_label].keys().cloned().collect::<Vec<_>>())
+            {
                 Ok(w) => w,
                 Err(e) => {
                     trace!("train_on_example - Error in read_weights: {:?}", e);
@@ -218,22 +218,10 @@ impl FactorModel for ExponentialModel {
         }
 
         trace!("train_on_example - End");
-        Ok(TrainStatistics{ loss: 1f64})
+        Ok(TrainStatistics { loss: 1f64 })
     }
-    fn predict(
-        &self,
-        factor:&Factor,
-    ) -> Result<PredictStatistics, Box<dyn Error>> {
-        info!(
-            "\x1b[31mlocal_inference_probability - Start: {:?}\x1b[0m",
-            proposition.search_string()
-        );
-    
-        let mut map_storage = MapBackedProbabilityStorage {
-            underlying: assumed_probabilities,
-        };
-        let features = match 
-        features_from_backlinks(&mut map_storage, &backlinks) {
+    fn predict(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>> {
+        let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
                 info!(
@@ -243,18 +231,19 @@ impl FactorModel for ExponentialModel {
                 return Err(e);
             }
         };
-    
+
         let mut potentials = vec![];
         for class_label in CLASS_LABELS {
             let this_features = &features[class_label];
             for (feature, weight) in this_features.iter() {
                 trace!("feature {:?} {}", &feature, weight);
             }
-    
+
             trace!("inference_probability - Reading weights");
-            let weight_vector = match weights.read_weights(
-                &this_features.keys().cloned().collect::<Vec<_>>(),
-            ) {
+            let weight_vector = match self
+                .weights
+                .read_weights(&this_features.keys().cloned().collect::<Vec<_>>())
+            {
                 Ok(w) => w,
                 Err(e) => {
                     info!("inference_probability - Error in read_weights: {:?}", e);
@@ -264,25 +253,14 @@ impl FactorModel for ExponentialModel {
             for (feature, weight) in weight_vector.iter() {
                 trace!("weight {:?} {}", &feature, weight);
             }
-    
+
             trace!("inference_probability - Computing probability");
             let potential = compute_potential(&weight_vector, &this_features);
             potentials.push(potential);
-            info!(
-                "inference_probability - Computed potential {} {:?}",
-                potential,
-                proposition.search_string()
-            );
         }
-    
+
         let normalization = potentials[0] + potentials[1];
-        let probability = potentials[1] / normalization;
-        info!(
-            "\x1b[33mlocal_inference_probability - Computed probability {} {:?}\x1b[0m",
-            probability,
-            proposition.search_string()
-        );
-    
-        Ok(probability)
+        let marginal = potentials[1] / normalization;
+        Ok(PredictStatistics { marginal })
     }
 }

@@ -84,7 +84,7 @@ fn print_premise_probabilities(
     Ok(())
 }
 
-struct MapBackedProbabilityStorage {
+pub struct MapBackedProbabilityStorage {
     underlying: HashMap<String, bool>,
 }
 
