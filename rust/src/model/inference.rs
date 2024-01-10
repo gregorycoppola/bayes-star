@@ -3,7 +3,7 @@ use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::model::{
     choose::compute_backlinks,
-    maxent::{compute_potential, features_from_backlinks},
+    maxent::compute_potential,
     weights::{CLASS_LABELS},
 };
 
@@ -133,74 +133,6 @@ pub fn compute_joint_probability(
     Ok(joint_probability)
 }
 
-
-pub fn local_inference_probability(
-    weights: &ExponentialWeights,
-    storage: &mut GraphicalModel,
-    proposition: &Proposition,
-    backlinks: &[BackLink],
-    assumed_probabilities: HashMap<String, bool>,
-) -> Result<f64, Box<dyn Error>> {
-    info!(
-        "\x1b[31mlocal_inference_probability - Start: {:?}\x1b[0m",
-        proposition.search_string()
-    );
-
-    let mut map_storage = MapBackedProbabilityStorage {
-        underlying: assumed_probabilities,
-    };
-    let features = match features_from_backlinks(&mut map_storage, &backlinks) {
-        Ok(f) => f,
-        Err(e) => {
-            info!(
-                "inference_probability - Error in features_from_backlinks: {:?}",
-                e
-            );
-            return Err(e);
-        }
-    };
-
-    let mut potentials = vec![];
-    for class_label in CLASS_LABELS {
-        let this_features = &features[class_label];
-        for (feature, weight) in this_features.iter() {
-            trace!("feature {:?} {}", &feature, weight);
-        }
-
-        trace!("inference_probability - Reading weights");
-        let weight_vector = match weights.read_weights(
-            &this_features.keys().cloned().collect::<Vec<_>>(),
-        ) {
-            Ok(w) => w,
-            Err(e) => {
-                info!("inference_probability - Error in read_weights: {:?}", e);
-                return Err(e);
-            }
-        };
-        for (feature, weight) in weight_vector.iter() {
-            trace!("weight {:?} {}", &feature, weight);
-        }
-
-        trace!("inference_probability - Computing probability");
-        let potential = compute_potential(&weight_vector, &this_features);
-        potentials.push(potential);
-        info!(
-            "inference_probability - Computed potential {} {:?}",
-            potential,
-            proposition.search_string()
-        );
-    }
-
-    let normalization = potentials[0] + potentials[1];
-    let probability = potentials[1] / normalization;
-    info!(
-        "\x1b[33mlocal_inference_probability - Computed probability {} {:?}\x1b[0m",
-        probability,
-        proposition.search_string()
-    );
-
-    Ok(probability)
-}
 
 fn each_combination(propositions: &Vec<Proposition>) -> Vec<HashMap<String, bool>> {
     let n = propositions.len();

@@ -41,57 +41,63 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_backlinks<T: FactDB>(
-    storage: &T,
-    backlinks: &[BackLink],
+pub fn features_from_factor(
+    factor:&Factor,
 ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
-    trace!(
-        "Starting features_from_backlinks with {} backlinks",
-        backlinks.len()
-    );
-    let mut vec_result = vec![];
-    for class_label in CLASS_LABELS {
-        let mut result = HashMap::new();
-
-        for (i, backlink) in backlinks.iter().enumerate() {
-            debug!("Processing backlink {}", i);
-
-            let feature = backlink.implication.unique_key();
-            debug!("Generated unique key for feature: {}", feature);
-
-            match get_conjunction_probability(storage, &backlink.conjunction) {
-                Ok(probability) => {
-                    debug!(
-                        "Conjunction probability for backlink {}: {}",
-                        i, probability
-                    );
-                    let posf = positive_feature(&feature, class_label);
-                    let negf = negative_feature(&feature, class_label);
-
-                    result.insert(posf.clone(), probability);
-                    result.insert(negf.clone(), 1.0 - probability);
-
-                    debug!(
-                        "Inserted features for backlink {}: positive - {}, negative - {}",
-                        i, posf, negf
-                    );
-                }
-                Err(e) => {
-                    error!(
-                        "Error computing conjunction probability for backlink {}: {}",
-                        i, e
-                    );
-                    return Err(e);
-                }
-            }
-        }
-
-        vec_result.push(result);
-    }
-
-    trace!("features_from_backlinks completed successfully");
-    Ok(vec_result)
+    todo!()
 }
+
+// pub fn features_from_backlinks<T: FactDB>(
+//     storage: &T,
+//     backlinks: &[BackLink],
+// ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
+//     trace!(
+//         "Starting features_from_backlinks with {} backlinks",
+//         backlinks.len()
+//     );
+//     let mut vec_result = vec![];
+//     for class_label in CLASS_LABELS {
+//         let mut result = HashMap::new();
+
+//         for (i, backlink) in backlinks.iter().enumerate() {
+//             debug!("Processing backlink {}", i);
+
+//             let feature = backlink.implication.unique_key();
+//             debug!("Generated unique key for feature: {}", feature);
+
+//             match get_conjunction_probability(storage, &backlink.conjunction) {
+//                 Ok(probability) => {
+//                     debug!(
+//                         "Conjunction probability for backlink {}: {}",
+//                         i, probability
+//                     );
+//                     let posf = positive_feature(&feature, class_label);
+//                     let negf = negative_feature(&feature, class_label);
+
+//                     result.insert(posf.clone(), probability);
+//                     result.insert(negf.clone(), 1.0 - probability);
+
+//                     debug!(
+//                         "Inserted features for backlink {}: positive - {}, negative - {}",
+//                         i, posf, negf
+//                     );
+//                 }
+//                 Err(e) => {
+//                     error!(
+//                         "Error computing conjunction probability for backlink {}: {}",
+//                         i, e
+//                     );
+//                     return Err(e);
+//                 }
+//             }
+//         }
+
+//         vec_result.push(result);
+//     }
+
+//     trace!("features_from_backlinks completed successfully");
+//     Ok(vec_result)
+// }
 
 pub fn compute_expected_features(
     probability: f64,
@@ -152,81 +158,131 @@ impl FactorModel for ExponentialModel {
         factor: &Factor,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
-        todo!()
-        // trace!(
-        //     "train_on_example - Start: {:?}",
-        //     proposition.search_string()
-        // );
-        // trace!("train_on_example - Getting features from backlinks");
+        trace!("train_on_example - Getting features from backlinks");
+        let features = match features_from_factor(factor) {
+            Ok(f) => f,
+            Err(e) => {
+                trace!(
+                    "train_on_example - Error in features_from_backlinks: {:?}",
+                    e
+                );
+                return Err(e);
+            }
+        };
 
-        // let true_label = storage
-        //     .get_proposition_probability(proposition)?
-        //     .expect("True probability should exist");
-        // let features = match features_from_backlinks(storage, &backlinks) {
-        //     Ok(f) => f,
-        //     Err(e) => {
-        //         trace!(
-        //             "train_on_example - Error in features_from_backlinks: {:?}",
-        //             e
-        //         );
-        //         return Err(e);
-        //     }
-        // };
+        let mut weight_vectors = vec![];
+        let mut potentials = vec![];
+        for class_label in CLASS_LABELS {
+            for (feature, weight) in &features[class_label] {
+                trace!("feature {:?} {}", feature, weight);
+            }
+            trace!(
+                "train_on_example - Reading weights for class {}",
+                class_label
+            );
+            let weight_vector = match self.weights.read_weights(
+                &features[class_label].keys().cloned().collect::<Vec<_>>(),
+            ) {
+                Ok(w) => w,
+                Err(e) => {
+                    trace!("train_on_example - Error in read_weights: {:?}", e);
+                    return Err(e);
+                }
+            };
 
-        // let mut weight_vectors = vec![];
-        // let mut potentials = vec![];
-        // for class_label in CLASS_LABELS {
-        //     for (feature, weight) in &features[class_label] {
-        //         trace!("feature {:?} {}", feature, weight);
-        //     }
-        //     trace!(
-        //         "train_on_example - Reading weights for class {}",
-        //         class_label
-        //     );
-        //     let weight_vector = match self.weights.read_weights(
-        //         &features[class_label].keys().cloned().collect::<Vec<_>>(),
-        //     ) {
-        //         Ok(w) => w,
-        //         Err(e) => {
-        //             trace!("train_on_example - Error in read_weights: {:?}", e);
-        //             return Err(e);
-        //         }
-        //     };
+            trace!("train_on_example - Computing probability");
+            let potential = compute_potential(&weight_vector, &features[class_label]);
+            trace!("train_on_example - Computed probability: {}", potential);
+            potentials.push(potential);
+            weight_vectors.push(weight_vector);
+        }
 
-        //     trace!("train_on_example - Computing probability");
-        //     let potential = compute_potential(&weight_vector, &features[class_label]);
-        //     trace!("train_on_example - Computed probability: {}", potential);
-        //     potentials.push(potential);
-        //     weight_vectors.push(weight_vector);
-        // }
+        let normalization = potentials[0] + potentials[1];
 
-        // let normalization = potentials[0] + potentials[1];
+        for class_label in CLASS_LABELS {
+            let probability = potentials[class_label] / normalization;
+            trace!("train_on_example - Computing expected features");
+            let this_true_prob = if class_label == 0 {
+                1f64 - probability
+            } else {
+                probability
+            };
+            let gold = compute_expected_features(this_true_prob, &features[class_label]);
+            let expected = compute_expected_features(probability, &features[class_label]);
 
-        // for class_label in CLASS_LABELS {
-        //     let probability = potentials[class_label] / normalization;
-        //     trace!("train_on_example - Computing expected features");
-        //     let this_true_prob = if class_label == 0 {
-        //         1f64 - true_label
-        //     } else {
-        //         true_label
-        //     };
-        //     let gold = compute_expected_features(this_true_prob, &features[class_label]);
-        //     let expected = compute_expected_features(probability, &features[class_label]);
+            trace!("train_on_example - Performing SGD update");
+            let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
 
-        //     trace!("train_on_example - Performing SGD update");
-        //     let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
+            trace!("train_on_example - Saving new weights");
+            self.weights.save_weights(&new_weight)?;
+        }
 
-        //     trace!("train_on_example - Saving new weights");
-        //     self.weights.save_weights(&new_weight)?;
-        // }
-
-        // trace!("train_on_example - End");
-        // Ok(TrainStatistics{ loss: 1f64})
+        trace!("train_on_example - End");
+        Ok(TrainStatistics{ loss: 1f64})
     }
     fn predict(
         &self,
         factor:&Factor,
     ) -> Result<PredictStatistics, Box<dyn Error>> {
-        todo!()
+        info!(
+            "\x1b[31mlocal_inference_probability - Start: {:?}\x1b[0m",
+            proposition.search_string()
+        );
+    
+        let mut map_storage = MapBackedProbabilityStorage {
+            underlying: assumed_probabilities,
+        };
+        let features = match 
+        features_from_backlinks(&mut map_storage, &backlinks) {
+            Ok(f) => f,
+            Err(e) => {
+                info!(
+                    "inference_probability - Error in features_from_backlinks: {:?}",
+                    e
+                );
+                return Err(e);
+            }
+        };
+    
+        let mut potentials = vec![];
+        for class_label in CLASS_LABELS {
+            let this_features = &features[class_label];
+            for (feature, weight) in this_features.iter() {
+                trace!("feature {:?} {}", &feature, weight);
+            }
+    
+            trace!("inference_probability - Reading weights");
+            let weight_vector = match weights.read_weights(
+                &this_features.keys().cloned().collect::<Vec<_>>(),
+            ) {
+                Ok(w) => w,
+                Err(e) => {
+                    info!("inference_probability - Error in read_weights: {:?}", e);
+                    return Err(e);
+                }
+            };
+            for (feature, weight) in weight_vector.iter() {
+                trace!("weight {:?} {}", &feature, weight);
+            }
+    
+            trace!("inference_probability - Computing probability");
+            let potential = compute_potential(&weight_vector, &this_features);
+            potentials.push(potential);
+            info!(
+                "inference_probability - Computed potential {} {:?}",
+                potential,
+                proposition.search_string()
+            );
+        }
+    
+        let normalization = potentials[0] + potentials[1];
+        let probability = potentials[1] / normalization;
+        info!(
+            "\x1b[33mlocal_inference_probability - Computed probability {} {:?}\x1b[0m",
+            probability,
+            proposition.search_string()
+        );
+    
+        Ok(probability)
     }
 }
