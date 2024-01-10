@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::PropositionProbability,
+    common::interface::FactDB,
     model::{
         maxent::ExponentialModel,
         objects::{Conjunction, Domain, Entity, Implication, Proposition}, self,
@@ -13,6 +13,7 @@ use super::{interface::{PredictStatistics, TrainStatistics}, redis::RedisClient}
 pub struct GraphicalModel {
     pub graph: Graph,
     pub model: Box<dyn FactorModel>,
+    pub fact_db: Box<dyn FactDB>,
 }
 
 impl GraphicalModel {
@@ -356,7 +357,7 @@ impl Graph {
     }
 }
 
-impl PropositionProbability for GraphicalModel {
+impl FactDB for GraphicalModel {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,

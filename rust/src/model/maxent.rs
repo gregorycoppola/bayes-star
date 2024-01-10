@@ -1,4 +1,4 @@
-use crate::common::interface::{PropositionProbability, TrainStatistics, PredictStatistics};
+use crate::common::interface::{FactDB, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::weights::CLASS_LABELS;
 use std::cell::RefCell;
@@ -41,7 +41,7 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_backlinks<T: PropositionProbability>(
+pub fn features_from_backlinks<T: FactDB>(
     storage: &T,
     backlinks: &[BackLink],
 ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {

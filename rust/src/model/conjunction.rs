@@ -1,9 +1,9 @@
 use std::error::Error;
-use crate::common::interface::PropositionProbability;
+use crate::common::interface::FactDB;
 
 use super::objects::Conjunction;
 
-pub fn get_conjunction_probability<T: PropositionProbability>(
+pub fn get_conjunction_probability<T: FactDB>(
     storage: &T,
     conjunction: &Conjunction,
 ) -> Result<f64, Box<dyn Error>> {

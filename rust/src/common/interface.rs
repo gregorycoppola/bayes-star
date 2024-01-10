@@ -13,7 +13,7 @@ pub struct PredictStatistics {
     pub marginal: f64,
 }
 
-pub trait PropositionProbability {
+pub trait FactDB {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,
