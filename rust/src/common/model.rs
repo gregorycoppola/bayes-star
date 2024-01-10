@@ -325,7 +325,7 @@ impl PropositionProbability for GraphicalModel {
         let search_string = proposition.search_string();
 
         // Use a match statement to handle the different outcomes
-        match self
+        match self.graph
             .redis_connection.borrow_mut()
             .hget::<_, _, String>("probs", &search_string)
         {
