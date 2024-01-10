@@ -358,7 +358,17 @@ impl Graph {
     }
 }
 
-impl FactDB for GraphicalModel {
+pub struct RedisFactDB {
+    redis_connection: RefCell<redis::Connection>,
+}
+
+impl RedisFactDB {
+    pub fn new() -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+        todo!()
+    }
+}
+
+impl FactDB for RedisFactDB {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
@@ -368,7 +378,6 @@ impl FactDB for GraphicalModel {
 
         // Use a match statement to handle the different outcomes
         match self
-            .graph
             .redis_connection
             .borrow_mut()
             .hget::<_, _, String>("probs", &search_string)
