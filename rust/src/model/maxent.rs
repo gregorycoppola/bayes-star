@@ -2,9 +2,10 @@ use crate::common::interface::{LogicalModel, PropositionProbability, TrainStatis
 use crate::model::objects::{BackLink, Proposition};
 use crate::model::storage::Graph;
 use crate::model::weights::CLASS_LABELS;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
-
+use redis::Connection;
 use super::choose::compute_backlinks;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
@@ -16,8 +17,8 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new() -> ExponentialModel {
-        let weights = ExponentialWeights{};
+    pub fn new(connection: RefCell<Connection>) -> ExponentialModel {
+        let weights = ExponentialWeights::new(connection);
         ExponentialModel{ weights }
     }
 }

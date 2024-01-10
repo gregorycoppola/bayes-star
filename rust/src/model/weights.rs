@@ -24,6 +24,12 @@ pub struct ExponentialWeights {
 }
 
 impl ExponentialWeights {
+    pub fn new(connection: RefCell<Connection>) -> ExponentialWeights {
+        ExponentialWeights { connection }
+    }
+}
+
+impl ExponentialWeights {
     pub fn initialize_weights(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();
