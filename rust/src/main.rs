@@ -1,11 +1,8 @@
 use bayes_star::model::config::set_config;
-use bayes_star::model::inference::marginalized_inference_probability;
-use bayes_star::model::{maxent::do_training, config::Config};
-use bayes_star::model::storage::Storage;
+use bayes_star::model::config::Config;
 use bayes_star::scenarios::dating_prob2::DatingProb2;
 use bayes_star::common::run::train_and_test;
 use env_logger::{Builder, Env};
-use redis::Client;
 use std::io::Write;
 
 #[macro_use]
