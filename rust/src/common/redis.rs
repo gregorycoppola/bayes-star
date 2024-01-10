@@ -9,8 +9,8 @@ struct RedisClient {
 impl RedisClient {
     pub fn new() -> Result<RedisClient, Box<dyn Error>> {
         let client = redis::Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
-
-        todo!()
+        let redis_client = RedisClient{ client };
+        Ok(redis_client)
     }
 
     pub fn get_connection(&self) -> Result<redis::Connection, Box<dyn Error>> {
