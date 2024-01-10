@@ -173,8 +173,7 @@ impl LogicalModel for ExponentialModel {
                 "train_on_example - Reading weights for class {}",
                 class_label
             );
-            let weight_vector = match read_weights(
-                storage.get_redis_connection(),
+            let weight_vector = match self.weights.read_weights(
                 &features[class_label].keys().cloned().collect::<Vec<_>>(),
             ) {
                 Ok(w) => w,
@@ -208,10 +207,10 @@ impl LogicalModel for ExponentialModel {
             let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
 
             trace!("train_on_example - Saving new weights");
-            save_weights(storage.get_redis_connection(), &new_weight)?;
+            self.weights.save_weights(&new_weight)?;
         }
 
         trace!("train_on_example - End");
-        Ok(())
+        Ok(TrainStatistics{ loss: 1f64})
     }
 }

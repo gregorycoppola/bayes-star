@@ -7,6 +7,7 @@ use crate::model::{
     weights::{CLASS_LABELS},
 };
 
+use super::weights::ExponentialWeights;
 use super::{
     objects::{BackLink, Conjunction, Proposition},
     storage::Storage,
@@ -135,6 +136,7 @@ pub fn compute_joint_probability(
 
 
 pub fn local_inference_probability(
+    weights: &ExponentialWeights,
     storage: &mut Storage,
     proposition: &Proposition,
     backlinks: &[BackLink],
@@ -167,8 +169,7 @@ pub fn local_inference_probability(
         }
 
         trace!("inference_probability - Reading weights");
-        let weight_vector = match read_weights(
-            storage.get_redis_connection(),
+        let weight_vector = match weights.read_weights(
             &this_features.keys().cloned().collect::<Vec<_>>(),
         ) {
             Ok(w) => w,
@@ -225,53 +226,54 @@ pub fn marginalized_inference_probability(
     storage: &mut Storage,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    info!(
-        "inference_probability - Start: {:?}",
-        proposition.search_string()
-    );
-    info!("inference_probability - Getting features from backlinks");
-    let backlinks = compute_backlinks(storage, &proposition)?;
+    todo!("Do we still need this?")
+    // info!(
+    //     "inference_probability - Start: {:?}",
+    //     proposition.search_string()
+    // );
+    // info!("inference_probability - Getting features from backlinks");
+    // let backlinks = compute_backlinks(storage, &proposition)?;
 
-    let mut direct_parents = vec![];
-    let mut parent_probabilities: HashMap<String, f64> = HashMap::new();
-    for backlink in &backlinks {
-        let part_map = read_in_parent_probabilities(storage, &backlink.conjunction)?;
-        parent_probabilities.extend(part_map);
-        print_premise_probabilities(storage, &backlink.conjunction)?;
-        for term in &backlink.conjunction.terms {
-            direct_parents.push(term.clone());
-            info!(
-                "\x1b[34mdirect dependency {:?}\x1b[0m",
-                term.search_string()
-            );
-        }
-    }
+    // let mut direct_parents = vec![];
+    // let mut parent_probabilities: HashMap<String, f64> = HashMap::new();
+    // for backlink in &backlinks {
+    //     let part_map = read_in_parent_probabilities(storage, &backlink.conjunction)?;
+    //     parent_probabilities.extend(part_map);
+    //     print_premise_probabilities(storage, &backlink.conjunction)?;
+    //     for term in &backlink.conjunction.terms {
+    //         direct_parents.push(term.clone());
+    //         info!(
+    //             "\x1b[34mdirect dependency {:?}\x1b[0m",
+    //             term.search_string()
+    //         );
+    //     }
+    // }
 
-    let combinations = each_combination(&direct_parents);
-    let mut cumulative_probability = 0f64;
-    for combination in &combinations {
-        info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
-        let local_probability =
-            local_inference_probability(storage, proposition, &backlinks, combination.clone())?;
-        info!(
-            "\x1b[31mdirect probability {} {:?}, {:?}\x1b[0m",
-            local_probability,
-            proposition.search_string(),
-            &combination
-        );
+    // let combinations = each_combination(&direct_parents);
+    // let mut cumulative_probability = 0f64;
+    // for combination in &combinations {
+    //     info!("\x1b[35mdirect dependency {:?}\x1b[0m", &combination);
+    //     let local_probability =
+    //         local_inference_probability(storage, proposition, &backlinks, combination.clone())?;
+    //     info!(
+    //         "\x1b[31mdirect probability {} {:?}, {:?}\x1b[0m",
+    //         local_probability,
+    //         proposition.search_string(),
+    //         &combination
+    //     );
 
-        let joint_parent_probability = compute_joint_probability(combination, &parent_probabilities)?;
-        info!(
-            "\x1b[31mjoint parent probability {} {:?}\x1b[0m",
-            joint_parent_probability,
-            combination,
-        );
+    //     let joint_parent_probability = compute_joint_probability(combination, &parent_probabilities)?;
+    //     info!(
+    //         "\x1b[31mjoint parent probability {} {:?}\x1b[0m",
+    //         joint_parent_probability,
+    //         combination,
+    //     );
 
-        let combined = local_probability * joint_parent_probability;
-        cumulative_probability += combined;
-    }
+    //     let combined = local_probability * joint_parent_probability;
+    //     cumulative_probability += combined;
+    // }
 
-    storage.store_proposition(proposition, cumulative_probability)?;
+    // storage.store_proposition(proposition, cumulative_probability)?;
 
-    Ok(cumulative_probability)
+    // Ok(cumulative_probability)
 }
