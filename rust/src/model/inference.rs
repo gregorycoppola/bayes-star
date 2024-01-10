@@ -10,7 +10,6 @@ use crate::model::{
 use super::weights::ExponentialWeights;
 use super::{
     objects::{BackLink, Conjunction, Proposition},
-    storage::GraphicalModel,
 };
 
 fn read_in_parent_probabilities(

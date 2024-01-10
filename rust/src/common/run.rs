@@ -5,7 +5,7 @@ use redis::{Client, Connection};
 
 use super::interface::{FactorModel, ScenarioMaker};
 use crate::model::maxent::ExponentialModel;
-use crate::model::{inference::marginalized_inference_probability, storage::GraphicalModel};
+use crate::model::{inference::marginalized_inference_probability};
 
 fn create_model(
     model_name: &String,

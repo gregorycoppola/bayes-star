@@ -4,7 +4,6 @@ use crate::{model::{
         conjunction, constant, implication, object, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap},
-    storage::GraphicalModel,
 }, common::interface::ScenarioMaker};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};

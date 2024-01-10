@@ -1,6 +1,5 @@
 use crate::common::interface::{FactorModel, PropositionProbability, TrainStatistics, PredictStatistics};
 use crate::model::objects::{BackLink, Proposition};
-use crate::model::storage::GraphicalModel;
 use crate::model::weights::CLASS_LABELS;
 use std::cell::RefCell;
 use std::collections::HashMap;

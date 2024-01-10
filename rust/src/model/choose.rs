@@ -1,5 +1,4 @@
 use crate::model::objects::{BackLink, Proposition, Conjunction};
-use crate::model::storage::GraphicalModel;
 use std::error::Error;
 
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};

@@ -2,7 +2,6 @@ use std::error::Error;
 
 use crate::model::{
     objects::{Implication, Proposition},
-    storage::GraphicalModel,
 };
 
 pub struct TrainStatistics {
