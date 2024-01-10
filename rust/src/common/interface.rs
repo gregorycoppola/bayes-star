@@ -1,6 +1,9 @@
 use std::error::Error;
 
-use crate::model::{objects::{Proposition, Implication}, storage::Graph};
+use crate::model::{
+    objects::{Implication, Proposition},
+    storage::Graph,
+};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -17,10 +20,8 @@ pub trait PropositionProbability {
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, implication:&Implication) -> Result<(), Box<dyn Error>>;
-    
-    fn 
-    train(
+    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
+    fn train(
         &mut self,
         storage: &Graph,
         proposition: &Proposition,
@@ -33,7 +34,6 @@ pub trait FactorModel {
     ) -> Result<PredictStatistics, Box<dyn Error>>;
 }
 
-
 pub trait ScenarioMaker {
-    fn setup_scenario(&self, storage:&mut Graph) -> Result<(), Box<dyn Error>>;
+    fn setup_scenario(&self, storage: &mut Graph) -> Result<(), Box<dyn Error>>;
 }
