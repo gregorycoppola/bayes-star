@@ -4,7 +4,7 @@ use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
-use crate::common::model::{FactorModel, FactorObservation, FactorContext};
+use crate::common::model::{FactorModel, FactorContext};
 use crate::common::model::{Factor, GraphicalModel};
 use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::{ConjunctLink, Proposition};
