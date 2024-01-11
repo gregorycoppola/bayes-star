@@ -1,8 +1,34 @@
 use std::{collections::HashMap, error::Error};
-
 use redis::Connection;
+use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
 
-use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::interface::FactDB};
+// Define an enum that can be either a Proposition or a Conjunct
+enum InferenceNodeType {
+    Proposition(Proposition),
+    Conjunct(Conjunct),
+}
+
+// Define the InferenceNode class
+struct InferenceNode {
+    node_type: InferenceNodeType,
+    // other fields for InferenceNode
+}
+
+impl InferenceNode {
+    // Constructor for an InferenceNode with a Proposition
+    fn new_proposition(proposition: Proposition) -> InferenceNode {
+        InferenceNode {
+            node_type: InferenceNodeType::Proposition(proposition),
+        }
+    }
+
+    // Constructor for an InferenceNode with a Conjunct
+    fn new_conjunct(conjunct: Conjunct) -> InferenceNode {
+        InferenceNode {
+            node_type: InferenceNodeType::Conjunct(conjunct),
+        }
+    }
+}
 
 pub struct HashMapBeliefTable {
     pi_values: HashMap<(String, usize), f64>,
