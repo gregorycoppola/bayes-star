@@ -70,7 +70,7 @@ impl Inferencer {
             self.data.set_pi_value(node, 0, 1f64 - prior_prob);
         }
         for outcome in CLASS_LABELS {
-            let children = self.find_children(node).expect("Error finding children");
+            let children = self.model.graph.find_children(node).expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(node, child, outcome, 1f64);
             }
@@ -88,11 +88,9 @@ impl Inferencer {
     pub fn initialize_lambda_node(&mut self, node: &Proposition) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data.set_lambda_value(node, outcome, 1f64);
-            let parents = &self
-                .find_parent(node)
-                .expect("Error finding paerents")
-                .expect("No parents");
-            for parent in &[parents] {
+            let parents = self.model.graph
+                .find_parents(node)?;
+            for parent in &parents {
                 self.data.set_lambda_message(node, parent, outcome, 1f64);
             }
         }
