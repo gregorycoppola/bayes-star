@@ -82,7 +82,12 @@ impl Inferencer {
                 .children_of_proposition(node)
                 .expect("Error finding children");
             for child in &children {
-                self.data.set_lambda_message(node, child, outcome, 1f64);
+                self.data.set_lambda_message(
+                    &InferenceNode::from_proposition(*node),
+                    &InferenceNode::from_conjunct(*child),
+                    outcome,
+                    1f64,
+                );
             }
         }
         Ok(())
