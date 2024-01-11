@@ -109,21 +109,6 @@ impl Inferencer {
         // Your implementation here
         todo!()
     }
-
-    fn find_parent(&self, x: &Proposition) -> Result<Option<Proposition>, Box<dyn Error>> {
-        // Your implementation here
-        Ok(None) // Placeholder
-    }
-
-    fn find_root(&self) -> Result<Proposition, Box<dyn Error>> {
-        // Your implementation here
-        todo!()
-    }
-
-    fn find_children(&self, root: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        // Your implementation here
-        Ok(Vec::new()) // Placeholder
-    }
 }
 
 pub fn compute_marginals(

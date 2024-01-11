@@ -342,6 +342,18 @@ impl Graph {
         let test_queue_name = String::from("test_queue");
         self.get_propositions_from_queue(&test_queue_name)
     }
+
+    fn find_parents(&self, x: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        todo!()
+    }
+
+    fn find_roots(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        todo!()
+    }
+
+    fn find_children(&self, root: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 pub struct RedisFactDB {
