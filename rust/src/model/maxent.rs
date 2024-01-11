@@ -43,60 +43,49 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
 }
 
 pub fn features_from_factor(factor: &Factor) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
-    todo!()
+    let mut vec_result = vec![];
+    for class_label in CLASS_LABELS {
+        let mut result = HashMap::new();
+
+        for (i, backlink) in factor.conjunctions.iter().enumerate() {
+            debug!("Processing backlink {}", i);
+
+            let feature = backlink.implication.unique_key();
+            debug!("Generated unique key for feature: {}", feature);
+
+            match get_conjunction_probability(storage, &backlink.conjunction) {
+                Ok(probability) => {
+                    debug!(
+                        "Conjunction probability for backlink {}: {}",
+                        i, probability
+                    );
+                    let posf = positive_feature(&feature, class_label);
+                    let negf = negative_feature(&feature, class_label);
+
+                    result.insert(posf.clone(), probability);
+                    result.insert(negf.clone(), 1.0 - probability);
+
+                    debug!(
+                        "Inserted features for backlink {}: positive - {}, negative - {}",
+                        i, posf, negf
+                    );
+                }
+                Err(e) => {
+                    error!(
+                        "Error computing conjunction probability for backlink {}: {}",
+                        i, e
+                    );
+                    return Err(e);
+                }
+            }
+        }
+
+        vec_result.push(result);
+    }
+
+    trace!("features_from_backlinks completed successfully");
+    Ok(vec_result)
 }
-
-// pub fn features_from_backlinks<T: FactDB>(
-//     storage: &T,
-//     backlinks: &[BackLink],
-// ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
-//     trace!(
-//         "Starting features_from_backlinks with {} backlinks",
-//         backlinks.len()
-//     );
-//     let mut vec_result = vec![];
-//     for class_label in CLASS_LABELS {
-//         let mut result = HashMap::new();
-
-//         for (i, backlink) in backlinks.iter().enumerate() {
-//             debug!("Processing backlink {}", i);
-
-//             let feature = backlink.implication.unique_key();
-//             debug!("Generated unique key for feature: {}", feature);
-
-//             match get_conjunction_probability(storage, &backlink.conjunction) {
-//                 Ok(probability) => {
-//                     debug!(
-//                         "Conjunction probability for backlink {}: {}",
-//                         i, probability
-//                     );
-//                     let posf = positive_feature(&feature, class_label);
-//                     let negf = negative_feature(&feature, class_label);
-
-//                     result.insert(posf.clone(), probability);
-//                     result.insert(negf.clone(), 1.0 - probability);
-
-//                     debug!(
-//                         "Inserted features for backlink {}: positive - {}, negative - {}",
-//                         i, posf, negf
-//                     );
-//                 }
-//                 Err(e) => {
-//                     error!(
-//                         "Error computing conjunction probability for backlink {}: {}",
-//                         i, e
-//                     );
-//                     return Err(e);
-//                 }
-//             }
-//         }
-
-//         vec_result.push(result);
-//     }
-
-//     trace!("features_from_backlinks completed successfully");
-//     Ok(vec_result)
-// }
 
 pub fn compute_expected_features(
     probability: f64,
