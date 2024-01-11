@@ -17,14 +17,14 @@ struct InferenceNode {
 
 impl InferenceNode {
     // Constructor for an InferenceNode with a Proposition
-    fn new_proposition(proposition: Proposition) -> InferenceNode {
+    fn from_proposition(proposition: Proposition) -> InferenceNode {
         InferenceNode {
             node_type: InferenceNodeType::Proposition(proposition),
         }
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    fn new_conjunct(conjunct: Conjunct) -> InferenceNode {
+    fn from_conjunct(conjunct: Conjunct) -> InferenceNode {
         InferenceNode {
             node_type: InferenceNodeType::Conjunct(conjunct),
         }
@@ -51,25 +51,25 @@ impl HashMapBeliefTable {
 
     // Getter for pi values
     pub fn get_pi_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
-        let key = (node.search_string(), outcome);
+        let key = (node, outcome);
         self.pi_values.get(&key).cloned()
     }
 
     // Setter for pi values
     pub fn set_pi_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
-        let key = (node.search_string(), outcome);
+        let key = (node, outcome);
         self.pi_values.insert(key, value);
     }
 
     // Getter for lambda values
     pub fn get_lambda_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
-        let key = (node.search_string(), outcome);
+        let key = (node, outcome);
         self.lambda_values.get(&key).cloned()
     }
 
     // Setter for lambda values
     pub fn set_lambda_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
-        let key = (node.search_string(), outcome);
+        let key = (node, outcome);
         self.lambda_values.insert(key, value);
     }
 
@@ -80,7 +80,7 @@ impl HashMapBeliefTable {
         to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
-        let key = (from.search_string(), to.search_string(), outcome);
+        let key = (from, to, outcome);
         self.pi_messages.get(&key).cloned()
     }
 
@@ -92,7 +92,7 @@ impl HashMapBeliefTable {
         outcome: usize,
         value: f64,
     ) {
-        let key = (from.search_string(), to.search_string(), outcome);
+        let key = (from, to, outcome);
         self.pi_messages.insert(key, value);
     }
 
@@ -103,7 +103,7 @@ impl HashMapBeliefTable {
         to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
-        let key = (from.search_string(), to.search_string(), outcome);
+        let key = (from, to, outcome);
         self.lambda_messages.get(&key).cloned()
     }
 
@@ -115,7 +115,7 @@ impl HashMapBeliefTable {
         outcome: usize,
         value: f64,
     ) {
-        let key = (from.search_string(), to.search_string(), outcome);
+        let key = (from, to, outcome);
         self.lambda_messages.insert(key, value);
     }
 }
