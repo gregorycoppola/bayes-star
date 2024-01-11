@@ -94,7 +94,7 @@ impl Inferencer {
                 self.data.set_lambda_message(node, parent, outcome, 1f64);
             }
         }
-        let children = self.find_children(node)?;
+        let children = self.model.graph.find_children(node)?;
         for child in &children {
             self.initialize_lambda_node(child)?;
         }
