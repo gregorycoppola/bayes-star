@@ -301,14 +301,14 @@ impl fmt::Display for RoleMapList {
 #[derive(Debug, Clone)]
 pub struct ConjunctLink {
     pub implication: Implication,
-    pub conjunction: Conjunction,
+    pub conjunct: Conjunction,
 }
 
 impl ConjunctLink {
     pub fn new(implication: Implication, conjunction: Conjunction) -> Self {
         ConjunctLink {
             implication,
-            conjunction,
+            conjunct: conjunction,
         }
     }
 }

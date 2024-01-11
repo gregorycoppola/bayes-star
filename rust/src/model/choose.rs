@@ -141,7 +141,7 @@ pub fn extract_factor_context_for_proposition(
     let mut conjunction_probabilities = vec![];
     for conjunct_link in &factor.conjuncts {
         let conjunct_probability = get_conjunction_probability(
-            fact_db.borrow(),&conjunct_link.conjunction)?;
+            fact_db.borrow(),&conjunct_link.conjunct)?;
         conjunction_probabilities.push(conjunct_probability);
     }
     
