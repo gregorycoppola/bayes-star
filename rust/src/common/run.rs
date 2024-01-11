@@ -18,7 +18,7 @@ pub fn do_training(
     let graph = Graph::new(redis)?;
     let fact_db = RedisFactDB::new(redis)?;
     let plan = TrainingPlan::new(redis)?;
-    let factor_model = ExponentialModel::new(redis)?;
+    let mut factor_model = ExponentialModel::new(redis)?;
     trace!("do_training - Getting all links");
     let links = graph.get_all_links()?;
     for link in links {
