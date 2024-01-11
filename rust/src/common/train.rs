@@ -20,7 +20,7 @@ pub struct TrainingPlan {
 
 impl TrainingPlan {
     pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
-        Ok(Graph { redis_connection })
+        Ok(TrainingPlan { redis_connection })
     }
 
     pub fn add_proposition_to_queue(

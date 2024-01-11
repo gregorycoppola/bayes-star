@@ -37,7 +37,7 @@ impl ScenarioMaker for DatingProb2 {
         &self,
         graph: &mut Graph,
         fact_db: &mut dyn FactDB,
-        plan: &mut dyn TrainingPlan,
+        plan: &mut TrainingPlan,
     ) -> Result<(), Box<dyn Error>> {
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
