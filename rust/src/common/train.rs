@@ -19,7 +19,8 @@ pub struct TrainingPlan {
 }
 
 impl TrainingPlan {
-    pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
+    pub fn new(redis:&RedisClient) -> Result<Self, Box<dyn Error>> {
+        let redis_connection = redis.get_connection()?;
         Ok(TrainingPlan { redis_connection })
     }
 

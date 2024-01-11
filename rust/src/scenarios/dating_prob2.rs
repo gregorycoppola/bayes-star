@@ -1,3 +1,4 @@
+use crate::common::fact_db::RedisFactDB;
 use crate::common::graph::Graph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
@@ -39,6 +40,8 @@ impl ScenarioMaker for DatingProb2 {
         redis: &RedisClient,
     ) -> Result<(), Box<dyn Error>> {
         let graph = Graph::new(redis)?;
+        let fact_db = RedisFactDB::new(redis)?;
+        let plan = TrainingPlan::new(redis)?;
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
