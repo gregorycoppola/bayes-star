@@ -1,4 +1,4 @@
-use super::table::HashMapBeliefTable;
+use super::table::{HashMapBeliefTable, InferenceResult};
 use crate::{
     common::{
         interface::FactDB,
@@ -105,6 +105,6 @@ impl Inferencer {
 pub fn compute_marginals(
     model: Box<GraphicalModel>,
     evidence: Box<dyn FactDB>,
-) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
     todo!()
 }
