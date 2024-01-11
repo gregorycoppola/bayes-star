@@ -4,7 +4,7 @@
 
 pub mod model;
 pub mod scenarios;
-pub mod bp;
+pub mod inference;
 pub mod common;
 pub mod baseline;
 
