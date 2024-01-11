@@ -127,9 +127,11 @@ pub fn extract_backlinks_from_proposition(
 
 pub fn extract_factor_for_proposition(
     graph: &Graph,
-    conclusion: &Proposition,
+    conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
-    todo!()
+    let links = extract_backlinks_from_proposition(graph, &conclusion)?;
+    let factor = Factor { conclusion, conjuncts: links};
+    Ok(factor)
 }
 
 pub fn extract_factor_context_for_proposition(
@@ -137,7 +139,7 @@ pub fn extract_factor_context_for_proposition(
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
-    let factor = extract_factor_for_proposition(graph, &conclusion)?;
+    let factor = extract_factor_for_proposition(graph, conclusion)?;
     let mut conjunction_probabilities = vec![];
     for conjunct_link in &factor.conjuncts {
         let conjunct_probability = get_conjunction_probability(
