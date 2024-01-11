@@ -109,15 +109,16 @@ impl Graph {
             .collect()
     }
 
-    pub fn find_parents(&self, x: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        todo!()
-    }
 
     pub fn find_roots(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn find_children(&self, root: &Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn find_parents(&self, x: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn find_children(&self, root: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
         todo!()
     }
 }
