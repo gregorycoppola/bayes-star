@@ -43,8 +43,10 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
-        let root = self.model.graph.find_roots()?;
-        self.initialize_pi_node(&root, true)?;
+        let roots = self.model.graph.find_roots()?;
+        for root in &roots {
+            self.initialize_pi_node(root, true)?;
+        }
         Ok(())
     }
 
@@ -53,7 +55,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.find_children(node)?;
+        let children = self.model.graph.find_children(node)?;
         for child in &children {
             self.initialize_pi_node(child, false)?;
         }
