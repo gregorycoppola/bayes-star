@@ -14,7 +14,6 @@ fn main() {
     .format(|buf, record| {
         let file = record.file().unwrap_or("unknown");
         let line = record.line().unwrap_or(0);
-
         writeln!(buf, "{} [{}:{}] {}", record.level(), file, line, record.args())
     })
     .init();
@@ -37,19 +36,16 @@ fn main() {
                 .takes_value(false), // No value is expected, presence of flag sets it to true
         )
         .get_matches();
-
     let entities_per_domain: i32 = matches
         .value_of("entities_per_domain")
         .unwrap() // safe because we have a default value
         .parse()
         .expect("entities_per_domain needs to be an integer");
-
     let print_training_loss = matches.is_present("print_training_loss");
     set_config(Config {
         entities_per_domain,
         print_training_loss,
     }).expect("Could not set config.");
-
     let scenario_maker = DatingProb2{};
     setup_and_train(&scenario_maker).expect("Error in training.");
     warn!("program done");
