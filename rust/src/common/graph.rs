@@ -114,11 +114,19 @@ impl Graph {
         todo!()
     }
 
-    pub fn find_parents(&self, x: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+    pub fn parents_of_proposition(&self, x: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn find_children(&self, root: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+    pub fn children_of_proposition(&self, root: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn parents_of_conjunct(&self, x: &Conjunct) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn children_of_conjunct(&self, root: &Conjunct) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
 }

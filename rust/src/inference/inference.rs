@@ -1,10 +1,10 @@
-use super::table::{HashMapBeliefTable, InferenceResult};
+use super::table::{HashMapBeliefTable, InferenceResult, InferenceNode};
 use crate::{
     common::{
         interface::FactDB,
         model::GraphicalModel,
     },
-    model::{objects::Proposition, weights::CLASS_LABELS},
+    model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS},
 };
 use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error};
@@ -15,10 +15,16 @@ struct Inferencer {
     data: HashMapBeliefTable,
 }
 
-fn get_proposition_probability_combined(
-    model_db: &dyn FactDB,
-    evidence_db: &dyn FactDB,
+fn inference_proposition_probability(
+    fact_db: &dyn FactDB,
     proposition: &Proposition,
+) -> Result<f64, Box<dyn Error>> {
+    todo!()
+}
+
+fn inference_conjunct_probability(
+    fact_db: &dyn FactDB,
+    conjunct: &Conjunct,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
@@ -45,19 +51,45 @@ impl Inferencer {
     pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
         let roots = self.model.graph.find_roots()?;
         for root in &roots {
-            self.initialize_pi_node(root, true)?;
+            self.initialize_pi_proposition(root, true)?;
         }
         Ok(())
     }
 
-    pub fn initialize_pi_node(
+    pub fn initialize_pi_proposition(
         &mut self,
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.model.graph.find_children(node)?;
+        let children = self.model.graph.children_of_proposition(node)?;
         for child in &children {
-            self.initialize_pi_node(child, false)?;
+            self.initialize_pi_conjunct(child, false)?;
+        }
+        if is_root {
+            let prior_prob = inference_proposition_probability(
+                self.model.fact_db.borrow(),
+                node,
+            )?;
+            self.data.set_pi_value(&InferenceNode::from_proposition(*node), 1, prior_prob);
+            self.data.set_pi_value(&InferenceNode::from_proposition(*node), 0, 1f64 - prior_prob);
+        }
+        for outcome in CLASS_LABELS {
+            let children = self.model.graph.children_of_proposition(node).expect("Error finding children");
+            for child in &children {
+                self.data.set_lambda_message(node, child, outcome, 1f64);
+            }
+        }
+        Ok(())
+    }
+
+    pub fn initialize_pi_conjunct(
+        &mut self,
+        conjunct: &Conjunct,
+        is_root: bool,
+    ) -> Result<(), Box<dyn Error>> {
+        let children = self.model.graph.children_of_conjunct(conjunct)?;
+        for child in &children {
+            self.initialize_pi_proposition(child, false)?;
         }
         if is_root {
             let prior_prob = get_proposition_probability_combined(
