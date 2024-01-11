@@ -1,3 +1,4 @@
+use super::conjunction::get_conjunction_probability;
 use super::{
     conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
@@ -8,10 +9,9 @@ use crate::{
         interface::FactDB,
         model::{Factor, Graph},
     },
-    model::objects::{ConjunctLink, Conjunct, Proposition},
+    model::objects::{Conjunct, ConjunctLink, Proposition},
 };
-use std::{error::Error, borrow::Borrow};
-use super::conjunction::get_conjunction_probability;
+use std::{borrow::Borrow, error::Error};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
@@ -111,10 +111,7 @@ pub fn extract_backlinks_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(ConjunctLink::new(
-                link.clone(),
-                Conjunct { terms },
-            ));
+            backlinks.push(ConjunctLink::new(link.clone(), Conjunct { terms }));
         }
     }
     trace!("Returning backlinks {:?}", &backlinks);
@@ -130,7 +127,10 @@ pub fn extract_factor_for_proposition(
     conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
     let links = extract_backlinks_from_proposition(graph, &conclusion)?;
-    let factor = Factor { conclusion, conjuncts: links};
+    let factor = Factor {
+        conclusion,
+        conjuncts: links,
+    };
     Ok(factor)
 }
 
@@ -140,12 +140,14 @@ pub fn extract_factor_context_for_proposition(
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
-    let mut conjunction_probabilities = vec![];
+    let mut conjunct_probabilities = vec![];
     for conjunct_link in &factor.conjuncts {
-        let conjunct_probability = get_conjunction_probability(
-            fact_db.borrow(),&conjunct_link.conjunct)?;
-        conjunction_probabilities.push(conjunct_probability);
+        let conjunct_probability =
+            get_conjunction_probability(fact_db.borrow(), &conjunct_link.conjunct)?;
+        conjunct_probabilities.push(conjunct_probability);
     }
-    
-    todo!()
+    Ok(FactorContext {
+        factor,
+        conjunct_probabilities,
+    })
 }
