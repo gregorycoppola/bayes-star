@@ -34,8 +34,8 @@ impl InferenceNode {
 pub struct HashMapBeliefTable {
     pi_values: HashMap<(InferenceNode, usize), f64>,
     lambda_values: HashMap<(InferenceNode, usize), f64>,
-    pi_messages: HashMap<(InferenceNode, String, usize), f64>,
-    lambda_messages: HashMap<(InferenceNode, String, usize), f64>,
+    pi_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
+    lambda_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
 }
 
 impl HashMapBeliefTable {
@@ -51,25 +51,25 @@ impl HashMapBeliefTable {
 
     // Getter for pi values
     pub fn get_pi_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
-        let key = (node, outcome);
+        let key = (*node, outcome);
         self.pi_values.get(&key).cloned()
     }
 
     // Setter for pi values
     pub fn set_pi_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
-        let key = (node, outcome);
+        let key = (*node, outcome);
         self.pi_values.insert(key, value);
     }
 
     // Getter for lambda values
     pub fn get_lambda_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
-        let key = (node, outcome);
+        let key = (*node, outcome);
         self.lambda_values.get(&key).cloned()
     }
 
     // Setter for lambda values
     pub fn set_lambda_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
-        let key = (node, outcome);
+        let key = (*node, outcome);
         self.lambda_values.insert(key, value);
     }
 
@@ -80,7 +80,7 @@ impl HashMapBeliefTable {
         to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
-        let key = (from, to, outcome);
+        let key = (*from, *to, outcome);
         self.pi_messages.get(&key).cloned()
     }
 
@@ -103,7 +103,7 @@ impl HashMapBeliefTable {
         to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
-        let key = (from, to, outcome);
+        let key = (*from, *to, outcome);
         self.lambda_messages.get(&key).cloned()
     }
 
@@ -115,7 +115,7 @@ impl HashMapBeliefTable {
         outcome: usize,
         value: f64,
     ) {
-        let key = (from, to, outcome);
+        let key = (*from, *to, outcome);
         self.lambda_messages.insert(key, value);
     }
 }
