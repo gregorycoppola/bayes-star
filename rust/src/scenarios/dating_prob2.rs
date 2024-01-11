@@ -39,11 +39,11 @@ impl ScenarioMaker for DatingProb2 {
 
         // Retrieve entities in the Jack domain
         let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
-        let jacks: Vec<Entity> = model.graph.get_entities_in_domain(&jack_domain)?;
+        let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
         // Retrieve entities in the Jill domain
         let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
-        let jills = model.graph.get_entities_in_domain(&jill_domain)?;
+        let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 
         let exciting = constant(Domain::Verb, "exciting".to_string());
@@ -62,7 +62,7 @@ impl ScenarioMaker for DatingProb2 {
                     domain: domain.clone(),
                     name: name.clone(),
                 };
-                model.graph.store_entity(&entity)?;
+                graph.store_entity(&entity)?;
                 trace!("Stored entity: {:?}", &entity);
                 domain_entity_map.insert(domain.to_string(), entity);
             }
@@ -87,7 +87,7 @@ impl ScenarioMaker for DatingProb2 {
                     jack_lonely.search_string(),
                     p_jack_lonely
                 );
-                model.graph.store_proposition(&jack_lonely, p_jack_lonely)?;
+                graph.store_proposition(&jack_lonely, p_jack_lonely)?;
             }
 
             {
@@ -167,7 +167,7 @@ impl ScenarioMaker for DatingProb2 {
                 model
                     .graph
                     .maybe_add_to_training(is_training, &jack_dates_jill)?;
-                model.graph.maybe_add_to_test(is_test, &jack_dates_jill)?;
+                graph.maybe_add_to_test(is_test, &jack_dates_jill)?;
             }
         }
 
@@ -243,7 +243,7 @@ impl ScenarioMaker for DatingProb2 {
             trace!("Storing link: {:?}", link); // Logging, replace with your actual logger if necessary
 
             // Assuming `store_link` is a method of your GraphicalModel struct
-            model.graph.store_link(link)?;
+            graph.store_link(link)?;
         }
 
         // Additional functions
