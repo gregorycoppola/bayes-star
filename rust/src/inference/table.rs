@@ -4,27 +4,27 @@ use serde::{Serialize, Deserialize};
 use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
 
 #[derive(Debug, PartialEq, Eq, Hash)]
-enum InferenceNodeType {
+pub enum InferenceNodeType {
     Proposition(Proposition),
     Conjunct(Conjunct),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
-struct InferenceNode {
+pub struct InferenceNode {
     node_type: InferenceNodeType,
     // other fields for InferenceNode
 }
 
 impl InferenceNode {
     // Constructor for an InferenceNode with a Proposition
-    fn from_proposition(proposition: Proposition) -> InferenceNode {
+    pub fn from_proposition(proposition: Proposition) -> InferenceNode {
         InferenceNode {
             node_type: InferenceNodeType::Proposition(proposition),
         }
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    fn from_conjunct(conjunct: Conjunct) -> InferenceNode {
+    pub fn from_conjunct(conjunct: Conjunct) -> InferenceNode {
         InferenceNode {
             node_type: InferenceNodeType::Conjunct(conjunct),
         }
@@ -92,7 +92,7 @@ impl HashMapBeliefTable {
         outcome: usize,
         value: f64,
     ) {
-        let key = (from, to, outcome);
+        let key = (*from, *to, outcome);
         self.pi_messages.insert(key, value);
     }
 
