@@ -127,7 +127,7 @@ impl fmt::Display for FirstOrderArgument {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct FilledRole {
     pub role_name: String,
     pub argument: FirstOrderArgument,
@@ -156,7 +156,7 @@ impl FilledRole {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Proposition {
     pub roles: Vec<FilledRole>,
 }
@@ -185,7 +185,7 @@ impl Proposition {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Conjunct {
     pub terms: Vec<Proposition>,
 }

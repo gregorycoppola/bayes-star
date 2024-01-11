@@ -1,14 +1,15 @@
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
+use serde::{Serialize, Deserialize};
 use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
 
-// Define an enum that can be either a Proposition or a Conjunct
+#[derive(Debug, PartialEq, Eq)]
 enum InferenceNodeType {
     Proposition(Proposition),
     Conjunct(Conjunct),
 }
 
-// Define the InferenceNode class
+#[derive(Debug, PartialEq, Eq)]
 struct InferenceNode {
     node_type: InferenceNodeType,
     // other fields for InferenceNode
