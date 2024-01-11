@@ -6,16 +6,15 @@ use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, co
 use std::hash::{Hash, Hasher};
 use std::collections::hash_map::DefaultHasher;
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum InferenceNodeType {
     PropositionHash(u64),
     ConjunctHash(u64),
 }
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub struct InferenceNode {
     node_type: InferenceNodeType,
-    // other fields for InferenceNode
 }
 
 impl InferenceNode {
