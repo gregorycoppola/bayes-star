@@ -34,7 +34,7 @@ pub fn do_training(
     let mut examples_processed = 0;
     for proposition in &propositions {
         trace!("do_training - Processing proposition: {:?}", proposition);
-        let factor = extract_factor_context_for_proposition(&fact_db, graph, proposition.clone())?;
+        let factor = extract_factor_context_for_proposition(&fact_db, &graph, proposition.clone())?;
         trace!("do_training - Backlinks: {:?}", &factor);
         let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
