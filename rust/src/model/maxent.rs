@@ -29,7 +29,7 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     for (key, &v1) in dict1 {
         if let Some(&v2) = dict2.get(key) {
             let product = v1 * v2;
-            trace!("\x1b[33mpotential {} for {:?}\x1b[0m", product, key);
+            info!("\x1b[33mpotential {} for {:?}\x1b[0m", product, key);
             result += product;
         }
         // In case of null (None), we skip the key as per the original JavaScript logic.
@@ -68,7 +68,7 @@ pub fn features_from_factor(
         }
         vec_result.push(result);
     }
-    trace!("features_from_backlinks completed successfully");
+    info!("features_from_backlinks completed successfully");
     Ok(vec_result)
 }
 
@@ -98,7 +98,7 @@ pub fn do_sgd_update(
         let loss = (gv - ev).abs();
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
-            trace!(
+            info!(
                 "feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}",
                 feature,
                 gv,
@@ -124,11 +124,11 @@ impl FactorModel for ExponentialModel {
         factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
-        trace!("train_on_example - Getting features from backlinks");
+        info!("train_on_example - Getting features from backlinks");
         let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
-                trace!(
+                info!(
                     "train_on_example - Error in features_from_backlinks: {:?}",
                     e
                 );
@@ -139,9 +139,9 @@ impl FactorModel for ExponentialModel {
         let mut potentials = vec![];
         for class_label in CLASS_LABELS {
             for (feature, weight) in &features[class_label] {
-                trace!("feature {:?} {}", feature, weight);
+                info!("feature {:?} {}", feature, weight);
             }
-            trace!(
+            info!(
                 "train_on_example - Reading weights for class {}",
                 class_label
             );
@@ -151,20 +151,20 @@ impl FactorModel for ExponentialModel {
             {
                 Ok(w) => w,
                 Err(e) => {
-                    trace!("train_on_example - Error in read_weights: {:?}", e);
+                    info!("train_on_example - Error in read_weights: {:?}", e);
                     return Err(e);
                 }
             };
-            trace!("train_on_example - Computing probability");
+            info!("train_on_example - Computing probability");
             let potential = compute_potential(&weight_vector, &features[class_label]);
-            trace!("train_on_example - Computed probability: {}", potential);
+            info!("train_on_example - Computed probability: {}", potential);
             potentials.push(potential);
             weight_vectors.push(weight_vector);
         }
         let normalization = potentials[0] + potentials[1];
         for class_label in CLASS_LABELS {
             let probability = potentials[class_label] / normalization;
-            trace!("train_on_example - Computing expected features");
+            info!("train_on_example - Computing expected features");
             let this_true_prob = if class_label == 0 {
                 1f64 - probability
             } else {
@@ -172,13 +172,13 @@ impl FactorModel for ExponentialModel {
             };
             let gold = compute_expected_features(this_true_prob, &features[class_label]);
             let expected = compute_expected_features(probability, &features[class_label]);
-            trace!("train_on_example - Performing SGD update");
+            info!("train_on_example - Performing SGD update");
             let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
 
-            trace!("train_on_example - Saving new weights");
+            info!("train_on_example - Saving new weights");
             self.weights.save_weights(&new_weight)?;
         }
-        trace!("train_on_example - End");
+        info!("train_on_example - End");
         Ok(TrainStatistics { loss: 1f64 })
     }
     fn predict(&self, factor: &FactorContext) -> Result<PredictStatistics, Box<dyn Error>> {
@@ -196,9 +196,9 @@ impl FactorModel for ExponentialModel {
         for class_label in CLASS_LABELS {
             let this_features = &features[class_label];
             for (feature, weight) in this_features.iter() {
-                trace!("feature {:?} {}", &feature, weight);
+                info!("feature {:?} {}", &feature, weight);
             }
-            trace!("inference_probability - Reading weights");
+            info!("inference_probability - Reading weights");
             let weight_vector = match self
                 .weights
                 .read_weights(&this_features.keys().cloned().collect::<Vec<_>>())
@@ -210,9 +210,9 @@ impl FactorModel for ExponentialModel {
                 }
             };
             for (feature, weight) in weight_vector.iter() {
-                trace!("weight {:?} {}", &feature, weight);
+                info!("weight {:?} {}", &feature, weight);
             }
-            trace!("inference_probability - Computing probability");
+            info!("inference_probability - Computing probability");
             let potential = compute_potential(&weight_vector, &this_features);
             potentials.push(potential);
         }
