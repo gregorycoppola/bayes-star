@@ -137,17 +137,13 @@ pub fn extract_factor_context_for_proposition(
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
-    let backlinks = extract_backlinks_from_proposition(graph, &conclusion)?;
-    let mut conjuncts = vec![];
+    let factor = extract_factor_for_proposition(graph, &conclusion)?;
     let mut conjunction_probabilities = vec![];
-    for backlink in backlinks {
+    for conjunct_link in &factor.conjuncts {
         let conjunct_probability = get_conjunction_probability(
-            fact_db.borrow(),&backlink.conjunction)?;
+            fact_db.borrow(),&conjunct_link.conjunction)?;
         conjunction_probabilities.push(conjunct_probability);
-        conjuncts.push(backlink.conjunction);
     }
-    let conclusion_probability = fact_db
-        .get_proposition_probability(&conclusion)?
-        .expect("No conclusion probability.");
+    
     todo!()
 }
