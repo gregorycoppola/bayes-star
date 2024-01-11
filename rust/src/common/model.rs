@@ -48,7 +48,7 @@ pub struct  FactorContext{
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
         factor: &FactorContext,
@@ -183,22 +183,22 @@ impl Graph {
         Ok(())
     }
 
-    pub fn store_implication(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>> {
+    pub fn store_link(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>> {
         let record =
-            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+            serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         self.redis_connection
             .borrow_mut()
-            .sadd("implications", &record)
+            .sadd("links", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.store_links(implication)
+        self.store_links(link)
     }
 
-    pub fn store_links(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>> {
-        let search_string = implication.search_string();
+    pub fn store_links(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>> {
+        let search_string = link.search_string();
         let record =
-            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+            serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         self.redis_connection
             .borrow_mut()
@@ -209,11 +209,11 @@ impl Graph {
     }
 
     // Get all Implications
-    pub fn get_all_implications(&self) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
+    pub fn get_all_links(&self) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .borrow_mut()
-            .smembers("implications")
+            .smembers("links")
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         all_values

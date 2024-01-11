@@ -218,7 +218,7 @@ impl ImplicationLink {
         self.conclusion.search_string()
     }
 
-    // Generate a unique key for the implication
+    // Generate a unique key for the link
     pub fn unique_key(&self) -> String {
         format!(
             "{}->{}{}",
@@ -300,14 +300,14 @@ impl fmt::Display for RoleMapList {
 
 #[derive(Debug, Clone)]
 pub struct ConjunctLink {
-    pub implication: ImplicationLink,
+    pub link: ImplicationLink,
     pub conjunct: Conjunct,
 }
 
 impl ConjunctLink {
-    pub fn new(implication: ImplicationLink, conjunction: Conjunct) -> Self {
+    pub fn new(link: ImplicationLink, conjunction: Conjunct) -> Self {
         ConjunctLink {
-            implication,
+            link,
             conjunct: conjunction,
         }
     }

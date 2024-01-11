@@ -89,14 +89,14 @@ pub fn extract_backlinks_from_proposition(
     let mut backlinks = Vec::new();
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
-        let implications = graph.find_premises(&search_key)?;
-        trace!("Found implications {:?}", &implications);
-        for implication in &implications {
+        let links = graph.find_premises(&search_key)?;
+        trace!("Found links {:?}", &links);
+        for link in &links {
             let mut terms = Vec::new();
-            for (index, proposition) in implication.premise.terms.iter().enumerate() {
+            for (index, proposition) in link.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
                 let extracted_mapping =
-                    extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]); // Assuming this function exists
+                    extract_premise_role_map(&conclusion, &link.role_maps.role_maps[index]); // Assuming this function exists
                 trace!(
                     "Extracted mapping for term {}: {:?}",
                     index,
@@ -112,7 +112,7 @@ pub fn extract_backlinks_from_proposition(
                 terms.push(extracted_proposition);
             }
             backlinks.push(ConjunctLink::new(
-                implication.clone(),
+                link.clone(),
                 Conjunct { terms },
             ));
         }

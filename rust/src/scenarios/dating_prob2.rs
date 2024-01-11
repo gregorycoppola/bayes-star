@@ -1,7 +1,7 @@
 use crate::{model::{
     config::CONFIG,
     creators::{
-        conjunction, constant, implication, object, proposition, relation, subject, variable,
+        conjunction, constant, link, object, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap},
 }, common::interface::ScenarioMaker};
@@ -159,9 +159,9 @@ impl ScenarioMaker for DatingProb2 {
         let xjack = variable(Domain::Jack);
         let xjill = variable(Domain::Jill);
 
-        let implications = vec![
+        let links = vec![
             // if jack is lonely, he will date any jill
-            implication(
+            link(
                 conjunction(vec![proposition(vec![
                     subject(xjack.clone()),
                     relation(lonely.clone()),
@@ -177,7 +177,7 @@ impl ScenarioMaker for DatingProb2 {
                 )]))],
             ),
             // if jill is exciting, any jack will date her
-            implication(
+            link(
                 conjunction(vec![proposition(vec![
                     subject(xjill.clone()),
                     relation(exciting.clone()),
@@ -193,7 +193,7 @@ impl ScenarioMaker for DatingProb2 {
                 )]))],
             ),
             // if jill likes jack, then jack dates jill
-            implication(
+            link(
                 conjunction(vec![
                     proposition(vec![
                         subject(xjill.clone()),
@@ -224,11 +224,11 @@ impl ScenarioMaker for DatingProb2 {
             ),
         ];
 
-        for implication in implications.iter() {
-            trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
+        for link in links.iter() {
+            trace!("Storing link: {:?}", link); // Logging, replace with your actual logger if necessary
 
-            // Assuming `store_implication` is a method of your GraphicalModel struct
-            model.graph.store_implication(implication)?;
+            // Assuming `store_link` is a method of your GraphicalModel struct
+            model.graph.store_link(link)?;
         }
 
         // Additional functions

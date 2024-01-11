@@ -1,7 +1,7 @@
 use crate::model::{
     config::CONFIG,
     creators::{
-        conjunction, constant, implication, proposition, relation, subject, variable,
+        conjunction, constant, link, proposition, relation, subject, variable,
     },
     objects::{Domain, Entity, RoleMap, Proposition},
     storage::GraphicalModel,
@@ -101,9 +101,9 @@ pub fn setup_scenario(storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>
     }
 
     let xjack = variable(Domain::Jack);
-    let implications = vec![
+    let links = vec![
         // if jack is educated, he will date any jill
-        implication(
+        link(
             conjunction(vec![proposition(vec![
                 subject(xjack.clone()),
                 relation(educated.clone()),
@@ -119,10 +119,10 @@ pub fn setup_scenario(storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>
         ),
     ];
 
-    for implication in implications.iter() {
-        trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
-        // Assuming `store_implication` is a method of your GraphicalModel struct
-        storage.store_implication(implication)?;
+    for link in links.iter() {
+        trace!("Storing link: {:?}", link); // Logging, replace with your actual logger if necessary
+        // Assuming `store_link` is a method of your GraphicalModel struct
+        storage.store_link(link)?;
     }
 
     Ok(())

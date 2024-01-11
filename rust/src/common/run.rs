@@ -11,11 +11,11 @@ pub fn do_training(
     fact_db: &Box<dyn FactDB>,
     factor_model: &mut Box<dyn FactorModel>,
 ) -> Result<(), Box<dyn Error>> {
-    trace!("do_training - Getting all implications");
-    let implications = graph.get_all_implications()?;
-    for implication in implications {
-        trace!("do_training - Processing implication: {:?}", implication);
-        factor_model.initialize_connection(&implication)?;
+    trace!("do_training - Getting all links");
+    let links = graph.get_all_links()?;
+    for link in links {
+        trace!("do_training - Processing link: {:?}", link);
+        factor_model.initialize_connection(&link)?;
     }
     trace!("do_training - Getting all propositions");
     let propositions = graph.get_training_questions()?;
