@@ -110,6 +110,6 @@ impl Inferencer {
     }
 }
 
-pub fn compute_marginals(model:&GraphicalModel, evidence:&dyn FactDB) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+pub fn compute_marginals(model:Box<GraphicalModel>, evidence:Box<dyn FactDB>) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
     todo!()
 }
