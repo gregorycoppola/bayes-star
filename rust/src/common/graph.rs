@@ -20,7 +20,8 @@ pub struct Graph {
 
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
+    pub fn new(redis: &RedisClient) -> Result<Self, Box<dyn Error>> {
+        let redis_connection = redis.get_connection()?;
         Ok(Graph { redis_connection })
     }
 
