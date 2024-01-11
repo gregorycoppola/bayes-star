@@ -16,10 +16,6 @@ pub trait FactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
-    fn get_conjunction_probability(
-        &self,
-        conjunction: &Conjunction,
-    ) -> Result<Option<f64>, Box<dyn Error>>;
 }
 
 pub trait ScenarioMaker {
