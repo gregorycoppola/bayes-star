@@ -8,7 +8,7 @@ use crate::{
         interface::FactDB,
         model::{Factor, Graph},
     },
-    model::objects::{ConjunctLink, Conjunction, Proposition},
+    model::objects::{ConjunctLink, Conjunct, Proposition},
 };
 use std::{error::Error, borrow::Borrow};
 use super::conjunction::get_conjunction_probability;
@@ -113,7 +113,7 @@ pub fn extract_backlinks_from_proposition(
             }
             backlinks.push(ConjunctLink::new(
                 implication.clone(),
-                Conjunction { terms },
+                Conjunct { terms },
             ));
         }
     }

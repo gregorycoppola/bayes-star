@@ -3,11 +3,11 @@ use crate::model::objects::*;
 // Import the necessary structs and enums
 use crate::model::objects::{Implication, Proposition, FilledRole, VariableArgument, ConstantArgument};
 
-pub fn conjunction(terms: Vec<Proposition>) -> Conjunction {
-    Conjunction { terms }
+pub fn conjunction(terms: Vec<Proposition>) -> Conjunct {
+    Conjunct { terms }
 }
 
-pub fn implication(premise: Conjunction, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
+pub fn implication(premise: Conjunct, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
     let role_maps = RoleMapList {role_maps};
     Implication { premise, conclusion, role_maps }
 }
