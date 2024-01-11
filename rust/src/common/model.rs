@@ -57,15 +57,6 @@ pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
 
-impl Drop for Graph {
-    fn drop(&mut self) {
-        // The Drop trait for Arc<Client> will automatically be called here,
-        // reducing the reference count. If this GraphicalModel instance holds the last
-        // reference to the client, the client will be dropped and its resources
-        // (like network connections) will be cleaned up.
-    }
-}
-
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new(redis_connection: RefCell<Connection>) -> Result<Self, redis::RedisError> {
