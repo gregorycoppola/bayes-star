@@ -102,15 +102,6 @@ impl Inferencer {
         }
         Ok(())
     }
-
-    pub fn get_conditional_probability(
-        &self,
-        conclusion: &Proposition,
-        premise: &Proposition,
-    ) -> Result<f64, Box<dyn Error>> {
-        // Your implementation here
-        todo!()
-    }
 }
 
 pub fn compute_marginals(
