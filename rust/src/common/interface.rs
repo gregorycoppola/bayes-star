@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::objects::{Conjunct, ImplicationLink, Proposition};
 
-use super::model::GraphicalModel;
+use super::{model::GraphicalModel, graph::Graph};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -25,5 +25,5 @@ pub trait FactDB {
 }
 
 pub trait ScenarioMaker {
-    fn setup_scenario(&self, storage: &mut GraphicalModel) -> Result<(), Box<dyn Error>>;
+    fn setup_scenario(&self, graph: &mut Graph, fact_db: &mut dyn FactDB) -> Result<(), Box<dyn Error>>;
 }

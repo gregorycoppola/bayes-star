@@ -1,3 +1,5 @@
+use crate::common::graph::Graph;
+use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::{
     common::interface::ScenarioMaker,
@@ -30,7 +32,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    fn setup_scenario(&self, model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, graph: &mut Graph, fact_db:&mut dyn FactDB) -> Result<(), Box<dyn Error>> {
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
