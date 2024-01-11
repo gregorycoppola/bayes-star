@@ -31,10 +31,10 @@ impl InferenceNode {
 }
 
 pub struct HashMapBeliefTable {
-    pi_values: HashMap<(String, usize), f64>,
-    lambda_values: HashMap<(String, usize), f64>,
-    pi_messages: HashMap<(String, String, usize), f64>,
-    lambda_messages: HashMap<(String, String, usize), f64>,
+    pi_values: HashMap<(InferenceNode, usize), f64>,
+    lambda_values: HashMap<(InferenceNode, usize), f64>,
+    pi_messages: HashMap<(InferenceNode, String, usize), f64>,
+    lambda_messages: HashMap<(InferenceNode, String, usize), f64>,
 }
 
 impl HashMapBeliefTable {
@@ -49,25 +49,25 @@ impl HashMapBeliefTable {
     }
 
     // Getter for pi values
-    pub fn get_pi_value(&self, node: &Proposition, outcome: usize) -> Option<f64> {
+    pub fn get_pi_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
         let key = (node.search_string(), outcome);
         self.pi_values.get(&key).cloned()
     }
 
     // Setter for pi values
-    pub fn set_pi_value(&mut self, node: &Proposition, outcome: usize, value: f64) {
+    pub fn set_pi_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
         let key = (node.search_string(), outcome);
         self.pi_values.insert(key, value);
     }
 
     // Getter for lambda values
-    pub fn get_lambda_value(&self, node: &Proposition, outcome: usize) -> Option<f64> {
+    pub fn get_lambda_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
         let key = (node.search_string(), outcome);
         self.lambda_values.get(&key).cloned()
     }
 
     // Setter for lambda values
-    pub fn set_lambda_value(&mut self, node: &Proposition, outcome: usize, value: f64) {
+    pub fn set_lambda_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
         let key = (node.search_string(), outcome);
         self.lambda_values.insert(key, value);
     }
@@ -75,8 +75,8 @@ impl HashMapBeliefTable {
     // Getter for pi messages
     pub fn get_pi_message(
         &self,
-        from: &Proposition,
-        to: &Proposition,
+        from: &InferenceNode,
+        to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
         let key = (from.search_string(), to.search_string(), outcome);
@@ -86,8 +86,8 @@ impl HashMapBeliefTable {
     // Setter for pi messages
     pub fn set_pi_message(
         &mut self,
-        from: &Proposition,
-        to: &Proposition,
+        from: &InferenceNode,
+        to: &InferenceNode,
         outcome: usize,
         value: f64,
     ) {
@@ -98,8 +98,8 @@ impl HashMapBeliefTable {
     // Getter for lambda messages
     pub fn get_lambda_message(
         &self,
-        from: &Proposition,
-        to: &Proposition,
+        from: &InferenceNode,
+        to: &InferenceNode,
         outcome: usize,
     ) -> Option<f64> {
         let key = (from.search_string(), to.search_string(), outcome);
@@ -109,8 +109,8 @@ impl HashMapBeliefTable {
     // Setter for lambda messages
     pub fn set_lambda_message(
         &mut self,
-        from: &Proposition,
-        to: &Proposition,
+        from: &InferenceNode,
+        to: &InferenceNode,
         outcome: usize,
         value: f64,
     ) {
