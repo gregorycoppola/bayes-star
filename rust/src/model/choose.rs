@@ -3,11 +3,12 @@ use super::{
     conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
+use crate::common::graph::Graph;
 use crate::common::model::{FactorContext, GraphicalModel};
 use crate::{
     common::{
         interface::FactDB,
-        model::{Factor, Graph},
+        model::Factor,
     },
     model::objects::{Conjunct, ConjunctLink, Proposition},
 };

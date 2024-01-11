@@ -1,5 +1,6 @@
+use super::graph::Graph;
 use super::interface::{FactDB, ScenarioMaker};
-use super::model::{FactorModel, Graph};
+use super::model::FactorModel;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
 use crate::model::choose::{extract_backlinks_from_proposition, extract_factor_context_for_proposition};
