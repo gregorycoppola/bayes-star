@@ -75,11 +75,6 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn get_all_propositions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        // Your implementation here
-        todo!()
-    }
-
     pub fn get_proposition_probability(
         &self,
         proposition: &Proposition,
