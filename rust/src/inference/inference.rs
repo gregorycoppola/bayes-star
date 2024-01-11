@@ -68,9 +68,9 @@ impl Inferencer {
         if is_root {
             let prior_prob = inference_proposition_probability(self.model.fact_db.borrow(), node)?;
             self.data
-                .set_pi_value(&InferenceNode::from_proposition(*node), 1, prior_prob);
+                .set_pi_value(&InferenceNode::from_proposition(node), 1, prior_prob);
             self.data.set_pi_value(
-                &InferenceNode::from_proposition(*node),
+                &InferenceNode::from_proposition(node),
                 0,
                 1f64 - prior_prob,
             );
@@ -83,8 +83,8 @@ impl Inferencer {
                 .expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_proposition(*node),
-                    &InferenceNode::from_conjunct(*child),
+                    &InferenceNode::from_proposition(node),
+                    &InferenceNode::from_conjunct(child),
                     outcome,
                     1f64,
                 );
@@ -105,9 +105,9 @@ impl Inferencer {
         if is_root {
             let prior_prob = inference_conjunct_probability(self.model.fact_db.borrow(), conjunct)?;
             self.data
-                .set_pi_value(&InferenceNode::from_conjunct(*conjunct), 1, prior_prob);
+                .set_pi_value(&InferenceNode::from_conjunct(conjunct), 1, prior_prob);
             self.data.set_pi_value(
-                &InferenceNode::from_conjunct(*conjunct),
+                &InferenceNode::from_conjunct(conjunct),
                 0,
                 1f64 - prior_prob,
             );
@@ -120,8 +120,8 @@ impl Inferencer {
                 .expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(*conjunct),
-                    &InferenceNode::from_proposition(*child),
+                    &InferenceNode::from_conjunct(conjunct),
+                    &InferenceNode::from_proposition(child),
                     outcome,
                     1f64,
                 );
@@ -144,12 +144,12 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_proposition(*node), outcome, 1f64);
+                .set_lambda_value(&InferenceNode::from_proposition(node), outcome, 1f64);
             let parents = self.model.graph.parents_of_proposition(node)?;
             for parent in &parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_proposition(*node),
-                    &InferenceNode::from_conjunct(*parent),
+                    &InferenceNode::from_proposition(node),
+                    &InferenceNode::from_conjunct(parent),
                     outcome,
                     1f64,
                 );
@@ -168,12 +168,12 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_conjunct(*conjunct), outcome, 1f64);
+                .set_lambda_value(&InferenceNode::from_conjunct(conjunct), outcome, 1f64);
             let parents = self.model.graph.parents_of_conjunct(conjunct)?;
             for parent in &parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(*conjunct),
-                    &InferenceNode::from_proposition(*parent),
+                    &InferenceNode::from_conjunct(conjunct),
+                    &InferenceNode::from_proposition(parent),
                     outcome,
                     1f64,
                 );
