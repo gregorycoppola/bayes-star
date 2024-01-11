@@ -3,10 +3,13 @@ use redis::Connection;
 use serde::{Serialize, Deserialize};
 use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
 
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
+
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum InferenceNodeType {
-    Proposition(Proposition),
-    Conjunct(Conjunct),
+    PropositionHash(u64),
+    ConjunctHash(u64),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -17,16 +20,24 @@ pub struct InferenceNode {
 
 impl InferenceNode {
     // Constructor for an InferenceNode with a Proposition
-    pub fn from_proposition(proposition: Proposition) -> InferenceNode {
+    pub fn from_proposition(proposition: &Proposition) -> InferenceNode {
+        let mut hasher = DefaultHasher::new();
+        proposition.hash(&mut hasher);
+        let hash = hasher.finish();
+
         InferenceNode {
-            node_type: InferenceNodeType::Proposition(proposition),
+            node_type: InferenceNodeType::PropositionHash(hash),
         }
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    pub fn from_conjunct(conjunct: Conjunct) -> InferenceNode {
+    pub fn from_conjunct(conjunct: &Conjunct) -> InferenceNode {
+        let mut hasher = DefaultHasher::new();
+        conjunct.hash(&mut hasher);
+        let hash = hasher.finish();
+
         InferenceNode {
-            node_type: InferenceNodeType::Conjunct(conjunct),
+            node_type: InferenceNodeType::ConjunctHash(hash),
         }
     }
 }
