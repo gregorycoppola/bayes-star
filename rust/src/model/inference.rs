@@ -94,20 +94,12 @@ impl FactDB for MapBackedProbabilityStorage {
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_key = proposition.search_string();
-
         if let Some(&value) = self.underlying.get(&search_key) {
             // Assuming true = 1.0 probability and false = 0.0
             Ok(Some(if value { 1.0 } else { 0.0 }))
         } else {
             panic!("proposition key not found in local map {:?}", &search_key);
         }
-    }
-
-    fn get_conjunction_probability(
-        &self,
-        conjunction: &Conjunction,
-    ) -> Result<Option<f64>, Box<dyn Error>> {
-        todo!("tbd")
     }
 }
 
