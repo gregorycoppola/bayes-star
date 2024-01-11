@@ -1,2 +1,2 @@
-pub mod bptable;
+pub mod table;
 pub mod inference;
