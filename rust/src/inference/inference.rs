@@ -92,18 +92,17 @@ impl Inferencer {
             self.initialize_pi_proposition(child, false)?;
         }
         if is_root {
-            let prior_prob = get_proposition_probability_combined(
+            let prior_prob = inference_conjunct_probability(
                 self.model.fact_db.borrow(),
-                self.evidence.borrow(),
-                node,
+                conjunct,
             )?;
-            self.data.set_pi_value(node, 1, prior_prob);
-            self.data.set_pi_value(node, 0, 1f64 - prior_prob);
+            self.data.set_pi_value(&&InferenceNode::from_conjunct(*conjunct), 1, prior_prob);
+            self.data.set_pi_value(&&InferenceNode::from_conjunct(*conjunct), 0, 1f64 - prior_prob);
         }
         for outcome in CLASS_LABELS {
-            let children = self.model.graph.find_children(node).expect("Error finding children");
+            let children = self.model.graph.children_of_conjunct(conjunct).expect("Error finding children");
             for child in &children {
-                self.data.set_lambda_message(node, child, outcome, 1f64);
+                self.data.set_lambda_message(conjunct, child, outcome, 1f64);
             }
         }
         Ok(())
