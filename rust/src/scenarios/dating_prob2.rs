@@ -1,13 +1,14 @@
-use crate::{model::{
-    config::CONFIG,
-    creators::{
-        conjunction, constant, link, object, proposition, relation, subject, variable,
+use crate::common::model::GraphicalModel;
+use crate::{
+    common::interface::ScenarioMaker,
+    model::{
+        config::CONFIG,
+        creators::{conjunction, constant, link, object, proposition, relation, subject, variable},
+        objects::{Domain, Entity, RoleMap},
     },
-    objects::{Domain, Entity, RoleMap},
-}, common::interface::ScenarioMaker};
+};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
-use crate::common::model::GraphicalModel;
 fn cointoss() -> f64 {
     let mut rng = rand::thread_rng(); // Get a random number generator
     if rng.gen::<f64>() < 0.5 {
@@ -29,7 +30,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    fn setup_scenario(&self,model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, model: &mut GraphicalModel) -> Result<(), Box<dyn Error>> {
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
@@ -96,7 +97,9 @@ impl ScenarioMaker for DatingProb2 {
                     jill_exciting.search_string(),
                     p_jill_exciting
                 );
-                model.graph.store_proposition(&jill_exciting, p_jill_exciting)?;
+                model
+                    .graph
+                    .store_proposition(&jill_exciting, p_jill_exciting)?;
             }
 
             {
@@ -114,7 +117,9 @@ impl ScenarioMaker for DatingProb2 {
                     jill_likes_jack.search_string(),
                     p_jill_likes_jack
                 ); // Logging
-                model.graph.store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
+                model
+                    .graph
+                    .store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
             }
 
             {
@@ -131,9 +136,13 @@ impl ScenarioMaker for DatingProb2 {
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
-                    model.graph.store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
+                    model
+                        .graph
+                        .store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
                 }
-                model.graph.maybe_add_to_training(is_training, &jack_likes_jill)?;
+                model
+                    .graph
+                    .maybe_add_to_training(is_training, &jack_likes_jill)?;
             }
             {
                 let jill = constant(jill_entity.domain, jill_entity.name.clone());
@@ -150,8 +159,12 @@ impl ScenarioMaker for DatingProb2 {
 
                 let adusted_p = p_jack_dates_jill * 0.7;
                 let effective_p = weighted_cointoss(adusted_p);
-                model.graph.store_proposition(&jack_dates_jill, effective_p)?;
-                model.graph.maybe_add_to_training(is_training, &jack_dates_jill)?;
+                model
+                    .graph
+                    .store_proposition(&jack_dates_jill, effective_p)?;
+                model
+                    .graph
+                    .maybe_add_to_training(is_training, &jack_dates_jill)?;
                 model.graph.maybe_add_to_test(is_test, &jack_dates_jill)?;
             }
         }
