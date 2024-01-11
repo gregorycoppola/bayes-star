@@ -1,10 +1,10 @@
 
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
-use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::interface::FactDB};
+use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::{interface::FactDB, model::GraphicalModel}};
 use super::table::BeliefPropagationData;
 
-pub struct Inferencer {
+struct Inferencer {
     data: BeliefPropagationData,
     evidence: Box<dyn FactDB>,
 }
@@ -108,4 +108,8 @@ impl Inferencer {
         // Your implementation here
         Ok(Vec::new()) // Placeholder
     }
+}
+
+pub fn compute_marginals(model:&GraphicalModel, evidence:&dyn FactDB) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+    todo!()
 }
