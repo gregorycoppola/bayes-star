@@ -4,17 +4,17 @@ use redis::Connection;
 
 use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::interface::FactDB};
 
-pub struct BeliefPropagationData {
+pub struct HashMapBeliefTable {
     pi_values: HashMap<(String, usize), f64>,
     lambda_values: HashMap<(String, usize), f64>,
     pi_messages: HashMap<(String, String, usize), f64>,
     lambda_messages: HashMap<(String, String, usize), f64>,
 }
 
-impl BeliefPropagationData {
+impl HashMapBeliefTable {
     // Constructor to create a new instance
     pub fn new() -> Self {
-        BeliefPropagationData {
+        HashMapBeliefTable {
             pi_values: HashMap::new(),
             lambda_values: HashMap::new(),
             pi_messages: HashMap::new(),
@@ -91,4 +91,18 @@ impl BeliefPropagationData {
         let key = (from.search_string(), to.search_string(), outcome);
         self.lambda_messages.insert(key, value);
     }
+}
+
+struct HashMapInferenceResult {
+    underlying: HashMapBeliefTable,
+}
+
+impl InferenceResult for HashMapInferenceResult {
+    fn get_proposition_probability(&self, proposition:&Proposition) -> Result<f64, Box<dyn Error>> {
+        todo!()
+    }
+}
+
+pub trait InferenceResult {
+    fn get_proposition_probability(&self, proposition:&Proposition) -> Result<f64, Box<dyn Error>>;
 }

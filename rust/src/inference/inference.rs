@@ -1,4 +1,4 @@
-use super::table::BeliefPropagationData;
+use super::table::HashMapBeliefTable;
 use crate::{
     common::{
         interface::FactDB,
@@ -12,7 +12,7 @@ use std::{borrow::Borrow, collections::HashMap, error::Error};
 struct Inferencer {
     model: Box<GraphicalModel>,
     evidence: Box<dyn FactDB>,
-    data: BeliefPropagationData,
+    data: HashMapBeliefTable,
 }
 
 fn get_proposition_probability_combined(
@@ -32,7 +32,7 @@ impl Inferencer {
         Ok(Inferencer {
             model,
             evidence,
-            data: BeliefPropagationData::new(),
+            data: HashMapBeliefTable::new(),
         })
     }
 
@@ -59,7 +59,6 @@ impl Inferencer {
         for child in &children {
             self.initialize_pi_node(child, false)?;
         }
-
         if is_root {
             let prior_prob = get_proposition_probability_combined(
                 self.model.fact_db.borrow(),
@@ -75,7 +74,6 @@ impl Inferencer {
                 self.data.set_lambda_message(node, child, outcome, 1f64);
             }
         }
-
         Ok(())
     }
 
