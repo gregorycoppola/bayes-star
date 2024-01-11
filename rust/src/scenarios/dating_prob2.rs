@@ -99,9 +99,7 @@ impl ScenarioMaker for DatingProb2 {
                     jill_exciting.search_string(),
                     p_jill_exciting
                 );
-                model
-                    .graph
-                    .store_proposition(&jill_exciting, p_jill_exciting)?;
+                fact_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
             }
 
             {
