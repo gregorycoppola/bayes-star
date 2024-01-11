@@ -133,22 +133,55 @@ impl Inferencer {
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         let roots = self.model.graph.find_roots()?;
         for root in &roots {
-            self.initialize_lambda_node(root)?;
+            self.initialize_lambda_proposition(root)?;
         }
         Ok(())
     }
 
-    pub fn initialize_lambda_node(&mut self, node: &Proposition) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_lambda_proposition(
+        &mut self,
+        node: &Proposition,
+    ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
-            self.data.set_lambda_value(node, outcome, 1f64);
-            let parents = self.model.graph.find_parents(node)?;
+            self.data
+                .set_lambda_value(&InferenceNode::from_proposition(*node), outcome, 1f64);
+            let parents = self.model.graph.parents_of_proposition(node)?;
             for parent in &parents {
-                self.data.set_lambda_message(node, parent, outcome, 1f64);
+                self.data.set_lambda_message(
+                    &InferenceNode::from_proposition(*node),
+                    &InferenceNode::from_conjunct(*parent),
+                    outcome,
+                    1f64,
+                );
             }
         }
-        let children = self.model.graph.find_children(node)?;
+        let children = self.model.graph.children_of_proposition(node)?;
         for child in &children {
-            self.initialize_lambda_node(child)?;
+            self.initialize_lambda_conjunct(child)?;
+        }
+        Ok(())
+    }
+
+    pub fn initialize_lambda_conjunct(
+        &mut self,
+        conjunct: &Conjunct,
+    ) -> Result<(), Box<dyn Error>> {
+        for outcome in CLASS_LABELS {
+            self.data
+                .set_lambda_value(&InferenceNode::from_conjunct(*conjunct), outcome, 1f64);
+            let parents = self.model.graph.parents_of_conjunct(conjunct)?;
+            for parent in &parents {
+                self.data.set_lambda_message(
+                    &InferenceNode::from_conjunct(*conjunct),
+                    &InferenceNode::from_proposition(*parent),
+                    outcome,
+                    1f64,
+                );
+            }
+        }
+        let children = self.model.graph.children_of_conjunct(conjunct)?;
+        for child in &children {
+            self.initialize_lambda_proposition(child)?;
         }
         Ok(())
     }
