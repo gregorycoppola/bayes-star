@@ -161,7 +161,7 @@ impl ScenarioMaker for DatingProb2 {
                 let effective_p = weighted_cointoss(adusted_p);
                 fact_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
-                graph.maybe_add_to_test(is_test, &jack_dates_jill)?;
+                plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
             }
         }
 

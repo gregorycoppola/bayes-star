@@ -1,15 +1,20 @@
 use super::graph::Graph;
 use super::interface::{FactDB, ScenarioMaker};
 use super::model::FactorModel;
+use super::train::TrainingPlan;
+use crate::common::fact_db::RedisFactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
-use crate::model::choose::{extract_backlinks_from_proposition, extract_factor_context_for_proposition};
+use crate::model::choose::{
+    extract_backlinks_from_proposition, extract_factor_context_for_proposition,
+};
 use std::borrow::BorrowMut;
 use std::error::Error;
 
 pub fn do_training(
     graph: &Graph,
     fact_db: &Box<dyn FactDB>,
+    plan: &TrainingPlan,
     factor_model: &mut Box<dyn FactorModel>,
 ) -> Result<(), Box<dyn Error>> {
     trace!("do_training - Getting all links");
@@ -19,7 +24,7 @@ pub fn do_training(
         factor_model.initialize_connection(&link)?;
     }
     trace!("do_training - Getting all propositions");
-    let propositions = graph.get_training_questions()?;
+    let propositions = plan.get_training_questions()?;
     trace!(
         "do_training - Processing propositions: {}",
         propositions.len()
@@ -57,9 +62,13 @@ pub fn setup_and_train(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn
     redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let mut model = GraphicalModel::new(&model_spec, &redis_client).expect("Couldn't make storage");
-    let result = scenario_maker.setup_scenario(&mut model);
+    let mut fact_db = RedisFactDB::new(&redis_client)?;
+    let mut plan = TrainingPlan::new(redis_client.get_connection()?)?;
+    let result = scenario_maker.setup_scenario(
+        &mut model.graph, fact_db.borrow_mut(), &mut plan);
     info!("scenario result: {:?}", result);
-    let train_result = do_training(&model.graph, &model.fact_db, model.model.borrow_mut());
+    let train_result = do_training(
+        &model.graph, &model.fact_db, &plan, model.model.borrow_mut());
     info!("train result: {:?}", train_result);
     std::mem::drop(model);
     Ok(())
