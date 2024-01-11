@@ -3,13 +3,13 @@ use redis::Connection;
 use serde::{Serialize, Deserialize};
 use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 enum InferenceNodeType {
     Proposition(Proposition),
     Conjunct(Conjunct),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 struct InferenceNode {
     node_type: InferenceNodeType,
     // other fields for InferenceNode
