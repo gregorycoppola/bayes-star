@@ -39,9 +39,9 @@ impl ScenarioMaker for DatingProb2 {
         &self,
         redis: &RedisClient,
     ) -> Result<(), Box<dyn Error>> {
-        let graph = Graph::new(redis)?;
-        let fact_db = RedisFactDB::new(redis)?;
-        let plan = TrainingPlan::new(redis)?;
+        let mut graph = Graph::new(redis)?;
+        let mut fact_db = RedisFactDB::new(redis)?;
+        let mut plan = TrainingPlan::new(redis)?;
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
