@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::objects::{Implication, Proposition, Conjunct};
+use crate::model::objects::{ImplicationLink, Proposition, Conjunct};
 
 use super::model::GraphicalModel;
 

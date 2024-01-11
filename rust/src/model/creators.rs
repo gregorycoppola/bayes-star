@@ -1,15 +1,15 @@
 use crate::model::objects::*;
 
 // Import the necessary structs and enums
-use crate::model::objects::{Implication, Proposition, FilledRole, VariableArgument, ConstantArgument};
+use crate::model::objects::{ImplicationLink, Proposition, FilledRole, VariableArgument, ConstantArgument};
 
 pub fn conjunction(terms: Vec<Proposition>) -> Conjunct {
     Conjunct { terms }
 }
 
-pub fn implication(premise: Conjunct, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
+pub fn implication(premise: Conjunct, conclusion: Proposition, role_maps: Vec<RoleMap>) -> ImplicationLink {
     let role_maps = RoleMapList {role_maps};
-    Implication { premise, conclusion, role_maps }
+    ImplicationLink { premise, conclusion, role_maps }
 }
 
 // Function to create a Proposition

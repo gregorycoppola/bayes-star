@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{Conjunct, Domain, Entity, Implication, Proposition, ConjunctLink},
+        objects::{Conjunct, Domain, Entity, ImplicationLink, Proposition, ConjunctLink},
     },
 };
 use redis::{Commands, Connection};
@@ -48,7 +48,7 @@ pub struct  FactorContext{
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
         factor: &FactorContext,
@@ -183,7 +183,7 @@ impl Graph {
         Ok(())
     }
 
-    pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implication(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -195,7 +195,7 @@ impl Graph {
         self.store_links(implication)
     }
 
-    pub fn store_links(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_links(&mut self, implication: &ImplicationLink) -> Result<(), Box<dyn Error>> {
         let search_string = implication.search_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
@@ -209,7 +209,7 @@ impl Graph {
     }
 
     // Get all Implications
-    pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .borrow_mut()
@@ -222,7 +222,7 @@ impl Graph {
             .collect()
     }
 
-    pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn find_premises(&self, search_string: &str) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
             .redis_connection

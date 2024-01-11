@@ -206,13 +206,13 @@ impl Conjunct {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Implication {
+pub struct ImplicationLink {
     pub premise: Conjunct,
     pub conclusion: Proposition,
     pub role_maps: RoleMapList,
 }
 
-impl Implication {
+impl ImplicationLink {
     // Return the search string based on the conclusion's search string
     pub fn search_string(&self) -> String {
         self.conclusion.search_string()
@@ -300,12 +300,12 @@ impl fmt::Display for RoleMapList {
 
 #[derive(Debug, Clone)]
 pub struct ConjunctLink {
-    pub implication: Implication,
+    pub implication: ImplicationLink,
     pub conjunct: Conjunct,
 }
 
 impl ConjunctLink {
-    pub fn new(implication: Implication, conjunction: Conjunct) -> Self {
+    pub fn new(implication: ImplicationLink, conjunction: Conjunct) -> Self {
         ConjunctLink {
             implication,
             conjunct: conjunction,
