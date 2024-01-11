@@ -80,8 +80,10 @@ impl Inferencer {
     }
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        let root = self.find_root()?;
-        self.initialize_lambda_node(&root)?;
+        let roots = self.model.graph.find_roots()?;
+        for root in &roots {
+            self.initialize_lambda_node(root)?;
+        }
         Ok(())
     }
 
