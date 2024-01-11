@@ -181,7 +181,7 @@ impl FactorModel for ExponentialModel {
         trace!("train_on_example - End");
         Ok(TrainStatistics { loss: 1f64 })
     }
-    fn predict(&self, factor: &Factor) -> Result<PredictStatistics, Box<dyn Error>> {
+    fn predict(&self, factor: &FactorContext) -> Result<PredictStatistics, Box<dyn Error>> {
         let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
