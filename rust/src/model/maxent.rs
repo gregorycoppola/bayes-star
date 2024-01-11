@@ -4,8 +4,8 @@ use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
-use crate::common::model::{FactorModel, FactorContext};
 use crate::common::model::{Factor, GraphicalModel};
+use crate::common::model::{FactorContext, FactorModel};
 use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::{ConjunctLink, Proposition};
 use crate::model::weights::CLASS_LABELS;
@@ -42,47 +42,32 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_factor(factor: &FactorContext) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
+pub fn features_from_factor(
+    factor: &FactorContext,
+) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
     let mut vec_result = vec![];
     for class_label in CLASS_LABELS {
         let mut result = HashMap::new();
-
-        for (i, backlink) in factor.conjuncts.iter().enumerate() {
+        for (i, backlink) in factor.factor.conjuncts.iter().enumerate() {
             debug!("Processing backlink {}", i);
-
             let feature = backlink.implication.unique_key();
             debug!("Generated unique key for feature: {}", feature);
-
-            match get_conjunction_probability(storage, &backlink.conjunction) {
-                Ok(probability) => {
-                    debug!(
-                        "Conjunction probability for backlink {}: {}",
-                        i, probability
-                    );
-                    let posf = positive_feature(&feature, class_label);
-                    let negf = negative_feature(&feature, class_label);
-
-                    result.insert(posf.clone(), probability);
-                    result.insert(negf.clone(), 1.0 - probability);
-
-                    debug!(
-                        "Inserted features for backlink {}: positive - {}, negative - {}",
-                        i, posf, negf
-                    );
-                }
-                Err(e) => {
-                    error!(
-                        "Error computing conjunction probability for backlink {}: {}",
-                        i, e
-                    );
-                    return Err(e);
-                }
-            }
+            let probability = 0f64;
+            debug!(
+                "Conjunction probability for backlink {}: {}",
+                i, probability
+            );
+            let posf = positive_feature(&feature, class_label);
+            let negf = negative_feature(&feature, class_label);
+            result.insert(posf.clone(), probability);
+            result.insert(negf.clone(), 1.0 - probability);
+            debug!(
+                "Inserted features for backlink {}: positive - {}, negative - {}",
+                i, posf, negf
+            );
         }
-
         vec_result.push(result);
     }
-
     trace!("features_from_backlinks completed successfully");
     Ok(vec_result)
 }
