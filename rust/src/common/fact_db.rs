@@ -58,4 +58,34 @@ impl FactDB for RedisFactDB {
             }
         }
     }
+
+    pub fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
+
+        let search_string = proposition.search_string();
+        trace!(
+            "GraphicalModel::store_proposition_probability - Computed search_string: {}",
+            search_string
+        );
+
+        if let Err(e) = self
+            .redis_connection
+            .borrow_mut()
+            .hset::<&str, &str, String, bool>("probs", &search_string, probability.to_string())
+        {
+            trace!(
+                "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
+                e
+            );
+            return Err(Box::new(e));
+        }
+
+        trace!("GraphicalModel::store_proposition_probability - Completed successfully");
+        Ok(())
+    }
+
 }

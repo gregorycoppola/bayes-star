@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::objects::{ImplicationLink, Proposition, Conjunct};
+use crate::model::objects::{Conjunct, ImplicationLink, Proposition};
 
 use super::model::GraphicalModel;
 
@@ -16,6 +16,12 @@ pub trait FactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
+
+    fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>>;
 }
 
 pub trait ScenarioMaker {
