@@ -1,6 +1,7 @@
 use crate::common::graph::Graph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
+use crate::common::train::TrainingPlan;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -32,7 +33,12 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct DatingProb2 {}
 
 impl ScenarioMaker for DatingProb2 {
-    fn setup_scenario(&self, graph: &mut Graph, fact_db:&mut dyn FactDB) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(
+        &self,
+        graph: &mut Graph,
+        fact_db: &mut dyn FactDB,
+        plan: &mut dyn TrainingPlan,
+    ) -> Result<(), Box<dyn Error>> {
         let config = CONFIG.get().expect("Config not initialized");
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
@@ -136,9 +142,7 @@ impl ScenarioMaker for DatingProb2 {
                 if is_training {
                     fact_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
-                model
-                    .graph
-                    .maybe_add_to_training(is_training, &jack_likes_jill)?;
+                plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
             }
             {
                 let jill = constant(jill_entity.domain, jill_entity.name.clone());
@@ -156,9 +160,7 @@ impl ScenarioMaker for DatingProb2 {
                 let adusted_p = p_jack_dates_jill * 0.7;
                 let effective_p = weighted_cointoss(adusted_p);
                 fact_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
-                model
-                    .graph
-                    .maybe_add_to_training(is_training, &jack_dates_jill)?;
+                plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 graph.maybe_add_to_test(is_test, &jack_dates_jill)?;
             }
         }
