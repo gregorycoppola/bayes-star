@@ -75,7 +75,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     Ok(result)
 }
 
-pub fn compute_backlinks(
+pub fn extract_backlinks_from_proposition(
     graph: &Graph,
     conclusion: &Proposition,
 ) -> Result<Vec<ConjunctLink>, Box<dyn Error>> {
@@ -130,7 +130,7 @@ pub fn extract_factor_for_proposition(
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
-    let backlinks = compute_backlinks(graph, &conclusion)?;
+    let backlinks = extract_backlinks_from_proposition(graph, &conclusion)?;
     let mut conjuncts = vec![];
     let mut conjunction_probabilities = vec![];
     for backlink in backlinks {

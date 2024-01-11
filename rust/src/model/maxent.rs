@@ -1,4 +1,4 @@
-use super::choose::compute_backlinks;
+use super::choose::extract_backlinks_from_proposition;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;

@@ -2,7 +2,7 @@ use super::interface::{FactDB, ScenarioMaker};
 use super::model::{FactorModel, Graph};
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
-use crate::model::choose::{compute_backlinks, extract_factor_for_proposition};
+use crate::model::choose::{extract_backlinks_from_proposition, extract_factor_for_proposition};
 use std::borrow::BorrowMut;
 use std::error::Error;
 
