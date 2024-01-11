@@ -10,6 +10,10 @@ struct Inferencer {
     data: BeliefPropagationData,
 }
 
+fn get_proposition_probability_combined(model_db: &dyn FactDB, evidence_db:&dyn FactDB) -> Result<f64, Box<dyn Error>> {
+    todo!()
+}
+
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new(model:Box<GraphicalModel>, evidence: Box<dyn FactDB>) -> Result<Self, redis::RedisError> {
@@ -73,14 +77,6 @@ impl Inferencer {
             self.initialize_lambda_node(child)?;
         }
         Ok(())
-    }
-
-    pub fn get_proposition_probability(
-        &self,
-        proposition: &Proposition,
-    ) -> Result<f64, Box<dyn Error>> {
-        // Your implementation here
-        todo!()
     }
 
     pub fn get_conditional_probability(
