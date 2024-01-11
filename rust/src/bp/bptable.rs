@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 
 use redis::Connection;
 
-use crate::model::{objects::Proposition, weights::CLASS_LABELS};
+use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::interface::FactDB};
 
 pub struct BeliefPropagationData {
     pi_values: HashMap<(String, usize), f64>,
@@ -95,12 +95,12 @@ impl BeliefPropagationData {
 
 pub struct BeliefPropagator {
     data: BeliefPropagationData,
-    evidence: Box<dyn PropositionProbability>,
+    evidence: Box<dyn FactDB>,
 }
 
 impl BeliefPropagator {
     // Initialize new Storage with a Redis connection
-    pub fn new(evidence: Box<dyn PropositionProbability>) -> Result<Self, redis::RedisError> {
+    pub fn new(evidence: Box<dyn FactDB>) -> Result<Self, redis::RedisError> {
         Ok(BeliefPropagator {
             data: BeliefPropagationData::new(), evidence,
         })
