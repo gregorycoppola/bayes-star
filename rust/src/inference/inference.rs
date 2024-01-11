@@ -43,7 +43,7 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
-        let root = self.find_root()?;
+        let root = self.model.graph.find_roots()?;
         self.initialize_pi_node(&root, true)?;
         Ok(())
     }
