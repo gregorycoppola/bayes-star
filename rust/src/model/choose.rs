@@ -121,7 +121,7 @@ pub fn compute_backlinks(
     Ok(backlinks)
 }
 
-pub fn compute_factor(
+pub fn extract_factor_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &Graph,
     conclusion: Proposition,
