@@ -87,7 +87,7 @@ impl ScenarioMaker for DatingProb2 {
                     jack_lonely.search_string(),
                     p_jack_lonely
                 );
-                graph.store_proposition(&jack_lonely, p_jack_lonely)?;
+                fact_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
             }
 
             {
@@ -119,9 +119,7 @@ impl ScenarioMaker for DatingProb2 {
                     jill_likes_jack.search_string(),
                     p_jill_likes_jack
                 ); // Logging
-                model
-                    .graph
-                    .store_proposition(&jill_likes_jack, p_jill_likes_jack)?;
+                fact_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
             }
 
             {
@@ -138,9 +136,7 @@ impl ScenarioMaker for DatingProb2 {
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
-                    model
-                        .graph
-                        .store_proposition(&jack_likes_jill, p_jack_likes_jill)?;
+                    fact_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
                 model
                     .graph
@@ -161,9 +157,7 @@ impl ScenarioMaker for DatingProb2 {
 
                 let adusted_p = p_jack_dates_jill * 0.7;
                 let effective_p = weighted_cointoss(adusted_p);
-                model
-                    .graph
-                    .store_proposition(&jack_dates_jill, effective_p)?;
+                fact_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
                 model
                     .graph
                     .maybe_add_to_training(is_training, &jack_dates_jill)?;
