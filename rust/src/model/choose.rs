@@ -8,7 +8,7 @@ use crate::{
         interface::FactDB,
         model::{Factor, Graph},
     },
-    model::objects::{BackLink, Conjunction, Proposition},
+    model::objects::{ConjunctLink, Conjunction, Proposition},
 };
 use std::error::Error;
 
@@ -77,7 +77,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 pub fn compute_backlinks(
     graph: &Graph,
     conclusion: &Proposition,
-) -> Result<Vec<BackLink>, Box<dyn Error>> {
+) -> Result<Vec<ConjunctLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
     if !conclusion.is_fact() {
         error!("Proposition is not a fact");
@@ -110,7 +110,7 @@ pub fn compute_backlinks(
                 );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(BackLink::new(implication.clone(), Conjunction { terms }));
+            backlinks.push(ConjunctLink::new(implication.clone(), Conjunction { terms }));
         }
     }
     trace!("Returning backlinks {:?}", &backlinks);

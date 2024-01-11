@@ -9,7 +9,7 @@ use crate::model::{
 
 use super::weights::ExponentialWeights;
 use super::{
-    objects::{BackLink, Conjunction, Proposition},
+    objects::{ConjunctLink, Conjunction, Proposition},
 };
 
 fn read_in_parent_probabilities(

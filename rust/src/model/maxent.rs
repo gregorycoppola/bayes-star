@@ -7,7 +7,7 @@ use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
 use crate::common::model::FactorModel;
 use crate::common::model::{Factor, GraphicalModel};
 use crate::model::inference::MapBackedProbabilityStorage;
-use crate::model::objects::{BackLink, Proposition};
+use crate::model::objects::{ConjunctLink, Proposition};
 use crate::model::weights::CLASS_LABELS;
 use redis::Connection;
 use std::cell::RefCell;
