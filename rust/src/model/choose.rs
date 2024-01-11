@@ -2,7 +2,7 @@ use super::{
     conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
-use crate::common::model::GraphicalModel;
+use crate::common::model::{GraphicalModel, FactorContext};
 use crate::{
     common::{
         interface::FactDB,
@@ -125,24 +125,27 @@ pub fn extract_factor_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &Graph,
     conclusion: Proposition,
-) -> Result<Factor, Box<dyn Error>> {
-    let backlinks = compute_backlinks(graph, &conclusion)?;
-    let mut conjunctions = vec![];
-    let mut conjunction_probabilities = vec![];
-    for backlink in backlinks {
-        let conjunction_probability = fact_db
-            .get_conjunction_probability(&backlink.conjunction)?
-            .expect("No conclusion probability.");
-        conjunction_probabilities.push(conjunction_probability);
-        conjunctions.push(backlink.conjunction);
-    }
-    let conclusion_probability = fact_db
-        .get_proposition_probability(&conclusion)?
-        .expect("No conclusion probability.");
-    Ok(Factor {
-        conjunctions,
-        conclusion,
-        conjunction_probabilities,
-        conclusion_probability,
-    })
+) -> Result<FactorContext, Box<dyn Error>> {
+    todo!()
 }
+
+//     let backlinks = compute_backlinks(graph, &conclusion)?;
+//     let mut conjunctions = vec![];
+//     let mut conjunction_probabilities = vec![];
+//     for backlink in backlinks {
+//         let conjunction_probability = fact_db
+//             .get_conjunction_probability(&backlink.conjunction)?
+//             .expect("No conclusion probability.");
+//         conjunction_probabilities.push(conjunction_probability);
+//         conjunctions.push(backlink.conjunction);
+//     }
+//     let conclusion_probability = fact_db
+//         .get_proposition_probability(&conclusion)?
+//         .expect("No conclusion probability.");
+//     Ok(Factor {
+//         conjunctions,
+//         conclusion,
+//         conjunction_probabilities,
+//         conclusion_probability,
+//     })
+// }
