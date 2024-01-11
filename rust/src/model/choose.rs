@@ -125,6 +125,13 @@ pub fn extract_backlinks_from_proposition(
     Ok(backlinks)
 }
 
+pub fn extract_factor_for_proposition(
+    graph: &Graph,
+    conclusion: &Proposition,
+) -> Result<Factor, Box<dyn Error>> {
+    todo!()
+}
+
 pub fn extract_factor_context_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &Graph,
