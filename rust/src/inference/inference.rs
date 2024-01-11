@@ -1,19 +1,22 @@
 
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
-use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::{interface::FactDB, model::GraphicalModel}};
+use crate::{model::{objects::Proposition, weights::CLASS_LABELS}, common::{interface::FactDB, model::{GraphicalModel, Graph}}};
 use super::table::BeliefPropagationData;
 
 struct Inferencer {
-    data: BeliefPropagationData,
+    model: Box<GraphicalModel>,
     evidence: Box<dyn FactDB>,
+    data: BeliefPropagationData,
 }
 
 impl Inferencer {
     // Initialize new Storage with a Redis connection
-    pub fn new(evidence: Box<dyn FactDB>) -> Result<Self, redis::RedisError> {
+    pub fn new(model:Box<GraphicalModel>, evidence: Box<dyn FactDB>) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
-            data: BeliefPropagationData::new(), evidence,
+            model,
+            evidence,
+            data: BeliefPropagationData::new(),
         })
     }
 
