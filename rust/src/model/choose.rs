@@ -1,13 +1,21 @@
-use crate::model::objects::{BackLink, Proposition, Conjunction};
-use crate::model::storage::Storage;
-use std::error::Error;
-
-use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
+use super::conjunction::get_conjunction_probability;
+use super::{
+    conjunction,
+    ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
+};
+use crate::common::model::{FactorContext, GraphicalModel};
+use crate::{
+    common::{
+        interface::FactDB,
+        model::{Factor, Graph},
+    },
+    model::objects::{Conjunct, ConjunctLink, Proposition},
+};
+use std::{borrow::Borrow, error::Error};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
     let mut temp_vec = vec![];
-
     fn run(
         input_array: &[usize],
         k: usize,
@@ -25,7 +33,6 @@ fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
             temp_vec.pop();
         }
     }
-
     run(input_array, k, 0, &mut temp_vec, &mut result);
     result
 }
@@ -54,12 +61,10 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     if !proposition.is_fact() {
         return Err("Proposition is not a fact".into());
     }
-
     let num_roles = proposition.roles.len();
     let configurations1 = compute_choose_configurations(num_roles, 1);
     let configurations2 = compute_choose_configurations(num_roles, 2);
     let roles = proposition.role_names();
-
     let mut result = Vec::new();
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
@@ -67,58 +72,82 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
         let search_string = quantified.search_string(); // Assuming this method exists
         result.push(search_string);
     }
-
     Ok(result)
 }
 
-pub fn compute_backlinks(
-    storage: &mut Storage,
+pub fn extract_backlinks_from_proposition(
+    graph: &Graph,
     conclusion: &Proposition,
-) -> Result<Vec<BackLink>, Box<dyn Error>> {
+) -> Result<Vec<ConjunctLink>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
-
     if !conclusion.is_fact() {
         error!("Proposition is not a fact");
         return Err("Proposition is not a fact".into());
     }
-
     let search_keys = compute_search_keys(conclusion)?;
     trace!("Computed search_keys {:?}", &search_keys);
-
     let mut backlinks = Vec::new();
-
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
-
-        let implications = storage.find_premises(&search_key)?;
-        trace!("Found implications {:?}", &implications);
-
-        for implication in &implications {
+        let links = graph.find_premises(&search_key)?;
+        trace!("Found links {:?}", &links);
+        for link in &links {
             let mut terms = Vec::new();
-            for (index, proposition) in implication.premise.terms.iter().enumerate() {
+            for (index, proposition) in link.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
-                let extracted_mapping = extract_premise_role_map(
-                    &conclusion,
-                    &implication.role_maps.role_maps[index],
-                ); // Assuming this function exists
-
-                trace!("Extracted mapping for term {}: {:?}", index, extracted_mapping);
-
-                let extracted_proposition = convert_to_proposition(
-                    &proposition,
-                    &extracted_mapping,
-                )?; // Assuming this function exists
-
-                trace!("Converted to proposition for term {}: {:?}", index, extracted_proposition);
-
+                let extracted_mapping =
+                    extract_premise_role_map(&conclusion, &link.role_maps.role_maps[index]); // Assuming this function exists
+                trace!(
+                    "Extracted mapping for term {}: {:?}",
+                    index,
+                    extracted_mapping
+                );
+                let extracted_proposition =
+                    convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
+                trace!(
+                    "Converted to proposition for term {}: {:?}",
+                    index,
+                    extracted_proposition
+                );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(BackLink::new(implication.clone(), Conjunction { terms }));
+            backlinks.push(ConjunctLink::new(link.clone(), Conjunct { terms }));
         }
     }
-
     trace!("Returning backlinks {:?}", &backlinks);
-    debug!("Completed computing backlinks, total count: {}", backlinks.len());
-
+    debug!(
+        "Completed computing backlinks, total count: {}",
+        backlinks.len()
+    );
     Ok(backlinks)
+}
+
+pub fn extract_factor_for_proposition(
+    graph: &Graph,
+    conclusion: Proposition,
+) -> Result<Factor, Box<dyn Error>> {
+    let links = extract_backlinks_from_proposition(graph, &conclusion)?;
+    let factor = Factor {
+        conclusion,
+        conjuncts: links,
+    };
+    Ok(factor)
+}
+
+pub fn extract_factor_context_for_proposition(
+    fact_db: &Box<dyn FactDB>,
+    graph: &Graph,
+    conclusion: Proposition,
+) -> Result<FactorContext, Box<dyn Error>> {
+    let factor = extract_factor_for_proposition(graph, conclusion)?;
+    let mut conjunct_probabilities = vec![];
+    for conjunct_link in &factor.conjuncts {
+        let conjunct_probability =
+            get_conjunction_probability(fact_db.borrow(), &conjunct_link.conjunct)?;
+        conjunct_probabilities.push(conjunct_probability);
+    }
+    Ok(FactorContext {
+        factor,
+        conjunct_probabilities,
+    })
 }

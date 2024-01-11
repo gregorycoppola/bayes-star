@@ -186,13 +186,13 @@ impl Proposition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Conjunction {
+pub struct Conjunct {
     pub terms: Vec<Proposition>,
 }
 
-impl Conjunction {
+impl Conjunct {
     pub fn new(terms: Vec<Proposition>) -> Self {
-        Conjunction { terms }
+        Conjunct { terms }
     }
 
     pub fn search_string(&self) -> String {
@@ -206,19 +206,19 @@ impl Conjunction {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Implication {
-    pub premise: Conjunction,
+pub struct ImplicationLink {
+    pub premise: Conjunct,
     pub conclusion: Proposition,
     pub role_maps: RoleMapList,
 }
 
-impl Implication {
+impl ImplicationLink {
     // Return the search string based on the conclusion's search string
     pub fn search_string(&self) -> String {
         self.conclusion.search_string()
     }
 
-    // Generate a unique key for the implication
+    // Generate a unique key for the link
     pub fn unique_key(&self) -> String {
         format!(
             "{}->{}{}",
@@ -299,16 +299,16 @@ impl fmt::Display for RoleMapList {
 }
 
 #[derive(Debug, Clone)]
-pub struct BackLink {
-    pub implication: Implication,
-    pub conjunction: Conjunction,
+pub struct ConjunctLink {
+    pub link: ImplicationLink,
+    pub conjunct: Conjunct,
 }
 
-impl BackLink {
-    pub fn new(implication: Implication, conjunction: Conjunction) -> Self {
-        BackLink {
-            implication,
-            conjunction,
+impl ConjunctLink {
+    pub fn new(link: ImplicationLink, conjunction: Conjunct) -> Self {
+        ConjunctLink {
+            link,
+            conjunct: conjunction,
         }
     }
 }

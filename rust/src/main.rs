@@ -1,11 +1,9 @@
 use bayes_star::bp::bptable::BeliefPropagator;
 use bayes_star::model::config::set_config;
-use bayes_star::model::inference::marginalized_inference_probability;
-use bayes_star::model::{maxent::do_training, config::Config};
-use bayes_star::model::storage::Storage;
-use bayes_star::scenarios::dating_prob2::setup_scenario;
+use bayes_star::model::config::Config;
+use bayes_star::scenarios::dating_prob2::DatingProb2;
+use bayes_star::common::run::setup_and_train;
 use env_logger::{Builder, Env};
-use redis::Client;
 use std::io::Write;
 
 #[macro_use]
@@ -53,27 +51,7 @@ fn main() {
         print_training_loss,
     }).expect("Could not set config.");
 
-    let client = Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
-    let connection = client.get_connection().expect("Couldn't get connection.");
-    let mut storage = Storage::new(connection).expect("Couldn't make storage");
-
-    let result = setup_scenario(&mut storage);
-    trace!("{:?}", result);
-
-    let train_result = do_training(&mut storage);
-    trace!("{:?}", train_result);
-
-    let test_questions = storage.get_test_questions().expect("Couldn't get test questions.");
-    for test_question in &test_questions {
-        println!("\n\n\n\n\n\n");
-        info!("test_question {:?}", &test_question.search_string());
-
-        let inference_result = marginalized_inference_probability(&mut storage, &test_question);
-        trace!("inference_result {:?}", &inference_result);
-    }
-
-    // Explicitly drop the Redis client
-    std::mem::drop(storage);
-
+    let scenario_maker = DatingProb2{};
+    setup_and_train(&scenario_maker).expect("Error in training.");
     warn!("program done");
 }

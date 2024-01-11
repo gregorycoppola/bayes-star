@@ -1,4 +1,4 @@
-// use bayes_star::model::storage::Storage;
+// use bayes_star::model::storage::GraphicalModel;
 // use bayes_star::model::objects::Entity;
 // use bayes_star::model::objects::Domain;
 // use std::sync::Arc;
@@ -8,7 +8,7 @@
 // fn test_store_entity() {
 //     // Setup Redis client
 //     let client = Arc::new(Client::open("redis://127.0.0.1/").unwrap());
-//     let storage = Storage::new(client);
+//     let storage = GraphicalModel::new(client);
 
 //     // Create an entity
 //     let entity = Entity {
@@ -27,7 +27,7 @@
 // fn test_get_entities_in_domain() {
 //     // Setup Redis client
 //     let client = Arc::new(Client::open("redis://127.0.0.1/").unwrap());
-//     let storage = Storage::new(client);
+//     let storage = GraphicalModel::new(client);
 
 //     // Attempt to retrieve entities from a domain
 //     let entities = storage.get_entities_in_domain("test_domain").unwrap();

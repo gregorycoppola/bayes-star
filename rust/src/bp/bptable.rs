@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 
 use redis::Connection;
 
-use crate::model::{objects::Proposition, weights::CLASS_LABELS, storage::PropositionProbability};
+use crate::model::{objects::Proposition, weights::CLASS_LABELS};
 
 pub struct BeliefPropagationData {
     pi_values: HashMap<(String, usize), f64>,
