@@ -59,7 +59,7 @@ impl FactDB for RedisFactDB {
         }
     }
 
-    pub fn store_proposition_probability(
+    fn store_proposition_probability(
         &mut self,
         proposition: &Proposition,
         probability: f64,

@@ -100,6 +100,13 @@ impl FactDB for MapBackedProbabilityStorage {
             panic!("proposition key not found in local map {:?}", &search_key);
         }
     }
+    fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        panic!("This doesn't exist for this subclass. Consider refactor if you see this.")
+    }
 }
 
 pub fn compute_joint_probability(
