@@ -10,7 +10,8 @@ use crate::{
     },
     model::objects::{ConjunctLink, Conjunction, Proposition},
 };
-use std::error::Error;
+use std::{error::Error, borrow::Borrow};
+use super::conjunction::get_conjunction_probability;
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
     let mut result = vec![];
@@ -130,14 +131,13 @@ pub fn extract_factor_for_proposition(
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let backlinks = compute_backlinks(graph, &conclusion)?;
-    let mut conjunctions = vec![];
+    let mut conjuncts = vec![];
     let mut conjunction_probabilities = vec![];
     for backlink in backlinks {
-        let conjunction_probability = fact_db
-            .get_conjunction_probability(&backlink.conjunction)?
-            .expect("No conclusion probability.");
-        conjunction_probabilities.push(conjunction_probability);
-        conjunctions.push(backlink.conjunction);
+        let conjunct_probability = get_conjunction_probability(
+            fact_db.borrow(),&backlink.conjunction)?;
+        conjunction_probabilities.push(conjunct_probability);
+        conjuncts.push(backlink.conjunction);
     }
     let conclusion_probability = fact_db
         .get_proposition_probability(&conclusion)?
