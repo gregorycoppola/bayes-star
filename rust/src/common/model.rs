@@ -42,13 +42,6 @@ pub struct  Factor {
 }
 
 #[derive(Debug)]
-pub struct  FactorObservation {
-    pub factor: Factor,
-    pub conjunct_probabilities: Vec<f64>,
-    pub conclusion_probability: f64,
-}
-
-#[derive(Debug)]
 pub struct  FactorContext{
     pub factor: Factor,
     pub conjunct_probabilities: Vec<f64>,
@@ -58,7 +51,7 @@ pub trait FactorModel {
     fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
-        factor: &FactorObservation,
+        factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
     fn predict(&self, factor: &FactorContext) -> Result<PredictStatistics, Box<dyn Error>>;

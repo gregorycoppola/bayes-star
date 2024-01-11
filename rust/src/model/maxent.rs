@@ -4,7 +4,7 @@ use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
-use crate::common::model::FactorModel;
+use crate::common::model::{FactorModel, FactorObservation, FactorContext};
 use crate::common::model::{Factor, GraphicalModel};
 use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::{ConjunctLink, Proposition};
@@ -42,12 +42,12 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
     dot.exp()
 }
 
-pub fn features_from_factor(factor: &Factor) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
+pub fn features_from_factor(factor: &FactorContext) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
     let mut vec_result = vec![];
     for class_label in CLASS_LABELS {
         let mut result = HashMap::new();
 
-        for (i, backlink) in factor.conjunctions.iter().enumerate() {
+        for (i, backlink) in factor.conjuncts.iter().enumerate() {
             debug!("Processing backlink {}", i);
 
             let feature = backlink.implication.unique_key();
@@ -92,11 +92,9 @@ pub fn compute_expected_features(
     features: &HashMap<String, f64>,
 ) -> HashMap<String, f64> {
     let mut result = HashMap::new();
-
     for (key, &value) in features {
         result.insert(key.clone(), value * probability);
     }
-
     result
 }
 
@@ -108,15 +106,11 @@ pub fn do_sgd_update(
     expected_features: &HashMap<String, f64>,
 ) -> HashMap<String, f64> {
     let mut new_weights = HashMap::new();
-
     for (feature, &wv) in weights {
         let gv = gold_features.get(feature).unwrap_or(&0.0);
         let ev = expected_features.get(feature).unwrap_or(&0.0);
-
         let new_weight = wv + LEARNING_RATE * (gv - ev);
-        // loss calculation is optional, here for completeness
-        let _loss = (gv - ev).abs();
-
+        let loss = (gv - ev).abs();
         let config = CONFIG.get().expect("Config not initialized");
         if config.print_training_loss {
             trace!(
@@ -124,15 +118,13 @@ pub fn do_sgd_update(
                 feature,
                 gv,
                 ev,
-                _loss,
+                loss,
                 wv,
                 new_weight
             );
         }
-
         new_weights.insert(feature.clone(), new_weight);
     }
-
     new_weights
 }
 
@@ -144,7 +136,7 @@ impl FactorModel for ExponentialModel {
 
     fn train(
         &mut self,
-        factor: &Factor,
+        factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
         trace!("train_on_example - Getting features from backlinks");
@@ -158,7 +150,6 @@ impl FactorModel for ExponentialModel {
                 return Err(e);
             }
         };
-
         let mut weight_vectors = vec![];
         let mut potentials = vec![];
         for class_label in CLASS_LABELS {
@@ -179,16 +170,13 @@ impl FactorModel for ExponentialModel {
                     return Err(e);
                 }
             };
-
             trace!("train_on_example - Computing probability");
             let potential = compute_potential(&weight_vector, &features[class_label]);
             trace!("train_on_example - Computed probability: {}", potential);
             potentials.push(potential);
             weight_vectors.push(weight_vector);
         }
-
         let normalization = potentials[0] + potentials[1];
-
         for class_label in CLASS_LABELS {
             let probability = potentials[class_label] / normalization;
             trace!("train_on_example - Computing expected features");
@@ -199,14 +187,12 @@ impl FactorModel for ExponentialModel {
             };
             let gold = compute_expected_features(this_true_prob, &features[class_label]);
             let expected = compute_expected_features(probability, &features[class_label]);
-
             trace!("train_on_example - Performing SGD update");
             let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
 
             trace!("train_on_example - Saving new weights");
             self.weights.save_weights(&new_weight)?;
         }
-
         trace!("train_on_example - End");
         Ok(TrainStatistics { loss: 1f64 })
     }
@@ -221,14 +207,12 @@ impl FactorModel for ExponentialModel {
                 return Err(e);
             }
         };
-
         let mut potentials = vec![];
         for class_label in CLASS_LABELS {
             let this_features = &features[class_label];
             for (feature, weight) in this_features.iter() {
                 trace!("feature {:?} {}", &feature, weight);
             }
-
             trace!("inference_probability - Reading weights");
             let weight_vector = match self
                 .weights
@@ -243,12 +227,10 @@ impl FactorModel for ExponentialModel {
             for (feature, weight) in weight_vector.iter() {
                 trace!("weight {:?} {}", &feature, weight);
             }
-
             trace!("inference_probability - Computing probability");
             let potential = compute_potential(&weight_vector, &this_features);
             potentials.push(potential);
         }
-
         let normalization = potentials[0] + potentials[1];
         let marginal = potentials[1] / normalization;
         Ok(PredictStatistics { marginal })
