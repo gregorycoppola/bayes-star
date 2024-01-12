@@ -42,14 +42,14 @@ impl Inferencer {
         })
     }
 
-    pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
-        self.initialize_pi()?;
+    pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
+        self.initialize_pi(proposition)?;
         self.initialize_lambda()?;
         Ok(())
     }
 
-    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
-        let roots = self.model.graph.find_roots()?;
+    pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
+        let roots = self.model.graph.find_roots(proposition)?;
         for root in &roots {
             self.initialize_pi_proposition(root, true)?;
         }

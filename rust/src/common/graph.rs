@@ -99,7 +99,7 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn find_roots(&self) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    pub fn find_roots(&self, proposition:&Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
     pub fn parents_of_proposition(&self, x: &Proposition) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
