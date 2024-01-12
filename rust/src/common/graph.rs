@@ -74,8 +74,14 @@ impl Graph {
         }
         Ok(())
     }
-    fn store_predicate_backward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
-        todo!()
+    fn store_predicate_backward_link(&mut self, conclusion: &Predicate, premise: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        let record = serialize_record(premise)?;
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &Self::predicate_backward_set_name(conclusion),
+            &record,
+        )?;
+        Ok(())
     }
     fn store_conjunction_forward_link(&mut self, conjunction: &PredicateConjunction, predicate: &Predicate) -> Result<(), Box<dyn Error>> {
         todo!()
