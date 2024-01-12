@@ -175,7 +175,7 @@ impl Graph {
     pub fn children_of_conjunct(
         &self,
         conjunction: &PredicateConjunction,
-    ) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         todo!()
     }
 }
