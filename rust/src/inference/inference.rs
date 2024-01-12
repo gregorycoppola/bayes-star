@@ -17,14 +17,14 @@ struct Inferencer {
 
 fn inference_proposition_probability(
     fact_db: &dyn FactDB,
-    proposition: &Predicate,
+    proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
 
 fn inference_conjunct_probability(
     fact_db: &dyn FactDB,
-    conjunct: &PredicateConjunction,
+    conjunct: &PropositionConjunction,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
