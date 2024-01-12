@@ -156,7 +156,7 @@ impl ScenarioMaker for DatingProb2 {
                     proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
                 trace!(
                     "Jack dates Jill: {:?}, Probability: {}",
-                    jack_dates_jill.search_string(),
+                    jack_dates_jill.predicate.search_string(),
                     p_jack_dates_jill
                 ); // Logging
 
