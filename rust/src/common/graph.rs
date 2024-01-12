@@ -166,13 +166,13 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn parents_of_conjunct(
+    pub fn conjunct_backward_links(
         &self,
         conjunction: &PredicateConjunction,
     ) -> Result<Vec<Predicate>, Box<dyn Error>> {
         Ok(conjunction.terms.clone())
     }
-    pub fn children_of_conjunct(
+    pub fn conjunct_forward_links(
         &self,
         conjunction: &PredicateConjunction,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
