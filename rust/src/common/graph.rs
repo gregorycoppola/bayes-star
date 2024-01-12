@@ -1,6 +1,6 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager,
+    redis::{RedisManager, seq_push},
 };
 use crate::{
     common::{
@@ -62,6 +62,18 @@ impl Graph {
     }
     fn conjunction_forward_set_name(predicate:&Predicate) -> String {
         format!("conjunction_forward:{}", predicate.hash_string())
+    }
+    fn implication_seq_name() -> String {
+        "implications".to_string()
+    }
+    fn store_implication(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
+        let record = serialize_record(implication)?;
+        seq_push(
+            &mut *self.redis_connection.borrow_mut(),
+            &Self::implication_seq_name(),
+            &record,
+        )?;
+        Ok(())
     }
     fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
         for predicate in &conjunction.terms {
