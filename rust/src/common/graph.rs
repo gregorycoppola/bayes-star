@@ -108,10 +108,10 @@ impl Graph {
     pub fn children_of_proposition(&self, root: &Proposition) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_conjunct(&self, x: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        todo!()
+    pub fn parents_of_conjunct(&self, conjunction: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        Ok(conjunction.terms.clone())
     }
-    pub fn children_of_conjunct(&self, root: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        Ok(root.terms.clone())
+    pub fn children_of_conjunct(&self, conjunction: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
+        Ok(conjunction.terms.clone())
     }
 }
