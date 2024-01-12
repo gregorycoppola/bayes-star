@@ -105,4 +105,22 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
+    pub fn children_of_predicate(
+        &self,
+        root: &Predicate,
+    ) -> Result<Vec<PredicateConjunction>, Box<dyn Error>> {
+        todo!()
+    }
+    pub fn parents_of_conjunct(
+        &self,
+        conjunction: &PredicateConjunction,
+    ) -> Result<Vec<Predicate>, Box<dyn Error>> {
+        Ok(conjunction.terms.clone())
+    }
+    pub fn children_of_conjunct(
+        &self,
+        conjunction: &PredicateConjunction,
+    ) -> Result<Vec<Predicate>, Box<dyn Error>> {
+        todo!()
+    }
 }
