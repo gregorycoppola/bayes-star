@@ -21,6 +21,11 @@ use std::{cell::RefCell, error::Error};
 pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
+
+fn forward_set_name(predicate:&Predicate) -> String {
+    format!("forward_set:{}", predicate.search_string())
+}
+
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new(redis: &RedisManager) -> Result<Self, Box<dyn Error>> {
