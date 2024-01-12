@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::FactDB,
+    common::{interface::FactDB, redis::set_add},
     model::{
         self,
         maxent::ExponentialModel,
@@ -28,10 +28,11 @@ impl Graph {
             entity.domain,
             entity.name
         ); // Logging
-        self.redis_connection
-            .borrow_mut()
-            .sadd(&entity.domain.to_string(), &entity.name)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &entity.domain.to_string(),
+            &entity.name
+        )?;
         Ok(())
     }
     pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
