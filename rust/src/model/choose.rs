@@ -98,7 +98,7 @@ pub fn extract_backimplications_from_proposition(
                 trace!(
                     "Extracted mapping for term {}: {:?}",
                     index,
-                    extracted_mapping
+                    &extracted_mapping
                 );
                 let extracted_proposition =
                     convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
