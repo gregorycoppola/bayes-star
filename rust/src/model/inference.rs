@@ -22,7 +22,7 @@ fn read_in_parent_probabilities(
     //     info!(
     //         "Getting proposition probability for term {}: {:?}",
     //         i,
-    //         term.search_string()
+    //         term.hash_string()
     //     );
 
     //     match storage.fact_db.get_proposition_probability(term) {
@@ -30,12 +30,12 @@ fn read_in_parent_probabilities(
     //             match term_prob_opt {
     //                 Some(term_prob) => {
     //                     // Insert into the hashmap
-    //                     probabilities.insert(term.search_string(), term_prob);
+    //                     probabilities.insert(term.hash_string(), term_prob);
     //                 }
     //                 None => {
     //                     // doesn't exist.. recursively compute and insert
     //                     let computed_prob = marginalized_inference_probability(storage, &term)?;
-    //                     probabilities.insert(term.search_string(), computed_prob);
+    //                     probabilities.insert(term.hash_string(), computed_prob);
     //                 }
     //             }
     //         }
@@ -62,7 +62,7 @@ fn print_premise_probabilities(
                 Some(term_prob) => {
                     info!(
                         "\x1b[32mactivation: {} {}\x1b[0m",
-                        term.predicate.search_string(),
+                        term.predicate.hash_string(),
                         term_prob
                     );
                 }
@@ -91,7 +91,7 @@ impl FactDB for MapBackedProbabilityStorage {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        let search_key = proposition.predicate.search_string();
+        let search_key = proposition.predicate.hash_string();
         if let Some(&value) = self.underlying.get(&search_key) {
             // Assuming true = 1.0 probability and false = 0.0
             Ok(Some(if value { 1.0 } else { 0.0 }))
@@ -148,7 +148,7 @@ fn each_combination(propositions: &Vec<Predicate>) -> Vec<HashMap<String, bool>>
         for j in 0..n {
             let prop = &propositions[j];
             let state = i & (1 << j) != 0;
-            current_combination.insert(prop.search_string(), state);
+            current_combination.insert(prop.hash_string(), state);
         }
 
         all_combinations.push(current_combination);

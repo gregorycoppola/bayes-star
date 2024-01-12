@@ -23,11 +23,11 @@ pub struct Graph {
 }
 
 fn predicate_forward_set_name(predicate:&Predicate) -> String {
-    format!("predicate_forward:{}", predicate.search_string())
+    format!("predicate_forward:{}", predicate.hash_string())
 }
 
 fn predicate_backward_set_name(predicate:&Predicate) -> String {
-    format!("predicate_backward:{}", predicate.search_string())
+    format!("predicate_backward:{}", predicate.hash_string())
 }
 
 impl Graph {
@@ -89,10 +89,10 @@ impl Graph {
         &self,
         predicate: &Predicate,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        let search_string = predicate.search_string();
-        trace!("find_premises: {:?}", &search_string);
+        let hash_string = predicate.hash_string();
+        trace!("find_premises: {:?}", &hash_string);
         let set_members: Vec<String> =
-            set_members(&mut *self.redis_connection.borrow_mut(), &search_string)?;
+            set_members(&mut *self.redis_connection.borrow_mut(), &hash_string)?;
         set_members
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))

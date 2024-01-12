@@ -68,7 +68,7 @@ pub fn compute_search_predicates(
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
         let quantified = convert_to_quantified(proposition, &quantified_roles); // Assuming this function exists
-                                                                                // let search_string = quantified.search_string(); // Assuming this method exists
+                                                                                // let hash_string = quantified.hash_string(); // Assuming this method exists
         result.push(quantified);
     }
     Ok(result)
@@ -86,7 +86,7 @@ pub fn extract_backimplications_from_proposition(
     trace!("Computed search_keys {:?}", &search_keys);
     let mut backimplications = Vec::new();
     for predicate in &search_keys {
-        trace!("Processing search_key {:?}", &predicate.search_string());
+        trace!("Processing search_key {:?}", &predicate.hash_string());
         let implications = graph.parents_of_predicate(&predicate)?;
         trace!("Found implications {:?}", &implications);
         for implication in &implications {

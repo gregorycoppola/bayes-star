@@ -31,13 +31,13 @@ impl FactDB for RedisFactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        let search_string = proposition.predicate.search_string();
+        let hash_string = proposition.predicate.hash_string();
 
         // Use a match statement to handle the different outcomes
         match self
             .redis_connection
             .borrow_mut()
-            .hget::<_, _, String>("probs", &search_string)
+            .hget::<_, _, String>("probs", &hash_string)
         {
             Ok(probability_str) => {
                 // Found the entry, parse it
@@ -66,16 +66,16 @@ impl FactDB for RedisFactDB {
     ) -> Result<(), Box<dyn Error>> {
         trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
 
-        let search_string = proposition.predicate.search_string();
+        let hash_string = proposition.predicate.hash_string();
         trace!(
-            "GraphicalModel::store_proposition_probability - Computed search_string: {}",
-            search_string
+            "GraphicalModel::store_proposition_probability - Computed hash_string: {}",
+            hash_string
         );
 
         if let Err(e) = self
             .redis_connection
             .borrow_mut()
-            .hset::<&str, &str, String, bool>("probs", &search_string, probability.to_string())
+            .hset::<&str, &str, String, bool>("probs", &hash_string, probability.to_string())
         {
             trace!(
                 "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",

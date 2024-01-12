@@ -59,7 +59,7 @@ impl ConstantArgument {
         ConstantArgument { domain, entity_id }
     }
 
-    pub fn search_string(&self) -> String {
+    pub fn hash_string(&self) -> String {
         self.entity_id.clone()
     }
 }
@@ -69,16 +69,16 @@ impl VariableArgument {
         VariableArgument { domain }
     }
 
-    pub fn search_string(&self) -> String {
+    pub fn hash_string(&self) -> String {
         format!("?{}", self.domain)
     }
 }
 
 impl Argument {
-    pub fn search_string(&self) -> String {
+    pub fn hash_string(&self) -> String {
         match self {
-            Argument::Constant(arg) => arg.search_string(),
-            Argument::Variable(arg) => arg.search_string(),
+            Argument::Constant(arg) => arg.hash_string(),
+            Argument::Variable(arg) => arg.hash_string(),
         }
     }
 
@@ -141,8 +141,8 @@ impl LabeledArgument {
         }
     }
 
-    pub fn search_string(&self) -> String {
-        format!("{}={}", self.role_name, self.argument.search_string())
+    pub fn hash_string(&self) -> String {
+        format!("{}={}", self.role_name, self.argument.hash_string())
     }
 
     pub fn convert_to_quantified(&self) -> LabeledArgument {
@@ -166,10 +166,10 @@ impl Predicate {
         Predicate { roles }
     }
 
-    pub fn search_string(&self) -> String {
+    pub fn hash_string(&self) -> String {
         let role_strings: Vec<String> = self.roles
             .iter()
-            .map(|role| role.search_string()) // Assuming FilledRole has a search_string method
+            .map(|role| role.hash_string()) // Assuming FilledRole has a hash_string method
             .collect();
 
         format!("[{}]", role_strings.join(","))
@@ -193,7 +193,7 @@ pub struct Proposition {
 impl Proposition {
     pub fn from(predicate:Predicate) -> Self {
         if !predicate.is_fact() {
-            panic!("This predicate is not a fact {:?}.", predicate.search_string());
+            panic!("This predicate is not a fact {:?}.", predicate.hash_string());
         }
         Proposition { predicate }
     }
@@ -209,13 +209,13 @@ impl PredicateConjunction {
         PredicateConjunction { terms }
     }
 
-    pub fn search_string(&self) -> String {
-        let mut search_strings: Vec<String> = self.terms
+    pub fn hash_string(&self) -> String {
+        let mut hash_strings: Vec<String> = self.terms
             .iter()
-            .map(|term| term.search_string()) // Map each term to its search string
+            .map(|term| term.hash_string()) // Map each term to its search string
             .collect();
-        search_strings.sort(); // Sort the search strings in ascending order
-        search_strings.join(", ") // Join the sorted strings, separated by a comma and a space
+        hash_strings.sort(); // Sort the search strings in ascending order
+        hash_strings.join(", ") // Join the sorted strings, separated by a comma and a space
     }
 }
 
@@ -242,15 +242,15 @@ impl PredicateImplication {
     pub fn unique_key(&self) -> String {
         format!(
             "{}->{}{}",
-            self.premise.search_string(),
-            self.conclusion.search_string(),
+            self.premise.hash_string(),
+            self.conclusion.hash_string(),
             self.mapping_string()
         )
     }
 
     // Generate a feature string based on the premise and the role map
     pub fn feature_string(&self) -> String {
-        format!("{}{}", self.premise.search_string(), self.mapping_string())
+        format!("{}{}", self.premise.hash_string(), self.mapping_string())
     }
 
     // Convert the role map to a string

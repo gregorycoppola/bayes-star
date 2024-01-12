@@ -94,7 +94,7 @@ impl ScenarioMaker for DatingProb2 {
 
                 trace!(
                     "Jack Lonely: {:?}, Probability: {}",
-                    jack_lonely.predicate.search_string(),
+                    jack_lonely.predicate.hash_string(),
                     p_jack_lonely
                 );
                 fact_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
@@ -106,7 +106,7 @@ impl ScenarioMaker for DatingProb2 {
 
                 trace!(
                     "Jill Exciting: {:?}, Probability: {}",
-                    jill_exciting.predicate.search_string(),
+                    jill_exciting.predicate.hash_string(),
                     p_jill_exciting
                 );
                 fact_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
@@ -124,7 +124,7 @@ impl ScenarioMaker for DatingProb2 {
                 ]);
                 trace!(
                     "Jill likes Jack: {:?}, Probability: {}",
-                    jill_likes_jack.predicate.search_string(),
+                    jill_likes_jack.predicate.hash_string(),
                     p_jill_likes_jack
                 ); // Logging
                 fact_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
@@ -140,7 +140,7 @@ impl ScenarioMaker for DatingProb2 {
                 ]);
                 trace!(
                     "Jack likes Jill: {:?}, Probability: {}",
-                    jack_likes_jill.predicate.search_string(),
+                    jack_likes_jill.predicate.hash_string(),
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
@@ -157,7 +157,7 @@ impl ScenarioMaker for DatingProb2 {
                     proposition(vec![subject(jack), relation(date.clone()), object(jill)]);
                 trace!(
                     "Jack dates Jill: {:?}, Probability: {}",
-                    jack_dates_jill.predicate.search_string(),
+                    jack_dates_jill.predicate.hash_string(),
                     p_jack_dates_jill
                 ); // Logging
 
