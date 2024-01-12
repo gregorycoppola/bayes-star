@@ -216,6 +216,17 @@ impl PredicateConjunction {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct PropositionConjunction {
+    pub terms: Vec<Proposition>,
+}
+
+impl PropositionConjunction {
+    pub fn new(terms: Vec<Proposition>) -> Self {
+        PropositionConjunction { terms }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Implication {
     pub premise: PredicateConjunction,

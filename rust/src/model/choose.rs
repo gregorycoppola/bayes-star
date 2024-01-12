@@ -1,4 +1,5 @@
 use super::conjunction::get_conjunction_probability;
+use super::objects::Proposition;
 use super::{
     conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
@@ -58,14 +59,11 @@ fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String
         .collect()
 }
 
-pub fn compute_search_keys(proposition: &Predicate) -> Result<Vec<String>, Box<dyn Error>> {
-    if !proposition.is_fact() {
-        return Err("Proposition is not a fact".into());
-    }
-    let num_roles = proposition.roles.len();
+pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    let num_roles = proposition.predicate.roles.len();
     let configurations1 = compute_choose_configurations(num_roles, 1);
     let configurations2 = compute_choose_configurations(num_roles, 2);
-    let roles = proposition.role_names();
+    let roles = proposition.predicate.role_names();
     let mut result = Vec::new();
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
