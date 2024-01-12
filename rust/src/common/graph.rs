@@ -1,6 +1,6 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::{RedisManager, seq_push},
+    redis::{seq_get_all, seq_push, RedisManager},
 };
 use crate::{
     common::{
@@ -54,19 +54,22 @@ impl Graph {
             })
             .collect())
     }
-    fn predicate_forward_set_name(predicate:&Predicate) -> String {
+    fn predicate_forward_set_name(predicate: &Predicate) -> String {
         format!("predicate_forward:{}", predicate.hash_string())
     }
-    fn predicate_backward_set_name(predicate:&Predicate) -> String {
+    fn predicate_backward_set_name(predicate: &Predicate) -> String {
         format!("predicate_backward:{}", predicate.hash_string())
     }
-    fn conjunction_forward_set_name(predicate:&Predicate) -> String {
+    fn conjunction_forward_set_name(predicate: &Predicate) -> String {
         format!("conjunction_forward:{}", predicate.hash_string())
     }
     fn implication_seq_name() -> String {
         "implications".to_string()
     }
-    fn store_implication(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
+    fn store_implication(
+        &mut self,
+        implication: &PredicateImplication,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         seq_push(
             &mut *self.redis_connection.borrow_mut(),
@@ -75,7 +78,10 @@ impl Graph {
         )?;
         Ok(())
     }
-    fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+    fn store_predicate_forward_links(
+        &mut self,
+        conjunction: &PredicateConjunction,
+    ) -> Result<(), Box<dyn Error>> {
         for predicate in &conjunction.terms {
             let record = serialize_record(conjunction)?;
             set_add(
@@ -86,7 +92,11 @@ impl Graph {
         }
         Ok(())
     }
-    fn store_predicate_backward_link(&mut self, conclusion: &Predicate, premise: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+    fn store_predicate_backward_link(
+        &mut self,
+        conclusion: &Predicate,
+        premise: &PredicateConjunction,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(premise)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
@@ -95,7 +105,11 @@ impl Graph {
         )?;
         Ok(())
     }
-    fn store_conjunction_forward_link(&mut self, premise: &PredicateConjunction, conclusion: &Predicate) -> Result<(), Box<dyn Error>> {
+    fn store_conjunction_forward_link(
+        &mut self,
+        premise: &PredicateConjunction,
+        conclusion: &Predicate,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(premise)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
@@ -111,11 +125,20 @@ impl Graph {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
         self.store_conjunction_forward_link(&implication.premise, &implication.conclusion)?;
-        self.store_predicate_forward_links( &implication.premise)?;
+        self.store_predicate_forward_links(&implication.premise)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        todo!()
+        let records = seq_get_all(
+            &mut *self.redis_connection.borrow_mut(),
+            &Self::implication_seq_name(),
+        )?;
+        let mut result = vec![];
+        for record in &records {
+            let implication = deserialize_record(record)?;
+            result.push(implication);
+        }
+        Ok(result)
     }
     pub fn parents_of_predicate(
         &self,
