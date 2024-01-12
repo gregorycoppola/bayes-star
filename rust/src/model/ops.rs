@@ -1,11 +1,11 @@
 use crate::model::objects::{FilledRole, Predicate, RoleMap};
 use std::{collections::HashMap, error::Error};
 
-use super::objects::Argument;
+use super::objects::{Argument, Proposition};
 
-pub fn convert_to_quantified(proposition: &Predicate, roles: &[String]) -> Predicate {
+pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Predicate {
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
-    let result: Vec<FilledRole> = proposition
+    let result: Vec<FilledRole> = proposition.predicate
         .roles
         .iter()
         .map(|crole| {
