@@ -34,10 +34,12 @@ impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new(
         model: Box<GraphicalModel>,
+        proposition_graph: Box<PropositionGraph>,
         evidence: Box<dyn FactDB>,
     ) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
             model,
+            proposition_graph,
             evidence,
             data: HashMapBeliefTable::new(),
         })
