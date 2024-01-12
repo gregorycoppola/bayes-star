@@ -324,15 +324,13 @@ impl fmt::Display for ConjunctionRoleMap {
 pub struct ImplicationInstance {
     pub implication: Implication,
     pub conjunction: PropositionConjunction,
-    pub conclusion: Proposition,
 }
 
 impl ImplicationInstance {
-    pub fn new(implication: Implication, conjunction: PropositionConjunction, conclusion: Proposition) -> Self {
+    pub fn new(implication: Implication, conjunction: PropositionConjunction) -> Self {
         ImplicationInstance {
             implication,
             conjunction,
-            conclusion,
         }
     }
 }

@@ -8,7 +8,7 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, PredicateConjunction, Predicate};
+use super::objects::{ImplicationInstance, PredicateConjunction, Predicate, Proposition};
 
 fn read_in_parent_probabilities(
     storage: &mut GraphicalModel,
@@ -90,9 +90,9 @@ pub struct MapBackedProbabilityStorage {
 impl FactDB for MapBackedProbabilityStorage {
     fn get_proposition_probability(
         &self,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        let search_key = proposition.search_string();
+        let search_key = proposition.predicate.search_string();
         if let Some(&value) = self.underlying.get(&search_key) {
             // Assuming true = 1.0 probability and false = 0.0
             Ok(Some(if value { 1.0 } else { 0.0 }))
@@ -102,7 +102,7 @@ impl FactDB for MapBackedProbabilityStorage {
     }
     fn store_proposition_probability(
         &mut self,
-        proposition: &Predicate,
+        proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         panic!("This doesn't exist for this subclass. Consider refactor if you see this.")

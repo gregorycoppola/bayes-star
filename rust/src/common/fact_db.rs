@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance},
+        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance, Proposition},
     },
 };
 use redis::{Commands, Connection};
@@ -29,7 +29,7 @@ impl FactDB for RedisFactDB {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_string = proposition.search_string();
 
@@ -61,12 +61,12 @@ impl FactDB for RedisFactDB {
 
     fn store_proposition_probability(
         &mut self,
-        proposition: &Predicate,
+        proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
 
-        let search_string = proposition.search_string();
+        let search_string = proposition.predicate.search_string();
         trace!(
             "GraphicalModel::store_proposition_probability - Computed search_string: {}",
             search_string

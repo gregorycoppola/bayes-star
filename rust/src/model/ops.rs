@@ -5,7 +5,8 @@ use super::objects::{Argument, Proposition};
 
 pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Predicate {
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
-    let result: Vec<FilledRole> = proposition.predicate
+    let result: Vec<FilledRole> = proposition
+        .predicate
         .roles
         .iter()
         .map(|crole| {
@@ -23,14 +24,14 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pre
 pub fn convert_to_proposition(
     predicate: &Predicate,
     role_map: &HashMap<String, Argument>,
-) -> Result<Predicate, Box<dyn Error>> {
-    debug!("Converting to proposition: {:?}, role_map {:?}", predicate, &role_map);
-
+) -> Result<Proposition, Box<dyn Error>> {
+    debug!(
+        "Converting to proposition: {:?}, role_map {:?}",
+        predicate, &role_map
+    );
     let mut result_roles = Vec::new();
-
     for role in &predicate.roles {
         debug!("Processing role: {:?}", role);
-
         if role.argument.is_variable() {
             debug!("Role is a variable, attempting substitution.");
             match role_map.get(&role.role_name) {
@@ -61,10 +62,11 @@ pub fn convert_to_proposition(
             result_roles.push(role.clone());
         }
     }
-
     debug!("Conversion to proposition completed successfully.");
-    Ok(Predicate {
-        roles: result_roles,
+    Ok(Proposition {
+        predicate: Predicate {
+            roles: result_roles,
+        },
     })
 }
 
@@ -72,10 +74,17 @@ pub fn extract_premise_role_map(
     proposition: &Proposition,
     role_map: &RoleMap,
 ) -> HashMap<String, Argument> {
-    debug!("Extracting premise role map for proposition: {:?}", proposition);
+    debug!(
+        "Extracting premise role map for proposition: {:?}",
+        proposition
+    );
     let mut result = HashMap::new();
     for crole in &proposition.predicate.roles {
-        assert!(crole.argument.is_constant(), "crole must be a constant {:?}", &crole);
+        assert!(
+            crole.argument.is_constant(),
+            "crole must be a constant {:?}",
+            &crole
+        );
         let role_name = &crole.role_name;
         trace!("Processing role: {:?}", crole);
         if let Some(premise_role_name) = role_map.get(role_name) {

@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::objects::{PredicateConjunction, Implication, Predicate};
+use crate::model::objects::{PredicateConjunction, Implication, Predicate, Proposition};
 
 use super::{graph::Graph, model::GraphicalModel, train::TrainingPlan, redis::RedisClient};
 
@@ -14,12 +14,12 @@ pub struct PredictStatistics {
 pub trait FactDB {
     fn get_proposition_probability(
         &self,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 
     fn store_proposition_probability(
         &mut self,
-        proposition: &Predicate,
+        proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>>;
 }
