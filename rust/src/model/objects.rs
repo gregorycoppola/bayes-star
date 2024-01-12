@@ -209,7 +209,7 @@ impl Conjunction {
 pub struct Implication {
     pub premise: Conjunction,
     pub conclusion: Proposition,
-    pub role_maps: RoleMapList,
+    pub role_maps: ConjunctionRoleMap,
 }
 
 impl Implication {
@@ -276,17 +276,17 @@ impl fmt::Display for RoleMap {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RoleMapList {
+pub struct ConjunctionRoleMap {
     pub role_maps:Vec<RoleMap>,
 }
 
-impl RoleMapList {
+impl ConjunctionRoleMap {
     pub fn new(role_maps:Vec<RoleMap>) -> Self {
-        RoleMapList{role_maps}
+        ConjunctionRoleMap{role_maps}
     }
 }
 
-impl fmt::Display for RoleMapList {
+impl fmt::Display for ConjunctionRoleMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let role_maps_str = self.role_maps
             .iter()
