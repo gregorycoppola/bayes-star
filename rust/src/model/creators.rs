@@ -1,27 +1,40 @@
 use crate::model::objects::*;
 
 // Import the necessary structs and enums
-use crate::model::objects::{Implication, Predicate, FilledRole, VariableArgument, ConstantArgument};
+use crate::model::objects::{
+    ConstantArgument, FilledRole, Implication, Predicate, VariableArgument,
+};
 
 pub fn conjunction(terms: Vec<Predicate>) -> PredicateConjunction {
     PredicateConjunction { terms }
 }
 
-pub fn implication(premise: PredicateConjunction, conclusion: Predicate, role_maps: Vec<RoleMap>) -> Implication {
-    let role_maps = ConjunctionRoleMap {role_maps};
-    Implication { premise, conclusion, role_maps }
+pub fn implication(
+    premise: PredicateConjunction,
+    conclusion: Predicate,
+    role_maps: Vec<RoleMap>,
+) -> Implication {
+    let role_maps = ConjunctionRoleMap { role_maps };
+    Implication {
+        premise,
+        conclusion,
+        role_maps,
+    }
 }
 
 // Function to create a Proposition
-pub fn proposition(roles: Vec<FilledRole>) -> Predicate {
-    Predicate { roles }
+pub fn proposition(roles: Vec<FilledRole>) -> Proposition {
+    Proposition::from(Predicate { roles })
 }
 
 // Function to create a FilledRole
 pub fn role(role_name: String, argument: Argument) -> FilledRole {
     // Assuming logger.noop is a logging function, you can implement similar functionality in Rust if needed.
     // For this example, it's omitted.
-    FilledRole { role_name, argument }
+    FilledRole {
+        role_name,
+        argument,
+    }
 }
 
 // Function to create a VariableArgument

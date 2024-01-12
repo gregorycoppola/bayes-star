@@ -30,7 +30,7 @@ impl TrainingPlan {
     pub fn add_proposition_to_queue(
         &mut self,
         queue_name: &String,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         trace!(
             "GraphicalModel::add_to_training_queue - Start. Input proposition: {:?}",
@@ -69,7 +69,7 @@ impl TrainingPlan {
     pub fn maybe_add_to_training(
         &mut self,
         is_training: bool,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         if is_training {
             self.add_proposition_to_queue(&"training_queue".to_string(), &proposition)
@@ -81,7 +81,7 @@ impl TrainingPlan {
     pub fn maybe_add_to_test(
         &mut self,
         is_test: bool,
-        proposition: &Predicate,
+        proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         if is_test {
             self.add_proposition_to_queue(&"test_queue".to_string(), &proposition)
