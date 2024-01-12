@@ -4,7 +4,7 @@ use crate::{
         self,
         maxent::ExponentialModel,
         objects::{
-            Domain, Entity, Implication, ImplicationInstance, Predicate, PredicateConjunction,
+            Domain, Entity, PredicateImplication, ImplicationInstance, Predicate, PredicateConjunction,
             Proposition,
         },
     },

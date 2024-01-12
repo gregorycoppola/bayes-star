@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance, Proposition},
+        objects::{PredicateConjunction, Domain, Entity, PredicateImplication, Predicate, ImplicationInstance, Proposition},
     },
 };
 use redis::{Commands, Connection};
@@ -46,7 +46,7 @@ pub struct  FactorContext{
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
         factor: &FactorContext,

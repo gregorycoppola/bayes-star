@@ -231,13 +231,13 @@ impl PropositionConjunction {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Implication {
+pub struct PredicateImplication {
     pub premise: PredicateConjunction,
     pub conclusion: Predicate,
     pub role_maps: ConjunctionRoleMap,
 }
 
-impl Implication {
+impl PredicateImplication {
     // Return the search string based on the conclusion's search string
     pub fn conclusion_string(&self) -> String {
         self.conclusion.search_string()
@@ -325,12 +325,12 @@ impl fmt::Display for ConjunctionRoleMap {
 
 #[derive(Debug, Clone)]
 pub struct ImplicationInstance {
-    pub implication: Implication,
+    pub implication: PredicateImplication,
     pub conjunction: PropositionConjunction,
 }
 
 impl ImplicationInstance {
-    pub fn new(implication: Implication, conjunction: PropositionConjunction) -> Self {
+    pub fn new(implication: PredicateImplication, conjunction: PropositionConjunction) -> Self {
         ImplicationInstance {
             implication,
             conjunction,

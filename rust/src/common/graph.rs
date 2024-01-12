@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance},
+        objects::{PredicateConjunction, Domain, Entity, PredicateImplication, Predicate, ImplicationInstance},
     },
 };
 use redis::{Commands, Connection};
@@ -49,7 +49,7 @@ impl Graph {
             })
             .collect())
     }
-    pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implication(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -60,7 +60,7 @@ impl Graph {
 
         self.store_implications(implication)
     }
-    pub fn store_implications(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implications(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
         let search_string = implication.conclusion_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
@@ -73,7 +73,7 @@ impl Graph {
         Ok(())
     }
     // Get all Implications
-    pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .borrow_mut()
@@ -85,7 +85,7 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn parents_of_predicate(&self, predicate: &Predicate) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn parents_of_predicate(&self, predicate: &Predicate) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         let search_string = predicate.search_string();
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
