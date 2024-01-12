@@ -108,6 +108,7 @@ impl Graph {
         &mut self,
         implication: &PredicateImplication,
     ) -> Result<(), Box<dyn Error>> {
+        self.store_implication(implication)?;
         self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
         self.store_conjunction_forward_link(&implication.premise, &implication.conclusion)?;
         self.store_predicate_forward_links( &implication.premise)?;
