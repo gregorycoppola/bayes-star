@@ -3,7 +3,10 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance},
+        objects::{
+            Domain, Entity, Implication, ImplicationInstance, Predicate, PredicateConjunction,
+            Proposition,
+        },
     },
 };
 use redis::{Commands, Connection};
@@ -19,7 +22,7 @@ pub struct TrainingPlan {
 }
 
 impl TrainingPlan {
-    pub fn new(redis:&RedisClient) -> Result<Self, Box<dyn Error>> {
+    pub fn new(redis: &RedisClient) -> Result<Self, Box<dyn Error>> {
         let redis_connection = redis.get_connection()?;
         Ok(TrainingPlan { redis_connection })
     }
@@ -91,7 +94,7 @@ impl TrainingPlan {
     fn get_propositions_from_queue(
         &self,
         queue_name: &String,
-    ) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         trace!(
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             queue_name
@@ -108,7 +111,10 @@ impl TrainingPlan {
             match serde_json::from_str(&serialized_proposition)
                 .map_err(|e| Box::new(e) as Box<dyn Error>)
             {
-                Ok(proposition) => propositions.push(proposition),
+                Ok(predicate) => {
+                    let proposition = Proposition { predicate };
+                    propositions.push(proposition)
+                }
                 Err(e) => {
                     trace!("GraphicalModel::get_propositions_from_queue - Error deserializing proposition: {}", e);
                     return Err(e);
@@ -121,12 +127,12 @@ impl TrainingPlan {
         Ok(propositions)
     }
 
-    pub fn get_training_questions(&self) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    pub fn get_training_questions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let training_queue_name = String::from("training_queue");
         self.get_propositions_from_queue(&training_queue_name)
     }
 
-    pub fn get_test_questions(&self) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    pub fn get_test_questions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let test_queue_name = String::from("test_queue");
         self.get_propositions_from_queue(&test_queue_name)
     }

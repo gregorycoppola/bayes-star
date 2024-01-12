@@ -31,7 +31,7 @@ impl FactDB for RedisFactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        let search_string = proposition.search_string();
+        let search_string = proposition.predicate.search_string();
 
         // Use a match statement to handle the different outcomes
         match self
