@@ -1,9 +1,9 @@
-use crate::model::objects::{FilledRole, Proposition, RoleMap};
+use crate::model::objects::{FilledRole, Predicate, RoleMap};
 use std::{collections::HashMap, error::Error};
 
 use super::objects::FirstOrderArgument;
 
-pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Proposition {
+pub fn convert_to_quantified(proposition: &Predicate, roles: &[String]) -> Predicate {
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
     let result: Vec<FilledRole> = proposition
         .roles
@@ -17,13 +17,13 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pro
         })
         .collect();
 
-    Proposition::new(result)
+    Predicate::new(result)
 }
 
 pub fn convert_to_proposition(
-    predicate: &Proposition,
+    predicate: &Predicate,
     role_map: &HashMap<String, FirstOrderArgument>,
-) -> Result<Proposition, Box<dyn Error>> {
+) -> Result<Predicate, Box<dyn Error>> {
     debug!("Converting to proposition: {:?}, role_map {:?}", predicate, &role_map);
 
     let mut result_roles = Vec::new();
@@ -63,13 +63,13 @@ pub fn convert_to_proposition(
     }
 
     debug!("Conversion to proposition completed successfully.");
-    Ok(Proposition {
+    Ok(Predicate {
         roles: result_roles,
     })
 }
 
 pub fn extract_premise_role_map(
-    proposition: &Proposition,
+    proposition: &Predicate,
     role_map: &RoleMap,
 ) -> HashMap<String, FirstOrderArgument> {
     debug!("Extracting premise role map for proposition: {:?}", proposition);

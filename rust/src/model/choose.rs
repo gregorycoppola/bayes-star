@@ -10,7 +10,7 @@ use crate::{
         interface::FactDB,
         model::Factor,
     },
-    model::objects::{Conjunction, ImplicationInstance, Proposition},
+    model::objects::{Conjunction, ImplicationInstance, Predicate},
 };
 use std::{borrow::Borrow, error::Error};
 
@@ -58,7 +58,7 @@ fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String
         .collect()
 }
 
-pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn compute_search_keys(proposition: &Predicate) -> Result<Vec<String>, Box<dyn Error>> {
     if !proposition.is_fact() {
         return Err("Proposition is not a fact".into());
     }
@@ -78,7 +78,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 
 pub fn extract_backimplications_from_proposition(
     graph: &Graph,
-    conclusion: &Proposition,
+    conclusion: &Predicate,
 ) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
     debug!("Computing backimplications for proposition {:?}", conclusion);
     if !conclusion.is_fact() {
@@ -125,7 +125,7 @@ pub fn extract_backimplications_from_proposition(
 
 pub fn extract_factor_for_proposition(
     graph: &Graph,
-    conclusion: Proposition,
+    conclusion: Predicate,
 ) -> Result<Factor, Box<dyn Error>> {
     let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
     let factor = Factor {
@@ -138,7 +138,7 @@ pub fn extract_factor_for_proposition(
 pub fn extract_factor_context_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &Graph,
-    conclusion: Proposition,
+    conclusion: Predicate,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
     let mut conjunct_probabilities = vec![];

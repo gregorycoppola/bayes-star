@@ -8,7 +8,7 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, Conjunction, Proposition};
+use super::objects::{ImplicationInstance, Conjunction, Predicate};
 
 fn read_in_parent_probabilities(
     storage: &mut GraphicalModel,
@@ -90,7 +90,7 @@ pub struct MapBackedProbabilityStorage {
 impl FactDB for MapBackedProbabilityStorage {
     fn get_proposition_probability(
         &self,
-        proposition: &Proposition,
+        proposition: &Predicate,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         let search_key = proposition.search_string();
         if let Some(&value) = self.underlying.get(&search_key) {
@@ -102,7 +102,7 @@ impl FactDB for MapBackedProbabilityStorage {
     }
     fn store_proposition_probability(
         &mut self,
-        proposition: &Proposition,
+        proposition: &Predicate,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         panic!("This doesn't exist for this subclass. Consider refactor if you see this.")
@@ -139,7 +139,7 @@ pub fn compute_joint_probability(
 }
 
 
-fn each_combination(propositions: &Vec<Proposition>) -> Vec<HashMap<String, bool>> {
+fn each_combination(propositions: &Vec<Predicate>) -> Vec<HashMap<String, bool>> {
     let n = propositions.len();
     let mut all_combinations = Vec::new();
 

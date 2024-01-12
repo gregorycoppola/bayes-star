@@ -157,13 +157,13 @@ impl FilledRole {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Proposition {
+pub struct Predicate {
     pub roles: Vec<FilledRole>,
 }
 
-impl Proposition {
+impl Predicate {
     pub fn new(roles: Vec<FilledRole>) -> Self {
-        Proposition { roles }
+        Predicate { roles }
     }
 
     pub fn search_string(&self) -> String {
@@ -187,11 +187,11 @@ impl Proposition {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Conjunction {
-    pub terms: Vec<Proposition>,
+    pub terms: Vec<Predicate>,
 }
 
 impl Conjunction {
-    pub fn new(terms: Vec<Proposition>) -> Self {
+    pub fn new(terms: Vec<Predicate>) -> Self {
         Conjunction { terms }
     }
 
@@ -208,7 +208,7 @@ impl Conjunction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Implication {
     pub premise: Conjunction,
-    pub conclusion: Proposition,
+    pub conclusion: Predicate,
     pub role_maps: ConjunctionRoleMap,
 }
 

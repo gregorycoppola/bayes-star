@@ -1,7 +1,7 @@
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
 use serde::{Serialize, Deserialize};
-use crate::{model::{objects::{Proposition, Conjunction}, weights::CLASS_LABELS}, common::interface::FactDB};
+use crate::{model::{objects::{Predicate, Conjunction}, weights::CLASS_LABELS}, common::interface::FactDB};
 
 use std::hash::{Hash, Hasher};
 use std::collections::hash_map::DefaultHasher;
@@ -19,7 +19,7 @@ pub struct InferenceNode {
 
 impl InferenceNode {
     // Constructor for an InferenceNode with a Proposition
-    pub fn from_proposition(proposition: &Proposition) -> InferenceNode {
+    pub fn from_proposition(proposition: &Predicate) -> InferenceNode {
         let mut hasher = DefaultHasher::new();
         proposition.hash(&mut hasher);
         let hash = hasher.finish();
@@ -135,11 +135,11 @@ struct HashMapInferenceResult {
 }
 
 impl InferenceResult for HashMapInferenceResult {
-    fn get_proposition_probability(&self, proposition:&Proposition) -> Result<f64, Box<dyn Error>> {
+    fn get_proposition_probability(&self, proposition:&Predicate) -> Result<f64, Box<dyn Error>> {
         todo!()
     }
 }
 
 pub trait InferenceResult {
-    fn get_proposition_probability(&self, proposition:&Proposition) -> Result<f64, Box<dyn Error>>;
+    fn get_proposition_probability(&self, proposition:&Predicate) -> Result<f64, Box<dyn Error>>;
 }
