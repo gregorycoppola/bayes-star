@@ -1,5 +1,5 @@
 use crate::{
-    common::{interface::FactDB, redis::set_add},
+    common::{interface::FactDB, redis::{set_add, set_members}},
     model::{
         self,
         maxent::ExponentialModel,
@@ -37,11 +37,10 @@ impl Graph {
     }
     pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
-        let names: Vec<String> = self
-            .redis_connection
-            .borrow_mut()
-            .smembers(domain)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let names: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            domain
+        )?;
         Ok(names
             .into_iter()
             .map(|name| Entity {
@@ -53,26 +52,28 @@ impl Graph {
     pub fn store_implication(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        self.redis_connection
-            .borrow_mut()
-            .sadd("implications", &record)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
+    
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            "implications",
+            &record
+        )?;
+    
         self.store_implications(implication)
-    }
+    }    
     pub fn store_implications(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
         let search_string = implication.conclusion.search_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        self.redis_connection
-            .borrow_mut()
-            .sadd(&search_string, &record)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
+    
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &search_string,
+            &record
+        )?;
+    
         Ok(())
-    }
+    }    
     // Get all Implications
     pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
