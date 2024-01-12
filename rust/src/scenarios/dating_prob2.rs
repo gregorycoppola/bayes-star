@@ -2,7 +2,7 @@ use crate::common::fact_db::RedisFactDB;
 use crate::common::graph::Graph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
-use crate::common::redis::RedisClient;
+use crate::common::redis::ConnectionFactory;
 use crate::common::train::TrainingPlan;
 use crate::model::creators::predicate;
 use crate::{
@@ -38,7 +38,7 @@ pub struct DatingProb2 {}
 impl ScenarioMaker for DatingProb2 {
     fn setup_scenario(
         &self,
-        redis: &RedisClient,
+        redis: &ConnectionFactory,
     ) -> Result<(), Box<dyn Error>> {
         let mut graph = Graph::new(redis)?;
         let mut fact_db = RedisFactDB::new(redis)?;

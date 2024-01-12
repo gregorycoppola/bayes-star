@@ -11,7 +11,7 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisClient, graph::Graph,
+    redis::ConnectionFactory, graph::Graph,
 };
 
 pub struct RedisFactDB {
@@ -19,7 +19,7 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new(client: &RedisClient) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+    pub fn new(client: &ConnectionFactory) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Box::new(RedisFactDB { redis_connection }))
     }

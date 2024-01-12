@@ -14,7 +14,7 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisClient,
+    redis::ConnectionFactory,
 };
 
 pub struct TrainingPlan {
@@ -22,7 +22,7 @@ pub struct TrainingPlan {
 }
 
 impl TrainingPlan {
-    pub fn new(redis: &RedisClient) -> Result<Self, Box<dyn Error>> {
+    pub fn new(redis: &ConnectionFactory) -> Result<Self, Box<dyn Error>> {
         let redis_connection = redis.get_connection()?;
         Ok(TrainingPlan { redis_connection })
     }

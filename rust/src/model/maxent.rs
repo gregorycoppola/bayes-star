@@ -6,7 +6,7 @@ use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
 use crate::common::model::{Factor, GraphicalModel};
 use crate::common::model::{FactorContext, FactorModel};
-use crate::common::redis::RedisClient;
+use crate::common::redis::ConnectionFactory;
 use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::{ImplicationInstance, Predicate};
 use crate::model::weights::CLASS_LABELS;
@@ -19,7 +19,7 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new(redis:&RedisClient) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
+    pub fn new(redis:&ConnectionFactory) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let connection = redis.get_connection()?;
         let weights = ExponentialWeights::new(connection);
         Ok(Box::new(ExponentialModel { weights }))

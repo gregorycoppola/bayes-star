@@ -10,14 +10,14 @@ use redis::{Commands, Connection};
 use std::{cell::RefCell, error::Error};
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisClient,
+    redis::ConnectionFactory,
 };
 pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new(redis: &RedisClient) -> Result<Self, Box<dyn Error>> {
+    pub fn new(redis: &ConnectionFactory) -> Result<Self, Box<dyn Error>> {
         let redis_connection = redis.get_connection()?;
         Ok(Graph { redis_connection })
     }
