@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::{common::{graph::Graph, redis::RedisManager}, model::objects::{Proposition, PropositionConjunction}};
 
-struct PropositionGraph {
+pub struct PropositionGraph {
     predicate_graph: Graph,
 }
 

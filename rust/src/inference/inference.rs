@@ -1,4 +1,4 @@
-use super::table::{HashMapBeliefTable, InferenceNode, InferenceResult};
+use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, implications::PropositionGraph};
 use crate::{
     common::{interface::FactDB, model::GraphicalModel},
     model::{
@@ -11,6 +11,7 @@ use std::{borrow::Borrow, collections::HashMap, error::Error};
 
 struct Inferencer {
     model: Box<GraphicalModel>,
+    proposition_graph: Box<PropositionGraph>,
     evidence: Box<dyn FactDB>,
     data: HashMapBeliefTable,
 }
@@ -49,7 +50,7 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        let roots = self.model.graph.find_roots(proposition)?;
+        let roots = self.proposition_graph.find_roots(proposition)?;
         for root in &roots {
             self.initialize_pi_proposition(root, true)?;
         }
@@ -61,7 +62,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.model.graph.children_of_proposition(node)?;
+        let children = self.proposition_graph.children_of_proposition(node)?;
         for child in &children {
             self.initialize_pi_conjunct(child, false)?;
         }
@@ -77,8 +78,7 @@ impl Inferencer {
         }
         for outcome in CLASS_LABELS {
             let children = self
-                .model
-                .graph
+                .proposition_graph
                 .children_of_proposition(node)
                 .expect("Error finding children");
             for child in &children {
@@ -98,7 +98,7 @@ impl Inferencer {
         conjunct: &PropositionConjunction,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.model.graph.children_of_conjunct(conjunct)?;
+        let children = self.proposition_graph.children_of_conjunct(conjunct)?;
         for child in &children {
             self.initialize_pi_proposition(child, false)?;
         }
@@ -114,8 +114,7 @@ impl Inferencer {
         }
         for outcome in CLASS_LABELS {
             let children = self
-                .model
-                .graph
+                .proposition_graph
                 .children_of_conjunct(conjunct)
                 .expect("Error finding children");
             for child in &children {
@@ -131,7 +130,7 @@ impl Inferencer {
     }
 
     pub fn initialize_lambda(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        let roots = self.model.graph.find_roots(proposition)?;
+        let roots = self.proposition_graph.find_roots(proposition)?;
         for root in &roots {
             self.initialize_lambda_proposition(root)?;
         }
@@ -145,7 +144,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_proposition(node), outcome, 1f64);
-            let parents = self.model.graph.parents_of_proposition(node)?;
+            let parents = self.proposition_graph.parents_of_proposition(node)?;
             for parent in &parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
@@ -155,7 +154,7 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.model.graph.children_of_proposition(node)?;
+        let children = self.proposition_graph.children_of_proposition(node)?;
         for child in &children {
             self.initialize_lambda_conjunct(child)?;
         }
@@ -169,7 +168,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_conjunct(conjunct), outcome, 1f64);
-            let parents = self.model.graph.parents_of_conjunct(conjunct)?;
+            let parents = self.proposition_graph.parents_of_conjunct(conjunct)?;
             for parent in &parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_conjunct(conjunct),
@@ -179,7 +178,7 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.model.graph.children_of_conjunct(conjunct)?;
+        let children = self.proposition_graph.children_of_conjunct(conjunct)?;
         for child in &children {
             self.initialize_lambda_proposition(child)?;
         }
