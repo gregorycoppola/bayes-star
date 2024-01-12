@@ -1,17 +1,23 @@
-use crate::{
-    common::{interface::FactDB, redis::{set_add, set_members}},
-    model::{
-        self,
-        maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, PredicateImplication, Predicate, ImplicationInstance, Proposition, PropositionConjunction},
-    },
-};
-use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error};
 use super::{
     interface::{PredictStatistics, TrainStatistics},
     redis::RedisManager,
 };
+use crate::{
+    common::{
+        interface::FactDB,
+        redis::{set_add, set_members},
+    },
+    model::{
+        self,
+        maxent::ExponentialModel,
+        objects::{
+            Domain, Entity, ImplicationInstance, Predicate, PredicateConjunction,
+            PredicateImplication, Proposition, PropositionConjunction,
+        },
+    },
+};
+use redis::{Commands, Connection};
+use std::{cell::RefCell, error::Error};
 pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
@@ -31,16 +37,13 @@ impl Graph {
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             &entity.domain.to_string(),
-            &entity.name
+            &entity.name,
         )?;
         Ok(())
     }
     pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
-        let names: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
-            domain
-        )?;
+        let names: Vec<String> = set_members(&mut *self.redis_connection.borrow_mut(), domain)?;
         Ok(names
             .into_iter()
             .map(|name| Entity {
@@ -49,45 +52,50 @@ impl Graph {
             })
             .collect())
     }
-    pub fn store_implication(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implication(
+        &mut self,
+        implication: &PredicateImplication,
+    ) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-    
+
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             "implications",
-            &record
+            &record,
         )?;
-    
+
         self.store_implications(implication)
-    }    
-    pub fn store_implications(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
+    }
+    pub fn store_implications(
+        &mut self,
+        implication: &PredicateImplication,
+    ) -> Result<(), Box<dyn Error>> {
         let search_string = implication.conclusion.search_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-    
+
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             &search_string,
-            &record
+            &record,
         )?;
-    
+
         Ok(())
-    }    
-    // Get all Implications
+    }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        let all_values: Vec<String> = self
-            .redis_connection
-            .borrow_mut()
-            .smembers("implications")
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        let all_values: Vec<String> =
+            set_members(&mut *self.redis_connection.borrow_mut(), "implications")?;
 
         all_values
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn parents_of_predicate(&self, predicate: &Predicate) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
+    pub fn parents_of_predicate(
+        &self,
+        predicate: &Predicate,
+    ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         let search_string = predicate.search_string();
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
@@ -101,19 +109,34 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn find_roots(&self, proposition:&Proposition) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn find_roots(
+        &self,
+        proposition: &Proposition,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_proposition(&self, x: &Proposition) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
+    pub fn parents_of_proposition(
+        &self,
+        x: &Proposition,
+    ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn children_of_proposition(&self, root: &Proposition) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
+    pub fn children_of_proposition(
+        &self,
+        root: &Proposition,
+    ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_conjunct(&self, conjunction: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn parents_of_conjunct(
+        &self,
+        conjunction: &PropositionConjunction,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         Ok(conjunction.terms.clone())
     }
-    pub fn children_of_conjunct(&self, conjunction: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn children_of_conjunct(
+        &self,
+        conjunction: &PropositionConjunction,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
 }
