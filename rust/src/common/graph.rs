@@ -65,10 +65,11 @@ impl Graph {
     }
     fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
         for predicate in &conjunction.terms {
+            let record = serialize_record(conjunction)?;
             set_add(
                 &mut *self.redis_connection.borrow_mut(),
                 &Self::predicate_forward_set_name(predicate),
-                &entity.name,
+                &record,
             )?;
         }
         Ok(())
