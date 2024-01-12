@@ -176,7 +176,14 @@ impl Graph {
         &self,
         conjunction: &PredicateConjunction,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        todo!()
+        let set_members: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &&Self::conjunction_forward_set_name(conjunction),
+        )?;
+        set_members
+            .into_iter()
+            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .collect()
     }
 }
 
