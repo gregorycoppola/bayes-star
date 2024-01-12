@@ -119,7 +119,7 @@ pub fn extract_backimplications_from_proposition(
 
 pub fn extract_factor_for_proposition(
     graph: &Graph,
-    conclusion: Predicate,
+    conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
     let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
     let factor = Factor {
