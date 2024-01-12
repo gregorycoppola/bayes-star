@@ -60,7 +60,7 @@ impl Graph {
     fn predicate_backward_set_name(predicate: &Predicate) -> String {
         format!("predicate_backward:{}", predicate.hash_string())
     }
-    fn conjunction_forward_set_name(predicate: &Predicate) -> String {
+    fn conjunction_forward_set_name(predicate: &PredicateConjunction) -> String {
         format!("conjunction_forward:{}", predicate.hash_string())
     }
     fn implication_seq_name() -> String {
@@ -108,12 +108,12 @@ impl Graph {
     fn store_conjunction_forward_link(
         &mut self,
         premise: &PredicateConjunction,
-        conclusion: &Predicate,
+        implication: &PredicateImplication,
     ) -> Result<(), Box<dyn Error>> {
-        let record = serialize_record(premise)?;
+        let record = serialize_record(implication)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
-            &Self::predicate_backward_set_name(conclusion),
+            &&Self::conjunction_forward_set_name(premise),
             &record,
         )?;
         Ok(())
@@ -124,7 +124,7 @@ impl Graph {
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
-        self.store_conjunction_forward_link(&implication.premise, &implication.conclusion)?;
+        self.store_conjunction_forward_link(&implication.premise, &implication)?;
         self.store_predicate_forward_links(&implication.premise)?;
         Ok(())
     }
@@ -140,22 +140,31 @@ impl Graph {
         }
         Ok(result)
     }
-    pub fn predicate_back_links(
+    pub fn predicate_backward_links(
         &self,
         conclusion: &Predicate,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        let set_members: Vec<String> =
-            set_members(&mut *self.redis_connection.borrow_mut(), &Self::predicate_backward_set_name(conclusion))?;
+        let set_members: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &Self::predicate_backward_set_name(conclusion),
+        )?;
         set_members
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn children_of_predicate(
+    pub fn predicate_forward_links(
         &self,
-        root: &Predicate,
+        predicate: &Predicate,
     ) -> Result<Vec<PredicateConjunction>, Box<dyn Error>> {
-        todo!()
+        let set_members: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &Self::predicate_backward_set_name(predicate),
+        )?;
+        set_members
+            .into_iter()
+            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .collect()
     }
     pub fn parents_of_conjunct(
         &self,
