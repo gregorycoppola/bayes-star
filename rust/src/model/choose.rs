@@ -68,8 +68,8 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<Predicate>, 
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
         let quantified = convert_to_quantified(proposition, &quantified_roles); // Assuming this function exists
-        let search_string = quantified.search_string(); // Assuming this method exists
-        result.push(search_string);
+        // let search_string = quantified.search_string(); // Assuming this method exists
+        result.push(quantified);
     }
     Ok(result)
 }
