@@ -22,8 +22,12 @@ pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
 
-fn forward_set_name(predicate:&Predicate) -> String {
-    format!("forward_set:{}", predicate.search_string())
+fn predicate_forward_set_name(predicate:&Predicate) -> String {
+    format!("predicate_forward:{}", predicate.search_string())
+}
+
+fn predicate_backward_set_name(predicate:&Predicate) -> String {
+    format!("predicate_backward:{}", predicate.search_string())
 }
 
 impl Graph {
