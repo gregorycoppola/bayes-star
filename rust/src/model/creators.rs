@@ -2,7 +2,7 @@ use crate::model::objects::*;
 
 // Import the necessary structs and enums
 use crate::model::objects::{
-    ConstantArgument, FilledRole, Implication, Predicate, VariableArgument,
+    ConstantArgument, LabeledArgument, Implication, Predicate, VariableArgument,
 };
 
 pub fn conjunction(terms: Vec<Predicate>) -> PredicateConjunction {
@@ -22,18 +22,18 @@ pub fn implication(
     }
 }
 
-pub fn proposition(roles: Vec<FilledRole>) -> Proposition {
+pub fn proposition(roles: Vec<LabeledArgument>) -> Proposition {
     Proposition::from(Predicate { roles })
 }
-pub fn predicate(roles: Vec<FilledRole>) -> Predicate {
+pub fn predicate(roles: Vec<LabeledArgument>) -> Predicate {
     Predicate { roles }
 }
 
 // Function to create a FilledRole
-pub fn role(role_name: String, argument: Argument) -> FilledRole {
+pub fn role(role_name: String, argument: Argument) -> LabeledArgument {
     // Assuming logger.noop is a logging function, you can implement similar functionality in Rust if needed.
     // For this example, it's omitted.
-    FilledRole {
+    LabeledArgument {
         role_name,
         argument,
     }
@@ -50,14 +50,14 @@ pub fn constant(domain: Domain, entity_id: String) -> Argument {
 }
 
 // Helper functions for specific roles
-pub fn subject(argument: Argument) -> FilledRole {
+pub fn subject(argument: Argument) -> LabeledArgument {
     role("subject".to_string(), argument)
 }
 
-pub fn object(argument: Argument) -> FilledRole {
+pub fn object(argument: Argument) -> LabeledArgument {
     role("object".to_string(), argument)
 }
 
-pub fn relation(argument: Argument) -> FilledRole {
+pub fn relation(argument: Argument) -> LabeledArgument {
     role("relation".to_string(), argument)
 }

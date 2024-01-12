@@ -128,14 +128,14 @@ impl fmt::Display for Argument {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FilledRole {
+pub struct LabeledArgument {
     pub role_name: String,
     pub argument: Argument,
 }
 
-impl FilledRole {
+impl LabeledArgument {
     pub fn new(role_name: String, argument: Argument) -> Self {
-        FilledRole {
+        LabeledArgument {
             role_name,
             argument,
         }
@@ -145,24 +145,24 @@ impl FilledRole {
         format!("{}={}", self.role_name, self.argument.search_string())
     }
 
-    pub fn convert_to_quantified(&self) -> FilledRole {
-        FilledRole::new(
+    pub fn convert_to_quantified(&self) -> LabeledArgument {
+        LabeledArgument::new(
             self.role_name.clone(),
             self.argument.convert_to_quantified(),
         )
     }
-    pub fn do_substitution(&self, value: Argument) -> FilledRole {
-        FilledRole::new(self.role_name.clone(), value)
+    pub fn do_substitution(&self, value: Argument) -> LabeledArgument {
+        LabeledArgument::new(self.role_name.clone(), value)
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
-    pub roles: Vec<FilledRole>,
+    pub roles: Vec<LabeledArgument>,
 }
 
 impl Predicate {
-    pub fn new(roles: Vec<FilledRole>) -> Self {
+    pub fn new(roles: Vec<LabeledArgument>) -> Self {
         Predicate { roles }
     }
 
