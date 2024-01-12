@@ -4,7 +4,7 @@ use super::model::FactorModel;
 use super::train::TrainingPlan;
 use crate::common::fact_db::RedisFactDB;
 use crate::common::model::GraphicalModel;
-use crate::common::redis::ConnectionFactory;
+use crate::common::redis::RedisManager;
 use crate::model::choose::{
     extract_backimplications_from_proposition, extract_factor_context_for_proposition,
 };
@@ -13,7 +13,7 @@ use std::borrow::BorrowMut;
 use std::error::Error;
 
 pub fn do_training(
-    redis:&ConnectionFactory,
+    redis:&RedisManager,
 ) -> Result<(), Box<dyn Error>> {
     let graph = Graph::new(redis)?;
     let fact_db = RedisFactDB::new(redis)?;
@@ -60,7 +60,7 @@ pub fn do_training(
 }
 
 pub fn setup_and_train(scenario_maker: &dyn ScenarioMaker) -> Result<(), Box<dyn Error>> {
-    let mut redis_client = ConnectionFactory::new()?;
+    let mut redis_client = RedisManager::new()?;
     redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(

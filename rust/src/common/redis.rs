@@ -3,15 +3,15 @@ use redis::Connection;
 use std::cell::RefCell;
 use std::error::Error;
 
-pub struct ConnectionFactory {
+pub struct RedisManager {
     client: redis::Client,
 }
 
-impl ConnectionFactory {
-    pub fn new() -> Result<ConnectionFactory, Box<dyn Error>> {
+impl RedisManager {
+    pub fn new() -> Result<RedisManager, Box<dyn Error>> {
         let client =
             redis::Client::open("redis://127.0.0.1/").expect("Could not connect to Redis."); // Replace with your Redis server URL
-        let redis_client = ConnectionFactory { client };
+        let redis_client = RedisManager { client };
         Ok(redis_client)
     }
 
