@@ -8,7 +8,7 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, PredicateConjunction, Predicate, Proposition};
+use super::objects::{ImplicationInstance, PredicateConjunction, Predicate, Proposition, PropositionConjunction};
 
 fn read_in_parent_probabilities(
     storage: &mut GraphicalModel,
@@ -54,16 +54,15 @@ fn read_in_parent_probabilities(
 
 fn print_premise_probabilities(
     storage: &mut GraphicalModel,
-    conjunction: &PredicateConjunction,
+    conjunction: &PropositionConjunction,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
-        assert!(term.is_fact());
         match storage.fact_db.get_proposition_probability(term) {
             Ok(term_prob_opt) => match term_prob_opt {
                 Some(term_prob) => {
                     info!(
                         "\x1b[32mactivation: {} {}\x1b[0m",
-                        term.search_string(),
+                        term.predicate.search_string(),
                         term_prob
                     );
                 }
