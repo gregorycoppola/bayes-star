@@ -98,12 +98,8 @@ impl Graph {
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
         let search_string = predicate.search_string();
         trace!("find_premises: {:?}", &search_string);
-        let set_members: Vec<String> = self
-            .redis_connection
-            .borrow_mut()
-            .smembers(search_string)
-            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
+        let set_members: Vec<String> =
+            set_members(&mut *self.redis_connection.borrow_mut(), &search_string)?;
         set_members
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
