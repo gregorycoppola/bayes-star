@@ -140,14 +140,12 @@ impl Graph {
         }
         Ok(result)
     }
-    pub fn predicate_backlinks(
+    pub fn predicate_back_links(
         &self,
-        predicate: &Predicate,
+        conclusion: &Predicate,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        let hash_string = predicate.hash_string();
-        trace!("find_premises: {:?}", &hash_string);
         let set_members: Vec<String> =
-            set_members(&mut *self.redis_connection.borrow_mut(), &hash_string)?;
+            set_members(&mut *self.redis_connection.borrow_mut(), &Self::predicate_backward_set_name(conclusion))?;
         set_members
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
