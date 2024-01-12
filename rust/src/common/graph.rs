@@ -112,6 +112,6 @@ impl Graph {
         Ok(conjunction.terms.clone())
     }
     pub fn children_of_conjunct(&self, conjunction: &PropositionConjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        Ok(conjunction.terms.clone())
+        todo!()
     }
 }
