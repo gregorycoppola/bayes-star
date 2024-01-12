@@ -186,6 +186,17 @@ impl Predicate {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Proposition {
+    pub predicate: Predicate,
+}
+
+impl Proposition {
+    pub fn from(predicate:Predicate) -> Self {
+        Proposition { predicate }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Conjunction {
     pub terms: Vec<Predicate>,
 }
