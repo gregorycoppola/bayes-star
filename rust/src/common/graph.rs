@@ -22,14 +22,6 @@ pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
 }
 
-fn predicate_forward_set_name(predicate:&Predicate) -> String {
-    format!("predicate_forward:{}", predicate.hash_string())
-}
-
-fn predicate_backward_set_name(predicate:&Predicate) -> String {
-    format!("predicate_backward:{}", predicate.hash_string())
-}
-
 impl Graph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new(redis: &RedisManager) -> Result<Self, Box<dyn Error>> {
@@ -61,8 +53,24 @@ impl Graph {
             })
             .collect())
     }
+    fn predicate_forward_set_name(predicate:&Predicate) -> String {
+        format!("predicate_forward:{}", predicate.hash_string())
+    }
+    fn predicate_backward_set_name(predicate:&Predicate) -> String {
+        format!("predicate_backward:{}", predicate.hash_string())
+    }
+    fn conjunction_forward_set_name(predicate:&Predicate) -> String {
+        format!("conjunction_forward:{}", predicate.hash_string())
+    }
     fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
-        todo!()
+        for predicate in &conjunction.terms {
+            set_add(
+                &mut *self.redis_connection.borrow_mut(),
+                &Self::predicate_forward_set_name(predicate),
+                &entity.name,
+            )?;
+        }
+        Ok(())
     }
     fn store_predicate_backward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
         todo!()
