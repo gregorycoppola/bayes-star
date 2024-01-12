@@ -7,7 +7,7 @@ pub fn conjunction(terms: Vec<Proposition>) -> Conjunction {
     Conjunction { terms }
 }
 
-pub fn link(premise: Conjunction, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
+pub fn implication(premise: Conjunction, conclusion: Proposition, role_maps: Vec<RoleMap>) -> Implication {
     let role_maps = RoleMapList {role_maps};
     Implication { premise, conclusion, role_maps }
 }

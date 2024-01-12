@@ -56,22 +56,22 @@ impl Graph {
             .collect())
     }
 
-    pub fn store_link(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_link(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         let record =
-            serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         self.redis_connection
             .borrow_mut()
             .sadd("links", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.store_links(link)
+        self.store_links(implication)
     }
 
-    pub fn store_links(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
-        let search_string = link.conclusion_string();
+    pub fn store_links(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        let search_string = implication.conclusion_string();
         let record =
-            serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
+            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         self.redis_connection
             .borrow_mut()

@@ -46,7 +46,7 @@ pub struct  FactorContext{
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, link: &Implication) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
         factor: &FactorContext,

@@ -30,9 +30,9 @@ impl ExponentialWeights {
 }
 
 impl ExponentialWeights {
-    pub fn initialize_weights(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
-        trace!("initialize_weights - Start: {:?}", link);
-        let feature = link.unique_key();
+    pub fn initialize_weights(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        trace!("initialize_weights - Start: {:?}", implication);
+        let feature = implication.unique_key();
         trace!("initialize_weights - Unique key: {}", feature);
         for class_label in CLASS_LABELS {
             let posf = positive_feature(&feature, class_label);

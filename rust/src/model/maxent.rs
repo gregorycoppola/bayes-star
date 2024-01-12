@@ -52,7 +52,7 @@ pub fn features_from_factor(
         let mut result = HashMap::new();
         for (i, backlink) in factor.factor.conjuncts.iter().enumerate() {
             debug!("Processing backlink {}", i);
-            let feature = backlink.link.unique_key();
+            let feature = backlink.implication.unique_key();
             debug!("Generated unique key for feature: {}", feature);
             let probability = 0f64;
             debug!(
@@ -117,8 +117,8 @@ pub fn do_sgd_update(
 }
 
 impl FactorModel for ExponentialModel {
-    fn initialize_connection(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
-        self.weights.initialize_weights(link)?;
+    fn initialize_connection(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+        self.weights.initialize_weights(implication)?;
         Ok(())
     }
 

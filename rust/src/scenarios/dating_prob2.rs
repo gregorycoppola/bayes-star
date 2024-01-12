@@ -8,7 +8,7 @@ use crate::{
     common::interface::ScenarioMaker,
     model::{
         config::CONFIG,
-        creators::{conjunction, constant, link, object, proposition, relation, subject, variable},
+        creators::{conjunction, constant, implication, object, proposition, relation, subject, variable},
         objects::{Domain, Entity, RoleMap},
     },
 };
@@ -173,7 +173,7 @@ impl ScenarioMaker for DatingProb2 {
 
         let links = vec![
             // if jack is lonely, he will date any jill
-            link(
+            implication(
                 conjunction(vec![proposition(vec![
                     subject(xjack.clone()),
                     relation(lonely.clone()),
@@ -189,7 +189,7 @@ impl ScenarioMaker for DatingProb2 {
                 )]))],
             ),
             // if jill is exciting, any jack will date her
-            link(
+            implication(
                 conjunction(vec![proposition(vec![
                     subject(xjill.clone()),
                     relation(exciting.clone()),
@@ -205,7 +205,7 @@ impl ScenarioMaker for DatingProb2 {
                 )]))],
             ),
             // if jill likes jack, then jack dates jill
-            link(
+            implication(
                 conjunction(vec![
                     proposition(vec![
                         subject(xjill.clone()),
@@ -236,11 +236,11 @@ impl ScenarioMaker for DatingProb2 {
             ),
         ];
 
-        for link in links.iter() {
-            trace!("Storing link: {:?}", link); // Logging, replace with your actual logger if necessary
+        for implication in links.iter() {
+            trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
 
             // Assuming `store_link` is a method of your GraphicalModel struct
-            graph.store_link(link)?;
+            graph.store_link(implication)?;
         }
 
         // Additional functions

@@ -21,9 +21,9 @@ pub fn do_training(
     let mut factor_model = ExponentialModel::new(redis)?;
     trace!("do_training - Getting all links");
     let links = graph.get_all_links()?;
-    for link in links {
-        trace!("do_training - Processing link: {:?}", link);
-        factor_model.initialize_connection(&link)?;
+    for implication in links {
+        trace!("do_training - Processing implication: {:?}", implication);
+        factor_model.initialize_connection(&implication)?;
     }
     trace!("do_training - Getting all propositions");
     let propositions = plan.get_training_questions()?;
