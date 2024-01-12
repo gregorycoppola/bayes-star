@@ -22,9 +22,11 @@ pub fn implication(
     }
 }
 
-// Function to create a Proposition
 pub fn proposition(roles: Vec<FilledRole>) -> Proposition {
     Proposition::from(Predicate { roles })
+}
+pub fn predicate(roles: Vec<FilledRole>) -> Predicate {
+    Predicate { roles }
 }
 
 // Function to create a FilledRole

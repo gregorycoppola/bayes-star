@@ -4,6 +4,7 @@ use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
 use crate::common::train::TrainingPlan;
+use crate::model::creators::predicate;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -174,11 +175,11 @@ impl ScenarioMaker for DatingProb2 {
         let implications = vec![
             // if jack is lonely, he will date any jill
             implication(
-                conjunction(vec![proposition(vec![
+                conjunction(vec![predicate(vec![
                     subject(xjack.clone()),
                     relation(lonely.clone()),
                 ])]),
-                proposition(vec![
+                predicate(vec![
                     subject(xjack.clone()),
                     relation(like.clone()),
                     object(xjill.clone()),
@@ -190,11 +191,11 @@ impl ScenarioMaker for DatingProb2 {
             ),
             // if jill is exciting, any jack will date her
             implication(
-                conjunction(vec![proposition(vec![
+                conjunction(vec![predicate(vec![
                     subject(xjill.clone()),
                     relation(exciting.clone()),
                 ])]),
-                proposition(vec![
+                predicate(vec![
                     subject(xjack.clone()),
                     relation(like.clone()),
                     object(xjill.clone()),
@@ -207,18 +208,18 @@ impl ScenarioMaker for DatingProb2 {
             // if jill likes jack, then jack dates jill
             implication(
                 conjunction(vec![
-                    proposition(vec![
+                    predicate(vec![
                         subject(xjill.clone()),
                         relation(like.clone()),
                         object(xjack.clone()),
                     ]),
-                    proposition(vec![
+                    predicate(vec![
                         subject(xjack.clone()),
                         relation(like.clone()),
                         object(xjill.clone()),
                     ]),
                 ]),
-                proposition(vec![
+                predicate(vec![
                     subject(xjack.clone()),
                     relation(date.clone()),
                     object(xjill.clone()),
