@@ -17,6 +17,7 @@ use crate::{
     },
 };
 use redis::{Commands, Connection};
+use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error};
 pub struct Graph {
     redis_connection: RefCell<redis::Connection>,
@@ -121,4 +122,18 @@ impl Graph {
     ) -> Result<Vec<Predicate>, Box<dyn Error>> {
         todo!()
     }
+}
+
+fn serialize_record<T>(obj: &T) -> Result<String, Box<dyn Error>>
+where
+    T: Serialize,
+{
+    serde_json::to_string(obj).map_err(|e| Box::new(e) as Box<dyn Error>)
+}
+
+fn deserialize_record<'a, T>(record: &'a str) -> Result<T, Box<dyn Error>>
+where
+    T: Deserialize<'a>,
+{
+    serde_json::from_str(record).map_err(|e| Box::new(e) as Box<dyn Error>)
 }
