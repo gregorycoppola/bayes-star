@@ -10,7 +10,7 @@ use crate::{
         interface::FactDB,
         model::Factor,
     },
-    model::objects::{Conjunct, ConjunctLink, Proposition},
+    model::objects::{Conjunction, ConjunctLink, Proposition},
 };
 use std::{borrow::Borrow, error::Error};
 
@@ -112,7 +112,7 @@ pub fn extract_backlinks_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(ConjunctLink::new(link.clone(), Conjunct { terms }));
+            backlinks.push(ConjunctLink::new(link.clone(), Conjunction { terms }));
         }
     }
     trace!("Returning backlinks {:?}", &backlinks);

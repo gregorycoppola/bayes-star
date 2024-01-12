@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{Conjunct, Domain, Entity, ImplicationLink, Proposition, ConjunctLink},
+        objects::{Conjunction, Domain, Entity, Implication, Proposition, ConjunctLink},
     },
 };
 use redis::{Commands, Connection};
@@ -56,7 +56,7 @@ impl Graph {
             .collect())
     }
 
-    pub fn store_link(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>> {
+    pub fn store_link(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -68,8 +68,8 @@ impl Graph {
         self.store_links(link)
     }
 
-    pub fn store_links(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>> {
-        let search_string = link.search_string();
+    pub fn store_links(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
+        let search_string = link.conclusion_string();
         let record =
             serde_json::to_string(link).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
@@ -82,7 +82,7 @@ impl Graph {
     }
 
     // Get all Implications
-    pub fn get_all_links(&self) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
+    pub fn get_all_links(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .borrow_mut()
@@ -95,7 +95,7 @@ impl Graph {
             .collect()
     }
 
-    pub fn find_premises(&self, search_string: &str) -> Result<Vec<ImplicationLink>, Box<dyn Error>> {
+    pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
             .redis_connection
@@ -114,19 +114,19 @@ impl Graph {
         todo!()
     }
 
-    pub fn parents_of_proposition(&self, x: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+    pub fn parents_of_proposition(&self, x: &Proposition) -> Result<Vec<Conjunction>, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn children_of_proposition(&self, root: &Proposition) -> Result<Vec<Conjunct>, Box<dyn Error>> {
+    pub fn children_of_proposition(&self, root: &Proposition) -> Result<Vec<Conjunction>, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn parents_of_conjunct(&self, x: &Conjunct) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn parents_of_conjunct(&self, x: &Conjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn children_of_conjunct(&self, root: &Conjunct) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn children_of_conjunct(&self, root: &Conjunction) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
 }

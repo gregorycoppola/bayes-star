@@ -1,7 +1,7 @@
 use super::choose::extract_backlinks_from_proposition;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
-use super::objects::ImplicationLink;
+use super::objects::Implication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
 use crate::common::model::{Factor, GraphicalModel};
@@ -117,7 +117,7 @@ pub fn do_sgd_update(
 }
 
 impl FactorModel for ExponentialModel {
-    fn initialize_connection(&mut self, link: &ImplicationLink) -> Result<(), Box<dyn Error>> {
+    fn initialize_connection(&mut self, link: &Implication) -> Result<(), Box<dyn Error>> {
         self.weights.initialize_weights(link)?;
         Ok(())
     }

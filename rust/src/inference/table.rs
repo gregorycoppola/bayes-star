@@ -1,7 +1,7 @@
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
 use serde::{Serialize, Deserialize};
-use crate::{model::{objects::{Proposition, Conjunct}, weights::CLASS_LABELS}, common::interface::FactDB};
+use crate::{model::{objects::{Proposition, Conjunction}, weights::CLASS_LABELS}, common::interface::FactDB};
 
 use std::hash::{Hash, Hasher};
 use std::collections::hash_map::DefaultHasher;
@@ -30,7 +30,7 @@ impl InferenceNode {
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    pub fn from_conjunct(conjunct: &Conjunct) -> InferenceNode {
+    pub fn from_conjunct(conjunct: &Conjunction) -> InferenceNode {
         let mut hasher = DefaultHasher::new();
         conjunct.hash(&mut hasher);
         let hash = hasher.finish();
