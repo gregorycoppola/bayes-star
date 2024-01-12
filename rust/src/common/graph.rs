@@ -52,19 +52,33 @@ impl Graph {
             })
             .collect())
     }
+    fn store_predicate(&mut self, predicate: &Predicate) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+    fn store_conjunction(&mut self, predicate: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+    fn store_predicate_forward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+    fn store_predicate_backward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+    fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+    fn store_conjunction_forward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
     pub fn store_predicate_implication(
         &mut self,
         implication: &PredicateImplication,
     ) -> Result<(), Box<dyn Error>> {
-        let record =
-            serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
-
-        set_add(
-            &mut *self.redis_connection.borrow_mut(),
-            "implications",
-            &record,
-        )?;
-
+        self.store_predicate(&implication.conclusion)?;
+        self.store_conjunction(&implication.premise)?;
+        self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
+        self.store_conjunction_forward_link(&implication.conclusion, &implication.premise)?;
+        self.store_predicate_forward_links( &implication.premise)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
