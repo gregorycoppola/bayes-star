@@ -241,7 +241,7 @@ impl ScenarioMaker for DatingProb2 {
             trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
 
             // Assuming `store_implication` is a method of your GraphicalModel struct
-            graph.store_implication(implication)?;
+            graph.store_predicate_implication(implication)?;
         }
 
         // Additional functions
