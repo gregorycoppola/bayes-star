@@ -87,7 +87,7 @@ pub fn extract_backimplications_from_proposition(
     let mut backimplications = Vec::new();
     for predicate in &search_keys {
         trace!("Processing search_key {:?}", &predicate.hash_string());
-        let implications = graph.parents_of_predicate(&predicate)?;
+        let implications = graph.predicate_backlinks(&predicate)?;
         trace!("Found implications {:?}", &implications);
         for implication in &implications {
             let mut terms = Vec::new();

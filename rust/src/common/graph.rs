@@ -140,7 +140,7 @@ impl Graph {
         }
         Ok(result)
     }
-    pub fn parents_of_predicate(
+    pub fn predicate_backlinks(
         &self,
         predicate: &Predicate,
     ) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
