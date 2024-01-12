@@ -10,48 +10,6 @@ use crate::model::{
 use super::weights::ExponentialWeights;
 use super::objects::{ImplicationInstance, PredicateConjunction, Predicate, Proposition, PropositionConjunction};
 
-fn read_in_parent_probabilities(
-    storage: &mut GraphicalModel,
-    conjunction: &PredicateConjunction,
-) -> Result<HashMap<String, f64>, Box<dyn Error>> {
-    todo!()
-    // let mut probabilities = HashMap::new();
-
-    // for (i, term) in conjunction.terms.iter().enumerate() {
-    //     assert!(term.is_fact());
-    //     info!(
-    //         "Getting proposition probability for term {}: {:?}",
-    //         i,
-    //         term.hash_string()
-    //     );
-
-    //     match storage.fact_db.get_proposition_probability(term) {
-    //         Ok(term_prob_opt) => {
-    //             match term_prob_opt {
-    //                 Some(term_prob) => {
-    //                     // Insert into the hashmap
-    //                     probabilities.insert(term.hash_string(), term_prob);
-    //                 }
-    //                 None => {
-    //                     // doesn't exist.. recursively compute and insert
-    //                     let computed_prob = marginalized_inference_probability(storage, &term)?;
-    //                     probabilities.insert(term.hash_string(), computed_prob);
-    //                 }
-    //             }
-    //         }
-    //         Err(e) => {
-    //             error!(
-    //                 "Error getting proposition probability for term {}: {}",
-    //                 i, e
-    //             );
-    //             return Err(e);
-    //         }
-    //     }
-    // }
-
-    // Ok(probabilities)
-}
-
 fn print_premise_probabilities(
     storage: &mut GraphicalModel,
     conjunction: &PropositionConjunction,
