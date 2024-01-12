@@ -38,7 +38,7 @@ impl fmt::Display for Domain {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum FirstOrderArgument {
+pub enum Argument {
     Constant(ConstantArgument),
     Variable(VariableArgument),
 }
@@ -74,27 +74,27 @@ impl VariableArgument {
     }
 }
 
-impl FirstOrderArgument {
+impl Argument {
     pub fn search_string(&self) -> String {
         match self {
-            FirstOrderArgument::Constant(arg) => arg.search_string(),
-            FirstOrderArgument::Variable(arg) => arg.search_string(),
+            Argument::Constant(arg) => arg.search_string(),
+            Argument::Variable(arg) => arg.search_string(),
         }
     }
 
-    pub fn convert_to_quantified(&self) -> FirstOrderArgument {
+    pub fn convert_to_quantified(&self) -> Argument {
         match self {
-            FirstOrderArgument::Constant(arg) => {
-                FirstOrderArgument::Variable(VariableArgument::new(arg.domain.clone()))
+            Argument::Constant(arg) => {
+                Argument::Variable(VariableArgument::new(arg.domain.clone()))
             }
-            FirstOrderArgument::Variable(arg) => FirstOrderArgument::Variable(arg.clone()),
+            Argument::Variable(arg) => Argument::Variable(arg.clone()),
         }
     }
 
     pub fn is_constant(&self) -> bool {
         match self {
-            FirstOrderArgument::Constant(_) => true,
-            FirstOrderArgument::Variable(_) => false,
+            Argument::Constant(_) => true,
+            Argument::Variable(_) => false,
         }
     }
 
@@ -117,11 +117,11 @@ impl fmt::Display for VariableArgument {
     }
 }
 
-impl fmt::Display for FirstOrderArgument {
+impl fmt::Display for Argument {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            FirstOrderArgument::Constant(arg) => write!(f, "Constant({})", arg), // Update as needed
-            FirstOrderArgument::Variable(arg) => write!(f, "Variable({})", arg), // Update as needed
+            Argument::Constant(arg) => write!(f, "Constant({})", arg), // Update as needed
+            Argument::Variable(arg) => write!(f, "Variable({})", arg), // Update as needed
                                                                                   // Add cases for other variants if they exist
         }
     }
@@ -130,11 +130,11 @@ impl fmt::Display for FirstOrderArgument {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FilledRole {
     pub role_name: String,
-    pub argument: FirstOrderArgument,
+    pub argument: Argument,
 }
 
 impl FilledRole {
-    pub fn new(role_name: String, argument: FirstOrderArgument) -> Self {
+    pub fn new(role_name: String, argument: Argument) -> Self {
         FilledRole {
             role_name,
             argument,
@@ -151,7 +151,7 @@ impl FilledRole {
             self.argument.convert_to_quantified(),
         )
     }
-    pub fn do_substitution(&self, value: FirstOrderArgument) -> FilledRole {
+    pub fn do_substitution(&self, value: Argument) -> FilledRole {
         FilledRole::new(self.role_name.clone(), value)
     }
 }

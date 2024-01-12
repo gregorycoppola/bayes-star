@@ -1,7 +1,7 @@
 use crate::model::objects::{FilledRole, Predicate, RoleMap};
 use std::{collections::HashMap, error::Error};
 
-use super::objects::FirstOrderArgument;
+use super::objects::Argument;
 
 pub fn convert_to_quantified(proposition: &Predicate, roles: &[String]) -> Predicate {
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
@@ -22,7 +22,7 @@ pub fn convert_to_quantified(proposition: &Predicate, roles: &[String]) -> Predi
 
 pub fn convert_to_proposition(
     predicate: &Predicate,
-    role_map: &HashMap<String, FirstOrderArgument>,
+    role_map: &HashMap<String, Argument>,
 ) -> Result<Predicate, Box<dyn Error>> {
     debug!("Converting to proposition: {:?}, role_map {:?}", predicate, &role_map);
 
@@ -71,7 +71,7 @@ pub fn convert_to_proposition(
 pub fn extract_premise_role_map(
     proposition: &Predicate,
     role_map: &RoleMap,
-) -> HashMap<String, FirstOrderArgument> {
+) -> HashMap<String, Argument> {
     debug!("Extracting premise role map for proposition: {:?}", proposition);
 
     let mut result = HashMap::new();
