@@ -238,11 +238,6 @@ pub struct PredicateImplication {
 }
 
 impl PredicateImplication {
-    // Return the search string based on the conclusion's search string
-    pub fn conclusion_string(&self) -> String {
-        self.conclusion.search_string()
-    }
-
     // Generate a unique key for the implication
     pub fn unique_key(&self) -> String {
         format!(

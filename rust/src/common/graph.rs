@@ -61,7 +61,7 @@ impl Graph {
         self.store_implications(implication)
     }
     pub fn store_implications(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
-        let search_string = implication.conclusion_string();
+        let search_string = implication.conclusion.search_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
