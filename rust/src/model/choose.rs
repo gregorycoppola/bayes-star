@@ -59,7 +59,7 @@ fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String
         .collect()
 }
 
-pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<Predicate>, Box<dyn Error>> {
+pub fn compute_search_predicates(proposition: &Proposition) -> Result<Vec<Predicate>, Box<dyn Error>> {
     let num_roles = proposition.predicate.roles.len();
     let configurations1 = compute_choose_configurations(num_roles, 1);
     let configurations2 = compute_choose_configurations(num_roles, 2);
@@ -76,19 +76,15 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<Predicate>, 
 
 pub fn extract_backimplications_from_proposition(
     graph: &Graph,
-    conclusion: &Predicate,
+    conclusion: &Proposition,
 ) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
     debug!("Computing backimplications for proposition {:?}", conclusion);
-    if !conclusion.is_fact() {
-        error!("Proposition is not a fact");
-        return Err("Proposition is not a fact".into());
-    }
-    let search_keys = compute_search_keys(conclusion)?;
+    let search_keys = compute_search_predicates(conclusion)?;
     trace!("Computed search_keys {:?}", &search_keys);
     let mut backimplications = Vec::new();
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
-        let implications = graph.find_premises(&search_key)?;
+        let implications = graph.parents_of_predicate(&search_key)?;
         trace!("Found implications {:?}", &implications);
         for implication in &implications {
             let mut terms = Vec::new();

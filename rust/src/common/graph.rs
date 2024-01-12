@@ -85,7 +85,8 @@ impl Graph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn find_premises(&self, search_string: &str) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn parents_of_predicate(&self, predicate: &Predicate) -> Result<Vec<Implication>, Box<dyn Error>> {
+        let search_string = predicate.search_string();
         trace!("find_premises: {:?}", &search_string);
         let set_members: Vec<String> = self
             .redis_connection
