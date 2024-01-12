@@ -61,16 +61,13 @@ impl Graph {
             })
             .collect())
     }
-    fn store_predicate_forward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+    fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
         todo!()
     }
     fn store_predicate_backward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
         todo!()
     }
-    fn store_predicate_forward_links(&mut self, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
-        todo!()
-    }
-    fn store_conjunction_forward_link(&mut self, predicate: &Predicate, conjunction: &PredicateConjunction) -> Result<(), Box<dyn Error>> {
+    fn store_conjunction_forward_link(&mut self, conjunction: &PredicateConjunction, predicate: &Predicate) -> Result<(), Box<dyn Error>> {
         todo!()
     }
     pub fn store_predicate_implication(
@@ -78,7 +75,7 @@ impl Graph {
         implication: &PredicateImplication,
     ) -> Result<(), Box<dyn Error>> {
         self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
-        self.store_conjunction_forward_link(&implication.conclusion, &implication.premise)?;
+        self.store_conjunction_forward_link(&implication.premise, &implication.conclusion)?;
         self.store_predicate_forward_links( &implication.premise)?;
         Ok(())
     }
