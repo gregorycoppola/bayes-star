@@ -1,14 +1,14 @@
-use std::error::Error;
+use std::{error::Error, rc::Rc};
 
 use crate::{common::{graph::Graph, redis::RedisManager}, model::objects::{Proposition, PropositionConjunction}};
 
 pub struct PropositionGraph {
-    predicate_graph: Graph,
+    predicate_graph: Rc<Graph>,
 }
 
 impl PropositionGraph {
-    fn new(redis: &RedisManager) -> Result<PropositionGraph, Box<dyn Error>> {
-        todo!()
+    fn new(predicate_graph: Rc<Graph>) -> Result<PropositionGraph, Box<dyn Error>> {
+        Ok(PropositionGraph{ predicate_graph })
     }
     pub fn find_roots(
         &self,
@@ -40,4 +40,8 @@ impl PropositionGraph {
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
+}
+
+pub fn compute_forward_graph(predicate_graph:Rc<Graph>) -> Result<PropositionGraph, Box<dyn Error>> {
+    todo!()
 }
