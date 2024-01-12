@@ -192,6 +192,9 @@ pub struct Proposition {
 
 impl Proposition {
     pub fn from(predicate:Predicate) -> Self {
+        if !predicate.is_fact() {
+            panic!("This predicate is not a fact {:?}.", predicate.search_string());
+        }
         Proposition { predicate }
     }
 }
