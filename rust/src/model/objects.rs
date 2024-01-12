@@ -197,13 +197,13 @@ impl Proposition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Conjunction {
+pub struct PredicateConjunction {
     pub terms: Vec<Predicate>,
 }
 
-impl Conjunction {
+impl PredicateConjunction {
     pub fn new(terms: Vec<Predicate>) -> Self {
-        Conjunction { terms }
+        PredicateConjunction { terms }
     }
 
     pub fn search_string(&self) -> String {
@@ -218,7 +218,7 @@ impl Conjunction {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Implication {
-    pub premise: Conjunction,
+    pub premise: PredicateConjunction,
     pub conclusion: Predicate,
     pub role_maps: ConjunctionRoleMap,
 }
@@ -312,11 +312,11 @@ impl fmt::Display for ConjunctionRoleMap {
 #[derive(Debug, Clone)]
 pub struct ImplicationInstance {
     pub implication: Implication,
-    pub conjunction: Conjunction,
+    pub conjunction: PredicateConjunction,
 }
 
 impl ImplicationInstance {
-    pub fn new(implication: Implication, conjunction: Conjunction) -> Self {
+    pub fn new(implication: Implication, conjunction: PredicateConjunction) -> Self {
         ImplicationInstance {
             implication,
             conjunction,

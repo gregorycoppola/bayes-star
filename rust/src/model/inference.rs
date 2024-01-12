@@ -8,11 +8,11 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, Conjunction, Predicate};
+use super::objects::{ImplicationInstance, PredicateConjunction, Predicate};
 
 fn read_in_parent_probabilities(
     storage: &mut GraphicalModel,
-    conjunction: &Conjunction,
+    conjunction: &PredicateConjunction,
 ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
     todo!()
     // let mut probabilities = HashMap::new();
@@ -54,7 +54,7 @@ fn read_in_parent_probabilities(
 
 fn print_premise_probabilities(
     storage: &mut GraphicalModel,
-    conjunction: &Conjunction,
+    conjunction: &PredicateConjunction,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         assert!(term.is_fact());

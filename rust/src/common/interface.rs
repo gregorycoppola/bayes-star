@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::objects::{Conjunction, Implication, Predicate};
+use crate::model::objects::{PredicateConjunction, Implication, Predicate};
 
 use super::{graph::Graph, model::GraphicalModel, train::TrainingPlan, redis::RedisClient};
 

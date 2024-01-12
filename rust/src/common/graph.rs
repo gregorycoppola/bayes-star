@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{Conjunction, Domain, Entity, Implication, Predicate, ImplicationInstance},
+        objects::{PredicateConjunction, Domain, Entity, Implication, Predicate, ImplicationInstance},
     },
 };
 use redis::{Commands, Connection};
@@ -101,16 +101,16 @@ impl Graph {
     pub fn find_roots(&self) -> Result<Vec<Predicate>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_proposition(&self, x: &Predicate) -> Result<Vec<Conjunction>, Box<dyn Error>> {
+    pub fn parents_of_proposition(&self, x: &Predicate) -> Result<Vec<PredicateConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn children_of_proposition(&self, root: &Predicate) -> Result<Vec<Conjunction>, Box<dyn Error>> {
+    pub fn children_of_proposition(&self, root: &Predicate) -> Result<Vec<PredicateConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_conjunct(&self, x: &Conjunction) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    pub fn parents_of_conjunct(&self, x: &PredicateConjunction) -> Result<Vec<Predicate>, Box<dyn Error>> {
         todo!()
     }
-    pub fn children_of_conjunct(&self, root: &Conjunction) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    pub fn children_of_conjunct(&self, root: &PredicateConjunction) -> Result<Vec<Predicate>, Box<dyn Error>> {
         todo!()
     }
 }

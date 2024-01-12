@@ -10,7 +10,7 @@ use crate::{
         interface::FactDB,
         model::Factor,
     },
-    model::objects::{Conjunction, ImplicationInstance, Predicate},
+    model::objects::{PredicateConjunction, ImplicationInstance, Predicate},
 };
 use std::{borrow::Borrow, error::Error};
 
@@ -112,7 +112,7 @@ pub fn extract_backimplications_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backimplications.push(ImplicationInstance::new(implication.clone(), Conjunction { terms }));
+            backimplications.push(ImplicationInstance::new(implication.clone(), PredicateConjunction { terms }));
         }
     }
     trace!("Returning backimplications {:?}", &backimplications);

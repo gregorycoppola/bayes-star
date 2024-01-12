@@ -2,7 +2,7 @@ use super::table::{HashMapBeliefTable, InferenceNode, InferenceResult};
 use crate::{
     common::{interface::FactDB, model::GraphicalModel},
     model::{
-        objects::{Conjunction, Predicate},
+        objects::{PredicateConjunction, Predicate},
         weights::CLASS_LABELS,
     },
 };
@@ -24,7 +24,7 @@ fn inference_proposition_probability(
 
 fn inference_conjunct_probability(
     fact_db: &dyn FactDB,
-    conjunct: &Conjunction,
+    conjunct: &PredicateConjunction,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
@@ -95,7 +95,7 @@ impl Inferencer {
 
     pub fn initialize_pi_conjunct(
         &mut self,
-        conjunct: &Conjunction,
+        conjunct: &PredicateConjunction,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
         let children = self.model.graph.children_of_conjunct(conjunct)?;
@@ -164,7 +164,7 @@ impl Inferencer {
 
     pub fn initialize_lambda_conjunct(
         &mut self,
-        conjunct: &Conjunction,
+        conjunct: &PredicateConjunction,
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
