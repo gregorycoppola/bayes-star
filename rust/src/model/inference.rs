@@ -8,7 +8,7 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ConjunctLink, Conjunction, Proposition};
+use super::objects::{ImplicationInstance, Conjunction, Proposition};
 
 fn read_in_parent_probabilities(
     storage: &mut GraphicalModel,

@@ -299,14 +299,14 @@ impl fmt::Display for RoleMapList {
 }
 
 #[derive(Debug, Clone)]
-pub struct ConjunctLink {
+pub struct ImplicationInstance {
     pub link: Implication,
     pub conjunct: Conjunction,
 }
 
-impl ConjunctLink {
+impl ImplicationInstance {
     pub fn new(link: Implication, conjunction: Conjunction) -> Self {
-        ConjunctLink {
+        ImplicationInstance {
             link,
             conjunct: conjunction,
         }

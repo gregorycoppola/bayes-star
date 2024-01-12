@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{Conjunction, Domain, Entity, Implication, Proposition, ConjunctLink},
+        objects::{Conjunction, Domain, Entity, Implication, Proposition, ImplicationInstance},
     },
 };
 use redis::{Commands, Connection};
@@ -35,7 +35,7 @@ impl GraphicalModel {
 
 #[derive(Debug)]
 pub struct  Factor {
-    pub conjuncts: Vec<ConjunctLink>,
+    pub conjuncts: Vec<ImplicationInstance>,
     pub conclusion: Proposition,
 }
 

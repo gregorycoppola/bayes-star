@@ -10,7 +10,7 @@ use crate::{
         interface::FactDB,
         model::Factor,
     },
-    model::objects::{Conjunction, ConjunctLink, Proposition},
+    model::objects::{Conjunction, ImplicationInstance, Proposition},
 };
 use std::{borrow::Borrow, error::Error};
 
@@ -79,7 +79,7 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
 pub fn extract_backlinks_from_proposition(
     graph: &Graph,
     conclusion: &Proposition,
-) -> Result<Vec<ConjunctLink>, Box<dyn Error>> {
+) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
     debug!("Computing backlinks for proposition {:?}", conclusion);
     if !conclusion.is_fact() {
         error!("Proposition is not a fact");
@@ -112,7 +112,7 @@ pub fn extract_backlinks_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(ConjunctLink::new(link.clone(), Conjunction { terms }));
+            backlinks.push(ImplicationInstance::new(link.clone(), Conjunction { terms }));
         }
     }
     trace!("Returning backlinks {:?}", &backlinks);
