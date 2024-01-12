@@ -76,23 +76,23 @@ pub fn compute_search_keys(proposition: &Proposition) -> Result<Vec<String>, Box
     Ok(result)
 }
 
-pub fn extract_backlinks_from_proposition(
+pub fn extract_backimplications_from_proposition(
     graph: &Graph,
     conclusion: &Proposition,
 ) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
-    debug!("Computing backlinks for proposition {:?}", conclusion);
+    debug!("Computing backimplications for proposition {:?}", conclusion);
     if !conclusion.is_fact() {
         error!("Proposition is not a fact");
         return Err("Proposition is not a fact".into());
     }
     let search_keys = compute_search_keys(conclusion)?;
     trace!("Computed search_keys {:?}", &search_keys);
-    let mut backlinks = Vec::new();
+    let mut backimplications = Vec::new();
     for search_key in &search_keys {
         trace!("Processing search_key {:?}", &search_key);
-        let links = graph.find_premises(&search_key)?;
-        trace!("Found links {:?}", &links);
-        for implication in &links {
+        let implications = graph.find_premises(&search_key)?;
+        trace!("Found implications {:?}", &implications);
+        for implication in &implications {
             let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
@@ -112,25 +112,25 @@ pub fn extract_backlinks_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backlinks.push(ImplicationInstance::new(implication.clone(), Conjunction { terms }));
+            backimplications.push(ImplicationInstance::new(implication.clone(), Conjunction { terms }));
         }
     }
-    trace!("Returning backlinks {:?}", &backlinks);
+    trace!("Returning backimplications {:?}", &backimplications);
     debug!(
-        "Completed computing backlinks, total count: {}",
-        backlinks.len()
+        "Completed computing backimplications, total count: {}",
+        backimplications.len()
     );
-    Ok(backlinks)
+    Ok(backimplications)
 }
 
 pub fn extract_factor_for_proposition(
     graph: &Graph,
     conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
-    let links = extract_backlinks_from_proposition(graph, &conclusion)?;
+    let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
     let factor = Factor {
         conclusion,
-        conjuncts: links,
+        conjuncts: implications,
     };
     Ok(factor)
 }
@@ -142,9 +142,9 @@ pub fn extract_factor_context_for_proposition(
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
     let mut conjunct_probabilities = vec![];
-    for conjunct_link in &factor.conjuncts {
+    for conjunct_implication in &factor.conjuncts {
         let conjunct_probability =
-            get_conjunction_probability(fact_db.borrow(), &conjunct_link.conjunction)?;
+            get_conjunction_probability(fact_db.borrow(), &conjunct_implication.conjunction)?;
         conjunct_probabilities.push(conjunct_probability);
     }
     Ok(FactorContext {

@@ -171,7 +171,7 @@ impl ScenarioMaker for DatingProb2 {
         let xjack = variable(Domain::Jack);
         let xjill = variable(Domain::Jill);
 
-        let links = vec![
+        let implications = vec![
             // if jack is lonely, he will date any jill
             implication(
                 conjunction(vec![proposition(vec![
@@ -236,11 +236,11 @@ impl ScenarioMaker for DatingProb2 {
             ),
         ];
 
-        for implication in links.iter() {
+        for implication in implications.iter() {
             trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
 
-            // Assuming `store_link` is a method of your GraphicalModel struct
-            graph.store_link(implication)?;
+            // Assuming `store_implication` is a method of your GraphicalModel struct
+            graph.store_implication(implication)?;
         }
 
         // Additional functions

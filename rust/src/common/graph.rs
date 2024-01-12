@@ -56,19 +56,19 @@ impl Graph {
             .collect())
     }
 
-    pub fn store_link(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implication(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         self.redis_connection
             .borrow_mut()
-            .sadd("links", &record)
+            .sadd("implications", &record)
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
-        self.store_links(implication)
+        self.store_implications(implication)
     }
 
-    pub fn store_links(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
+    pub fn store_implications(&mut self, implication: &Implication) -> Result<(), Box<dyn Error>> {
         let search_string = implication.conclusion_string();
         let record =
             serde_json::to_string(implication).map_err(|e| Box::new(e) as Box<dyn Error>)?;
@@ -82,11 +82,11 @@ impl Graph {
     }
 
     // Get all Implications
-    pub fn get_all_links(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<Implication>, Box<dyn Error>> {
         let all_values: Vec<String> = self
             .redis_connection
             .borrow_mut()
-            .smembers("links")
+            .smembers("implications")
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
 
         all_values

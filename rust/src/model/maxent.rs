@@ -1,4 +1,4 @@
-use super::choose::extract_backlinks_from_proposition;
+use super::choose::extract_backimplications_from_proposition;
 use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
 use super::objects::Implication;
@@ -50,13 +50,13 @@ pub fn features_from_factor(
     let mut vec_result = vec![];
     for class_label in CLASS_LABELS {
         let mut result = HashMap::new();
-        for (i, backlink) in factor.factor.conjuncts.iter().enumerate() {
-            debug!("Processing backlink {}", i);
-            let feature = backlink.implication.unique_key();
+        for (i, backimplication) in factor.factor.conjuncts.iter().enumerate() {
+            debug!("Processing backimplication {}", i);
+            let feature = backimplication.implication.unique_key();
             debug!("Generated unique key for feature: {}", feature);
             let probability = 0f64;
             debug!(
-                "Conjunction probability for backlink {}: {}",
+                "Conjunction probability for backimplication {}: {}",
                 i, probability
             );
             let posf = positive_feature(&feature, class_label);
@@ -64,13 +64,13 @@ pub fn features_from_factor(
             result.insert(posf.clone(), probability);
             result.insert(negf.clone(), 1.0 - probability);
             debug!(
-                "Inserted features for backlink {}: positive - {}, negative - {}",
+                "Inserted features for backimplication {}: positive - {}, negative - {}",
                 i, posf, negf
             );
         }
         vec_result.push(result);
     }
-    trace!("features_from_backlinks completed successfully");
+    trace!("features_from_backimplications completed successfully");
     Ok(vec_result)
 }
 
@@ -127,12 +127,12 @@ impl FactorModel for ExponentialModel {
         factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
-        trace!("train_on_example - Getting features from backlinks");
+        trace!("train_on_example - Getting features from backimplications");
         let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
                 trace!(
-                    "train_on_example - Error in features_from_backlinks: {:?}",
+                    "train_on_example - Error in features_from_backimplications: {:?}",
                     e
                 );
                 return Err(e);
@@ -177,7 +177,6 @@ impl FactorModel for ExponentialModel {
             let expected = compute_expected_features(probability, &features[class_label]);
             trace!("train_on_example - Performing SGD update");
             let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
-
             trace!("train_on_example - Saving new weights");
             self.weights.save_weights(&new_weight)?;
         }
@@ -189,7 +188,7 @@ impl FactorModel for ExponentialModel {
             Ok(f) => f,
             Err(e) => {
                 trace!(
-                    "inference_probability - Error in features_from_backlinks: {:?}",
+                    "inference_probability - Error in features_from_backimplications: {:?}",
                     e
                 );
                 return Err(e);

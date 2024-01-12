@@ -6,7 +6,7 @@ use crate::common::fact_db::RedisFactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisClient;
 use crate::model::choose::{
-    extract_backlinks_from_proposition, extract_factor_context_for_proposition,
+    extract_backimplications_from_proposition, extract_factor_context_for_proposition,
 };
 use crate::model::maxent::ExponentialModel;
 use std::borrow::BorrowMut;
@@ -19,9 +19,9 @@ pub fn do_training(
     let fact_db = RedisFactDB::new(redis)?;
     let plan = TrainingPlan::new(redis)?;
     let mut factor_model = ExponentialModel::new(redis)?;
-    trace!("do_training - Getting all links");
-    let links = graph.get_all_links()?;
-    for implication in links {
+    trace!("do_training - Getting all implications");
+    let implications = graph.get_all_implications()?;
+    for implication in implications {
         trace!("do_training - Processing implication: {:?}", implication);
         factor_model.initialize_connection(&implication)?;
     }
@@ -35,7 +35,7 @@ pub fn do_training(
     for proposition in &propositions {
         trace!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_context_for_proposition(&fact_db, &graph, proposition.clone())?;
-        trace!("do_training - Backlinks: {:?}", &factor);
+        trace!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
         match factor_model.train(&factor, probability) {

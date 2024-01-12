@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::model::{
-    choose::extract_backlinks_from_proposition,
+    choose::extract_backimplications_from_proposition,
     maxent::compute_potential,
     weights::{CLASS_LABELS},
 };
