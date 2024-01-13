@@ -115,9 +115,8 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             let children = self
                 .proposition_graph
-                .conjoined_forward_links(conjunct)
-                .expect("Error finding children");
-            for child in &children {
+                .get_group_forward(conjunct);
+            for child in children {
                 self.data.set_lambda_message(
                     &InferenceNode::from_conjunct(conjunct),
                     &InferenceNode::from_proposition(child),
