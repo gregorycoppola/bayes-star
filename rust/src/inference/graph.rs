@@ -31,13 +31,6 @@ pub struct PropositionGraph {
     pub group_forward: HashMap<PropositionGroup, Proposition>,
 }
 
-fn initialize_visit_group(
-    graph: &mut PropositionGraph,
-    single: &PropositionGroup,
-) -> Result<(), Box<dyn Error>> {
-    todo!()
-}
-
 fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
@@ -46,7 +39,9 @@ fn initialize_visit_single(
     for inference_factor in &inference_factors {
         graph.single_backward.insert(inference_factor.conclusion.clone(), inference_factor.premise.clone());
         graph.group_forward.insert(inference_factor.premise.clone(), inference_factor.conclusion.clone());
-        initialize_visit_group(graph, &inference_factor.premise)?;
+        for term in &inference_factor.premise.terms {
+            initialize_visit_single(graph, term)?;
+        }
     }
     Ok(())
 }
