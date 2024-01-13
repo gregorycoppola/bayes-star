@@ -6,7 +6,7 @@ use bayes_star::{
         graph::InferenceGraph, interface::ScenarioMaker, redis::RedisManager,
         resources::FactoryResources,
     },
-    inference::implications,
+    inference::graph,
     model::{
         creators::{
             conjunction, constant, implication, object, predicate, relation, subject, variable,

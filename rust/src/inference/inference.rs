@@ -1,4 +1,4 @@
-use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, implications::PropositionGraph};
+use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, graph::PropositionGraph};
 use crate::{
     common::{interface::FactDB, model::GraphicalModel},
     model::{
