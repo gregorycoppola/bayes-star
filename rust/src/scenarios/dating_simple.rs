@@ -40,7 +40,7 @@ impl ScenarioMaker for SimpleDating {
         &self,
         resources: &FactoryResources,
     ) -> Result<(), Box<dyn Error>> {
-        let mut graph = InferenceGraph::new(resources)?;
+        let mut graph = InferenceGraph::new_mutable(resources)?;
         let mut fact_db = RedisFactDB::new(&resources.redis)?;
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;

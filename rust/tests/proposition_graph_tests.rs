@@ -27,7 +27,7 @@ fn test_get_proposition_forward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());

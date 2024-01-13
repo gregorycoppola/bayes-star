@@ -27,7 +27,7 @@ fn test_get_all_implications() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
     let computed = predicate_graph.get_all_implications().unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
@@ -115,7 +115,7 @@ fn test_get_predicate_forward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
@@ -145,7 +145,7 @@ fn test_get_predicate_backward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
@@ -175,7 +175,7 @@ fn test_get_conjoined_forward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
@@ -212,7 +212,7 @@ fn test_get_conjoined_backward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new(&resources).unwrap();
+    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());

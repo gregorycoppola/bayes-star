@@ -25,7 +25,7 @@ pub struct InferenceGraph {
 
 impl InferenceGraph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
         Ok(InferenceGraph { redis_connection })
     }
