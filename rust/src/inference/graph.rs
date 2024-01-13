@@ -10,8 +10,10 @@ pub struct PropositionGraph {
 }
 
 impl PropositionGraph {
-    fn new(predicate_graph: Rc<InferenceGraph>) -> Result<PropositionGraph, Box<dyn Error>> {
-        Ok(PropositionGraph { predicate_graph })
+    pub fn new(
+        predicate_graph: Rc<InferenceGraph>,
+    ) -> Result<Box<PropositionGraph>, Box<dyn Error>> {
+        Ok(Box::new(PropositionGraph { predicate_graph }))
     }
     pub fn find_roots(
         &self,

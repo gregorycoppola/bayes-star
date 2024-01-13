@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use bayes_star::inference::graph::PropositionGraph;
 use bayes_star::model::config::ConfigurationOptions;
 use bayes_star::{
     common::{
@@ -27,7 +28,6 @@ fn test_get_proposition_forward_links() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
@@ -42,6 +42,8 @@ fn test_get_proposition_forward_links() {
         object(xjill.clone()),
     ]);
 
+    let predicate_graph = InferenceGraph::new_shared(&resources).unwrap();
+    let proposition_graph = PropositionGraph::new(predicate_graph.clone());
     let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
     println!("{:?}", &result);
 }
