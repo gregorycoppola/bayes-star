@@ -25,10 +25,11 @@ pub struct InferenceGraph {
 
 impl InferenceGraph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new_mutable(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
         Ok(InferenceGraph { redis_connection })
     }
+    
     // Store an entity
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
