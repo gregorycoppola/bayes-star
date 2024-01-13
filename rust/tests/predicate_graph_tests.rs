@@ -15,7 +15,7 @@ use bayes_star::{
     },
     scenarios::dating_simple::SimpleDating,
 };
-use log::info;
+use log::{info, trace};
 
 #[test]
 fn test_store_entity() {
@@ -27,12 +27,9 @@ fn test_store_entity() {
     resources.redis.drop_all_dbs().unwrap();
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
-    println!("scenario result: {:?}", result);
+    trace!("scenario result: {:?}", result);
     let predicate_graph = PredicateGraph::new(&resources.redis).unwrap();
-    let implications = predicate_graph.get_all_implications().unwrap();
-    for implication in &implications {
-        println!("implication {:?}", implication);
-    }
+    let computed = predicate_graph.get_all_implications().unwrap();
 
     let exciting = constant(Domain::Verb, "exciting".to_string());
     let lonely = constant(Domain::Verb, "lonely".to_string());
@@ -40,7 +37,7 @@ fn test_store_entity() {
     let date = constant(Domain::Verb, "date".to_string());
     let xjack = variable(Domain::Jack);
     let xjill = variable(Domain::Jill);
-    let implications = vec![
+    let expected = vec![
         // if jack is lonely, he will date any jill
         implication(
             conjunction(vec![predicate(vec![
@@ -104,4 +101,5 @@ fn test_store_entity() {
             ],
         ),
     ];
+    assert_eq!(computed.len(), expected.len());
 }
