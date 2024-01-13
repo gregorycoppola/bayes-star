@@ -1,4 +1,8 @@
-use std::{collections::HashMap, error::Error, rc::Rc};
+use std::{
+    collections::{HashMap, HashSet},
+    error::Error,
+    rc::Rc,
+};
 
 use serde::{Deserialize, Serialize};
 
@@ -29,17 +33,28 @@ pub struct PropositionGraph {
     pub single_forward: HashMap<Proposition, PropositionGroup>,
     pub single_backward: HashMap<Proposition, PropositionGroup>,
     pub group_forward: HashMap<PropositionGroup, Proposition>,
+    pub roots: HashSet<Proposition>,
 }
 
 fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
-    let inference_factors = extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
+    let inference_factors =
+        extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     for inference_factor in &inference_factors {
-        graph.single_backward.insert(inference_factor.conclusion.clone(), inference_factor.premise.clone());
-        graph.group_forward.insert(inference_factor.premise.clone(), inference_factor.conclusion.clone());
+        graph.single_backward.insert(
+            inference_factor.conclusion.clone(),
+            inference_factor.premise.clone(),
+        );
+        graph.group_forward.insert(
+            inference_factor.premise.clone(),
+            inference_factor.conclusion.clone(),
+        );
         for term in &inference_factor.premise.terms {
+            graph
+                .single_forward
+                .insert(term.clone(), inference_factor.premise.clone());
             initialize_visit_single(graph, term)?;
         }
     }
@@ -49,7 +64,7 @@ fn initialize_visit_single(
 impl PropositionGraph {
     pub fn new_mutable(
         predicate_graph: Rc<InferenceGraph>,
-        target:&Proposition,
+        target: &Proposition,
     ) -> Result<Box<PropositionGraph>, Box<dyn Error>> {
         let mut graph = PropositionGraph {
             predicate_graph,
