@@ -33,7 +33,7 @@ pub struct PropositionGraph {
 
 fn initialize_visit_group(
     graph: &mut PropositionGraph,
-    single: &Proposition,
+    single: &PropositionGroup,
 ) -> Result<(), Box<dyn Error>> {
     todo!()
 }
@@ -43,7 +43,12 @@ fn initialize_visit_single(
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     let inference_factors = extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
-    todo!()
+    for inference_factor in &inference_factors {
+        graph.single_backward.insert(inference_factor.conclusion.clone(), inference_factor.premise.clone());
+        graph.group_forward.insert(inference_factor.premise.clone(), inference_factor.conclusion.clone());
+        initialize_visit_group(graph, &inference_factor.premise)?;
+    }
+    Ok(())
 }
 
 impl PropositionGraph {
