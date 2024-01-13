@@ -1,5 +1,4 @@
 use super::choose::extract_backimplications_from_proposition;
-use super::config::CONFIG;
 use super::conjunction::get_conjunction_probability;
 use super::objects::PredicateImplication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
@@ -98,7 +97,6 @@ pub fn do_sgd_update(
         let ev = expected_features.get(feature).unwrap_or(&0.0);
         let new_weight = wv + LEARNING_RATE * (gv - ev);
         let loss = (gv - ev).abs();
-        let config = CONFIG.get().expect("Config not initialized");
         trace!("config {:?}", &config);
         if config.print_training_loss {
             println!(

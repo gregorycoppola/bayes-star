@@ -1,5 +1,5 @@
 use bayes_star::model::config::set_config;
-use bayes_star::model::config::Config;
+use bayes_star::model::config::ConfigurationOptions;
 use bayes_star::scenarios::dating_prob2::SimpleDating;
 use bayes_star::common::run::setup_and_train;
 use env_logger::{Builder, Env};
@@ -42,10 +42,12 @@ fn main() {
         .parse()
         .expect("entities_per_domain needs to be an integer");
     let print_training_loss = matches.is_present("print_training_loss");
-    set_config(Config {
+    let resources = FactoryResources
+    set_config(ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
     }).expect("Could not set config.");
+    // Run.
     let scenario_maker = SimpleDating{};
     setup_and_train(&scenario_maker).expect("Error in training.");
     warn!("program done");

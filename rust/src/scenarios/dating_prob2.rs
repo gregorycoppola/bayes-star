@@ -8,7 +8,6 @@ use crate::model::creators::predicate;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
-        config::CONFIG,
         creators::{conjunction, constant, implication, object, proposition, relation, subject, variable},
         objects::{Domain, Entity, RoleMap},
     },
