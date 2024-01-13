@@ -11,7 +11,8 @@ fn test_store_entity() {
         entities_per_domain: 12,
         print_training_loss: false,
     };
-    let resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+    let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+    resources.redis.drop_all_dbs().unwrap();
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     info!("scenario result: {:?}", result);
