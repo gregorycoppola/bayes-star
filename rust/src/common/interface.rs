@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::model::objects::{PredicateConjunction, ImplicationLink, Predicate, Proposition};
+use crate::model::objects::{PredicateConjunction, InferenceLink, Predicate, Proposition};
 
 use super::{graph::InferenceGraph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager, resources::FactoryResources};
 
