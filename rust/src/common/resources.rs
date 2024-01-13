@@ -5,8 +5,8 @@ use crate::model::config::ConfigurationOptions;
 use super::redis::RedisManager;
 
 pub struct FactoryResources {
-    options: ConfigurationOptions,
-    redis:RedisManager,
+    pub config: ConfigurationOptions,
+    pub redis:RedisManager,
 }
 
 impl FactoryResources {

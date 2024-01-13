@@ -1,4 +1,5 @@
 use super::choose::extract_backimplications_from_proposition;
+use super::config::ConfigurationOptions;
 use super::conjunction::get_conjunction_probability;
 use super::objects::PredicateImplication;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
@@ -6,6 +7,7 @@ use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
 use crate::common::model::{Factor, GraphicalModel};
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
+use crate::common::resources::FactoryResources;
 use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::{ImplicationInstance, Predicate};
 use crate::model::weights::CLASS_LABELS;
@@ -14,14 +16,18 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
 pub struct ExponentialModel {
+    config: ConfigurationOptions,
     weights: ExponentialWeights,
 }
 
 impl ExponentialModel {
-    pub fn new(redis:&RedisManager) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
-        let connection = redis.get_connection()?;
+    pub fn new(resources: &FactoryResources) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
+        let connection = resources.redis.get_connection()?;
         let weights = ExponentialWeights::new(connection);
-        Ok(Box::new(ExponentialModel { weights }))
+        Ok(Box::new(ExponentialModel {
+            config: resources.config.clone(),
+            weights,
+        }))
     }
 }
 
@@ -90,6 +96,7 @@ pub fn do_sgd_update(
     weights: &HashMap<String, f64>,
     gold_features: &HashMap<String, f64>,
     expected_features: &HashMap<String, f64>,
+    print_training_loss: bool,
 ) -> HashMap<String, f64> {
     let mut new_weights = HashMap::new();
     for (feature, &wv) in weights {
@@ -97,16 +104,10 @@ pub fn do_sgd_update(
         let ev = expected_features.get(feature).unwrap_or(&0.0);
         let new_weight = wv + LEARNING_RATE * (gv - ev);
         let loss = (gv - ev).abs();
-        trace!("config {:?}", &config);
-        if config.print_training_loss {
+        if print_training_loss {
             println!(
                 "feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}",
-                feature,
-                gv,
-                ev,
-                loss,
-                wv,
-                new_weight
+                feature, gv, ev, loss, wv, new_weight
             );
         }
         new_weights.insert(feature.clone(), new_weight);
@@ -115,7 +116,10 @@ pub fn do_sgd_update(
 }
 
 impl FactorModel for ExponentialModel {
-    fn initialize_connection(&mut self, implication: &PredicateImplication) -> Result<(), Box<dyn Error>> {
+    fn initialize_connection(
+        &mut self,
+        implication: &PredicateImplication,
+    ) -> Result<(), Box<dyn Error>> {
         self.weights.initialize_weights(implication)?;
         Ok(())
     }
@@ -174,7 +178,12 @@ impl FactorModel for ExponentialModel {
             let gold = compute_expected_features(this_true_prob, &features[class_label]);
             let expected = compute_expected_features(probability, &features[class_label]);
             trace!("train_on_example - Performing SGD update");
-            let new_weight = do_sgd_update(&weight_vectors[class_label], &gold, &expected);
+            let new_weight = do_sgd_update(
+                &weight_vectors[class_label],
+                &gold,
+                &expected,
+                self.config.print_training_loss,
+            );
             trace!("train_on_example - Saving new weights");
             self.weights.save_weights(&new_weight)?;
         }
