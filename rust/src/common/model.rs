@@ -42,7 +42,7 @@ pub struct  Factor {
 #[derive(Debug)]
 pub struct  FactorContext{
     pub factor: Factor,
-    pub conjunct_probabilities: Vec<f64>,
+    pub conjoined_probabilities: Vec<f64>,
 }
 
 pub trait FactorModel {

@@ -189,13 +189,13 @@ impl InferenceGraph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn conjunct_backward_links(
+    pub fn conjoined_backward_links(
         &self,
         conjunction: &ConjoinedPredicate,
     ) -> Result<Vec<Predicate>, Box<dyn Error>> {
         Ok(conjunction.terms.clone())
     }
-    pub fn conjunct_forward_links(
+    pub fn conjoined_forward_links(
         &self,
         conjunction: &ConjoinedPredicate,
     ) -> Result<Vec<InferenceLink>, Box<dyn Error>> {

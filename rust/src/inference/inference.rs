@@ -23,7 +23,7 @@ fn inference_proposition_probability(
     todo!()
 }
 
-fn inference_conjunct_probability(
+fn inference_conjoined_probability(
     fact_db: &dyn FactDB,
     conjunct: &PropositionConjunction,
 ) -> Result<f64, Box<dyn Error>> {
@@ -105,7 +105,7 @@ impl Inferencer {
             self.initialize_pi_proposition(child, false)?;
         }
         if is_root {
-            let prior_prob = inference_conjunct_probability(self.model.fact_db.borrow(), conjunct)?;
+            let prior_prob = inference_conjoined_probability(self.model.fact_db.borrow(), conjunct)?;
             self.data
                 .set_pi_value(&InferenceNode::from_conjunct(conjunct), 1, prior_prob);
             self.data.set_pi_value(

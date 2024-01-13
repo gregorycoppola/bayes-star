@@ -166,7 +166,7 @@ fn test_get_predicate_backward_links() {
 }
 
 #[test]
-fn test_get_conjunct_forward_links() {
+fn test_get_conjoined_forward_links() {
     let config = ConfigurationOptions {
         entities_per_domain: 12,
         print_training_loss: false,
@@ -198,12 +198,12 @@ fn test_get_conjunct_forward_links() {
         ]),
     ]);
 
-    let result = predicate_graph.conjunct_forward_links(&conjoined).unwrap();
+    let result = predicate_graph.conjoined_forward_links(&conjoined).unwrap();
     println!("{:?}", &result);
 }
 
 #[test]
-fn test_get_conjunct_backward_links() {
+fn test_get_conjoined_backward_links() {
     let config = ConfigurationOptions {
         entities_per_domain: 12,
         print_training_loss: false,
@@ -235,6 +235,6 @@ fn test_get_conjunct_backward_links() {
         ]),
     ]);
 
-    let result = predicate_graph.conjunct_backward_links(&conjoined).unwrap();
+    let result = predicate_graph.conjoined_backward_links(&conjoined).unwrap();
     println!("{:?}", &result);
 }

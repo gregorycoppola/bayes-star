@@ -141,14 +141,14 @@ pub fn extract_factor_context_for_proposition(
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
-    let mut conjunct_probabilities = vec![];
-    for conjunct_implication in &factor.conjuncts {
-        let conjunct_probability =
-            get_conjunction_probability(fact_db.borrow(), &conjunct_implication.conjunction)?;
-        conjunct_probabilities.push(conjunct_probability);
+    let mut conjoined_probabilities = vec![];
+    for conjoined_implication in &factor.conjuncts {
+        let conjoined_probability =
+            get_conjunction_probability(fact_db.borrow(), &conjoined_implication.conjunction)?;
+        conjoined_probabilities.push(conjoined_probability);
     }
     Ok(FactorContext {
         factor,
-        conjunct_probabilities,
+        conjoined_probabilities,
     })
 }
