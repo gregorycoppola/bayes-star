@@ -66,10 +66,10 @@ fn initialize_visit_single(
 }
 
 impl PropositionGraph {
-    pub fn new_mutable(
+    pub fn new_shared(
         predicate_graph: Rc<InferenceGraph>,
         target: &Proposition,
-    ) -> Result<Box<PropositionGraph>, Box<dyn Error>> {
+    ) -> Result<Rc<PropositionGraph>, Box<dyn Error>> {
         let mut graph = PropositionGraph {
             predicate_graph,
             single_forward: HashMap::new(),
@@ -78,7 +78,7 @@ impl PropositionGraph {
             roots: HashSet::new(),
         };
         initialize_visit_single(&mut graph, target)?;
-        Ok(Box::new(graph))
+        Ok(Rc::new(graph))
     }
     pub fn find_roots(
         &self,
