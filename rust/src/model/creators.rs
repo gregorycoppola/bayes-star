@@ -5,12 +5,12 @@ use crate::model::objects::{
     ConstantArgument, LabeledArgument, PredicateInferenceFactor, Predicate, VariableArgument,
 };
 
-pub fn conjunction(terms: Vec<Predicate>) -> ConjoinedPredicate {
-    ConjoinedPredicate { terms }
+pub fn conjunction(terms: Vec<Predicate>) -> PredicateGroup {
+    PredicateGroup { terms }
 }
 
 pub fn implication(
-    premise: ConjoinedPredicate,
+    premise: PredicateGroup,
     conclusion: Predicate,
     role_maps: Vec<RoleMap>,
 ) -> PredicateInferenceFactor {

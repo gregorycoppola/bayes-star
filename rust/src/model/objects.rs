@@ -200,13 +200,13 @@ impl Proposition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ConjoinedPredicate {
+pub struct PredicateGroup {
     pub terms: Vec<Predicate>,
 }
 
-impl ConjoinedPredicate {
+impl PredicateGroup {
     pub fn new(terms: Vec<Predicate>) -> Self {
-        ConjoinedPredicate { terms }
+        PredicateGroup { terms }
     }
 
     pub fn hash_string(&self) -> String {
@@ -232,7 +232,7 @@ impl PropositionGroup {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PredicateInferenceFactor {
-    pub premise: ConjoinedPredicate,
+    pub premise: PredicateGroup,
     pub role_maps: GroupRoleMap,
     pub conclusion: Predicate,
 }
