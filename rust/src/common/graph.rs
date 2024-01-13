@@ -18,7 +18,7 @@ use crate::{
 };
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
-use std::{cell::RefCell, error::Error};
+use std::{cell::RefCell, error::Error, rc::Rc};
 pub struct InferenceGraph {
     redis_connection: RefCell<redis::Connection>,
 }
@@ -28,6 +28,11 @@ impl InferenceGraph {
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
         Ok(Box::new(InferenceGraph { redis_connection }))
+    }
+
+    pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
+        let redis_connection = resources.redis.get_connection()?;
+        Ok(Rc::new(InferenceGraph { redis_connection }))
     }
     
     // Store an entity
