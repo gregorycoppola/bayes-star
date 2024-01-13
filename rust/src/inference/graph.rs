@@ -1,10 +1,13 @@
 use std::{error::Error, rc::Rc};
 
 use crate::{
-    common::{graph::InferenceGraph, redis::RedisManager},
-    model::objects::{Proposition, PropositionConjunction},
+    common::{graph::InferenceGraph, redis::RedisManager, model::Factor},
+    model::{objects::{Proposition, PropositionConjunction, InferenceLink}, choose::compute_search_predicates},
 };
 
+fn proposition_implication_from(implication:&InferenceLink, proposition: &Proposition) -> Result<Factor, Box<dyn Error>> {
+    todo!()
+}
 pub struct PropositionGraph {
     predicate_graph: Rc<InferenceGraph>,
 }
@@ -25,7 +28,16 @@ impl PropositionGraph {
         &self,
         proposition: &Proposition,
     ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
-        todo!()
+        let search_predicates = compute_search_predicates(proposition)?;
+        let mut result = vec![];
+        for predicate in &search_predicates {
+            let predicate_backward = self.predicate_graph.predicate_backward_links(predicate)?;
+            for inference_link in &predicate_backward {
+                let proposition_implication = proposition_implication_from(inference_link, proposition)?;
+                result.push(proposition_implication.conjuncts);
+            }
+        }
+        Ok(result)
     }
     pub fn proposition_forward_links(
         &self,
