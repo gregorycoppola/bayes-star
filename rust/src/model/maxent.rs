@@ -52,31 +52,32 @@ pub fn compute_potential(weights: &HashMap<String, f64>, features: &HashMap<Stri
 pub fn features_from_factor(
     factor: &FactorContext,
 ) -> Result<Vec<HashMap<String, f64>>, Box<dyn Error>> {
-    let mut vec_result = vec![];
-    for class_label in CLASS_LABELS {
-        let mut result = HashMap::new();
-        for (i, backimplication) in factor.factor.conjuncts.iter().enumerate() {
-            debug!("Processing backimplication {}", i);
-            let feature = backimplication.implication.unique_key();
-            debug!("Generated unique key for feature: {}", feature);
-            let probability = 0f64;
-            debug!(
-                "Conjunction probability for backimplication {}: {}",
-                i, probability
-            );
-            let posf = positive_feature(&feature, class_label);
-            let negf = negative_feature(&feature, class_label);
-            result.insert(posf.clone(), probability);
-            result.insert(negf.clone(), 1.0 - probability);
-            debug!(
-                "Inserted features for backimplication {}: positive - {}, negative - {}",
-                i, posf, negf
-            );
-        }
-        vec_result.push(result);
-    }
-    trace!("features_from_backimplications completed successfully");
-    Ok(vec_result)
+    todo!()
+    // let mut vec_result = vec![];
+    // for class_label in CLASS_LABELS {
+    //     let mut result = HashMap::new();
+    //     for (i, backimplication) in factor.factor.premise.terms.iter().enumerate() {
+    //         debug!("Processing backimplication {}", i);
+    //         let feature = backimplication.implication.unique_key();
+    //         debug!("Generated unique key for feature: {}", feature);
+    //         let probability = 0f64;
+    //         debug!(
+    //             "Conjunction probability for backimplication {}: {}",
+    //             i, probability
+    //         );
+    //         let posf = positive_feature(&feature, class_label);
+    //         let negf = negative_feature(&feature, class_label);
+    //         result.insert(posf.clone(), probability);
+    //         result.insert(negf.clone(), 1.0 - probability);
+    //         debug!(
+    //             "Inserted features for backimplication {}: positive - {}, negative - {}",
+    //             i, posf, negf
+    //         );
+    //     }
+    //     vec_result.push(result);
+    // }
+    // trace!("features_from_backimplications completed successfully");
+    // Ok(vec_result)
 }
 
 pub fn compute_expected_features(
