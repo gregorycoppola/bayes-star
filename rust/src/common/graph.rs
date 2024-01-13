@@ -95,9 +95,9 @@ impl InferenceGraph {
     fn store_predicate_backward_link(
         &mut self,
         conclusion: &Predicate,
-        premise: &ConjoinedPredicate,
+        inference: &InferenceLink,
     ) -> Result<(), Box<dyn Error>> {
-        let record = serialize_record(premise)?;
+        let record = serialize_record(inference)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             &Self::predicate_backward_set_name(conclusion),
@@ -123,7 +123,7 @@ impl InferenceGraph {
         implication: &InferenceLink,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
-        self.store_predicate_backward_link(&implication.conclusion, &implication.premise)?;
+        self.store_predicate_backward_link(&implication.conclusion, &implication)?;
         self.store_conjunction_forward_link(&implication.premise, &implication)?;
         self.store_predicate_forward_links(&implication.premise)?;
         Ok(())
