@@ -12,7 +12,7 @@ use crate::{
         maxent::ExponentialModel,
         objects::{
             Domain, Entity, ImplicationInstance, Predicate, ConjoinedPredicate,
-            PredicateInferenceFactor, Proposition, PropositionConjunction,
+            PredicateInferenceFactor, Proposition, PropositionGroup,
         },
     },
 };

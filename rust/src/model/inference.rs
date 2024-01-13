@@ -8,11 +8,11 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, ConjoinedPredicate, Predicate, Proposition, PropositionConjunction};
+use super::objects::{ImplicationInstance, ConjoinedPredicate, Predicate, Proposition, PropositionGroup};
 
 fn print_premise_probabilities(
     storage: &mut GraphicalModel,
-    conjunction: &PropositionConjunction,
+    conjunction: &PropositionGroup,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
         match storage.fact_db.get_proposition_probability(term) {

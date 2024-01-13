@@ -14,7 +14,7 @@ pub fn implication(
     conclusion: Predicate,
     role_maps: Vec<RoleMap>,
 ) -> PredicateInferenceFactor {
-    let role_maps = ConjunctionRoleMap { role_maps };
+    let role_maps = GroupRoleMap { role_maps };
     PredicateInferenceFactor {
         premise,
         conclusion,

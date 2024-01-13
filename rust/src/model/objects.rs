@@ -220,20 +220,20 @@ impl ConjoinedPredicate {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PropositionConjunction {
+pub struct PropositionGroup {
     pub terms: Vec<Proposition>,
 }
 
-impl PropositionConjunction {
+impl PropositionGroup {
     pub fn new(terms: Vec<Proposition>) -> Self {
-        PropositionConjunction { terms }
+        PropositionGroup { terms }
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PredicateInferenceFactor {
     pub premise: ConjoinedPredicate,
-    pub role_maps: ConjunctionRoleMap,
+    pub role_maps: GroupRoleMap,
     pub conclusion: Predicate,
 }
 
@@ -296,17 +296,17 @@ impl fmt::Display for RoleMap {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ConjunctionRoleMap {
+pub struct GroupRoleMap {
     pub role_maps:Vec<RoleMap>,
 }
 
-impl ConjunctionRoleMap {
+impl GroupRoleMap {
     pub fn new(role_maps:Vec<RoleMap>) -> Self {
-        ConjunctionRoleMap{role_maps}
+        GroupRoleMap{role_maps}
     }
 }
 
-impl fmt::Display for ConjunctionRoleMap {
+impl fmt::Display for GroupRoleMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let role_maps_str = self.role_maps
             .iter()
@@ -321,11 +321,11 @@ impl fmt::Display for ConjunctionRoleMap {
 #[derive(Debug, Clone)]
 pub struct ImplicationInstance {
     pub implication: PredicateInferenceFactor,
-    pub conjunction: PropositionConjunction,
+    pub conjunction: PropositionGroup,
 }
 
 impl ImplicationInstance {
-    pub fn new(implication: PredicateInferenceFactor, conjunction: PropositionConjunction) -> Self {
+    pub fn new(implication: PredicateInferenceFactor, conjunction: PropositionGroup) -> Self {
         ImplicationInstance {
             implication,
             conjunction,

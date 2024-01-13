@@ -6,7 +6,7 @@ use super::{
 };
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, GraphicalModel};
-use crate::model::objects::PropositionConjunction;
+use crate::model::objects::PropositionGroup;
 use crate::{
     common::{interface::FactDB, model::Factor},
     model::objects::{ImplicationInstance, Predicate, ConjoinedPredicate},
@@ -111,7 +111,7 @@ pub fn extract_backimplications_from_proposition(
             }
             backimplications.push(ImplicationInstance::new(
                 implication.clone(),
-                PropositionConjunction { terms },
+                PropositionGroup { terms },
             ));
         }
     }

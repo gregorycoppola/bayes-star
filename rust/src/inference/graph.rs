@@ -4,7 +4,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::{
     common::{graph::InferenceGraph, redis::RedisManager, model::Factor},
-    model::{objects::{Proposition, PropositionConjunction, PredicateInferenceFactor, ConjunctionRoleMap}, choose::compute_search_predicates},
+    model::{objects::{Proposition, PropositionGroup, PredicateInferenceFactor, GroupRoleMap}, choose::compute_search_predicates},
 };
 
 fn proposition_implication_from(implication:&PredicateInferenceFactor, proposition: &Proposition) -> Result<Factor, Box<dyn Error>> {
@@ -13,8 +13,8 @@ fn proposition_implication_from(implication:&PredicateInferenceFactor, propositi
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionInferenceFactor {
-    pub premise: PropositionConjunction,
-    pub role_maps: ConjunctionRoleMap,
+    pub premise: PropositionGroup,
+    pub role_maps: GroupRoleMap,
     pub conclusion: Proposition,
 }
 
@@ -37,7 +37,7 @@ impl PropositionGraph {
     pub fn proposition_backward_links(
         &self,
         proposition: &Proposition,
-    ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
+    ) -> Result<Vec<PropositionGroup>, Box<dyn Error>> {
         todo!()
         // let search_predicates = compute_search_predicates(proposition)?;
         // let mut result = vec![];
@@ -53,18 +53,18 @@ impl PropositionGraph {
     pub fn proposition_forward_links(
         &self,
         proposition: &Proposition,
-    ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
+    ) -> Result<Vec<PropositionGroup>, Box<dyn Error>> {
         todo!()
     }
     pub fn conjoined_backward_links(
         &self,
-        conjoined: &PropositionConjunction,
+        conjoined: &PropositionGroup,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         Ok(conjoined.terms.clone())
     }
     pub fn conjoined_forward_links(
         &self,
-        conjoined: &PropositionConjunction,
+        conjoined: &PropositionGroup,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
