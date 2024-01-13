@@ -79,12 +79,12 @@ impl PropositionGraph {
         Ok(Rc::new(graph))
     }
     
-    pub fn get_single_forward(&self, key: &Proposition) -> impl Iterator<Item = &PropositionGroup> {
-        self.single_forward.get(key).into_iter().flat_map(|v| v.iter())
+    pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
+        self.single_forward.get(key).unwrap().clone()
     }
 
-    pub fn get_single_backward(&self, key: &Proposition) -> impl Iterator<Item = &PropositionGroup> {
-        self.single_backward.get(key).into_iter().flat_map(|v| v.iter())
+    pub fn get_single_backward(&self, key: &Proposition) ->  Vec<PropositionGroup> {
+        self.single_backward.get(key).unwrap().clone()
     }
 
     pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
