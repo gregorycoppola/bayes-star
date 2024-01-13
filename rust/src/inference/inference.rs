@@ -80,9 +80,8 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             let children = self
                 .proposition_graph
-                .proposition_forward_links(node)
-                .expect("Error finding children");
-            for child in &children {
+                .get_single_forward(node);
+            for child in children {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
                     &InferenceNode::from_conjunct(child),
@@ -155,7 +154,7 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.proposition_graph.proposition_forward_links(node)?;
+        let children = self.proposition_graph.get_single_forward(node)?;
         for child in &children {
             self.initialize_lambda_conjunct(child)?;
         }
