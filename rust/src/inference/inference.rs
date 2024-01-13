@@ -100,7 +100,7 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         let children = self.proposition_graph.get_group_forward(conjunct);
         for child in children {
-            self.initialize_pi_proposition(child, false)?;
+            self.initialize_pi_proposition(&child, false)?;
         }
         if is_root {
             let prior_prob = inference_conjoined_probability(self.model.fact_db.borrow(), conjunct)?;
@@ -119,7 +119,7 @@ impl Inferencer {
             for child in children {
                 self.data.set_lambda_message(
                     &InferenceNode::from_conjunct(conjunct),
-                    &InferenceNode::from_proposition(child),
+                    &InferenceNode::from_proposition(&child),
                     outcome,
                     1f64,
                 );
@@ -179,7 +179,7 @@ impl Inferencer {
         }
         let children = self.proposition_graph.get_group_forward(conjunct);
         for child in children {
-            self.initialize_lambda_proposition(child)?;
+            self.initialize_lambda_proposition(&child)?;
         }
         Ok(())
     }
