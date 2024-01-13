@@ -15,9 +15,9 @@ use std::error::Error;
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let graph = InferenceGraph::new_mutable(resources)?;
-    let fact_db = RedisFactDB::new(&resources.redis)?;
+    let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
-    let mut factor_model = ExponentialModel::new(&resources)?;
+    let mut factor_model = ExponentialModel::new_mutable(&resources)?;
     trace!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
     for implication in implications {

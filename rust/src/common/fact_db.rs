@@ -19,7 +19,7 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new(client: &RedisManager) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Box::new(RedisFactDB { redis_connection }))
     }

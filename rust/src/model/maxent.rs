@@ -21,7 +21,7 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new(resources: &FactoryResources) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.redis.get_connection()?;
         let weights = ExponentialWeights::new(connection);
         Ok(Box::new(ExponentialModel {
