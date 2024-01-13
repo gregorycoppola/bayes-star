@@ -129,8 +129,8 @@ impl Inferencer {
     }
 
     pub fn initialize_lambda(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        let roots = self.proposition_graph.find_roots(proposition)?;
-        for root in &roots {
+        let roots = self.proposition_graph.get_roots();
+        for root in roots {
             self.initialize_lambda_proposition(root)?;
         }
         Ok(())
