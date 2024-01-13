@@ -64,7 +64,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.proposition_graph.children_of_proposition(node)?;
+        let children = self.proposition_graph.proposition_forward_links(node)?;
         for child in &children {
             self.initialize_pi_conjunct(child, false)?;
         }
@@ -81,7 +81,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             let children = self
                 .proposition_graph
-                .children_of_proposition(node)
+                .proposition_forward_links(node)
                 .expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(
@@ -100,7 +100,7 @@ impl Inferencer {
         conjunct: &PropositionConjunction,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.proposition_graph.children_of_conjunct(conjunct)?;
+        let children = self.proposition_graph.conjoined_forward_links(conjunct)?;
         for child in &children {
             self.initialize_pi_proposition(child, false)?;
         }
@@ -117,7 +117,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             let children = self
                 .proposition_graph
-                .children_of_conjunct(conjunct)
+                .conjoined_forward_links(conjunct)
                 .expect("Error finding children");
             for child in &children {
                 self.data.set_lambda_message(
@@ -146,7 +146,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_proposition(node), outcome, 1f64);
-            let parents = self.proposition_graph.parents_of_proposition(node)?;
+            let parents = self.proposition_graph.proposition_backward_links(node)?;
             for parent in &parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
@@ -156,7 +156,7 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.proposition_graph.children_of_proposition(node)?;
+        let children = self.proposition_graph.proposition_forward_links(node)?;
         for child in &children {
             self.initialize_lambda_conjunct(child)?;
         }
@@ -170,7 +170,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_conjunct(conjunct), outcome, 1f64);
-            let parents = self.proposition_graph.parents_of_conjunct(conjunct)?;
+            let parents = self.proposition_graph.conjoined_backward_links(conjunct)?;
             for parent in &parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_conjunct(conjunct),
@@ -180,7 +180,7 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.proposition_graph.children_of_conjunct(conjunct)?;
+        let children = self.proposition_graph.conjoined_forward_links(conjunct)?;
         for child in &children {
             self.initialize_lambda_proposition(child)?;
         }

@@ -21,25 +21,25 @@ impl PropositionGraph {
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_proposition(
+    pub fn proposition_backward_links(
         &self,
         x: &Proposition,
     ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn children_of_proposition(
+    pub fn proposition_forward_links(
         &self,
         root: &Proposition,
     ) -> Result<Vec<PropositionConjunction>, Box<dyn Error>> {
         todo!()
     }
-    pub fn parents_of_conjunct(
+    pub fn conjoined_backward_links(
         &self,
         conjunction: &PropositionConjunction,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         Ok(conjunction.terms.clone())
     }
-    pub fn children_of_conjunct(
+    pub fn conjoined_forward_links(
         &self,
         conjunction: &PropositionConjunction,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
