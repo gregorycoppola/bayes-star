@@ -3,7 +3,7 @@ use std::{error::Error, rc::Rc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    common::{graph::InferenceGraph, model::Factor, redis::RedisManager},
+    common::{graph::InferenceGraph, redis::RedisManager},
     model::{
         choose::compute_search_predicates,
         objects::{GroupRoleMap, PredicateInferenceFactor, Proposition, PropositionGroup},
@@ -13,7 +13,7 @@ use crate::{
 fn proposition_implication_from(
     implication: &PredicateInferenceFactor,
     proposition: &Proposition,
-) -> Result<Factor, Box<dyn Error>> {
+) -> Result<PropositionInferenceFactor, Box<dyn Error>> {
     todo!()
 }
 
