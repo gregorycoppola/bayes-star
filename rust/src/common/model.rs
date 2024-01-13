@@ -11,18 +11,18 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, graph::PredicateGraph, fact_db::RedisFactDB, resources::FactoryResources,
+    redis::RedisManager, graph::InferenceGraph, fact_db::RedisFactDB, resources::FactoryResources,
 };
 
 pub struct GraphicalModel {
-    pub graph: PredicateGraph,
+    pub graph: InferenceGraph,
     pub model: Box<dyn FactorModel>,
     pub fact_db: Box<dyn FactDB>,
 }
 
 impl GraphicalModel {
     pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
-        let graph = PredicateGraph::new(resources)?;
+        let graph = InferenceGraph::new(resources)?;
         let model = ExponentialModel::new(&resources)?;
         let fact_db = RedisFactDB::new(&resources.redis)?;
         Ok(GraphicalModel {

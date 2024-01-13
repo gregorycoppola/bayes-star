@@ -4,7 +4,7 @@ use super::{
     conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
-use crate::common::graph::PredicateGraph;
+use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, GraphicalModel};
 use crate::model::objects::PropositionConjunction;
 use crate::{
@@ -75,7 +75,7 @@ pub fn compute_search_predicates(
 }
 
 pub fn extract_backimplications_from_proposition(
-    graph: &PredicateGraph,
+    graph: &InferenceGraph,
     conclusion: &Proposition,
 ) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
     debug!(
@@ -124,7 +124,7 @@ pub fn extract_backimplications_from_proposition(
 }
 
 pub fn extract_factor_for_proposition(
-    graph: &PredicateGraph,
+    graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<Factor, Box<dyn Error>> {
     let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
@@ -137,7 +137,7 @@ pub fn extract_factor_for_proposition(
 
 pub fn extract_factor_context_for_proposition(
     fact_db: &Box<dyn FactDB>,
-    graph: &PredicateGraph,
+    graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;

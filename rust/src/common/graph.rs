@@ -19,15 +19,15 @@ use crate::{
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error};
-pub struct PredicateGraph {
+pub struct InferenceGraph {
     redis_connection: RefCell<redis::Connection>,
 }
 
-impl PredicateGraph {
+impl InferenceGraph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
-        Ok(PredicateGraph { redis_connection })
+        Ok(InferenceGraph { redis_connection })
     }
     // Store an entity
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {

@@ -1,4 +1,4 @@
-use super::graph::PredicateGraph;
+use super::graph::InferenceGraph;
 use super::interface::{FactDB, ScenarioMaker};
 use super::model::FactorModel;
 use super::resources::FactoryResources;
@@ -14,7 +14,7 @@ use std::borrow::BorrowMut;
 use std::error::Error;
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
-    let graph = PredicateGraph::new(resources)?;
+    let graph = InferenceGraph::new(resources)?;
     let fact_db = RedisFactDB::new(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new(&resources)?;

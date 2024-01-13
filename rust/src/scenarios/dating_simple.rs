@@ -1,5 +1,5 @@
 use crate::common::fact_db::RedisFactDB;
-use crate::common::graph::PredicateGraph;
+use crate::common::graph::InferenceGraph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisManager;
@@ -40,7 +40,7 @@ impl ScenarioMaker for SimpleDating {
         &self,
         resources: &FactoryResources,
     ) -> Result<(), Box<dyn Error>> {
-        let mut graph = PredicateGraph::new(resources)?;
+        let mut graph = InferenceGraph::new(resources)?;
         let mut fact_db = RedisFactDB::new(&resources.redis)?;
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
