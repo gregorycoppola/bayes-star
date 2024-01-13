@@ -117,4 +117,20 @@ fn test_get_predicate_forward_links() {
     let result = scenario_maker.setup_scenario(&resources);
     trace!("scenario result: {:?}", result);
     let predicate_graph = InferenceGraph::new(&resources).unwrap();
+
+    let exciting = constant(Domain::Verb, "exciting".to_string());
+    let lonely = constant(Domain::Verb, "lonely".to_string());
+    let like = constant(Domain::Verb, "like".to_string());
+    let date = constant(Domain::Verb, "date".to_string());
+    let xjack = variable(Domain::Jack);
+    let xjill = variable(Domain::Jill);
+
+    let predicate = predicate(vec![
+        subject(xjack.clone()),
+        relation(like.clone()),
+        object(xjill.clone()),
+    ]);
+
+    let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
+    println!("{:?}", &result);
 }
