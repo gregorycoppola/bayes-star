@@ -42,6 +42,7 @@ fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
+    let inference_factors = graph.predicate_graph.proposition_backward_links(single)?;
     todo!()
 }
 
