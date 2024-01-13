@@ -3,10 +3,9 @@ use std::collections::HashMap;
 use bayes_star::model::config::ConfigurationOptions;
 use bayes_star::{
     common::{
-        graph::InferenceGraph, interface::ScenarioMaker, redis::RedisManager,
+        graph::InferenceGraph, interface::ScenarioMaker,
         resources::FactoryResources,
     },
-    inference::graph,
     model::{
         creators::{
             conjunction, constant, implication, object, predicate, relation, subject, variable,
@@ -15,7 +14,7 @@ use bayes_star::{
     },
     scenarios::dating_simple::SimpleDating,
 };
-use log::{info, trace};
+use log::trace;
 
 #[test]
 fn test_get_all_implications() {
