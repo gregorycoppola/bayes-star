@@ -87,8 +87,8 @@ impl PropositionGraph {
         self.single_backward.get(key).into_iter().flat_map(|v| v.iter())
     }
 
-    pub fn get_group_forward(&self, key: &PropositionGroup) -> impl Iterator<Item = &Proposition> {
-        self.group_forward.get(key).into_iter().flat_map(|v| v.iter())
+    pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
+        self.group_forward.get(key).unwrap().clone()
     }
 
     pub fn get_group_backward(&self, key: &PropositionGroup) -> Vec<Proposition> {

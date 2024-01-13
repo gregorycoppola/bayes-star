@@ -177,8 +177,8 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.proposition_graph.conjoined_forward_links(conjunct)?;
-        for child in &children {
+        let children = self.proposition_graph.get_group_forward(conjunct);
+        for child in children {
             self.initialize_lambda_proposition(child)?;
         }
         Ok(())
