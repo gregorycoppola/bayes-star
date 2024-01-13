@@ -182,7 +182,7 @@ impl InferenceGraph {
     ) -> Result<Vec<ConjoinedPredicate>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
-            &Self::predicate_backward_set_name(predicate),
+            &Self::predicate_forward_set_name(predicate),
         )?;
         set_members
             .into_iter()
