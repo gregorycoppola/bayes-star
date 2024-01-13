@@ -1,4 +1,4 @@
-use super::graph::Graph;
+use super::graph::PredicateGraph;
 use super::interface::{FactDB, ScenarioMaker};
 use super::model::FactorModel;
 use super::train::TrainingPlan;
@@ -15,7 +15,7 @@ use std::error::Error;
 pub fn do_training(
     redis:&RedisManager,
 ) -> Result<(), Box<dyn Error>> {
-    let graph = Graph::new(redis)?;
+    let graph = PredicateGraph::new(redis)?;
     let fact_db = RedisFactDB::new(redis)?;
     let plan = TrainingPlan::new(redis)?;
     let mut factor_model = ExponentialModel::new(redis)?;

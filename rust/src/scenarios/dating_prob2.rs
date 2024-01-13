@@ -1,5 +1,5 @@
 use crate::common::fact_db::RedisFactDB;
-use crate::common::graph::Graph;
+use crate::common::graph::PredicateGraph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisManager;
@@ -40,7 +40,7 @@ impl ScenarioMaker for DatingProb2 {
         &self,
         redis: &RedisManager,
     ) -> Result<(), Box<dyn Error>> {
-        let mut graph = Graph::new(redis)?;
+        let mut graph = PredicateGraph::new(redis)?;
         let mut fact_db = RedisFactDB::new(redis)?;
         let mut plan = TrainingPlan::new(redis)?;
         let config = CONFIG.get().expect("Config not initialized");

@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::objects::{PredicateConjunction, PredicateImplication, Predicate, Proposition};
 
-use super::{graph::Graph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager};
+use super::{graph::PredicateGraph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager};
 
 pub struct TrainStatistics {
     pub loss: f64,

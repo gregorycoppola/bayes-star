@@ -11,7 +11,7 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, graph::Graph,
+    redis::RedisManager, graph::PredicateGraph,
 };
 
 pub struct RedisFactDB {
