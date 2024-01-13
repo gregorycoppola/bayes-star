@@ -42,20 +42,24 @@ fn initialize_visit_single(
 ) -> Result<(), Box<dyn Error>> {
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
-    for inference_factor in &inference_factors {
-        graph.single_backward.insert(
-            inference_factor.conclusion.clone(),
-            inference_factor.premise.clone(),
-        );
-        graph.group_forward.insert(
-            inference_factor.premise.clone(),
-            inference_factor.conclusion.clone(),
-        );
-        for term in &inference_factor.premise.terms {
-            graph
-                .single_forward
-                .insert(term.clone(), inference_factor.premise.clone());
-            initialize_visit_single(graph, term)?;
+    if inference_factors.len() == 0 {
+        graph.roots.insert(single.clone());
+    } else {
+        for inference_factor in &inference_factors {
+            graph.single_backward.insert(
+                inference_factor.conclusion.clone(),
+                inference_factor.premise.clone(),
+            );
+            graph.group_forward.insert(
+                inference_factor.premise.clone(),
+                inference_factor.conclusion.clone(),
+            );
+            for term in &inference_factor.premise.terms {
+                graph
+                    .single_forward
+                    .insert(term.clone(), inference_factor.premise.clone());
+                initialize_visit_single(graph, term)?;
+            }
         }
     }
     Ok(())
@@ -71,6 +75,7 @@ impl PropositionGraph {
             single_forward: HashMap::new(),
             single_backward: HashMap::new(),
             group_forward: HashMap::new(),
+            roots: HashSet::new(),
         };
         initialize_visit_single(&mut graph, target)?;
         Ok(Box::new(graph))
