@@ -1,6 +1,6 @@
 use bayes_star::{
-    common::{interface::ScenarioMaker, redis::RedisManager, resources::FactoryResources},
-    scenarios::dating_simple::SimpleDating,
+    common::{interface::ScenarioMaker, redis::RedisManager, resources::FactoryResources, graph::PredicateGraph},
+    scenarios::dating_simple::SimpleDating, inference::implications,
 };
 use log::info;
 use bayes_star::model::config::ConfigurationOptions;
@@ -15,4 +15,9 @@ fn test_store_entity() {
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
     info!("scenario result: {:?}", result);
+    let graph = PredicateGraph::new(&resources.redis).unwrap();
+    let implications = graph.get_all_implications().unwrap();
+    for implication in &implications {
+        info!("implication {:?}", implication);
+    }
 }
