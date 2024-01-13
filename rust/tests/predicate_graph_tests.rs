@@ -101,5 +101,20 @@ fn test_get_all_implications() {
             ],
         ),
     ];
+    // TODO: Actually check the implications.
     assert_eq!(computed.len(), expected.len());
+}
+
+#[test]
+fn test_get_predicate_forward_links() {
+    let config = ConfigurationOptions {
+        entities_per_domain: 12,
+        print_training_loss: false,
+    };
+    let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+    resources.redis.drop_all_dbs().unwrap();
+    let scenario_maker = SimpleDating {};
+    let result = scenario_maker.setup_scenario(&resources);
+    trace!("scenario result: {:?}", result);
+    let predicate_graph = PredicateGraph::new(&resources.redis).unwrap();
 }
