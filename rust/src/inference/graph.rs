@@ -42,22 +42,20 @@ fn initialize_visit_single(
 ) -> Result<(), Box<dyn Error>> {
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
-    if inference_factors.len() == 0 {
+    if inference_factors.is_empty() {
         graph.roots.insert(single.clone());
     } else {
         for inference_factor in &inference_factors {
-            graph.single_backward.insert(
-                inference_factor.conclusion.clone(),
-                inference_factor.premise.clone(),
-            );
-            graph.group_forward.insert(
-                inference_factor.premise.clone(),
-                inference_factor.conclusion.clone(),
-            );
+            graph.single_backward.entry(inference_factor.conclusion.clone())
+                .or_insert_with(Vec::new)
+                .push(inference_factor.premise.clone());
+            graph.group_forward.entry(inference_factor.premise.clone())
+                .or_insert_with(Vec::new)
+                .push(inference_factor.conclusion.clone());
             for term in &inference_factor.premise.terms {
-                graph
-                    .single_forward
-                    .insert(term.clone(), inference_factor.premise.clone());
+                graph.single_forward.entry(term.clone())
+                    .or_insert_with(Vec::new)
+                    .push(inference_factor.premise.clone());
                 initialize_visit_single(graph, term)?;
             }
         }
