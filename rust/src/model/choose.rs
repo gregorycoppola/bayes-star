@@ -6,6 +6,7 @@ use super::{
 };
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, GraphicalModel};
+use crate::inference::graph::PropositionInferenceFactor;
 use crate::model::objects::PropositionGroup;
 use crate::{
     common::{interface::FactDB, model::Factor},
@@ -77,50 +78,51 @@ pub fn compute_search_predicates(
 pub fn extract_backimplications_from_proposition(
     graph: &InferenceGraph,
     conclusion: &Proposition,
-) -> Result<Vec<ImplicationInstance>, Box<dyn Error>> {
-    debug!(
-        "Computing backimplications for proposition {:?}",
-        conclusion
-    );
-    let search_keys = compute_search_predicates(conclusion)?;
-    trace!("Computed search_keys {:?}", &search_keys);
-    let mut backimplications = Vec::new();
-    for predicate in &search_keys {
-        trace!("Processing search_key {:?}", &predicate.hash_string());
-        let implications = graph.predicate_backward_links(&predicate)?;
-        trace!("Found implications {:?}", &implications);
-        for implication in &implications {
-            let mut terms = Vec::new();
-            for (index, proposition) in implication.premise.terms.iter().enumerate() {
-                trace!("Processing term {}: {:?}", index, proposition);
-                let extracted_mapping =
-                    extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]); // Assuming this function exists
-                trace!(
-                    "Extracted mapping for term {}: {:?}",
-                    index,
-                    &extracted_mapping
-                );
-                let extracted_proposition =
-                    convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
-                trace!(
-                    "Converted to proposition for term {}: {:?}",
-                    index,
-                    extracted_proposition
-                );
-                terms.push(extracted_proposition);
-            }
-            backimplications.push(ImplicationInstance::new(
-                implication.clone(),
-                PropositionGroup { terms },
-            ));
-        }
-    }
-    trace!("Returning backimplications {:?}", &backimplications);
-    debug!(
-        "Completed computing backimplications, total count: {}",
-        backimplications.len()
-    );
-    Ok(backimplications)
+) -> Result<Vec<PropositionInferenceFactor>, Box<dyn Error>> {
+    todo!()
+    // debug!(
+    //     "Computing backimplications for proposition {:?}",
+    //     conclusion
+    // );
+    // let search_keys = compute_search_predicates(conclusion)?;
+    // trace!("Computed search_keys {:?}", &search_keys);
+    // let mut backimplications = Vec::new();
+    // for predicate in &search_keys {
+    //     trace!("Processing search_key {:?}", &predicate.hash_string());
+    //     let implications = graph.predicate_backward_links(&predicate)?;
+    //     trace!("Found implications {:?}", &implications);
+    //     for implication in &implications {
+    //         let mut terms = Vec::new();
+    //         for (index, proposition) in implication.premise.terms.iter().enumerate() {
+    //             trace!("Processing term {}: {:?}", index, proposition);
+    //             let extracted_mapping =
+    //                 extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]); // Assuming this function exists
+    //             trace!(
+    //                 "Extracted mapping for term {}: {:?}",
+    //                 index,
+    //                 &extracted_mapping
+    //             );
+    //             let extracted_proposition =
+    //                 convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
+    //             trace!(
+    //                 "Converted to proposition for term {}: {:?}",
+    //                 index,
+    //                 extracted_proposition
+    //             );
+    //             terms.push(extracted_proposition);
+    //         }
+    //         backimplications.push(ImplicationInstance::new(
+    //             implication.clone(),
+    //             PropositionGroup { terms },
+    //         ));
+    //     }
+    // }
+    // trace!("Returning backimplications {:?}", &backimplications);
+    // debug!(
+    //     "Completed computing backimplications, total count: {}",
+    //     backimplications.len()
+    // );
+    // Ok(backimplications)
 }
 
 pub fn extract_factor_for_proposition(
