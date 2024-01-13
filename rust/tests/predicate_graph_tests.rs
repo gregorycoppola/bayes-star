@@ -15,10 +15,10 @@ fn test_store_entity() {
     resources.redis.drop_all_dbs().unwrap();
     let scenario_maker = SimpleDating {};
     let result = scenario_maker.setup_scenario(&resources);
-    info!("scenario result: {:?}", result);
+    println!("scenario result: {:?}", result);
     let graph = PredicateGraph::new(&resources.redis).unwrap();
     let implications = graph.get_all_implications().unwrap();
     for implication in &implications {
-        info!("implication {:?}", implication);
+        println!("implication {:?}", implication);
     }
 }
