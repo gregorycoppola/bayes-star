@@ -1,6 +1,6 @@
 use bayes_star::model::config::set_config;
 use bayes_star::model::config::Config;
-use bayes_star::scenarios::dating_prob2::DatingProb2;
+use bayes_star::scenarios::dating_prob2::SimpleDating;
 use bayes_star::common::run::setup_and_train;
 use env_logger::{Builder, Env};
 use std::io::Write;
@@ -46,7 +46,7 @@ fn main() {
         entities_per_domain,
         print_training_loss,
     }).expect("Could not set config.");
-    let scenario_maker = DatingProb2{};
+    let scenario_maker = SimpleDating{};
     setup_and_train(&scenario_maker).expect("Error in training.");
     warn!("program done");
 }

@@ -33,9 +33,9 @@ fn weighted_cointoss(threshold: f64) -> f64 {
     }
 }
 
-pub struct DatingProb2 {}
+pub struct SimpleDating {}
 
-impl ScenarioMaker for DatingProb2 {
+impl ScenarioMaker for SimpleDating {
     fn setup_scenario(
         &self,
         redis: &RedisManager,
