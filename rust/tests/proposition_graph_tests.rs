@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use bayes_star::inference::graph::PropositionGraph;
 use bayes_star::model::config::ConfigurationOptions;
+use bayes_star::model::objects::Proposition;
 use bayes_star::{
     common::{
         graph::InferenceGraph, interface::ScenarioMaker,
@@ -33,17 +34,19 @@ fn test_get_proposition_forward_links() {
     let lonely = constant(Domain::Verb, "lonely".to_string());
     let like = constant(Domain::Verb, "like".to_string());
     let date = constant(Domain::Verb, "date".to_string());
-    let xjack = variable(Domain::Jack);
-    let xjill = variable(Domain::Jill);
+
+    let jack1 = constant(Domain::Jack, "jack1".to_string());
+    let jill1 = constant(Domain::Jill, "jill1".to_string());
 
     let predicate = predicate(vec![
-        subject(xjack.clone()),
+        subject(jack1.clone()),
         relation(like.clone()),
-        object(xjill.clone()),
+        object(jill1.clone()),
     ]);
+    let proposition = Proposition::from(predicate);
 
     let predicate_graph = InferenceGraph::new_shared(&resources).unwrap();
-    let proposition_graph = PropositionGraph::new(predicate_graph.clone());
-    let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
+    let proposition_graph = PropositionGraph::new_mutable(predicate_graph.clone()).unwrap();
+    let result = proposition_graph.parents_of_proposition(&proposition).unwrap();
     println!("{:?}", &result);
 }

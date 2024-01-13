@@ -10,7 +10,7 @@ pub struct PropositionGraph {
 }
 
 impl PropositionGraph {
-    pub fn new(
+    pub fn new_mutable(
         predicate_graph: Rc<InferenceGraph>,
     ) -> Result<Box<PropositionGraph>, Box<dyn Error>> {
         Ok(Box::new(PropositionGraph { predicate_graph }))
