@@ -30,9 +30,9 @@ pub struct PropositionInferenceFactor {
 
 pub struct PropositionGraph {
     pub predicate_graph: Rc<InferenceGraph>,
-    pub single_forward: HashMap<Proposition, PropositionGroup>,
-    pub single_backward: HashMap<Proposition, PropositionGroup>,
-    pub group_forward: HashMap<PropositionGroup, Proposition>,
+    pub single_forward: HashMap<Proposition, Vec<PropositionGroup>>,
+    pub single_backward: HashMap<Proposition, Vec<PropositionGroup>>,
+    pub group_forward: HashMap<PropositionGroup, Vec<Proposition>>,
     pub roots: HashSet<Proposition>,
 }
 
