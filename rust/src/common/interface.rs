@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::objects::{PredicateConjunction, PredicateImplication, Predicate, Proposition};
 
-use super::{graph::PredicateGraph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager};
+use super::{graph::PredicateGraph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager, resources::FactoryResources};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -27,6 +27,6 @@ pub trait FactDB {
 pub trait ScenarioMaker {
     fn setup_scenario(
         &self,
-        redis: &RedisManager,
+        redis: &FactoryResources,
     ) -> Result<(), Box<dyn Error>>;
 }

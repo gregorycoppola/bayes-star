@@ -3,6 +3,7 @@ use crate::common::graph::PredicateGraph;
 use crate::common::interface::FactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisManager;
+use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
 use crate::model::creators::predicate;
 use crate::{
@@ -37,12 +38,12 @@ pub struct SimpleDating {}
 impl ScenarioMaker for SimpleDating {
     fn setup_scenario(
         &self,
-        redis: &RedisManager,
+        resources: &FactoryResources,
     ) -> Result<(), Box<dyn Error>> {
-        let mut graph = PredicateGraph::new(redis)?;
-        let mut fact_db = RedisFactDB::new(redis)?;
-        let mut plan = TrainingPlan::new(redis)?;
-        let config = CONFIG.get().expect("Config not initialized");
+        let mut graph = PredicateGraph::new(&resources.redis)?;
+        let mut fact_db = RedisFactDB::new(&resources.redis)?;
+        let mut plan = TrainingPlan::new(&resources.redis)?;
+        let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
         let entity_domains = [Domain::Jack, Domain::Jill];
 
