@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     common::{graph::InferenceGraph, redis::RedisManager},
     model::{
-        choose::compute_search_predicates,
+        choose::{compute_search_predicates, extract_backimplications_from_proposition},
         objects::{GroupRoleMap, PredicateInferenceFactor, Proposition, PropositionGroup},
     },
 };
@@ -42,7 +42,7 @@ fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
-    let inference_factors = graph.predicate_graph.proposition_backward_links(single)?;
+    let inference_factors = extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     todo!()
 }
 
