@@ -49,7 +49,8 @@ impl PropositionGraph {
         for predicate in &search_predicates {
             let predicate_backward = self.predicate_graph.predicate_backward_links(predicate)?;
             for inference_link in &predicate_backward {
-                let proposition_implication = proposition_implication_from(inference_link, proposition)?;
+                let proposition_implication =
+                    proposition_implication_from(inference_link, proposition)?;
                 result.push(proposition_implication.premise);
             }
         }
@@ -60,6 +61,15 @@ impl PropositionGraph {
         proposition: &Proposition,
     ) -> Result<Vec<PropositionGroup>, Box<dyn Error>> {
         todo!()
+        // let search_predicates = compute_search_predicates(proposition)?;
+        // let mut result = vec![];
+        // for predicate in &search_predicates {
+        //     let predicate_backward = self.predicate_graph.predicate_forward_links(predicate)?;
+        //     for inference_link in &predicate_backward {
+        //         result.push(inference_link);
+        //     }
+        // }
+        // Ok(result)
     }
     pub fn conjoined_backward_links(
         &self,
