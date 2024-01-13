@@ -143,8 +143,8 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_proposition(node), outcome, 1f64);
-            let parents = self.proposition_graph.proposition_backward_links(node)?;
-            for parent in &parents {
+            let parents = self.proposition_graph.get_single_backward(node);
+            for parent in parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
                     &InferenceNode::from_conjunct(parent),
@@ -153,8 +153,8 @@ impl Inferencer {
                 );
             }
         }
-        let children = self.proposition_graph.get_single_forward(node)?;
-        for child in &children {
+        let children = self.proposition_graph.get_single_forward(node);
+        for child in children {
             self.initialize_lambda_conjunct(child)?;
         }
         Ok(())
