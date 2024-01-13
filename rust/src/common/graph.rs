@@ -1,6 +1,6 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::{seq_get_all, seq_push, RedisManager},
+    redis::{seq_get_all, seq_push, RedisManager}, resources::FactoryResources,
 };
 use crate::{
     common::{
@@ -25,8 +25,8 @@ pub struct PredicateGraph {
 
 impl PredicateGraph {
     // Initialize new GraphicalModel with a Redis connection
-    pub fn new(redis: &RedisManager) -> Result<Self, Box<dyn Error>> {
-        let redis_connection = redis.get_connection()?;
+    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+        let redis_connection = resources.redis.get_connection()?;
         Ok(PredicateGraph { redis_connection })
     }
     // Store an entity
