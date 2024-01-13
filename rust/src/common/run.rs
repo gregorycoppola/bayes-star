@@ -14,7 +14,7 @@ use std::borrow::BorrowMut;
 use std::error::Error;
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
-    let graph = PredicateGraph::new(&resources.redis)?;
+    let graph = PredicateGraph::new(resources)?;
     let fact_db = RedisFactDB::new(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new(&resources)?;

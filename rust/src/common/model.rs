@@ -22,7 +22,7 @@ pub struct GraphicalModel {
 
 impl GraphicalModel {
     pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
-        let graph = PredicateGraph::new(&resources.redis)?;
+        let graph = PredicateGraph::new(resources)?;
         let model = ExponentialModel::new(&resources)?;
         let fact_db = RedisFactDB::new(&resources.redis)?;
         Ok(GraphicalModel {
