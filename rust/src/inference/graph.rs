@@ -25,10 +25,17 @@ pub struct PropositionInferenceFactor {
 }
 
 pub struct PropositionGraph {
-    predicate_graph: Rc<InferenceGraph>,
-    single_forward: HashMap<Proposition, PropositionGroup>,
-    single_backward: HashMap<Proposition, PropositionGroup>,
-    group_forward: HashMap<PropositionGroup, Proposition>,
+    pub predicate_graph: Rc<InferenceGraph>,
+    pub single_forward: HashMap<Proposition, PropositionGroup>,
+    pub single_backward: HashMap<Proposition, PropositionGroup>,
+    pub group_forward: HashMap<PropositionGroup, Proposition>,
+}
+
+fn initialize_visit_group(
+    graph: &mut PropositionGraph,
+    single: &Proposition,
+) -> Result<(), Box<dyn Error>> {
+    todo!()
 }
 
 fn initialize_visit_single(
