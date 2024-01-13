@@ -1,21 +1,27 @@
 use std::{error::Error, rc::Rc};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    common::{graph::InferenceGraph, redis::RedisManager, model::Factor},
-    model::{objects::{Proposition, PropositionGroup, PredicateInferenceFactor, GroupRoleMap}, choose::compute_search_predicates},
+    common::{graph::InferenceGraph, model::Factor, redis::RedisManager},
+    model::{
+        choose::compute_search_predicates,
+        objects::{GroupRoleMap, PredicateInferenceFactor, Proposition, PropositionGroup},
+    },
 };
 
-fn proposition_implication_from(implication:&PredicateInferenceFactor, proposition: &Proposition) -> Result<Factor, Box<dyn Error>> {
+fn proposition_implication_from(
+    implication: &PredicateInferenceFactor,
+    proposition: &Proposition,
+) -> Result<Factor, Box<dyn Error>> {
     todo!()
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionInferenceFactor {
     pub premise: PropositionGroup,
-    pub role_maps: GroupRoleMap,
     pub conclusion: Proposition,
+    pub inference: PredicateInferenceFactor,
 }
 
 pub struct PropositionGraph {
