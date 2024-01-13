@@ -63,8 +63,8 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        let children = self.proposition_graph.single_forward.get(node).unwrap();
-        for child in &children {
+        let children = self.proposition_graph.get_single_forward(node);
+        for child in children {
             self.initialize_pi_conjunct(child, false)?;
         }
         if is_root {
