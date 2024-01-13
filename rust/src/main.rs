@@ -1,7 +1,7 @@
+use bayes_star::common::run::setup_and_train;
 use bayes_star::model::config::set_config;
 use bayes_star::model::config::ConfigurationOptions;
-use bayes_star::scenarios::dating_prob2::SimpleDating;
-use bayes_star::common::run::setup_and_train;
+use bayes_star::scenarios::dating_simple::SimpleDating;
 use env_logger::{Builder, Env};
 use std::io::Write;
 
@@ -11,12 +11,19 @@ use clap::{App, Arg};
 
 fn main() {
     Builder::from_env(Env::default().default_filter_or("info"))
-    .format(|buf, record| {
-        let file = record.file().unwrap_or("unknown");
-        let line = record.line().unwrap_or(0);
-        writeln!(buf, "{} [{}:{}] {}", record.level(), file, line, record.args())
-    })
-    .init();
+        .format(|buf, record| {
+            let file = record.file().unwrap_or("unknown");
+            let line = record.line().unwrap_or(0);
+            writeln!(
+                buf,
+                "{} [{}:{}] {}",
+                record.level(),
+                file,
+                line,
+                record.args()
+            )
+        })
+        .init();
     let matches = App::new("BAYES STAR")
         .version("1.0")
         .author("Greg Coppola")
@@ -42,13 +49,13 @@ fn main() {
         .parse()
         .expect("entities_per_domain needs to be an integer");
     let print_training_loss = matches.is_present("print_training_loss");
-    let resources = FactoryResources
-    set_config(ConfigurationOptions {
+    // Run.
+    let config = ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
-    }).expect("Could not set config.");
-    // Run.
-    let scenario_maker = SimpleDating{};
-    setup_and_train(&scenario_maker).expect("Error in training.");
+    };
+    let resources = FactoryResources::new(&config);
+    let scenario_maker = SimpleDating {};
+    setup_and_train(&resources, &scenario_maker).expect("Error in training.");
     warn!("program done");
 }

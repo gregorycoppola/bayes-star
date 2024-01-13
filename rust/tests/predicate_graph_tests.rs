@@ -1,4 +1,4 @@
-use bayes_star::{scenarios::dating_prob2::SimpleDating, common::{interface::ScenarioMaker, redis::RedisManager}};
+use bayes_star::{scenarios::dating_simple::SimpleDating, common::{interface::ScenarioMaker, redis::RedisManager}};
 use log::info;
 
 

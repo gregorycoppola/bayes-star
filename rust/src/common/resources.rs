@@ -10,7 +10,7 @@ pub struct FactoryResources {
 }
 
 impl FactoryResources {
-    pub fn new(options: ConfigurationOptions) -> Result<FactoryResources, Box<dyn Error>> {
+    pub fn new(options: &ConfigurationOptions) -> Result<FactoryResources, Box<dyn Error>> {
         todo!()
     }
 }
