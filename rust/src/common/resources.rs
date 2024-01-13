@@ -6,11 +6,14 @@ use super::redis::RedisManager;
 
 pub struct FactoryResources {
     pub config: ConfigurationOptions,
-    pub redis:RedisManager,
+    pub redis: RedisManager,
 }
 
 impl FactoryResources {
     pub fn new(options: &ConfigurationOptions) -> Result<FactoryResources, Box<dyn Error>> {
-        todo!()
+        Ok(FactoryResources {
+            config: options.clone(),
+            redis: RedisManager::new()?,
+        })
     }
 }
