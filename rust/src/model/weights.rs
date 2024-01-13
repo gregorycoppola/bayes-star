@@ -1,6 +1,6 @@
 use redis::{Commands, Connection};
 use std::{error::Error, cell::RefCell};
-use crate::model::objects::InferenceLink;
+use crate::model::objects::PredicateInferenceFactor;
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -30,7 +30,7 @@ impl ExponentialWeights {
 }
 
 impl ExponentialWeights {
-    pub fn initialize_weights(&mut self, implication: &InferenceLink) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_weights(&mut self, implication: &PredicateInferenceFactor) -> Result<(), Box<dyn Error>> {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();
         trace!("initialize_weights - Unique key: {}", feature);
