@@ -129,15 +129,15 @@ impl PredicateGraph {
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateImplication>, Box<dyn Error>> {
-        info!("Attempting to get all implications.");
+        println!("Attempting to get all implications.");
     
         let seq_name = Self::implication_seq_name();
-        info!("Implication sequence name: {}", seq_name);
+        println!("Implication sequence name: {}", seq_name);
     
         let mut redis_conn = self.redis_connection.borrow_mut();
         let records = match seq_get_all(&mut *redis_conn, &seq_name) {
             Ok(records) => {
-                info!("Successfully retrieved records.");
+                println!("Successfully retrieved records.");
                 records
             },
             Err(e) => {
@@ -150,7 +150,7 @@ impl PredicateGraph {
         for (i, record) in records.iter().enumerate() {
             match deserialize_record(record) {
                 Ok(implication) => {
-                    info!("Record {} deserialized successfully.", i);
+                    println!("Record {} deserialized successfully.", i);
                     result.push(implication);
                 },
                 Err(e) => {
@@ -160,7 +160,7 @@ impl PredicateGraph {
             }
         }
     
-        info!("Successfully processed {} implications.", result.len());
+        println!("Successfully processed {} implications.", result.len());
         Ok(result)
     }
     pub fn predicate_backward_links(
