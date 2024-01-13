@@ -317,18 +317,3 @@ impl fmt::Display for GroupRoleMap {
         write!(f, "[{}]", role_maps_str)
     }
 }
-
-#[derive(Debug, Clone)]
-pub struct ImplicationInstance {
-    pub implication: PredicateInferenceFactor,
-    pub conjunction: PropositionGroup,
-}
-
-impl ImplicationInstance {
-    pub fn new(implication: PredicateInferenceFactor, conjunction: PropositionGroup) -> Self {
-        ImplicationInstance {
-            implication,
-            conjunction,
-        }
-    }
-}
