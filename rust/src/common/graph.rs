@@ -27,7 +27,7 @@ impl InferenceGraph {
     // Initialize new GraphicalModel with a Redis connection
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
-        Ok(InferenceGraph { redis_connection })
+        Ok(Box::new(InferenceGraph { redis_connection }))
     }
     
     // Store an entity

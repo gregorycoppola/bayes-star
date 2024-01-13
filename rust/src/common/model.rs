@@ -15,7 +15,7 @@ use super::{
 };
 
 pub struct GraphicalModel {
-    pub graph: InferenceGraph,
+    pub graph: Box<InferenceGraph>,
     pub model: Box<dyn FactorModel>,
     pub fact_db: Box<dyn FactDB>,
 }
