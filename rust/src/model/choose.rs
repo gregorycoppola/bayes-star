@@ -9,7 +9,7 @@ use crate::common::model::{FactorContext, GraphicalModel};
 use crate::model::objects::PropositionGroup;
 use crate::{
     common::{interface::FactDB, model::Factor},
-    model::objects::{ImplicationInstance, Predicate, PredicateGroup},
+    model::objects::{ Predicate, PredicateGroup},
 };
 use std::{borrow::Borrow, error::Error};
 

@@ -9,7 +9,7 @@ use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
 use crate::model::inference::MapBackedProbabilityStorage;
-use crate::model::objects::{ImplicationInstance, Predicate};
+use crate::model::objects::{ Predicate};
 use crate::model::weights::CLASS_LABELS;
 use redis::Connection;
 use std::cell::RefCell;
