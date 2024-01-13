@@ -18,7 +18,7 @@ use bayes_star::{
 use log::{info, trace};
 
 #[test]
-fn test_store_entity() {
+fn test_get_all_implications() {
     let config = ConfigurationOptions {
         entities_per_domain: 12,
         print_training_loss: false,
