@@ -170,13 +170,6 @@ impl InferenceGraph {
         Ok(result)
     }
 
-    pub fn proposition_backward_links(
-        &self,
-        conclusion: &Proposition,
-    ) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
-        todo!()
-    }
-
     pub fn predicate_backward_links(
         &self,
         conclusion: &Predicate,
