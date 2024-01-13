@@ -52,7 +52,7 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        for root in &self.proposition_graph.roots {
+        for root in &self.proposition_graph.get_roots() {
             self.initialize_pi_proposition(root, true)?;
         }
         Ok(())

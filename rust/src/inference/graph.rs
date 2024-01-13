@@ -95,8 +95,8 @@ impl PropositionGraph {
         key.terms.clone()
     }
 
-    pub fn get_roots(&self) -> impl Iterator<Item = &Proposition> {
-        self.roots.iter()
+    pub fn get_roots(&self) -> HashSet<Proposition> {
+        self.roots.clone()
     }
 }
 
