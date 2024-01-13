@@ -44,17 +44,16 @@ impl PropositionGraph {
         &self,
         proposition: &Proposition,
     ) -> Result<Vec<PropositionGroup>, Box<dyn Error>> {
-        todo!()
-        // let search_predicates = compute_search_predicates(proposition)?;
-        // let mut result = vec![];
-        // for predicate in &search_predicates {
-        //     let predicate_backward = self.predicate_graph.predicate_backward_links(predicate)?;
-        //     for inference_link in &predicate_backward {
-        //         let proposition_implication = proposition_implication_from(inference_link, proposition)?;
-        //         result.push(proposition_implication.conjuncts);
-        //     }
-        // }
-        // Ok(result)
+        let search_predicates = compute_search_predicates(proposition)?;
+        let mut result = vec![];
+        for predicate in &search_predicates {
+            let predicate_backward = self.predicate_graph.predicate_backward_links(predicate)?;
+            for inference_link in &predicate_backward {
+                let proposition_implication = proposition_implication_from(inference_link, proposition)?;
+                result.push(proposition_implication.premise);
+            }
+        }
+        Ok(result)
     }
     pub fn proposition_forward_links(
         &self,
