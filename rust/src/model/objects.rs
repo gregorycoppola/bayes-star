@@ -231,13 +231,13 @@ impl PropositionConjunction {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PredicateImplication {
+pub struct ImplicationLink {
     pub premise: PredicateConjunction,
-    pub conclusion: Predicate,
     pub role_maps: ConjunctionRoleMap,
+    pub conclusion: Predicate,
 }
 
-impl PredicateImplication {
+impl ImplicationLink {
     // Generate a unique key for the implication
     pub fn unique_key(&self) -> String {
         format!(
@@ -320,12 +320,12 @@ impl fmt::Display for ConjunctionRoleMap {
 
 #[derive(Debug, Clone)]
 pub struct ImplicationInstance {
-    pub implication: PredicateImplication,
+    pub implication: ImplicationLink,
     pub conjunction: PropositionConjunction,
 }
 
 impl ImplicationInstance {
-    pub fn new(implication: PredicateImplication, conjunction: PropositionConjunction) -> Self {
+    pub fn new(implication: ImplicationLink, conjunction: PropositionConjunction) -> Self {
         ImplicationInstance {
             implication,
             conjunction,
