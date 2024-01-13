@@ -1,8 +1,8 @@
 use std::{collections::HashMap, error::Error};
-use crate::model::objects::PredicateConjunction;
+use crate::model::objects::ConjoinedPredicate;
 
 pub struct MonolithicBayes {
-    underlying:HashMap<PredicateConjunction, f64>,
+    underlying:HashMap<ConjoinedPredicate, f64>,
 }
 
 

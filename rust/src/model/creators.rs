@@ -5,12 +5,12 @@ use crate::model::objects::{
     ConstantArgument, LabeledArgument, InferenceLink, Predicate, VariableArgument,
 };
 
-pub fn conjunction(terms: Vec<Predicate>) -> PredicateConjunction {
-    PredicateConjunction { terms }
+pub fn conjunction(terms: Vec<Predicate>) -> ConjoinedPredicate {
+    ConjoinedPredicate { terms }
 }
 
 pub fn implication(
-    premise: PredicateConjunction,
+    premise: ConjoinedPredicate,
     conclusion: Predicate,
     role_maps: Vec<RoleMap>,
 ) -> InferenceLink {

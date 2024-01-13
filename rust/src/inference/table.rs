@@ -1,7 +1,7 @@
 use std::{collections::HashMap, error::Error};
 use redis::Connection;
 use serde::{Serialize, Deserialize};
-use crate::{model::{objects::{Predicate, PredicateConjunction, Proposition, PropositionConjunction}, weights::CLASS_LABELS}, common::interface::FactDB};
+use crate::{model::{objects::{Predicate, ConjoinedPredicate, Proposition, PropositionConjunction}, weights::CLASS_LABELS}, common::interface::FactDB};
 
 use std::hash::{Hash, Hasher};
 use std::collections::hash_map::DefaultHasher;

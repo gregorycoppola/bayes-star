@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateConjunction, Domain, Entity, InferenceLink, Predicate, ImplicationInstance, Proposition},
+        objects::{ConjoinedPredicate, Domain, Entity, InferenceLink, Predicate, ImplicationInstance, Proposition},
     },
 };
 use redis::{Commands, Connection};

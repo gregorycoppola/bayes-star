@@ -9,7 +9,7 @@ use crate::common::model::{FactorContext, GraphicalModel};
 use crate::model::objects::PropositionConjunction;
 use crate::{
     common::{interface::FactDB, model::Factor},
-    model::objects::{ImplicationInstance, Predicate, PredicateConjunction},
+    model::objects::{ImplicationInstance, Predicate, ConjoinedPredicate},
 };
 use std::{borrow::Borrow, error::Error};
 

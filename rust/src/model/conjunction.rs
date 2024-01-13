@@ -1,7 +1,7 @@
 use std::error::Error;
 use crate::common::interface::FactDB;
 
-use super::objects::{PredicateConjunction, PropositionConjunction};
+use super::objects::{ConjoinedPredicate, PropositionConjunction};
 
 /// Compute the "conjunction probability", but assume INDEPENDENCE.
 /// Therefore, the probability of the conjunct is the product of all of the probabilities of the terms.

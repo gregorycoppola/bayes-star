@@ -8,7 +8,7 @@ use crate::model::{
 };
 
 use super::weights::ExponentialWeights;
-use super::objects::{ImplicationInstance, PredicateConjunction, Predicate, Proposition, PropositionConjunction};
+use super::objects::{ImplicationInstance, ConjoinedPredicate, Predicate, Proposition, PropositionConjunction};
 
 fn print_premise_probabilities(
     storage: &mut GraphicalModel,

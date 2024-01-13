@@ -200,13 +200,13 @@ impl Proposition {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PredicateConjunction {
+pub struct ConjoinedPredicate {
     pub terms: Vec<Predicate>,
 }
 
-impl PredicateConjunction {
+impl ConjoinedPredicate {
     pub fn new(terms: Vec<Predicate>) -> Self {
-        PredicateConjunction { terms }
+        ConjoinedPredicate { terms }
     }
 
     pub fn hash_string(&self) -> String {
@@ -232,7 +232,7 @@ impl PropositionConjunction {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InferenceLink {
-    pub premise: PredicateConjunction,
+    pub premise: ConjoinedPredicate,
     pub role_maps: ConjunctionRoleMap,
     pub conclusion: Predicate,
 }

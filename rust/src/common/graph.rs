@@ -11,7 +11,7 @@ use crate::{
         self,
         maxent::ExponentialModel,
         objects::{
-            Domain, Entity, ImplicationInstance, Predicate, PredicateConjunction,
+            Domain, Entity, ImplicationInstance, Predicate, ConjoinedPredicate,
             InferenceLink, Proposition, PropositionConjunction,
         },
     },
@@ -60,7 +60,7 @@ impl InferenceGraph {
     fn predicate_backward_set_name(predicate: &Predicate) -> String {
         format!("predicate_backward:{}", predicate.hash_string())
     }
-    fn conjunction_forward_set_name(predicate: &PredicateConjunction) -> String {
+    fn conjunction_forward_set_name(predicate: &ConjoinedPredicate) -> String {
         format!("conjunction_forward:{}", predicate.hash_string())
     }
     fn implication_seq_name() -> String {
@@ -80,7 +80,7 @@ impl InferenceGraph {
     }
     fn store_predicate_forward_links(
         &mut self,
-        conjunction: &PredicateConjunction,
+        conjunction: &ConjoinedPredicate,
     ) -> Result<(), Box<dyn Error>> {
         for predicate in &conjunction.terms {
             let record = serialize_record(conjunction)?;
@@ -95,7 +95,7 @@ impl InferenceGraph {
     fn store_predicate_backward_link(
         &mut self,
         conclusion: &Predicate,
-        premise: &PredicateConjunction,
+        premise: &ConjoinedPredicate,
     ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(premise)?;
         set_add(
@@ -107,7 +107,7 @@ impl InferenceGraph {
     }
     fn store_conjunction_forward_link(
         &mut self,
-        premise: &PredicateConjunction,
+        premise: &ConjoinedPredicate,
         implication: &InferenceLink,
     ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
@@ -179,7 +179,7 @@ impl InferenceGraph {
     pub fn predicate_forward_links(
         &self,
         predicate: &Predicate,
-    ) -> Result<Vec<PredicateConjunction>, Box<dyn Error>> {
+    ) -> Result<Vec<ConjoinedPredicate>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
             &Self::predicate_backward_set_name(predicate),
@@ -191,13 +191,13 @@ impl InferenceGraph {
     }
     pub fn conjunct_backward_links(
         &self,
-        conjunction: &PredicateConjunction,
+        conjunction: &ConjoinedPredicate,
     ) -> Result<Vec<Predicate>, Box<dyn Error>> {
         Ok(conjunction.terms.clone())
     }
     pub fn conjunct_forward_links(
         &self,
-        conjunction: &PredicateConjunction,
+        conjunction: &ConjoinedPredicate,
     ) -> Result<Vec<InferenceLink>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),

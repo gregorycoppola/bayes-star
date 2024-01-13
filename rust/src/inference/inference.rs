@@ -2,7 +2,7 @@ use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, implica
 use crate::{
     common::{interface::FactDB, model::GraphicalModel},
     model::{
-        objects::{PredicateConjunction, Predicate, Proposition, PropositionConjunction},
+        objects::{ConjoinedPredicate, Predicate, Proposition, PropositionConjunction},
         weights::CLASS_LABELS,
     },
 };
