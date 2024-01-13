@@ -1,6 +1,7 @@
 use super::graph::PredicateGraph;
 use super::interface::{FactDB, ScenarioMaker};
 use super::model::FactorModel;
+use super::resources::FactoryResources;
 use super::train::TrainingPlan;
 use crate::common::fact_db::RedisFactDB;
 use crate::common::model::GraphicalModel;
@@ -13,12 +14,12 @@ use std::borrow::BorrowMut;
 use std::error::Error;
 
 pub fn do_training(
-    redis:&RedisManager,
+    resources:&FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
-    let graph = PredicateGraph::new(redis)?;
-    let fact_db = RedisFactDB::new(redis)?;
-    let plan = TrainingPlan::new(redis)?;
-    let mut factor_model = ExponentialModel::new(redis)?;
+    let graph = PredicateGraph::new(&resources.redis)?;
+    let fact_db = RedisFactDB::new(&resources.redis)?;
+    let plan = TrainingPlan::new(&resources.redis)?;
+    let mut factor_model = ExponentialModel::new(&resources)?;
     trace!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
     for implication in implications {
