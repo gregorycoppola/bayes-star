@@ -78,6 +78,22 @@ impl PropositionGraph {
         initialize_visit_single(&mut graph, target)?;
         Ok(Rc::new(graph))
     }
+    
+    pub fn get_single_forward(&self, key: &Proposition) -> impl Iterator<Item = &PropositionGroup> {
+        self.single_forward.get(key).into_iter().flat_map(|v| v.iter())
+    }
+
+    pub fn get_single_backward(&self, key: &Proposition) -> impl Iterator<Item = &PropositionGroup> {
+        self.single_backward.get(key).into_iter().flat_map(|v| v.iter())
+    }
+
+    pub fn get_group_forward(&self, key: &PropositionGroup) -> impl Iterator<Item = &Proposition> {
+        self.group_forward.get(key).into_iter().flat_map(|v| v.iter())
+    }
+
+    pub fn get_roots(&self) -> impl Iterator<Item = &Proposition> {
+        self.roots.iter()
+    }
 }
 
 pub fn compute_forward_graph(
