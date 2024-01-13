@@ -1,4 +1,4 @@
-use std::{error::Error, rc::Rc, collections::HashMap};
+use std::{collections::HashMap, error::Error, rc::Rc};
 
 use serde::{Deserialize, Serialize};
 
@@ -26,17 +26,31 @@ pub struct PropositionInferenceFactor {
 
 pub struct PropositionGraph {
     predicate_graph: Rc<InferenceGraph>,
-    single_forward:HashMap<Proposition, PropositionGroup>,
-    single_backward:HashMap<Proposition, PropositionGroup>,
-    group_forward:HashMap<PropositionGroup, Proposition>,
+    single_forward: HashMap<Proposition, PropositionGroup>,
+    single_backward: HashMap<Proposition, PropositionGroup>,
+    group_forward: HashMap<PropositionGroup, Proposition>,
+}
+
+fn initialize_visit_single(
+    graph: &mut PropositionGraph,
+    single: &Proposition,
+) -> Result<(), Box<dyn Error>> {
+    todo!()
 }
 
 impl PropositionGraph {
     pub fn new_mutable(
         predicate_graph: Rc<InferenceGraph>,
+        target:&Proposition,
     ) -> Result<Box<PropositionGraph>, Box<dyn Error>> {
-        todo!()
-        // Ok(Box::new(PropositionGraph { predicate_graph }))
+        let mut graph = PropositionGraph {
+            predicate_graph,
+            single_forward: HashMap::new(),
+            single_backward: HashMap::new(),
+            group_forward: HashMap::new(),
+        };
+        initialize_visit_single(&mut graph, target)?;
+        Ok(Box::new(graph))
     }
     pub fn find_roots(
         &self,
