@@ -11,7 +11,7 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, graph::PredicateGraph, fact_db::RedisFactDB,
+    redis::RedisManager, graph::PredicateGraph, fact_db::RedisFactDB, resources::FactoryResources,
 };
 
 pub struct GraphicalModel {
@@ -21,10 +21,10 @@ pub struct GraphicalModel {
 }
 
 impl GraphicalModel {
-    pub fn new(_model_spec: &String, redis_client: &RedisManager) -> Result<Self, Box<dyn Error>> {
-        let graph = PredicateGraph::new(redis_client)?;
-        let model = ExponentialModel::new(redis_client)?;
-        let fact_db = RedisFactDB::new(redis_client)?;
+    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+        let graph = PredicateGraph::new(&resources.redis)?;
+        let model = ExponentialModel::new(&resources)?;
+        let fact_db = RedisFactDB::new(&resources.redis)?;
         Ok(GraphicalModel {
             graph,
             model,
