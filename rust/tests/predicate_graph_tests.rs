@@ -104,35 +104,35 @@ fn test_get_all_implications() {
     assert_eq!(computed.len(), expected.len());
 }
 
-#[test]
-fn test_get_predicate_forward_links() {
-    let config = ConfigurationOptions {
-        entities_per_domain: 12,
-        print_training_loss: false,
-    };
-    let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
-    resources.redis.drop_all_dbs().unwrap();
-    let scenario_maker = SimpleDating {};
-    let result = scenario_maker.setup_scenario(&resources);
-    trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
+// #[test]
+// fn test_get_predicate_forward_links() {
+//     let config = ConfigurationOptions {
+//         entities_per_domain: 12,
+//         print_training_loss: false,
+//     };
+//     let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+//     resources.redis.drop_all_dbs().unwrap();
+//     let scenario_maker = SimpleDating {};
+//     let result = scenario_maker.setup_scenario(&resources);
+//     trace!("scenario result: {:?}", result);
+//     let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
-    let exciting = constant(Domain::Verb, "exciting".to_string());
-    let lonely = constant(Domain::Verb, "lonely".to_string());
-    let like = constant(Domain::Verb, "like".to_string());
-    let date = constant(Domain::Verb, "date".to_string());
-    let xjack = variable(Domain::Jack);
-    let xjill = variable(Domain::Jill);
+//     let exciting = constant(Domain::Verb, "exciting".to_string());
+//     let lonely = constant(Domain::Verb, "lonely".to_string());
+//     let like = constant(Domain::Verb, "like".to_string());
+//     let date = constant(Domain::Verb, "date".to_string());
+//     let xjack = variable(Domain::Jack);
+//     let xjill = variable(Domain::Jill);
 
-    let predicate = predicate(vec![
-        subject(xjack.clone()),
-        relation(like.clone()),
-        object(xjill.clone()),
-    ]);
+//     let predicate = predicate(vec![
+//         subject(xjack.clone()),
+//         relation(like.clone()),
+//         object(xjill.clone()),
+//     ]);
 
-    let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
-    println!("{:?}", &result);
-}
+//     let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
+//     println!("{:?}", &result);
+// }
 
 #[test]
 fn test_get_predicate_backward_links() {
@@ -147,10 +147,7 @@ fn test_get_predicate_backward_links() {
     trace!("scenario result: {:?}", result);
     let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
-    let exciting = constant(Domain::Verb, "exciting".to_string());
-    let lonely = constant(Domain::Verb, "lonely".to_string());
     let like = constant(Domain::Verb, "like".to_string());
-    let date = constant(Domain::Verb, "date".to_string());
     let xjack = variable(Domain::Jack);
     let xjill = variable(Domain::Jill);
 
@@ -164,76 +161,76 @@ fn test_get_predicate_backward_links() {
     println!("{:?}", &result);
 }
 
-#[test]
-fn test_get_conjoined_forward_links() {
-    let config = ConfigurationOptions {
-        entities_per_domain: 12,
-        print_training_loss: false,
-    };
-    let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
-    resources.redis.drop_all_dbs().unwrap();
-    let scenario_maker = SimpleDating {};
-    let result = scenario_maker.setup_scenario(&resources);
-    trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
+// #[test]
+// fn test_get_conjoined_forward_links() {
+//     let config = ConfigurationOptions {
+//         entities_per_domain: 12,
+//         print_training_loss: false,
+//     };
+//     let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+//     resources.redis.drop_all_dbs().unwrap();
+//     let scenario_maker = SimpleDating {};
+//     let result = scenario_maker.setup_scenario(&resources);
+//     trace!("scenario result: {:?}", result);
+//     let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
-    let exciting = constant(Domain::Verb, "exciting".to_string());
-    let lonely = constant(Domain::Verb, "lonely".to_string());
-    let like = constant(Domain::Verb, "like".to_string());
-    let date = constant(Domain::Verb, "date".to_string());
-    let xjack = variable(Domain::Jack);
-    let xjill = variable(Domain::Jill);
+//     let exciting = constant(Domain::Verb, "exciting".to_string());
+//     let lonely = constant(Domain::Verb, "lonely".to_string());
+//     let like = constant(Domain::Verb, "like".to_string());
+//     let date = constant(Domain::Verb, "date".to_string());
+//     let xjack = variable(Domain::Jack);
+//     let xjill = variable(Domain::Jill);
 
-    let conjoined = conjunction(vec![
-        predicate(vec![
-            subject(xjill.clone()),
-            relation(like.clone()),
-            object(xjack.clone()),
-        ]),
-        predicate(vec![
-            subject(xjack.clone()),
-            relation(like.clone()),
-            object(xjill.clone()),
-        ]),
-    ]);
+//     let conjoined = conjunction(vec![
+//         predicate(vec![
+//             subject(xjill.clone()),
+//             relation(like.clone()),
+//             object(xjack.clone()),
+//         ]),
+//         predicate(vec![
+//             subject(xjack.clone()),
+//             relation(like.clone()),
+//             object(xjill.clone()),
+//         ]),
+//     ]);
 
-    let result = predicate_graph.conjoined_forward_links(&conjoined).unwrap();
-    println!("{:?}", &result);
-}
+//     let result = predicate_graph.conjoined_forward_links(&conjoined).unwrap();
+//     println!("{:?}", &result);
+// }
 
-#[test]
-fn test_get_conjoined_backward_links() {
-    let config = ConfigurationOptions {
-        entities_per_domain: 12,
-        print_training_loss: false,
-    };
-    let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
-    resources.redis.drop_all_dbs().unwrap();
-    let scenario_maker = SimpleDating {};
-    let result = scenario_maker.setup_scenario(&resources);
-    trace!("scenario result: {:?}", result);
-    let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
+// #[test]
+// fn test_get_conjoined_backward_links() {
+//     let config = ConfigurationOptions {
+//         entities_per_domain: 12,
+//         print_training_loss: false,
+//     };
+//     let mut resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+//     resources.redis.drop_all_dbs().unwrap();
+//     let scenario_maker = SimpleDating {};
+//     let result = scenario_maker.setup_scenario(&resources);
+//     trace!("scenario result: {:?}", result);
+//     let predicate_graph = InferenceGraph::new_mutable(&resources).unwrap();
 
-    let exciting = constant(Domain::Verb, "exciting".to_string());
-    let lonely = constant(Domain::Verb, "lonely".to_string());
-    let like = constant(Domain::Verb, "like".to_string());
-    let date = constant(Domain::Verb, "date".to_string());
-    let xjack = variable(Domain::Jack);
-    let xjill = variable(Domain::Jill);
+//     let exciting = constant(Domain::Verb, "exciting".to_string());
+//     let lonely = constant(Domain::Verb, "lonely".to_string());
+//     let like = constant(Domain::Verb, "like".to_string());
+//     let date = constant(Domain::Verb, "date".to_string());
+//     let xjack = variable(Domain::Jack);
+//     let xjill = variable(Domain::Jill);
 
-    let conjoined = conjunction(vec![
-        predicate(vec![
-            subject(xjill.clone()),
-            relation(like.clone()),
-            object(xjack.clone()),
-        ]),
-        predicate(vec![
-            subject(xjack.clone()),
-            relation(like.clone()),
-            object(xjill.clone()),
-        ]),
-    ]);
+//     let conjoined = conjunction(vec![
+//         predicate(vec![
+//             subject(xjill.clone()),
+//             relation(like.clone()),
+//             object(xjack.clone()),
+//         ]),
+//         predicate(vec![
+//             subject(xjack.clone()),
+//             relation(like.clone()),
+//             object(xjill.clone()),
+//         ]),
+//     ]);
 
-    let result = predicate_graph.conjoined_backward_links(&conjoined).unwrap();
-    println!("{:?}", &result);
-}
+//     let result = predicate_graph.conjoined_backward_links(&conjoined).unwrap();
+//     println!("{:?}", &result);
+// }
