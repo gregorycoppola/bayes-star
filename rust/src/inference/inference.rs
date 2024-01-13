@@ -167,7 +167,7 @@ impl Inferencer {
         for outcome in CLASS_LABELS {
             self.data
                 .set_lambda_value(&InferenceNode::from_conjunct(conjunct), outcome, 1f64);
-            let parents = self.proposition_graph.conjoined_backward_links(conjunct)?;
+            let parents = self.proposition_graph.get_group_backward(conjunct);
             for parent in &parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_conjunct(conjunct),
