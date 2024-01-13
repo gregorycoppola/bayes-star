@@ -182,38 +182,38 @@ impl InferenceGraph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    pub fn predicate_forward_links(
-        &self,
-        predicate: &Predicate,
-    ) -> Result<Vec<PredicateGroup>, Box<dyn Error>> {
-        let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
-            &Self::predicate_forward_set_name(predicate),
-        )?;
-        set_members
-            .into_iter()
-            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
-            .collect()
-    }
-    pub fn conjoined_backward_links(
-        &self,
-        conjunction: &PredicateGroup,
-    ) -> Result<Vec<Predicate>, Box<dyn Error>> {
-        Ok(conjunction.terms.clone())
-    }
-    pub fn conjoined_forward_links(
-        &self,
-        conjunction: &PredicateGroup,
-    ) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
-        let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
-            &&Self::conjunction_forward_set_name(conjunction),
-        )?;
-        set_members
-            .into_iter()
-            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
-            .collect()
-    }
+    // pub fn predicate_forward_links(
+    //     &self,
+    //     predicate: &Predicate,
+    // ) -> Result<Vec<PredicateGroup>, Box<dyn Error>> {
+    //     let set_members: Vec<String> = set_members(
+    //         &mut *self.redis_connection.borrow_mut(),
+    //         &Self::predicate_forward_set_name(predicate),
+    //     )?;
+    //     set_members
+    //         .into_iter()
+    //         .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+    //         .collect()
+    // }
+    // pub fn conjoined_backward_links(
+    //     &self,
+    //     conjunction: &PredicateGroup,
+    // ) -> Result<Vec<Predicate>, Box<dyn Error>> {
+    //     Ok(conjunction.terms.clone())
+    // }
+    // pub fn conjoined_forward_links(
+    //     &self,
+    //     conjunction: &PredicateGroup,
+    // ) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
+    //     let set_members: Vec<String> = set_members(
+    //         &mut *self.redis_connection.borrow_mut(),
+    //         &&Self::conjunction_forward_set_name(conjunction),
+    //     )?;
+    //     set_members
+    //         .into_iter()
+    //         .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+    //         .collect()
+    // }
 }
 
 fn serialize_record<T>(obj: &T) -> Result<String, Box<dyn Error>>
