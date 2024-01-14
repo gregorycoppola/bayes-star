@@ -6,3 +6,4 @@ pub mod graph;
 pub mod fact_db;
 pub mod train;
 pub mod resources;
+pub mod setup;
