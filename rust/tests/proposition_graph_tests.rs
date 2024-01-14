@@ -38,15 +38,21 @@ fn test_get_proposition_forward_links() {
     let jack1 = constant(Domain::Jack, "jack1".to_string());
     let jill1 = constant(Domain::Jill, "jill1".to_string());
 
-    let predicate = predicate(vec![
+    let test_predicate = predicate(vec![
         subject(jack1.clone()),
         relation(like.clone()),
+        object(jill1.clone()),
+    ]);
+    let test_proposition = Proposition::from(test_predicate);
+    let predicate = predicate(vec![
+        subject(jack1.clone()),
+        relation(date.clone()),
         object(jill1.clone()),
     ]);
     let proposition = Proposition::from(predicate);
 
     let predicate_graph = InferenceGraph::new_shared(&resources).unwrap();
     let proposition_graph = PropositionGraph::new_shared(predicate_graph.clone(), &proposition).unwrap();
-    let result = proposition_graph.get_single_forward(&proposition);
+    let result = proposition_graph.get_single_forward(&test_proposition);
     println!("{:?}", &result);
 }
