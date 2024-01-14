@@ -143,16 +143,15 @@ pub fn extract_factor_context_for_proposition(
     graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
-    todo!()
-    // let factor = extract_factor_for_proposition(graph, conclusion)?;
-    // let mut conjoined_probabilities = vec![];
-    // for conjoined_implication in &factor.premise.terms {
-    //     let conjoined_probability =
-    //         get_conjunction_probability(fact_db.borrow(), &conjoined_implication.conjunction)?;
-    //     conjoined_probabilities.push(conjoined_probability);
-    // }
-    // Ok(FactorContext {
-    //     factor,
-    //     conjoined_probabilities,
-    // })
+    let factor = extract_factor_for_proposition(graph, conclusion)?;
+    let mut conjoined_probabilities = vec![];
+    for term in &factor.premise.terms {
+        let opt = fact_db.get_proposition_probability(term)?;
+        let probability = opt.unwrap();
+        conjoined_probabilities.push(probability);
+    }
+    Ok(FactorContext {
+        factor,
+        conjoined_probabilities,
+    })
 }
