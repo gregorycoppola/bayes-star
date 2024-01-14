@@ -18,27 +18,27 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
-    trace!("do_training - Getting all implications");
+    info!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
     for implication in implications {
-        trace!("do_training - Processing implication: {:?}", implication);
+        info!("do_training - Processing implication: {:?}", implication);
         factor_model.initialize_connection(&implication)?;
     }
-    trace!("do_training - Getting all propositions");
+    info!("do_training - Getting all propositions");
     let propositions = plan.get_training_questions()?;
-    trace!(
+    info!(
         "do_training - Processing propositions: {}",
         propositions.len()
     );
     let mut examples_processed = 0;
     for proposition in &propositions {
-        trace!("do_training - Processing proposition: {:?}", proposition);
+        info!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_context_for_proposition(&fact_db, &graph, proposition.clone())?;
-        trace!("do_training - Backimplications: {:?}", &factor);
+        info!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
         match factor_model.train(&factor, probability) {
-            Ok(_) => trace!(
+            Ok(_) => info!(
                 "do_training - Successfully trained on proposition: {:?}",
                 proposition
             ),
@@ -51,7 +51,7 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
         }
         examples_processed += 1;
     }
-    trace!(
+    info!(
         "do_training - Training complete: examples processed {}",
         examples_processed
     );
