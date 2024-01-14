@@ -7,7 +7,7 @@ use crate::{
     }, inference::graph::PropositionFactor,
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error};
+use std::{cell::RefCell, error::Error, collections::HashMap};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},

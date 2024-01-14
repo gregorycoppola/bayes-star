@@ -125,19 +125,6 @@ pub fn extract_backimplications_from_proposition(
     Ok(backimplications)
 }
 
-pub fn extract_factor_for_proposition(
-    graph: &InferenceGraph,
-    conclusion: Proposition,
-) -> Result<PropositionFactor, Box<dyn Error>> {
-    todo!()
-    // let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
-    // let factor = Factor {
-    //     conclusion,
-    //     conjuncts: implications,
-    // };
-    // Ok(factor)
-}
-
 pub fn extract_factors_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &InferenceGraph,
