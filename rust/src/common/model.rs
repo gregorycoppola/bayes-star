@@ -36,7 +36,7 @@ impl GraphicalModel {
 #[derive(Debug)]
 pub struct  FactorContext{
     pub factor: PropositionFactor,
-    pub conjoined_probabilities: Vec<f64>,
+    pub probabilities: Vec<f64>,
 }
 
 pub trait FactorModel {

@@ -10,7 +10,7 @@ use crate::inference::graph::PropositionFactor;
 use crate::model::objects::PropositionGroup;
 use crate::{
     common::interface::FactDB,
-    model::objects::{ Predicate, PredicateGroup},
+    model::objects::{Predicate, PredicateGroup},
 };
 use std::{borrow::Borrow, error::Error};
 
@@ -113,7 +113,7 @@ pub fn extract_backimplications_from_proposition(
             backimplications.push(PropositionFactor {
                 premise: PropositionGroup { terms },
                 conclusion: conclusion.clone(),
-                inference: implication.clone()
+                inference: implication.clone(),
             });
         }
     }
@@ -129,13 +129,20 @@ pub fn extract_factors_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
-) -> Result<Vec<PropositionFactor>, Box<dyn Error>> {
-    let factor = extract_factor_for_proposition(graph, conclusion)?;
-    let mut conjoined_probabilities = vec![];
-    for term in &factor.premise.terms {
-        let opt = fact_db.get_proposition_probability(term)?;
-        let probability = opt.unwrap();
-        conjoined_probabilities.push(probability);
+) -> Result<Vec<FactorContext>, Box<dyn Error>> {
+    let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
+    let mut result = vec![];
+    for factor in factors {
+        let mut probabilities = vec![];
+        for term in &factor.premise.terms {
+            let opt = fact_db.get_proposition_probability(term)?;
+            let probability = opt.unwrap();
+            probabilities.push(probability);
+        }
+        result.push(FactorContext {
+            factor,
+            probabilities,
+        })
     }
-    todo!()
+    Ok(result)
 }
