@@ -55,11 +55,11 @@ pub fn features_from_factor(
     let mut vec_result = vec![];
     for class_label in CLASS_LABELS {
         let mut result = HashMap::new();
-        for (i, backimplication) in factor.factor.premise.terms.iter().enumerate() {
+        for (i, premise) in factor.factor.premise.terms.iter().enumerate() {
             debug!("Processing backimplication {}", i);
             let feature = factor.factor.inference.unique_key();
             debug!("Generated unique key for feature: {}", feature);
-            let probability = 0f64;
+            let probability = factor.probabilities[i];
             debug!(
                 "Conjunction probability for backimplication {}: {}",
                 i, probability
