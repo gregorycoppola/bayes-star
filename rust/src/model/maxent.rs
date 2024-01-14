@@ -15,6 +15,7 @@ use redis::Connection;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
+use std::rc::Rc;
 pub struct ExponentialModel {
     config: ConfigurationOptions,
     weights: ExponentialWeights,
@@ -25,6 +26,14 @@ impl ExponentialModel {
         let connection = resources.redis.get_connection()?;
         let weights = ExponentialWeights::new(connection);
         Ok(Box::new(ExponentialModel {
+            config: resources.config.clone(),
+            weights,
+        }))
+    }
+    pub fn new_shared(resources: &FactoryResources) -> Result<Rc<dyn FactorModel>, Box<dyn Error>> {
+        let connection = resources.redis.get_connection()?;
+        let weights = ExponentialWeights::new(connection);
+        Ok(Rc::new(ExponentialModel {
             config: resources.config.clone(),
             weights,
         }))

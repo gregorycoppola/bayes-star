@@ -10,7 +10,7 @@ pub fn test(
     let graph = InferenceGraph::new_mutable(resources)?;
     let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
-    let mut factor_model = ExponentialModel::new_mutable(&resources)?;
+    let factor_model = ExponentialModel::new_shared(&resources)?;
     info!("do_training - Getting all implications");
     Ok(())
 }
