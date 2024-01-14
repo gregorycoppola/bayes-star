@@ -15,7 +15,7 @@ fn print_premise_probabilities(
     conjunction: &PropositionGroup,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {
-        match storage.fact_db.get_proposition_probability(term) {
+        match storage.proposition_db.get_proposition_probability(term) {
             Ok(term_prob_opt) => match term_prob_opt {
                 Some(term_prob) => {
                     info!(

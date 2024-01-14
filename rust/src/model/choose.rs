@@ -126,7 +126,7 @@ pub fn extract_backimplications_from_proposition(
 }
 
 pub fn extract_factors_for_proposition(
-    fact_db: &Box<dyn PropositionDB>,
+    proposition_db: &Box<dyn PropositionDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<Vec<FactorContext>, Box<dyn Error>> {
@@ -135,7 +135,7 @@ pub fn extract_factors_for_proposition(
     for factor in factors {
         let mut probabilities = vec![];
         for term in &factor.premise.terms {
-            let opt = fact_db.get_proposition_probability(term)?;
+            let opt = proposition_db.get_proposition_probability(term)?;
             let probability = opt.unwrap();
             probabilities.push(probability);
         }

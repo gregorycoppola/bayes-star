@@ -1,4 +1,4 @@
-use crate::common::fact_db::RedisFactDB;
+use crate::common::proposition_db::RedisFactDB;
 use crate::common::graph::InferenceGraph;
 use crate::common::interface::PropositionDB;
 use crate::common::model::GraphicalModel;
@@ -41,7 +41,7 @@ impl ScenarioMaker for SimpleDating {
         resources: &FactoryResources,
     ) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources)?;
-        let mut fact_db = RedisFactDB::new_mutable(&resources.redis)?;
+        let mut proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
@@ -97,7 +97,7 @@ impl ScenarioMaker for SimpleDating {
                     jack_lonely.predicate.hash_string(),
                     p_jack_lonely
                 );
-                fact_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
+                proposition_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
             }
 
             {
@@ -109,7 +109,7 @@ impl ScenarioMaker for SimpleDating {
                     jill_exciting.predicate.hash_string(),
                     p_jill_exciting
                 );
-                fact_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
+                proposition_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
             }
 
             {
@@ -127,7 +127,7 @@ impl ScenarioMaker for SimpleDating {
                     jill_likes_jack.predicate.hash_string(),
                     p_jill_likes_jack
                 ); // Logging
-                fact_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
+                proposition_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
             }
 
             {
@@ -144,7 +144,7 @@ impl ScenarioMaker for SimpleDating {
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
-                    fact_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
+                    proposition_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
                 plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
             }
@@ -163,7 +163,7 @@ impl ScenarioMaker for SimpleDating {
 
                 let adusted_p = p_jack_dates_jill * 0.7;
                 let effective_p = weighted_cointoss(adusted_p);
-                fact_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
+                proposition_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
             }

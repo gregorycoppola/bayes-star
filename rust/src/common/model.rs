@@ -13,7 +13,7 @@ use redis::{Commands, Connection};
 use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc};
 
 use super::{
-    fact_db::RedisFactDB,
+    proposition_db::RedisFactDB,
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
     redis::RedisManager,
@@ -23,29 +23,29 @@ use super::{
 pub struct GraphicalModel {
     pub graph: Box<InferenceGraph>,
     pub model: Box<dyn FactorModel>,
-    pub fact_db: Box<dyn PropositionDB>,
+    pub proposition_db: Box<dyn PropositionDB>,
 }
 
 impl GraphicalModel {
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_mutable(resources)?;
         let model = ExponentialModel::new_mutable(&resources)?;
-        let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
+        let proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
         Ok(Box::new(GraphicalModel {
             graph,
             model,
-            fact_db,
+            proposition_db,
         }))
     }
 
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_mutable(resources)?;
         let model = ExponentialModel::new_mutable(&resources)?;
-        let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
+        let proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
         Ok(Rc::new(GraphicalModel {
             graph,
             model,
-            fact_db,
+            proposition_db,
         }))
     }
 }

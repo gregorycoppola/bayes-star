@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{common::{graph::InferenceGraph, fact_db::RedisFactDB, train::TrainingPlan, model::GraphicalModel}, model::maxent::ExponentialModel};
+use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::GraphicalModel}, model::maxent::ExponentialModel};
 
 use super::resources::FactoryResources;
 

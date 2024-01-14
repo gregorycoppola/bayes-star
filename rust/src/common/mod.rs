@@ -3,7 +3,7 @@ pub mod interface;
 pub mod run;
 pub mod model;
 pub mod graph;
-pub mod fact_db;
+pub mod proposition_db;
 pub mod train;
 pub mod resources;
 pub mod setup;
