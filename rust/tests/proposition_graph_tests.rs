@@ -47,6 +47,6 @@ fn test_get_proposition_forward_links() {
 
     let predicate_graph = InferenceGraph::new_shared(&resources).unwrap();
     let proposition_graph = PropositionGraph::new_shared(predicate_graph.clone(), todo!()).unwrap();
-    let result = proposition_graph.proposition_backward_links(&proposition).unwrap();
+    let result = proposition_graph.get_single_backward(&proposition);
     println!("{:?}", &result);
 }
