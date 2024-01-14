@@ -40,32 +40,47 @@ fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
+    println!("Initializing visit for proposition: {:?}", single);
+    
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
+    println!("Inference factors count: {}", inference_factors.len());
+
     if inference_factors.is_empty() {
+        println!("No inference factors. Adding to roots.");
         graph.roots.insert(single.clone());
     } else {
         for inference_factor in &inference_factors {
+            println!("Processing inference factor: {:?}", inference_factor);
+
+            println!("Updating single_backward for conclusion: {:?}", inference_factor.conclusion);
             graph
                 .single_backward
                 .entry(inference_factor.conclusion.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.premise.clone());
+
+            println!("Updating group_forward for premise: {:?}", inference_factor.premise);
             graph
                 .group_forward
                 .entry(inference_factor.premise.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.conclusion.clone());
+
             for term in &inference_factor.premise.terms {
+                println!("Processing term: {:?}", term);
                 graph
                     .single_forward
                     .entry(term.clone())
                     .or_insert_with(Vec::new)
                     .push(inference_factor.premise.clone());
+                println!("Recursively initializing visit for term: {:?}", term);
                 initialize_visit_single(graph, term)?;
             }
         }
     }
+
+    println!("Finished initializing visit for proposition: {:?}", single);
     Ok(())
 }
 
