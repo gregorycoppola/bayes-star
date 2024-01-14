@@ -4,7 +4,7 @@ use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::
 
 use super::resources::FactoryResources;
 
-pub fn test(
+pub fn do_testing(
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
