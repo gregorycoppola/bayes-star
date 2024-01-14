@@ -14,13 +14,6 @@ use crate::{
     },
 };
 
-fn proposition_implication_from(
-    implication: &PredicateInferenceFactor,
-    proposition: &Proposition,
-) -> Result<PropositionFactor, Box<dyn Error>> {
-    todo!()
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionFactor {
     pub premise: PropositionGroup,
