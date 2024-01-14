@@ -25,13 +25,13 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
         factor_model.initialize_connection(&implication)?;
     }
     info!("do_training - Getting all propositions");
-    let propositions = plan.get_training_questions()?;
+    let training_questions = plan.get_training_questions()?;
     info!(
         "do_training - Processing propositions: {}",
-        propositions.len()
+        training_questions.len()
     );
     let mut examples_processed = 0;
-    for proposition in &propositions {
+    for proposition in &training_questions {
         info!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_context_for_proposition(&fact_db, &graph, proposition.clone())?;
         info!("do_training - Backimplications: {:?}", &factor);
