@@ -186,7 +186,7 @@ impl Inferencer {
 }
 
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
-pub fn compute_marginals(
+pub fn inference_compute_marginals(
     model: Rc<GraphicalModel>,
     target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
