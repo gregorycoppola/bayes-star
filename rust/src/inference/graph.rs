@@ -17,12 +17,12 @@ use crate::{
 fn proposition_implication_from(
     implication: &PredicateInferenceFactor,
     proposition: &Proposition,
-) -> Result<PropositionInferenceFactor, Box<dyn Error>> {
+) -> Result<PropositionFactor, Box<dyn Error>> {
     todo!()
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PropositionInferenceFactor {
+pub struct PropositionFactor {
     pub premise: PropositionGroup,
     pub conclusion: Proposition,
     pub inference: PredicateInferenceFactor,

@@ -4,7 +4,7 @@ use crate::{
         self,
         maxent::ExponentialModel,
         objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition},
-    }, inference::graph::PropositionInferenceFactor,
+    }, inference::graph::PropositionFactor,
 };
 use redis::{Commands, Connection};
 use std::{cell::RefCell, error::Error};
@@ -35,7 +35,7 @@ impl GraphicalModel {
 
 #[derive(Debug)]
 pub struct  FactorContext{
-    pub factor: PropositionInferenceFactor,
+    pub factor: PropositionFactor,
     pub conjoined_probabilities: Vec<f64>,
 }
 

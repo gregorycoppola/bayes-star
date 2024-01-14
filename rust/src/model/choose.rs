@@ -6,7 +6,7 @@ use super::{
 };
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, GraphicalModel};
-use crate::inference::graph::PropositionInferenceFactor;
+use crate::inference::graph::PropositionFactor;
 use crate::model::objects::PropositionGroup;
 use crate::{
     common::interface::FactDB,
@@ -78,7 +78,7 @@ pub fn compute_search_predicates(
 pub fn extract_backimplications_from_proposition(
     graph: &InferenceGraph,
     conclusion: &Proposition,
-) -> Result<Vec<PropositionInferenceFactor>, Box<dyn Error>> {
+) -> Result<Vec<PropositionFactor>, Box<dyn Error>> {
     debug!(
         "Computing backimplications for proposition {:?}",
         conclusion
@@ -110,7 +110,7 @@ pub fn extract_backimplications_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backimplications.push(PropositionInferenceFactor {
+            backimplications.push(PropositionFactor {
                 premise: PropositionGroup { terms },
                 conclusion: conclusion.clone(),
                 inference: implication.clone()
@@ -128,7 +128,7 @@ pub fn extract_backimplications_from_proposition(
 pub fn extract_factor_for_proposition(
     graph: &InferenceGraph,
     conclusion: Proposition,
-) -> Result<PropositionInferenceFactor, Box<dyn Error>> {
+) -> Result<PropositionFactor, Box<dyn Error>> {
     todo!()
     // let implications = extract_backimplications_from_proposition(graph, &conclusion)?;
     // let factor = Factor {
@@ -142,7 +142,7 @@ pub fn extract_factors_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
-) -> Result<Vec<PropositionInferenceFactor, Box<dyn Error>> {
+) -> Result<Vec<PropositionFactor>, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
     let mut conjoined_probabilities = vec![];
     for term in &factor.premise.terms {
@@ -150,8 +150,5 @@ pub fn extract_factors_for_proposition(
         let probability = opt.unwrap();
         conjoined_probabilities.push(probability);
     }
-    Ok(FactorContext {
-        factor,
-        conjoined_probabilities,
-    })
+    todo!()
 }
