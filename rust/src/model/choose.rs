@@ -110,10 +110,11 @@ pub fn extract_backimplications_from_proposition(
                 );
                 terms.push(extracted_proposition);
             }
-            backimplications.push(ImplicationInstance::new(
-                implication.clone(),
-                PropositionGroup { terms },
-            ));
+            backimplications.push(PropositionInferenceFactor {
+                premise: PropositionGroup { terms },
+                conclusion: conclusion.clone(),
+                inference: implication.clone()
+            });
         }
     }
     trace!("Returning backimplications {:?}", &backimplications);
