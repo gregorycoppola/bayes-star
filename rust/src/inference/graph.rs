@@ -125,17 +125,3 @@ impl PropositionGraph {
         self.roots.clone()
     }
 }
-
-pub fn compute_forward_graph(
-    predicate_graph: Rc<InferenceGraph>,
-    proposition: &Proposition,
-) -> Result<PropositionGraph, Box<dyn Error>> {
-    todo!()
-}
-
-pub fn compute_backward_graph(
-    predicate_graph: Rc<InferenceGraph>,
-    proposition: &Proposition,
-) -> Result<PropositionGraph, Box<dyn Error>> {
-    todo!()
-}
