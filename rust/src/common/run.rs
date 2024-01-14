@@ -7,7 +7,7 @@ use crate::common::fact_db::RedisFactDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisManager;
 use crate::model::choose::{
-    extract_backimplications_from_proposition, extract_factor_context_for_proposition,
+    extract_backimplications_from_proposition, extract_factors_for_proposition,
 };
 use crate::model::maxent::ExponentialModel;
 use std::borrow::BorrowMut;
@@ -33,7 +33,7 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let mut examples_processed = 0;
     for proposition in &training_questions {
         info!("do_training - Processing proposition: {:?}", proposition);
-        let factor = extract_factor_context_for_proposition(&fact_db, &graph, proposition.clone())?;
+        let factor = extract_factors_for_proposition(&fact_db, &graph, proposition.clone())?;
         info!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");

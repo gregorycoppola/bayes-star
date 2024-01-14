@@ -138,11 +138,11 @@ pub fn extract_factor_for_proposition(
     // Ok(factor)
 }
 
-pub fn extract_factor_context_for_proposition(
+pub fn extract_factors_for_proposition(
     fact_db: &Box<dyn FactDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
-) -> Result<FactorContext, Box<dyn Error>> {
+) -> Result<Vec<PropositionInferenceFactor, Box<dyn Error>> {
     let factor = extract_factor_for_proposition(graph, conclusion)?;
     let mut conjoined_probabilities = vec![];
     for term in &factor.premise.terms {
