@@ -4,7 +4,7 @@ use crate::common::interface::ScenarioMaker;
 
 use super::dating_simple::SimpleDating;
 
-struct ScenarioMakerFactory;
+pub struct ScenarioMakerFactory;
 
 impl ScenarioMakerFactory {
     pub fn new_shared(type_name: &str) -> Result<Rc<dyn ScenarioMaker>, Box<dyn Error>> {
