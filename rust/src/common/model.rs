@@ -1,17 +1,23 @@
 use crate::{
     common::interface::FactDB,
+    inference::graph::PropositionFactor,
     model::{
         self,
         maxent::ExponentialModel,
-        objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition},
-    }, inference::graph::PropositionFactor,
+        objects::{
+            Domain, Entity, Predicate, PredicateGroup, PredicateInferenceFactor, Proposition,
+        },
+    },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error, collections::HashMap};
+use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc};
 
 use super::{
+    fact_db::RedisFactDB,
+    graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, graph::InferenceGraph, fact_db::RedisFactDB, resources::FactoryResources,
+    redis::RedisManager,
+    resources::FactoryResources,
 };
 
 pub struct GraphicalModel {
@@ -21,26 +27,40 @@ pub struct GraphicalModel {
 }
 
 impl GraphicalModel {
-    pub fn new_mutable(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_mutable(resources)?;
         let model = ExponentialModel::new_mutable(&resources)?;
         let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
-        Ok(GraphicalModel {
+        Ok(Box::new(GraphicalModel {
             graph,
             model,
             fact_db,
-        })
+        }))
+    }
+
+    pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
+        let graph = InferenceGraph::new_mutable(resources)?;
+        let model = ExponentialModel::new_mutable(&resources)?;
+        let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
+        Ok(Rc::new(GraphicalModel {
+            graph,
+            model,
+            fact_db,
+        }))
     }
 }
 
 #[derive(Debug)]
-pub struct  FactorContext{
+pub struct FactorContext {
     pub factor: PropositionFactor,
     pub probabilities: Vec<f64>,
 }
 
 pub trait FactorModel {
-    fn initialize_connection(&mut self, implication: &PredicateInferenceFactor) -> Result<(), Box<dyn Error>>;
+    fn initialize_connection(
+        &mut self,
+        implication: &PredicateInferenceFactor,
+    ) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
         factor: &FactorContext,
