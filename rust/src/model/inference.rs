@@ -1,5 +1,5 @@
 use std::{collections::HashMap, error::Error};
-use crate::common::interface::FactDB;
+use crate::common::interface::PropositionDB;
 use crate::common::model::GraphicalModel;
 use crate::model::{
     choose::extract_backimplications_from_proposition,
@@ -44,7 +44,7 @@ pub struct MapBackedProbabilityStorage {
     underlying: HashMap<String, bool>,
 }
 
-impl FactDB for MapBackedProbabilityStorage {
+impl PropositionDB for MapBackedProbabilityStorage {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,

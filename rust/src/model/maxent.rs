@@ -3,7 +3,7 @@ use super::config::ConfigurationOptions;
 use super::conjunction::get_conjunction_probability;
 use super::objects::PredicateInferenceFactor;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
-use crate::common::interface::{FactDB, PredictStatistics, TrainStatistics};
+use crate::common::interface::{PropositionDB, PredictStatistics, TrainStatistics};
 use crate::common::model::GraphicalModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;

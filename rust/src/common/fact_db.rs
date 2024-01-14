@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::FactDB,
+    common::interface::PropositionDB,
     model::{
         self,
         maxent::ExponentialModel,
@@ -19,13 +19,13 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn FactDB>, Box<dyn Error>> {
+    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn PropositionDB>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Box::new(RedisFactDB { redis_connection }))
     }
 }
 
-impl FactDB for RedisFactDB {
+impl PropositionDB for RedisFactDB {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,

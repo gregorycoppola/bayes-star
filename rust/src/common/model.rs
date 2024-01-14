@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::FactDB,
+    common::interface::PropositionDB,
     inference::graph::PropositionFactor,
     model::{
         self,
@@ -23,7 +23,7 @@ use super::{
 pub struct GraphicalModel {
     pub graph: Box<InferenceGraph>,
     pub model: Box<dyn FactorModel>,
-    pub fact_db: Box<dyn FactDB>,
+    pub fact_db: Box<dyn PropositionDB>,
 }
 
 impl GraphicalModel {

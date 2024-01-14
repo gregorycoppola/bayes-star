@@ -1,6 +1,6 @@
 use crate::common::fact_db::RedisFactDB;
 use crate::common::graph::InferenceGraph;
-use crate::common::interface::FactDB;
+use crate::common::interface::PropositionDB;
 use crate::common::model::GraphicalModel;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};

@@ -9,7 +9,7 @@ use crate::common::model::{FactorContext, GraphicalModel};
 use crate::inference::graph::PropositionFactor;
 use crate::model::objects::PropositionGroup;
 use crate::{
-    common::interface::FactDB,
+    common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
 };
 use std::{borrow::Borrow, error::Error};
@@ -126,7 +126,7 @@ pub fn extract_backimplications_from_proposition(
 }
 
 pub fn extract_factors_for_proposition(
-    fact_db: &Box<dyn FactDB>,
+    fact_db: &Box<dyn PropositionDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<Vec<FactorContext>, Box<dyn Error>> {

@@ -1,6 +1,6 @@
 use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, graph::PropositionGraph};
 use crate::{
-    common::{interface::FactDB, model::GraphicalModel},
+    common::{interface::PropositionDB, model::GraphicalModel},
     model::{
         objects::{PredicateGroup, Predicate, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
@@ -12,19 +12,19 @@ use std::{borrow::Borrow, collections::HashMap, error::Error};
 struct Inferencer {
     model: Box<GraphicalModel>,
     proposition_graph: Box<PropositionGraph>,
-    evidence: Box<dyn FactDB>,
+    evidence: Box<dyn PropositionDB>,
     data: HashMapBeliefTable,
 }
 
 fn inference_proposition_probability(
-    fact_db: &dyn FactDB,
+    fact_db: &dyn PropositionDB,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
 
 fn inference_conjoined_probability(
-    fact_db: &dyn FactDB,
+    fact_db: &dyn PropositionDB,
     conjunct: &PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
@@ -35,7 +35,7 @@ impl Inferencer {
     pub fn new(
         model: Box<GraphicalModel>,
         proposition_graph: Box<PropositionGraph>,
-        evidence: Box<dyn FactDB>,
+        evidence: Box<dyn PropositionDB>,
     ) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
             model,
@@ -187,7 +187,7 @@ impl Inferencer {
 
 pub fn compute_marginals(
     model: Box<GraphicalModel>,
-    evidence: Box<dyn FactDB>,
+    evidence: Box<dyn PropositionDB>,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
     todo!()
 }

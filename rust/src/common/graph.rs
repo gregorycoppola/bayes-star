@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     common::{
-        interface::FactDB,
+        interface::PropositionDB,
         redis::{set_add, set_members},
     },
     model::{

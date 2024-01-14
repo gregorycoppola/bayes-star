@@ -1,12 +1,12 @@
 use std::error::Error;
-use crate::common::interface::FactDB;
+use crate::common::interface::PropositionDB;
 
 use super::objects::{PredicateGroup, PropositionGroup};
 
 /// Compute the "conjunction probability", but assume INDEPENDENCE.
 /// Therefore, the probability of the conjunct is the product of all of the probabilities of the terms.
 pub fn get_conjunction_probability(
-    fact_db: &dyn FactDB,
+    fact_db: &dyn PropositionDB,
     conjunction: &PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     trace!("Calculating conjunction probability for a conjunction with {} terms", conjunction.terms.len());

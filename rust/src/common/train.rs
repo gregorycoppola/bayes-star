@@ -1,5 +1,5 @@
 use crate::{
-    common::{interface::FactDB, redis::seq_get_all},
+    common::{interface::PropositionDB, redis::seq_get_all},
     model::{
         self,
         maxent::ExponentialModel,
