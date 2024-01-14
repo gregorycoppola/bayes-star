@@ -21,7 +21,7 @@ pub struct GraphicalModel {
 }
 
 impl GraphicalModel {
-    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
         let graph = InferenceGraph::new_mutable(resources)?;
         let model = ExponentialModel::new_mutable(&resources)?;
         let fact_db = RedisFactDB::new_mutable(&resources.redis)?;
