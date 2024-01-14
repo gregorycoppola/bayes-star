@@ -1,13 +1,12 @@
-use bayes_star::common::setup::common_setup;
-use bayes_star::common::{run::setup_and_train, resources::FactoryResources};
-use bayes_star::scenarios::dating_simple::SimpleDating;
+use bayes_star::common::setup::parse_configuration_options;
+use bayes_star::common::resources::FactoryResources;
 
 #[macro_use]
 extern crate log;
 
 fn main() {
-    let config = common_setup();
-    let resources = FactoryResources::new(&config).expect("Couldn't create resources.");
+    let config = parse_configuration_options();
+    let _resources = FactoryResources::new(&config).expect("Couldn't create resources.");
     info!("TODO: implement test");
     warn!("program done");
 }

@@ -5,7 +5,7 @@ use env_logger::{Builder, Env};
 use std::io::Write;
 use clap::{App, Arg};
 
-pub fn common_setup() -> ConfigurationOptions {
+pub fn parse_configuration_options() -> ConfigurationOptions {
     Builder::from_env(Env::default().default_filter_or("info"))
         .format(|buf, record| {
             let file = record.file().unwrap_or("unknown");
