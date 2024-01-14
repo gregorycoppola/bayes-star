@@ -46,14 +46,20 @@ fn initialize_visit_single(
         graph.roots.insert(single.clone());
     } else {
         for inference_factor in &inference_factors {
-            graph.single_backward.entry(inference_factor.conclusion.clone())
+            graph
+                .single_backward
+                .entry(inference_factor.conclusion.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.premise.clone());
-            graph.group_forward.entry(inference_factor.premise.clone())
+            graph
+                .group_forward
+                .entry(inference_factor.premise.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.conclusion.clone());
             for term in &inference_factor.premise.terms {
-                graph.single_forward.entry(term.clone())
+                graph
+                    .single_forward
+                    .entry(term.clone())
                     .or_insert_with(Vec::new)
                     .push(inference_factor.premise.clone());
                 initialize_visit_single(graph, term)?;
@@ -78,13 +84,13 @@ impl PropositionGraph {
         initialize_visit_single(&mut graph, target)?;
         Ok(Rc::new(graph))
     }
-    
-    pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
-        self.single_forward.get(key).unwrap().clone()
+
+    pub fn get_single_forward(&self, key: &Proposition) -> Option<Vec<PropositionGroup>> {
+        self.single_forward.get(key).map(|v| v.clone())
     }
 
-    pub fn get_single_backward(&self, key: &Proposition) ->  Vec<PropositionGroup> {
-        self.single_backward.get(key).unwrap().clone()
+    pub fn get_single_backward(&self, key: &Proposition) -> Option<Vec<PropositionGroup>> {
+        self.single_backward.get(key).map(|v| v.clone())
     }
 
     pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
