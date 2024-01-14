@@ -85,12 +85,12 @@ impl PropositionGraph {
         Ok(Rc::new(graph))
     }
 
-    pub fn get_single_forward(&self, key: &Proposition) -> Option<Vec<PropositionGroup>> {
-        self.single_forward.get(key).map(|v| v.clone())
+    pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
+        self.single_forward.get(key).cloned().unwrap_or_else(Vec::new)
     }
 
-    pub fn get_single_backward(&self, key: &Proposition) -> Option<Vec<PropositionGroup>> {
-        self.single_backward.get(key).map(|v| v.clone())
+    pub fn get_single_backward(&self, key: &Proposition) -> Vec<PropositionGroup> {
+        self.single_backward.get(key).cloned().unwrap_or_else(Vec::new)
     }
 
     pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
