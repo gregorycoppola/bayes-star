@@ -1,4 +1,4 @@
-use crate::common::{run::setup_and_train, resources::FactoryResources};
+use crate::common::resources::FactoryResources;
 use crate::model::config::ConfigurationOptions;
 use crate::scenarios::dating_simple::SimpleDating;
 use env_logger::{Builder, Env};
@@ -45,7 +45,6 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         .parse()
         .expect("entities_per_domain needs to be an integer");
     let print_training_loss = matches.is_present("print_training_loss");
-
     ConfigurationOptions {
         entities_per_domain,
         print_training_loss,

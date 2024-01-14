@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 
 use bayes_star::common::setup::parse_configuration_options;
-use bayes_star::common::{resources::FactoryResources, run::setup_and_train};
+use bayes_star::common::{resources::FactoryResources, train::setup_and_train};
 use bayes_star::scenarios::factory::ScenarioMakerFactory;
 
 #[macro_use]
