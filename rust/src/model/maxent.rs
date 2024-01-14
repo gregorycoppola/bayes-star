@@ -57,7 +57,7 @@ pub fn features_from_factor(
         let mut result = HashMap::new();
         for (i, backimplication) in factor.factor.premise.terms.iter().enumerate() {
             debug!("Processing backimplication {}", i);
-            let feature = backimplication.implication.unique_key();
+            let feature = factor.factor.inference.unique_key();
             debug!("Generated unique key for feature: {}", feature);
             let probability = 0f64;
             debug!(
