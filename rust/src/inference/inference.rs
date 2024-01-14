@@ -7,7 +7,7 @@ use crate::{
     },
 };
 use redis::Connection;
-use std::{borrow::Borrow, collections::HashMap, error::Error};
+use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
 
 struct Inferencer {
     model: Box<GraphicalModel>,
@@ -185,9 +185,10 @@ impl Inferencer {
     }
 }
 
+// Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn compute_marginals(
-    model: Box<GraphicalModel>,
-    evidence: Box<dyn PropositionDB>,
+    model: Rc<GraphicalModel>,
+    target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
     todo!()
 }
