@@ -33,21 +33,12 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let mut examples_processed = 0;
     for proposition in &training_questions {
         info!("do_training - Processing proposition: {:?}", proposition);
-        let factor = extract_factors_for_proposition(&fact_db, &graph, proposition.clone())?;
-        info!("do_training - Backimplications: {:?}", &factor);
+        let factors = extract_factors_for_proposition(&fact_db, &graph, proposition.clone())?;
+        info!("do_training - Backimplications: {:?}", &factors);
         let probabiity_opt = fact_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
-        match factor_model.train(&factor, probability) {
-            Ok(_) => info!(
-                "do_training - Successfully trained on proposition: {:?}",
-                proposition
-            ),
-            Err(e) => {
-                panic!(
-                    "do_training - Error in train_on_example for proposition {} {:?}: {:?}",
-                    examples_processed, proposition, e
-                )
-            }
+        for factor in &factors {
+            let _stats = factor_model.train(&factor, probability) ?;
         }
         examples_processed += 1;
     }
