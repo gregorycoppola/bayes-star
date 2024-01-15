@@ -19,7 +19,7 @@ fn inference_proposition_probability(
     proposition_db: &dyn PropositionDB,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    todo!()
+    Ok(proposition_db.get_proposition_probability(proposition).unwrap().unwrap())
 }
 
 fn inference_conjoined_probability(
