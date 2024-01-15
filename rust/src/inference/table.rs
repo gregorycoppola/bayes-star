@@ -1,10 +1,16 @@
-use std::{collections::HashMap, error::Error};
+use crate::{
+    common::interface::PropositionDB,
+    model::{
+        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
+        weights::CLASS_LABELS,
+    },
+};
 use redis::Connection;
-use serde::{Serialize, Deserialize};
-use crate::{model::{objects::{Predicate, PredicateGroup, Proposition, PropositionGroup}, weights::CLASS_LABELS}, common::interface::PropositionDB};
+use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, error::Error, rc::Rc};
 
-use std::hash::{Hash, Hasher};
 use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 
 #[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum InferenceNodeType {
@@ -134,12 +140,20 @@ struct HashMapInferenceResult {
     underlying: HashMapBeliefTable,
 }
 
+impl HashMapInferenceResult {
+    pub fn new_shared(
+        underlying: HashMapBeliefTable,
+    ) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
+        Ok(Rc::new(HashMapInferenceResult { underlying }))
+    }
+}
+
 impl InferenceResult for HashMapInferenceResult {
-    fn get_proposition_probability(&self, proposition:&Predicate) -> Result<f64, Box<dyn Error>> {
+    fn get_proposition_probability(&self, proposition: &Predicate) -> Result<f64, Box<dyn Error>> {
         todo!()
     }
 }
 
 pub trait InferenceResult {
-    fn get_proposition_probability(&self, proposition:&Predicate) -> Result<f64, Box<dyn Error>>;
+    fn get_proposition_probability(&self, proposition: &Predicate) -> Result<f64, Box<dyn Error>>;
 }
