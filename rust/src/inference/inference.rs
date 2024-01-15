@@ -31,7 +31,7 @@ fn inference_conjoined_probability(
 
 impl Inferencer {
     // Initialize new Storage with a Redis connection
-    pub fn new(
+    pub fn new_mutable(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
     ) -> Result<Box<Self>, redis::RedisError> {
@@ -188,6 +188,7 @@ pub fn inference_compute_marginals(
     target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
-    let inferencer = Inferencer::new(model.clone(), proposition_graph.clone())?;
+    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
+    inferencer.initialize(target)?;
     todo!()
 }
