@@ -7,7 +7,7 @@ use crate::{
     },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error};
+use std::{cell::RefCell, error::Error, rc::Rc};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
@@ -22,6 +22,10 @@ impl RedisFactDB {
     pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn PropositionDB>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Box::new(RedisFactDB { redis_connection }))
+    }
+    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn PropositionDB>, Box<dyn Error>> {
+        let redis_connection = client.get_connection()?;
+        Ok(Rc::new(RedisFactDB { redis_connection }))
     }
 }
 

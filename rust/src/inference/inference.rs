@@ -187,5 +187,6 @@ pub fn inference_compute_marginals(
     model: Rc<GraphicalModel>,
     target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
+    let prop_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     todo!()
 }

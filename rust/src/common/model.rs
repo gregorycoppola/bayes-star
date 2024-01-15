@@ -21,27 +21,16 @@ use super::{
 };
 
 pub struct GraphicalModel {
-    pub graph: Box<InferenceGraph>,
-    pub model: Box<dyn FactorModel>,
-    pub proposition_db: Box<dyn PropositionDB>,
+    pub graph: Rc<InferenceGraph>,
+    pub model: Rc<dyn FactorModel>,
+    pub proposition_db: Rc<dyn PropositionDB>,
 }
 
 impl GraphicalModel {
-    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
-        let graph = InferenceGraph::new_mutable(resources)?;
-        let model = ExponentialModel::new_mutable(&resources)?;
-        let proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
-        Ok(Box::new(GraphicalModel {
-            graph,
-            model,
-            proposition_db,
-        }))
-    }
-
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
-        let graph = InferenceGraph::new_mutable(resources)?;
-        let model = ExponentialModel::new_mutable(&resources)?;
-        let proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
+        let graph = InferenceGraph::new_shared(resources)?;
+        let model = ExponentialModel::new_shared(&resources)?;
+        let proposition_db = RedisFactDB::new_shared(&resources.redis)?;
         Ok(Rc::new(GraphicalModel {
             graph,
             model,
