@@ -34,12 +34,12 @@ impl Inferencer {
     pub fn new(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
-    ) -> Result<Self, redis::RedisError> {
-        Ok(Inferencer {
+    ) -> Result<Box<Self>, redis::RedisError> {
+        Ok(Box::new(Inferencer {
             model,
             proposition_graph,
             data: HashMapBeliefTable::new(),
-        })
+        }))
     }
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
@@ -187,6 +187,7 @@ pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
     target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
-    let prop_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
+    let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
+    let inferencer = Inferencer::new(model.clone(), proposition_graph.clone())?;
     todo!()
 }
