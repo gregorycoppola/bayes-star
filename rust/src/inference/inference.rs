@@ -12,7 +12,6 @@ use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
 struct Inferencer {
     model: Box<GraphicalModel>,
     proposition_graph: Box<PropositionGraph>,
-    evidence: Box<dyn PropositionDB>,
     data: HashMapBeliefTable,
 }
 
@@ -35,12 +34,10 @@ impl Inferencer {
     pub fn new(
         model: Box<GraphicalModel>,
         proposition_graph: Box<PropositionGraph>,
-        evidence: Box<dyn PropositionDB>,
     ) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
             model,
             proposition_graph,
-            evidence,
             data: HashMapBeliefTable::new(),
         })
     }
