@@ -10,8 +10,8 @@ use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
 
 struct Inferencer {
-    model: Box<GraphicalModel>,
-    proposition_graph: Box<PropositionGraph>,
+    model: Rc<GraphicalModel>,
+    proposition_graph: Rc<PropositionGraph>,
     data: HashMapBeliefTable,
 }
 
@@ -32,8 +32,8 @@ fn inference_conjoined_probability(
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new(
-        model: Box<GraphicalModel>,
-        proposition_graph: Box<PropositionGraph>,
+        model: Rc<GraphicalModel>,
+        proposition_graph: Rc<PropositionGraph>,
     ) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
             model,
