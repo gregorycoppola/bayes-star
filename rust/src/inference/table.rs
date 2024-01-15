@@ -136,7 +136,7 @@ impl HashMapBeliefTable {
     }
 }
 
-struct HashMapInferenceResult {
+pub struct HashMapInferenceResult {
     underlying: HashMapBeliefTable,
 }
 

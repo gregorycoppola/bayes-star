@@ -4,7 +4,7 @@ use crate::{
     model::{
         objects::{PredicateGroup, Predicate, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
-    },
+    }, inference::table::HashMapInferenceResult,
 };
 use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
@@ -12,7 +12,7 @@ use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
 struct Inferencer {
     model: Rc<InferenceModel>,
     proposition_graph: Rc<PropositionGraph>,
-    data: HashMapBeliefTable,
+    pub data: HashMapBeliefTable,
 }
 
 fn inference_proposition_probability(
@@ -186,9 +186,9 @@ impl Inferencer {
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
     target:&Proposition,
-) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
+) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
     inferencer.initialize(target)?;
-    todo!()
+    HashMapInferenceResult::new_shared(inferencer.data)
 }
