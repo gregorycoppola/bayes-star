@@ -20,18 +20,18 @@ use super::{
     resources::FactoryResources,
 };
 
-pub struct GraphicalModel {
+pub struct InferenceModel {
     pub graph: Rc<InferenceGraph>,
     pub model: Rc<dyn FactorModel>,
     pub proposition_db: Rc<dyn PropositionDB>,
 }
 
-impl GraphicalModel {
+impl InferenceModel {
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(resources)?;
         let model = ExponentialModel::new_shared(&resources)?;
         let proposition_db = RedisFactDB::new_shared(&resources.redis)?;
-        Ok(Rc::new(GraphicalModel {
+        Ok(Rc::new(InferenceModel {
             graph,
             model,
             proposition_db,

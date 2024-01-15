@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::objects::{PredicateGroup, PredicateInferenceFactor, Predicate, Proposition};
 
-use super::{graph::InferenceGraph, model::GraphicalModel, train::TrainingPlan, redis::RedisManager, resources::FactoryResources};
+use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::FactoryResources};
 
 pub struct TrainStatistics {
     pub loss: f64,

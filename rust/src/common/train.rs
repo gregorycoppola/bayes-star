@@ -22,7 +22,7 @@ use super::interface::ScenarioMaker;
 use super::model::FactorModel;
 use super::resources::FactoryResources;
 use crate::common::proposition_db::RedisFactDB;
-use crate::common::model::GraphicalModel;
+use crate::common::model::InferenceModel;
 use crate::model::choose::{
     extract_backimplications_from_proposition, extract_factors_for_proposition,
 };

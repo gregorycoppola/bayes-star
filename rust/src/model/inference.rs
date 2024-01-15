@@ -1,6 +1,6 @@
 use std::{collections::HashMap, error::Error};
 use crate::common::interface::PropositionDB;
-use crate::common::model::GraphicalModel;
+use crate::common::model::InferenceModel;
 use crate::model::{
     choose::extract_backimplications_from_proposition,
     maxent::compute_potential,
@@ -11,7 +11,7 @@ use super::weights::ExponentialWeights;
 use super::objects::{ PredicateGroup, Predicate, Proposition, PropositionGroup};
 
 fn print_premise_probabilities(
-    storage: &mut GraphicalModel,
+    storage: &mut InferenceModel,
     conjunction: &PropositionGroup,
 ) -> Result<(), Box<dyn Error>> {
     for (i, term) in conjunction.terms.iter().enumerate() {

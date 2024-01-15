@@ -5,7 +5,7 @@ use super::{
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
 use crate::common::graph::InferenceGraph;
-use crate::common::model::{FactorContext, GraphicalModel};
+use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
 use crate::model::objects::PropositionGroup;
 use crate::{

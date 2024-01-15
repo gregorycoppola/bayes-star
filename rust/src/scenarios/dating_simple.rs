@@ -1,7 +1,7 @@
 use crate::common::proposition_db::RedisFactDB;
 use crate::common::graph::InferenceGraph;
 use crate::common::interface::PropositionDB;
-use crate::common::model::GraphicalModel;
+use crate::common::model::InferenceModel;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;

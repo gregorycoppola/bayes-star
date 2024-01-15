@@ -1,6 +1,6 @@
 use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, graph::PropositionGraph};
 use crate::{
-    common::{interface::PropositionDB, model::GraphicalModel},
+    common::{interface::PropositionDB, model::InferenceModel},
     model::{
         objects::{PredicateGroup, Predicate, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
@@ -10,7 +10,7 @@ use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
 
 struct Inferencer {
-    model: Rc<GraphicalModel>,
+    model: Rc<InferenceModel>,
     proposition_graph: Rc<PropositionGraph>,
     data: HashMapBeliefTable,
 }
@@ -32,7 +32,7 @@ fn inference_conjoined_probability(
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new(
-        model: Rc<GraphicalModel>,
+        model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
     ) -> Result<Self, redis::RedisError> {
         Ok(Inferencer {
@@ -184,7 +184,7 @@ impl Inferencer {
 
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
-    model: Rc<GraphicalModel>,
+    model: Rc<InferenceModel>,
     target:&Proposition,
 ) -> Result<Box<dyn InferenceResult>, Box<dyn Error>> {
     let prop_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
