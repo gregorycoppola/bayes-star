@@ -21,6 +21,7 @@ pub enum InferenceNodeType {
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct InferenceNode {
     node_type: InferenceNodeType,
+    debug_string:Option<String>,
 }
 
 impl InferenceNode {
@@ -32,6 +33,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::PropositionHash(hash),
+            debug_string: None,
         }
     }
 
@@ -43,6 +45,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::ConjunctHash(hash),
+            debug_string: None,
         }
     }
 }
