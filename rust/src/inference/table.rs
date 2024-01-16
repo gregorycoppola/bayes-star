@@ -38,7 +38,7 @@ impl InferenceNode {
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    pub fn from_conjunct(group: &PropositionGroup) -> InferenceNode {
+    pub fn from_group(group: &PropositionGroup) -> InferenceNode {
         let mut hasher = DefaultHasher::new();
         group.hash(&mut hasher);
         let hash = hasher.finish();

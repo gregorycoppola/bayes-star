@@ -100,7 +100,7 @@ impl Inferencer {
             for child in children {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
-                    &InferenceNode::from_conjunct(&child),
+                    &InferenceNode::from_group(&child),
                     outcome,
                     1f64,
                 );
@@ -126,7 +126,7 @@ impl Inferencer {
                 .get_group_forward(group);
             for child in children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(group),
+                    &InferenceNode::from_group(group),
                     &InferenceNode::from_proposition(&child),
                     outcome,
                     1f64,
@@ -155,7 +155,7 @@ impl Inferencer {
             for parent in parents {
                 self.data.set_lambda_message(
                     &InferenceNode::from_proposition(node),
-                    &InferenceNode::from_conjunct(&parent),
+                    &InferenceNode::from_group(&parent),
                     outcome,
                     1f64,
                 );
@@ -174,11 +174,11 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_conjunct(group), outcome, 1f64);
+                .set_lambda_value(&InferenceNode::from_group(group), outcome, 1f64);
             let parents = self.proposition_graph.get_group_backward(group);
             for parent in &parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(group),
+                    &InferenceNode::from_group(group),
                     &InferenceNode::from_proposition(parent),
                     outcome,
                     1f64,
