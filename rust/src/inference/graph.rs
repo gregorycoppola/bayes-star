@@ -21,6 +21,12 @@ pub struct PropositionFactor {
     pub inference: PredicateInferenceFactor,
 }
 
+impl PropositionFactor {
+    pub fn debug_string(&self) -> String {
+        format!("{} -> {}", self.premise.hash_string(), self.conclusion.hash_string())
+    }
+}
+
 pub struct PropositionGraph {
     pub predicate_graph: Rc<InferenceGraph>,
     pub single_forward: HashMap<Proposition, Vec<PropositionGroup>>,
@@ -48,7 +54,7 @@ fn initialize_visit_single(
     } else {
         for inference_factor in &inference_factors {
             // Cyan for loop iteration
-            info!("\x1b[36mProcessing inference factor: {:?}\x1b[0m", inference_factor);
+            info!("\x1b[36mProcessing inference factor: {:?}\x1b[0m", inference_factor.debug_string());
 
             info!("\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m", inference_factor.conclusion.hash_string());
             graph

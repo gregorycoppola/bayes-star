@@ -219,7 +219,7 @@ impl PredicateGroup {
             .map(|term| term.hash_string()) // Map each term to its search string
             .collect();
         hash_strings.sort(); // Sort the search strings in ascending order
-        hash_strings.join(", ") // Join the sorted strings, separated by a comma and a space
+        hash_strings.join(";") // Join the sorted strings, separated by a comma and a space
     }
 }
 
@@ -238,7 +238,7 @@ impl PropositionGroup {
             .map(|term| term.predicate.hash_string()) // Map each term to its search string
             .collect();
         hash_strings.sort(); // Sort the search strings in ascending order
-        hash_strings.join(", ") // Join the sorted strings, separated by a comma and a space
+        hash_strings.join(";") // Join the sorted strings, separated by a comma and a space
     }
 }
 
