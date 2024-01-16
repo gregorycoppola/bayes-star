@@ -206,7 +206,6 @@ impl HashMapInferenceResult {
     pub fn new_shared(
         underlying: HashMapBeliefTable,
     ) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
-        println!("underlying :{:?}", &underlying);
         Ok(Rc::new(HashMapInferenceResult { underlying }))
     }
 }
