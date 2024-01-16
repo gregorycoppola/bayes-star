@@ -38,14 +38,14 @@ impl InferenceNode {
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    pub fn from_conjunct(conjunct: &PropositionGroup) -> InferenceNode {
+    pub fn from_conjunct(group: &PropositionGroup) -> InferenceNode {
         let mut hasher = DefaultHasher::new();
-        conjunct.hash(&mut hasher);
+        group.hash(&mut hasher);
         let hash = hasher.finish();
 
         InferenceNode {
             node_type: InferenceNodeType::ConjunctHash(hash),
-            debug_string: Some(serialize_record(&conjunct).unwrap()),
+            debug_string: Some(serialize_record(&group).unwrap()),
         }
     }
 }

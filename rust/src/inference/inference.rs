@@ -24,7 +24,7 @@ fn inference_proposition_probability(
 
 fn inference_conjoined_probability(
     proposition_db: &dyn PropositionDB,
-    conjunct: &PropositionGroup,
+    group: &PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     todo!()
 }
@@ -111,22 +111,22 @@ impl Inferencer {
 
     pub fn initialize_pi_conjunct(
         &mut self,
-        conjunct: &PropositionGroup,
+        group: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi_conjunct: starts; is_root {} conjunct {:?}", is_root, conjunct);
-        let children = self.proposition_graph.get_group_forward(conjunct);
+        println!("initialize_pi_conjunct: starts; is_root {} group {:?}", is_root, group);
+        let children = self.proposition_graph.get_group_forward(group);
         for child in children {
             self.initialize_pi_proposition(&child, false)?;
         }
         for outcome in CLASS_LABELS {
-            println!("initialize_pi_conjunct: outcome {} is_root {} conjunct {:?}", outcome, is_root, conjunct);
+            println!("initialize_pi_conjunct: outcome {} is_root {} group {:?}", outcome, is_root, group);
             let children = self
                 .proposition_graph
-                .get_group_forward(conjunct);
+                .get_group_forward(group);
             for child in children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(conjunct),
+                    &InferenceNode::from_conjunct(group),
                     &InferenceNode::from_proposition(&child),
                     outcome,
                     1f64,
@@ -170,22 +170,22 @@ impl Inferencer {
 
     pub fn initialize_lambda_conjunct(
         &mut self,
-        conjunct: &PropositionGroup,
+        group: &PropositionGroup,
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_conjunct(conjunct), outcome, 1f64);
-            let parents = self.proposition_graph.get_group_backward(conjunct);
+                .set_lambda_value(&InferenceNode::from_conjunct(group), outcome, 1f64);
+            let parents = self.proposition_graph.get_group_backward(group);
             for parent in &parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_conjunct(conjunct),
+                    &InferenceNode::from_conjunct(group),
                     &InferenceNode::from_proposition(parent),
                     outcome,
                     1f64,
                 );
             }
         }
-        let children = self.proposition_graph.get_group_forward(conjunct);
+        let children = self.proposition_graph.get_group_forward(group);
         for child in children {
             self.initialize_lambda_proposition(&child)?;
         }

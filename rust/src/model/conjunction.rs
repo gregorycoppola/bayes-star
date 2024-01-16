@@ -4,7 +4,7 @@ use crate::common::interface::PropositionDB;
 use super::objects::{PredicateGroup, PropositionGroup};
 
 /// Compute the "conjunction probability", but assume INDEPENDENCE.
-/// Therefore, the probability of the conjunct is the product of all of the probabilities of the terms.
+/// Therefore, the probability of the group is the product of all of the probabilities of the terms.
 pub fn get_conjunction_probability(
     proposition_db: &dyn PropositionDB,
     conjunction: &PropositionGroup,
