@@ -21,7 +21,7 @@ pub enum InferenceNodeType {
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct InferenceNode {
     node_type: InferenceNodeType,
-    debug_string:Option<String>,
+    debug_string:String,
 }
 
 impl InferenceNode {
@@ -33,7 +33,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::PropositionHash(hash),
-            debug_string: Some(serialize_record(&proposition).unwrap()),
+            debug_string: serialize_record(&proposition).unwrap(),
         }
     }
 
@@ -45,7 +45,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::ConjunctHash(hash),
-            debug_string: Some(serialize_record(&group).unwrap()),
+            debug_string: serialize_record(&group).unwrap(),
         }
     }
 }
@@ -57,6 +57,15 @@ pub struct HashMapBeliefTable {
     lambda_values: HashMap<(InferenceNode, usize), f64>,
     pi_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
     lambda_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
+}
+
+impl HashMapBeliefTable {
+    pub fn print_debug(&self) {
+        println!("pi_values: {:?}", &self.pi_values);
+        println!("lambda_values: {:?}", &self.lambda_values);
+        println!("pi_messages: {:?}", &self.pi_messages);
+        println!("lambda_messages: {:?}", &self.lambda_messages);
+    }
 }
 
 impl HashMapBeliefTable {
