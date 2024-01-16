@@ -217,7 +217,7 @@ impl InferenceGraph {
     // }
 }
 
-fn serialize_record<T>(obj: &T) -> Result<String, Box<dyn Error>>
+pub fn serialize_record<T>(obj: &T) -> Result<String, Box<dyn Error>>
 where
     T: Serialize,
 {

@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::PropositionDB,
+    common::{interface::PropositionDB, graph::serialize_record},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
@@ -33,7 +33,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::PropositionHash(hash),
-            debug_string: None,
+            debug_string: Some(serialize_record(&proposition).unwrap()),
         }
     }
 
@@ -45,7 +45,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::ConjunctHash(hash),
-            debug_string: None,
+            debug_string: Some(serialize_record(&conjunct).unwrap()),
         }
     }
 }
