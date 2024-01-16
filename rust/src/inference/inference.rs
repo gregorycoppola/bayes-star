@@ -78,7 +78,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi_proposition: is_root {} node {:?}", is_root, node);
+        println!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
         let children = self.proposition_graph.get_single_forward(node);
         for child in children {
             self.initialize_pi_conjunct(&child, false)?;
@@ -114,13 +114,13 @@ impl Inferencer {
         group: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi_conjunct: starts; is_root {} group {:?}", is_root, group);
+        println!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
         let children = self.proposition_graph.get_group_forward(group);
         for child in children {
             self.initialize_pi_proposition(&child, false)?;
         }
         for outcome in CLASS_LABELS {
-            println!("initialize_pi_conjunct: outcome {} is_root {} group {:?}", outcome, is_root, group);
+            println!("initialize_pi_conjunct: outcome {} is_root {} group {}", outcome, is_root, group.hash_string());
             let children = self
                 .proposition_graph
                 .get_group_forward(group);

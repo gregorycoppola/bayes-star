@@ -15,7 +15,7 @@ pub fn do_testing(
     // test
     let test_questions = plan.get_test_questions().unwrap();
     for proposition in &test_questions {
-        info!("testing proposition {:?}", &proposition);
+        info!("testing proposition {:?}", &proposition.hash_string());
         inference_compute_marginals(model.clone(), proposition).unwrap();
 
         break;

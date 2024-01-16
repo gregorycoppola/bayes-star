@@ -197,6 +197,10 @@ impl Proposition {
         }
         Proposition { predicate }
     }
+
+    pub fn hash_string(&self) -> String {
+        self.predicate.hash_string()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]

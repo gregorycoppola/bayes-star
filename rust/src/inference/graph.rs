@@ -34,7 +34,7 @@ fn initialize_visit_single(
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     // Green for starting a new operation
-    println!("\x1b[32mInitializing visit for proposition: {:?}\x1b[0m", single);
+    println!("\x1b[32mInitializing visit for proposition: {:?}\x1b[0m", single.hash_string());
     
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
@@ -50,14 +50,14 @@ fn initialize_visit_single(
             // Cyan for loop iteration
             println!("\x1b[36mProcessing inference factor: {:?}\x1b[0m", inference_factor);
 
-            println!("\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m", inference_factor.conclusion);
+            println!("\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m", inference_factor.conclusion.hash_string());
             graph
                 .single_backward
                 .entry(inference_factor.conclusion.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.premise.clone());
 
-            println!("\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m", inference_factor.premise);
+            println!("\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m", inference_factor.premise.hash_string());
             graph
                 .group_forward
                 .entry(inference_factor.premise.clone())
