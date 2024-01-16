@@ -65,20 +65,20 @@ fn initialize_visit_single(
                 .push(inference_factor.conclusion.clone());
 
             for term in &inference_factor.premise.terms {
-                info!("\x1b[35mProcessing term: {:?}\x1b[0m", term);
+                info!("\x1b[35mProcessing term: {:?}\x1b[0m", term.hash_string());
                 graph
                     .single_forward
                     .entry(term.clone())
                     .or_insert_with(Vec::new)
                     .push(inference_factor.premise.clone());
-                info!("\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m", term);
+                info!("\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m", term.hash_string());
                 initialize_visit_single(graph, term)?;
             }
         }
     }
 
     // Green for completion messages
-    info!("\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m", single);
+    info!("\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m", single.hash_string());
     Ok(())
 }
 
