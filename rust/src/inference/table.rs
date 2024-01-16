@@ -33,7 +33,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::PropositionHash(hash),
-            debug_string: serialize_record(&proposition).unwrap(),
+            debug_string: proposition.predicate.hash_string(),
         }
     }
 
@@ -45,7 +45,7 @@ impl InferenceNode {
 
         InferenceNode {
             node_type: InferenceNodeType::ConjunctHash(hash),
-            debug_string: serialize_record(&group).unwrap(),
+            debug_string: group.hash_string(),
         }
     }
 }
