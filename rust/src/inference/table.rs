@@ -59,9 +59,31 @@ pub struct HashMapBeliefTable {
     lambda_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
 }
 
+fn print_sorted_map(map: &HashMap<(InferenceNode, usize), f64>) {
+    let mut map_entries: Vec<_> = map.iter().collect();
+    
+    // Sorting by InferenceNode.debug_string and then by usize
+    map_entries.sort_by(|a, b| {
+        let ((node_a, index_a), _) = a;
+        let ((node_b, index_b), _) = b;
+
+        match node_a.debug_string.cmp(&node_b.debug_string) {
+            std::cmp::Ordering::Equal => index_a.cmp(index_b),
+            other => other,
+        }
+    });
+
+    // Printing in sorted order
+    for ((node, index), value) in map_entries {
+        println!("{} ({}): {}", node.debug_string, index, value);
+    }
+}
+
+
 impl HashMapBeliefTable {
     pub fn print_debug(&self) {
-        println!("pi_values: {:?}", &self.pi_values);
+        println!("pi_values:");
+        print_sorted_map(&self.pi_values);
         println!("lambda_values: {:?}", &self.lambda_values);
         println!("pi_messages: {:?}", &self.pi_messages);
         println!("lambda_messages: {:?}", &self.lambda_messages);

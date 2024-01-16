@@ -201,5 +201,6 @@ pub fn inference_compute_marginals(
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
     inferencer.initialize(target)?;
+    inferencer.data.print_debug();
     HashMapInferenceResult::new_shared(inferencer.data)
 }
