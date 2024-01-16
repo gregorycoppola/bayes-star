@@ -84,7 +84,8 @@ impl HashMapBeliefTable {
     pub fn print_debug(&self) {
         println!("pi_values:");
         print_sorted_map(&self.pi_values);
-        println!("lambda_values: {:?}", &self.lambda_values);
+        println!("lambda_values:");
+        print_sorted_map(&self.lambda_values);
         println!("pi_messages: {:?}", &self.pi_messages);
         println!("lambda_messages: {:?}", &self.lambda_messages);
     }
