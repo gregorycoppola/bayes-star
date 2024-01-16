@@ -75,7 +75,7 @@ fn print_sorted_map(map: &HashMap<(InferenceNode, usize), f64>) {
 
     // Printing in sorted order
     for ((node, index), value) in map_entries {
-        println!("{} ({}): {}", node.debug_string, index, value);
+        info!("{} ({}): {}", node.debug_string, index, value);
     }
 }
 
@@ -98,20 +98,20 @@ fn print_sorted_messages(map: &HashMap<(InferenceNode, InferenceNode, usize), f6
 
     // Printing in sorted order
     for ((node1, node2, index), value) in map_entries {
-        println!("{} - {} ({}): {}", node1.debug_string, node2.debug_string, index, value);
+        info!("{} - {} ({}): {}", node1.debug_string, node2.debug_string, index, value);
     }
 }
 
 
 impl HashMapBeliefTable {
     pub fn print_debug(&self) {
-        println!("pi_values:");
+        info!("pi_values:");
         print_sorted_map(&self.pi_values);
-        println!("lambda_values:");
+        info!("lambda_values:");
         print_sorted_map(&self.lambda_values);
-        println!("pi_messages:");
+        info!("pi_messages:");
         print_sorted_messages(&self.pi_messages);
-        println!("lambda_messages:");
+        info!("lambda_messages:");
         print_sorted_messages(&self.lambda_messages);
     }
 }

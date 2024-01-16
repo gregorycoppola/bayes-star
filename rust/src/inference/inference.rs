@@ -33,7 +33,7 @@ fn inference_conjoined_probability(
 macro_rules! print_red {
     ($($arg:tt)*) => {
         use colored::*;
-        println!("{}", format!($($arg)*).red());
+        info!("{}", format!($($arg)*).red());
     };
 }
 
@@ -41,7 +41,7 @@ macro_rules! print_red {
 macro_rules! print_blue {
     ($($arg:tt)*) => {
         use colored::*;
-        println!("{}", format!($($arg)*).blue());
+        info!("{}", format!($($arg)*).blue());
     };
 }
 
@@ -66,7 +66,7 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi: proposition {:?}", proposition);
+        info!("initialize_pi: proposition {:?}", proposition);
         for root in &self.proposition_graph.get_roots() {
             self.initialize_pi_proposition(root, true)?;
         }
@@ -78,7 +78,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
+        info!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
         let children = self.proposition_graph.get_single_forward(node);
         for child in children {
             self.initialize_pi_conjunct(&child, false)?;
@@ -114,13 +114,13 @@ impl Inferencer {
         group: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        println!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
+        info!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
         let children = self.proposition_graph.get_group_forward(group);
         for child in children {
             self.initialize_pi_proposition(&child, false)?;
         }
         for outcome in CLASS_LABELS {
-            println!("initialize_pi_conjunct: outcome {} is_root {} group {}", outcome, is_root, group.hash_string());
+            info!("initialize_pi_conjunct: outcome {} is_root {} group {}", outcome, is_root, group.hash_string());
             let children = self
                 .proposition_graph
                 .get_group_forward(group);

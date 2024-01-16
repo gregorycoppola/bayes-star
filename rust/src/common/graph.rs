@@ -135,15 +135,15 @@ impl InferenceGraph {
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
-        println!("Attempting to get all implications.");
+        info!("Attempting to get all implications.");
     
         let seq_name = Self::implication_seq_name();
-        println!("Implication sequence name: {}", seq_name);
+        info!("Implication sequence name: {}", seq_name);
     
         let mut redis_conn = self.redis_connection.borrow_mut();
         let records = match seq_get_all(&mut *redis_conn, &seq_name) {
             Ok(records) => {
-                println!("Successfully retrieved records.");
+                info!("Successfully retrieved records.");
                 records
             },
             Err(e) => {
@@ -156,7 +156,7 @@ impl InferenceGraph {
         for (i, record) in records.iter().enumerate() {
             match deserialize_record(record) {
                 Ok(implication) => {
-                    println!("Record {} deserialized successfully.", i);
+                    info!("Record {} deserialized successfully.", i);
                     result.push(implication);
                 },
                 Err(e) => {
@@ -166,7 +166,7 @@ impl InferenceGraph {
             }
         }
     
-        println!("Successfully processed {} implications.", result.len());
+        info!("Successfully processed {} implications.", result.len());
         Ok(result)
     }
 
