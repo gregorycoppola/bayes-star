@@ -29,6 +29,22 @@ fn inference_conjoined_probability(
     todo!()
 }
 
+#[macro_export]
+macro_rules! print_red {
+    ($($arg:tt)*) => {
+        use colored::*;
+        println!("{}", format!($($arg)*).red());
+    };
+}
+
+#[macro_export]
+macro_rules! print_blue {
+    ($($arg:tt)*) => {
+        use colored::*;
+        println!("{}", format!($($arg)*).blue());
+    };
+}
+
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new_mutable(
@@ -43,7 +59,7 @@ impl Inferencer {
     }
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        println!("initialize: proposition {:?}", proposition);
+        print_red!("initialize: proposition {:?}", proposition);
         self.initialize_pi(proposition)?;
         self.initialize_lambda(proposition)?;
         Ok(())
