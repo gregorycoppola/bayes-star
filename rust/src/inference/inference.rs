@@ -43,12 +43,14 @@ impl Inferencer {
     }
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
+        println!("initialize: proposition {:?}", proposition);
         self.initialize_pi(proposition)?;
         self.initialize_lambda(proposition)?;
         Ok(())
     }
 
     pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
+        println!("initialize_pi: proposition {:?}", proposition);
         for root in &self.proposition_graph.get_roots() {
             self.initialize_pi_proposition(root, true)?;
         }
@@ -60,6 +62,7 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
+        println!("initialize_pi_proposition: is_root {} node {:?}", is_root, node);
         let children = self.proposition_graph.get_single_forward(node);
         for child in children {
             self.initialize_pi_conjunct(&child, false)?;
@@ -95,21 +98,13 @@ impl Inferencer {
         conjunct: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
+        println!("initialize_pi_conjunct: starts; is_root {} conjunct {:?}", is_root, conjunct);
         let children = self.proposition_graph.get_group_forward(conjunct);
         for child in children {
             self.initialize_pi_proposition(&child, false)?;
         }
-        if is_root {
-            let prior_prob = inference_conjoined_probability(self.model.proposition_db.borrow(), conjunct)?;
-            self.data
-                .set_pi_value(&InferenceNode::from_conjunct(conjunct), 1, prior_prob);
-            self.data.set_pi_value(
-                &InferenceNode::from_conjunct(conjunct),
-                0,
-                1f64 - prior_prob,
-            );
-        }
         for outcome in CLASS_LABELS {
+            println!("initialize_pi_conjunct: outcome {} is_root {} conjunct {:?}", outcome, is_root, conjunct);
             let children = self
                 .proposition_graph
                 .get_group_forward(conjunct);
