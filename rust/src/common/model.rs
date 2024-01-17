@@ -5,7 +5,7 @@ use crate::{
         self,
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, Predicate, PredicateGroup, PredicateInferenceFactor, Proposition,
+            Domain, Entity, Predicate, PredicateGroup, PredicateFactor, Proposition,
         },
     },
 };
@@ -48,7 +48,7 @@ pub struct FactorContext {
 pub trait FactorModel {
     fn initialize_connection(
         &mut self,
-        implication: &PredicateInferenceFactor,
+        implication: &PredicateFactor,
     ) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,

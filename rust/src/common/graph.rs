@@ -12,7 +12,7 @@ use crate::{
         exponential::ExponentialModel,
         objects::{
             Domain, Entity, Predicate, PredicateGroup,
-            PredicateInferenceFactor, Proposition, PropositionGroup,
+            PredicateFactor, Proposition, PropositionGroup,
         }, choose::{extract_existence_factor_for_predicate, extract_existence_factor_for_proposition},
     }, print_blue,
 };
@@ -67,7 +67,7 @@ impl InferenceGraph {
     }
     fn store_implication(
         &mut self,
-        implication: &PredicateInferenceFactor,
+        implication: &PredicateFactor,
     ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         set_add(
@@ -89,7 +89,7 @@ impl InferenceGraph {
 
     fn store_predicate_backward_link(
         &mut self,
-        inference: &PredicateInferenceFactor,
+        inference: &PredicateFactor,
     ) -> Result<(), Box<dyn Error>> {
         let conclusion = &inference.conclusion;
         let record = serialize_record(inference)?;
@@ -103,13 +103,13 @@ impl InferenceGraph {
 
     pub fn store_predicate_implication(
         &mut self,
-        implication: &PredicateInferenceFactor,
+        implication: &PredicateFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(implication)?;
         Ok(())
     }
-    pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
             &Self::implication_seq_name(),
@@ -123,7 +123,7 @@ impl InferenceGraph {
     pub fn predicate_backward_links(
         &self,
         conclusion: &Predicate,
-    ) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
+    ) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
             &Self::predicate_backward_set_name(conclusion),

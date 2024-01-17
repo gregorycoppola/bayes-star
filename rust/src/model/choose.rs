@@ -1,4 +1,4 @@
-use super::objects::{Proposition, PredicateInferenceFactor};
+use super::objects::{Proposition, PredicateFactor};
 use super::{
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
@@ -152,7 +152,7 @@ pub fn create_existence_predicate(predicate:&Predicate) -> Predicate {
 }
 pub fn extract_existence_factor_for_predicate(
     conclusion: &Predicate,
-) -> Result<PredicateInferenceFactor, Box<dyn Error>> {
+) -> Result<PredicateFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
     for old_role in &conclusion.roles {
@@ -166,7 +166,7 @@ pub fn extract_existence_factor_for_predicate(
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
-    let factor = PredicateInferenceFactor {
+    let factor = PredicateFactor {
         premise: premise_group,
         role_maps: mapping_group,
         conclusion: conclusion.clone(),
@@ -177,7 +177,7 @@ pub fn extract_existence_factor_for_predicate(
 
 pub fn extract_existence_factor_for_proposition(
     basis: &Proposition,
-) -> Result<PredicateInferenceFactor, Box<dyn Error>> {
+) -> Result<PredicateFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
     for old_role in &basis.predicate.roles {
@@ -195,7 +195,7 @@ pub fn extract_existence_factor_for_proposition(
         function: basis.predicate.function.clone(),
         roles: new_roles.clone(),
     };
-    let factor = PredicateInferenceFactor {
+    let factor = PredicateFactor {
         premise: premise_group,
         role_maps: mapping_group,
         conclusion,

@@ -11,7 +11,7 @@ use crate::{
     common::{graph::InferenceGraph, redis::RedisManager},
     model::{
         choose::{compute_search_predicates, extract_backimplications_from_proposition},
-        objects::{GroupRoleMap, PredicateInferenceFactor, Proposition, PropositionGroup},
+        objects::{GroupRoleMap, PredicateFactor, Proposition, PropositionGroup},
     }, print_green,
 };
 
@@ -21,7 +21,7 @@ use super::table::{GenericNodeType, PropositionNode};
 pub struct PropositionFactor {
     pub premise: PropositionGroup,
     pub conclusion: Proposition,
-    pub inference: PredicateInferenceFactor,
+    pub inference: PredicateFactor,
 }
 
 impl PropositionFactor {
@@ -39,7 +39,7 @@ pub struct PropositionGraph {
     pub single_forward: HashMap<Proposition, Vec<PropositionGroup>>,
     pub single_backward: HashMap<Proposition, Vec<PropositionGroup>>,
     pub group_forward: HashMap<PropositionGroup, Vec<Proposition>>,
-    pub inference_used: HashMap<(PropositionGroup, Proposition), PredicateInferenceFactor>,
+    pub inference_used: HashMap<(PropositionGroup, Proposition), PredicateFactor>,
     pub roots: HashSet<Proposition>,
     pub all_nodes: HashSet<PropositionNode>,
 }
@@ -145,7 +145,7 @@ impl PropositionGraph {
         Ok(Rc::new(graph))
     }
 
-    pub fn get_inference_used(&self, premise:&PropositionGroup, conclusion: &Proposition) -> PredicateInferenceFactor {
+    pub fn get_inference_used(&self, premise:&PropositionGroup, conclusion: &Proposition) -> PredicateFactor {
         let key = (premise.clone(), conclusion.clone());
         self.inference_used
             .get(&key).unwrap().clone()

@@ -4,7 +4,7 @@ use crate::{
         self,
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, PredicateInferenceFactor, Predicate, PredicateGroup,
+            Domain, Entity, PredicateFactor, Predicate, PredicateGroup,
             Proposition,
         },
     },

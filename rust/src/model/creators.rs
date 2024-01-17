@@ -2,7 +2,7 @@ use crate::model::objects::*;
 
 // Import the necessary structs and enums
 use crate::model::objects::{
-    ConstantArgument, LabeledArgument, PredicateInferenceFactor, Predicate, VariableArgument,
+    ConstantArgument, LabeledArgument, PredicateFactor, Predicate, VariableArgument,
 };
 
 pub fn conjunction(terms: Vec<Predicate>) -> PredicateGroup {
@@ -13,9 +13,9 @@ pub fn implication(
     premise: PredicateGroup,
     conclusion: Predicate,
     role_maps: Vec<RoleMap>,
-) -> PredicateInferenceFactor {
+) -> PredicateFactor {
     let role_maps = GroupRoleMap { role_maps };
-    PredicateInferenceFactor {
+    PredicateFactor {
         premise,
         conclusion,
         role_maps,

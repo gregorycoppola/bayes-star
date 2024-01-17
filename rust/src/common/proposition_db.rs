@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         exponential::ExponentialModel,
-        objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition, EXISTENCE_FUNCTION},
+        objects::{PredicateGroup, Domain, Entity, PredicateFactor, Predicate, Proposition, EXISTENCE_FUNCTION},
     },
 };
 use redis::{Commands, Connection};
