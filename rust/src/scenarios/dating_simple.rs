@@ -80,9 +80,9 @@ impl ScenarioMaker for SimpleDating {
             let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
             let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
 
-            let p_jack_lonely = cointoss();
-            let p_jill_exciting: f64 = cointoss();
-            let p_jill_likes_jack: f64 = cointoss();
+            let p_jack_lonely = weighted_cointoss(0.3f64);
+            let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
+            let p_jill_likes_jack: f64 = weighted_cointoss(0.4f64);
             let p_jack_likes_jill =
                 weighted_cointoss(0.8 * numeric_or(p_jack_lonely, p_jill_exciting));
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
@@ -98,6 +98,7 @@ impl ScenarioMaker for SimpleDating {
                     p_jack_lonely
                 );
                 proposition_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
+                plan.maybe_add_to_training(is_training, &jack_lonely)?;
             }
 
             {
@@ -111,6 +112,7 @@ impl ScenarioMaker for SimpleDating {
                     p_jill_exciting
                 );
                 proposition_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
+                plan.maybe_add_to_training(is_training, &jill_exciting)?;
             }
 
             {
@@ -130,6 +132,7 @@ impl ScenarioMaker for SimpleDating {
                     p_jill_likes_jack
                 ); // Logging
                 proposition_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
+                plan.maybe_add_to_training(is_training, &jill_likes_jack)?;
             }
 
             {
