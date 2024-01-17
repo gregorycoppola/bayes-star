@@ -105,7 +105,11 @@ impl Inferencer {
             }
         }
         // Part 2: For children not in evidence, recursive into.
-        todo!()
+        for child in &forward_groups {
+            self.pi_compute_generic(&child)?;
+        }
+        // Success.
+        Ok(())
     }
 
     pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
@@ -117,7 +121,7 @@ impl Inferencer {
                 self.pi_compute_group(node)?;
             }
         }
-        todo!()
+        Ok(())
     }
 
     // from_node is a single.. compute it from the group
