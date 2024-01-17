@@ -141,9 +141,6 @@ pub fn extract_factor_for_proposition(
     Ok(result)
 }
 
-pub fn create_existence_predicate(predicate: &Predicate) -> Predicate {
-    todo!()
-}
 pub fn extract_existence_factor_for_predicate(
     conclusion: &Predicate,
 ) -> Result<PredicateFactor, Box<dyn Error>> {
