@@ -1,5 +1,5 @@
 use super::{
-    graph::PropositionGraph,
+    graph::{PropositionFactor, PropositionGraph},
     table::{HashMapBeliefTable, InferenceResult, PropositionNode},
 };
 use crate::{
@@ -149,11 +149,9 @@ impl Inferencer {
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
             }
-            if condition {
-                sum_true += product;
-            } else {
-                sum_false += product;
-            }
+
+            let factor = build_factor_context_for_map(combination, from_node);
+            let prediction = self.model.model.predict(factor);
         }
         self.data.set_pi_value(from_node, 1, sum_true);
         self.data.set_pi_value(from_node, 0, sum_false);
@@ -187,7 +185,16 @@ impl Inferencer {
     }
 }
 
-fn compute_each_combination(propositions: &Vec<PropositionNode>) -> Vec<HashMap<PropositionNode, bool>> {
+fn build_factor_context_for_map(
+    premises: &HashMap<PropositionNode, bool>,
+    conclusion: &PropositionNode,
+) -> PropositionFactor {
+    todo!()
+}
+
+fn compute_each_combination(
+    propositions: &Vec<PropositionNode>,
+) -> Vec<HashMap<PropositionNode, bool>> {
     for node in propositions {
         assert!(node.is_single());
     }
