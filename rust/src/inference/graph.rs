@@ -4,6 +4,7 @@ use std::{
     rc::Rc,
 };
 
+use env_logger::init;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -14,7 +15,7 @@ use crate::{
     },
 };
 
-use super::table::PropositionNode;
+use super::table::{PropositionNode, GenericNodeType};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionFactor {
@@ -124,6 +125,25 @@ impl PropositionGraph {
 
     pub fn get_group_backward(&self, key: &PropositionGroup) -> Vec<Proposition> {
         key.terms.clone()
+    }
+
+    pub fn get_all_backward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
+        let mut r = vec![];
+        match &node.node {
+            GenericNodeType::Single(proposition) => {
+                let initial = self.get_single_backward(proposition);
+                for group in &initial {
+                    r.push(PropositionNode::from_group(group));
+                }
+            },
+            GenericNodeType::Group(group) => {
+                let initial = self.get_group_backward(group);
+                for single in &initial {
+                    r.push(PropositionNode::from_proposition(single));
+                }
+            }
+        }
+        r
     }
 
     pub fn get_roots(&self) -> HashSet<Proposition> {

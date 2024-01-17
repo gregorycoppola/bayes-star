@@ -20,8 +20,8 @@ pub enum GenericNodeType {
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct PropositionNode {
-    node: GenericNodeType,
-    debug_string: String,
+    pub node: GenericNodeType,
+    pub debug_string: String,
 }
 
 impl PropositionNode {
