@@ -193,6 +193,14 @@ fn build_factor_context_for_map(
     premises: &HashMap<PropositionNode, bool>,
     conclusion: &PropositionNode,
 ) -> FactorContext {
+    let mut probabilities = vec![];
+    for (premise, &value) in premises.iter() {
+        if value {
+            probabilities.push(1f64);
+        } else {
+            probabilities.push(0f64);
+        }
+    }
     todo!()
 }
 
