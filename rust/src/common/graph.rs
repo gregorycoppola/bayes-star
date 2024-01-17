@@ -97,6 +97,13 @@ impl InferenceGraph {
         }
         Ok(())
     }
+    fn store_existence_backlinks_for_factor(
+        &mut self,
+        inference: &PredicateInferenceFactor,
+    ) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     fn store_predicate_backward_link(
         &mut self,
         conclusion: &Predicate,
@@ -131,6 +138,7 @@ impl InferenceGraph {
         self.store_predicate_backward_link(&implication.conclusion, &implication)?;
         self.store_conjunction_forward_link(&implication.premise, &implication)?;
         self.store_predicate_forward_links(&implication.premise)?;
+        self.store_existence_backlinks_for_factor(implication)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
