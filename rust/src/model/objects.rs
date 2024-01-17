@@ -213,9 +213,15 @@ impl Proposition {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct PredicateGroup {
     pub terms: Vec<Predicate>,
+}
+
+impl fmt::Debug for PredicateGroup {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.debug_string())
+    }
 }
 
 impl PredicateGroup {
