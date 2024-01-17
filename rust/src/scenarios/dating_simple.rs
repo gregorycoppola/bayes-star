@@ -99,6 +99,7 @@ impl ScenarioMaker for SimpleDating {
                 );
                 proposition_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
                 plan.maybe_add_to_training(is_training, &jack_lonely)?;
+                graph.ensure_existence_backlinks_for_proposition(&jack_lonely)?;
             }
 
             {
@@ -113,6 +114,7 @@ impl ScenarioMaker for SimpleDating {
                 );
                 proposition_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
                 plan.maybe_add_to_training(is_training, &jill_exciting)?;
+                graph.ensure_existence_backlinks_for_proposition(&jill_exciting)?;
             }
 
             {
@@ -133,6 +135,7 @@ impl ScenarioMaker for SimpleDating {
                 ); // Logging
                 proposition_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
                 plan.maybe_add_to_training(is_training, &jill_likes_jack)?;
+                graph.ensure_existence_backlinks_for_proposition(&jill_likes_jack)?;
             }
 
             {
@@ -153,6 +156,7 @@ impl ScenarioMaker for SimpleDating {
                     proposition_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
                 plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
+                graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
             }
             {
                 let jill = constant(jill_entity.domain, jill_entity.name.clone());
@@ -174,6 +178,7 @@ impl ScenarioMaker for SimpleDating {
                 proposition_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
+                graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
             }
         }
 
