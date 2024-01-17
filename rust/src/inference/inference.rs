@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     common::{interface::PropositionDB, model::InferenceModel},
-    inference::table::HashMapInferenceResult,
+    inference::table::{HashMapInferenceResult, GenericNodeType},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
@@ -112,6 +112,26 @@ impl Inferencer {
             }
         }
         // Part 2: For children not in evidence, recursive into.
+        todo!()
+    }
+
+    pub fn pi_compute_generic(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+        match &node.node {
+            GenericNodeType::Single(proposition) => {
+                self.pi_compute_single(proposition)?;
+            }
+            GenericNodeType::Group(group) => {
+                self.pi_compute_group(group)?;
+            }
+        }
+        todo!()
+    }
+
+    pub fn pi_compute_single(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn pi_compute_group(&mut self, node:&PropositionGroup) -> Result<(), Box<dyn Error>> {
         todo!()
     }
 }
