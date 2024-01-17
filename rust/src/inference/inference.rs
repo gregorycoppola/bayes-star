@@ -120,13 +120,15 @@ impl Inferencer {
         todo!()
     }
 
+    // from_node is a single.. compute it from the group
     pub fn pi_compute_single(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let from_group = from_node.extract_group();
+        let conclusion = from_node.extract_single();
         let backlinks = self.proposition_graph.get_all_backward(from_node);
         let all_combinations = compute_each_combination(&backlinks);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
         for combination in &all_combinations {
-            // check if this is the "all true" case, and bail if so
             let mut product = 1f64;
             let mut condition = true;
             for (index, to_node) in backlinks.iter().enumerate() {
@@ -135,7 +137,7 @@ impl Inferencer {
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
             }
-            let factor = self.build_factor_context_for_map(combination, from_node);
+            let factor = self.build_factor_context_for_map(&from_group, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
