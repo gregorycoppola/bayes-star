@@ -8,7 +8,7 @@ use bayes_star::{
     },
     model::{
         creators::{
-            conjunction, constant, implication, object, predicate, relation, subject, variable,
+            conjunction, constant, implication, object, predicate, subject, variable,
         },
         objects::{Domain, RoleMap},
     },
