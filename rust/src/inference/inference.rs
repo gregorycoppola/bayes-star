@@ -133,7 +133,7 @@ impl Inferencer {
                 condition = condition && combination_val;
             }
 
-            let factor = build_factor_context_for_map(combination, from_node);
+            let factor = self.build_factor_context_for_map(combination, from_node);
             let prediction = self.model.model.predict(&factor)?;
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
@@ -170,22 +170,35 @@ impl Inferencer {
         self.data.set_pi_value(from_node, 0, sum_false);
         Ok(())
     }
-}
 
 fn build_factor_context_for_map(
-    premises: &HashMap<PropositionNode, bool>,
-    conclusion: &PropositionNode,
+    &self,
+    premise: &PropositionGroup,
+    premise_assignment: &HashMap<PropositionNode, bool>,
+    conclusion: &Proposition,
 ) -> FactorContext {
     let mut probabilities = vec![];
-    for (premise, &value) in premises.iter() {
+    for (premise, &value) in premise_assignment.iter() {
         if value {
             probabilities.push(1f64);
         } else {
             probabilities.push(0f64);
         }
     }
-    todo!()
+    let inference = self.proposition_graph.get_inference_used(premise, conclusion);
+    let factor = PropositionFactor {
+        premise: premise.clone(),
+        conclusion: conclusion.clone(),
+        inference,
+    };
+    let context = FactorContext {
+        factor,
+        probabilities,
+    };
+    context
 }
+}
+
 
 // Return 1 HashMap for each of the 2^N ways to assign each of the N memebers of `propositions` to either true or false.
 fn compute_each_combination(
