@@ -14,6 +14,8 @@ use crate::{
     },
 };
 
+use super::table::PropositionNode;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionFactor {
     pub premise: PropositionGroup,
@@ -33,6 +35,7 @@ pub struct PropositionGraph {
     pub single_backward: HashMap<Proposition, Vec<PropositionGroup>>,
     pub group_forward: HashMap<PropositionGroup, Vec<Proposition>>,
     pub roots: HashSet<Proposition>,
+    pub all_nodes: HashSet<PropositionNode>,
 }
 
 fn initialize_visit_single(
@@ -41,7 +44,7 @@ fn initialize_visit_single(
 ) -> Result<(), Box<dyn Error>> {
     // Green for starting a new operation
     info!("\x1b[32mInitializing visit for proposition: {:?}\x1b[0m", single.hash_string());
-    
+    graph.all_nodes.insert(PropositionNode::from_proposition(single));
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     // Yellow for showing counts or lengths
@@ -69,6 +72,8 @@ fn initialize_visit_single(
                 .entry(inference_factor.premise.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.conclusion.clone());
+
+            graph.all_nodes.insert(PropositionNode::from_group(&inference_factor.premise));
 
             for term in &inference_factor.premise.terms {
                 info!("\x1b[35mProcessing term: {:?}\x1b[0m", term.hash_string());
@@ -99,6 +104,7 @@ impl PropositionGraph {
             single_backward: HashMap::new(),
             group_forward: HashMap::new(),
             roots: HashSet::new(),
+            all_nodes: HashSet::new(),
         };
         initialize_visit_single(&mut graph, target)?;
         Ok(Rc::new(graph))

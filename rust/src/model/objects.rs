@@ -201,6 +201,9 @@ impl Proposition {
     pub fn hash_string(&self) -> String {
         self.predicate.hash_string()
     }
+    pub fn debug_string(&self) -> String {
+        self.predicate.hash_string()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
@@ -221,6 +224,9 @@ impl PredicateGroup {
         hash_strings.sort(); // Sort the search strings in ascending order
         hash_strings.join(";") // Join the sorted strings, separated by a comma and a space
     }
+    pub fn debug_string(&self) -> String {
+        self.hash_string()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
@@ -239,6 +245,9 @@ impl PropositionGroup {
             .collect();
         hash_strings.sort(); // Sort the search strings in ascending order
         hash_strings.join(";") // Join the sorted strings, separated by a comma and a space
+    }
+    pub fn debug_string(&self) -> String {
+        self.hash_string()
     }
 }
 

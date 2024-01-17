@@ -40,6 +40,13 @@ impl PropositionNode {
             debug_string: group.hash_string(),
         }
     }
+
+    pub fn debug_string(&self) -> String {
+        match &self.node {
+            GenericNodeType::Single(proposition) => proposition.debug_string(),
+            GenericNodeType::Group(group) => group.debug_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

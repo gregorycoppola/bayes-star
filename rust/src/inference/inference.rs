@@ -1,10 +1,14 @@
-use super::{table::{HashMapBeliefTable, PropositionNode, InferenceResult}, graph::PropositionGraph};
+use super::{
+    graph::PropositionGraph,
+    table::{HashMapBeliefTable, InferenceResult, PropositionNode},
+};
 use crate::{
     common::{interface::PropositionDB, model::InferenceModel},
+    inference::table::HashMapInferenceResult,
     model::{
-        objects::{PredicateGroup, Predicate, Proposition, PropositionGroup},
+        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
-    }, inference::table::HashMapInferenceResult,
+    },
 };
 use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
@@ -19,7 +23,10 @@ fn inference_proposition_probability(
     proposition_db: &dyn PropositionDB,
     proposition: &Proposition,
 ) -> Result<f64, Box<dyn Error>> {
-    Ok(proposition_db.get_proposition_probability(proposition).unwrap().unwrap())
+    Ok(proposition_db
+        .get_proposition_probability(proposition)
+        .unwrap()
+        .unwrap())
 }
 
 fn inference_conjoined_probability(
@@ -73,15 +80,18 @@ impl Inferencer {
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
-        self.initialize_pi(proposition)?;
+        self.initialize_pi()?;
         self.initialize_lambda(proposition)?;
         Ok(())
     }
 
-    pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        print_red!("initialize_pi: proposition {:?}", proposition.hash_string());
-        for root in &self.proposition_graph.get_roots() {
-            self.initialize_pi_proposition(root, true)?;
+    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
+        print_red!("initialize_pi: proposition");
+        for node in &self.proposition_graph.all_nodes {
+            print_red!("initializing: {}", node.debug_string());
+            for outcome in CLASS_LABELS {
+                self.data.set_pi_value(node, outcome, 1f64);
+            }
         }
         Ok(())
     }
@@ -91,14 +101,19 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        print_yellow!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
+        print_yellow!(
+            "initialize_pi_proposition: is_root {} node {}",
+            is_root,
+            node.hash_string()
+        );
         let children = self.proposition_graph.get_single_forward(node);
         for child in children {
             print_yellow!("found child {}", child.hash_string());
             self.initialize_pi_conjunct(&child, false)?;
         }
         if is_root {
-            let prior_prob = inference_proposition_probability(self.model.proposition_db.borrow(), node)?;
+            let prior_prob =
+                inference_proposition_probability(self.model.proposition_db.borrow(), node)?;
             self.data
                 .set_pi_value(&PropositionNode::from_proposition(node), 1, prior_prob);
             self.data.set_pi_value(
@@ -108,9 +123,7 @@ impl Inferencer {
             );
         }
         for outcome in CLASS_LABELS {
-            let children = self
-                .proposition_graph
-                .get_single_forward(node);
+            let children = self.proposition_graph.get_single_forward(node);
             for child in children {
                 self.data.set_lambda_message(
                     &PropositionNode::from_proposition(node),
@@ -128,17 +141,24 @@ impl Inferencer {
         group: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        print_green!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
+        print_green!(
+            "initialize_pi_conjunct: starts; is_root {} group {}",
+            is_root,
+            group.hash_string()
+        );
         let children = self.proposition_graph.get_group_forward(group);
         for child in children {
             print_green!("found child: single {}", child.hash_string());
             self.initialize_pi_proposition(&child, false)?;
         }
         for outcome in CLASS_LABELS {
-            info!("initialize_pi_conjunct: outcome {} is_root {} group {}", outcome, is_root, group.hash_string());
-            let children = self
-                .proposition_graph
-                .get_group_forward(group);
+            info!(
+                "initialize_pi_conjunct: outcome {} is_root {} group {}",
+                outcome,
+                is_root,
+                group.hash_string()
+            );
+            let children = self.proposition_graph.get_group_forward(group);
             for child in children {
                 self.data.set_lambda_message(
                     &PropositionNode::from_group(group),
@@ -211,7 +231,7 @@ impl Inferencer {
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
-    target:&Proposition,
+    target: &Proposition,
 ) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
