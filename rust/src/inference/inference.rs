@@ -79,6 +79,8 @@ impl Inferencer {
     }
 
     pub fn initialize_pi_roots(&mut self) -> Result<(), Box<dyn Error>> {
+        let roots = &self.proposition_graph.roots;
+        print_yellow!("{:?}", &roots);
         todo!()
     }
 
