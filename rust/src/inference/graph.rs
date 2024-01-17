@@ -189,6 +189,33 @@ impl PropositionGraph {
         r
     }
 
+    pub fn get_all_forward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
+        print_green!("get_all_backward called for node: {:?}", node.debug_string());
+        let mut r = vec![];
+        match &node.node {
+            GenericNodeType::Single(proposition) => {
+                print_green!("Processing as Single: {:?}", proposition.debug_string());
+                let initial = self.get_single_forward(proposition);
+                print_green!("Initial singles: {}", initial.len());
+                for group in &initial {
+                    print_green!("Adding group from initial singles: {:?}", group.debug_string());
+                    r.push(PropositionNode::from_group(group));
+                }
+            }
+            GenericNodeType::Group(group) => {
+                print_green!("Processing as Group: {:?}", group.debug_string());
+                let initial = self.get_group_forward(group);
+                print_green!("Initial groups: {}", initial.len());
+                for single in &initial {
+                    print_green!("Adding single from initial groups: {:?}", single.debug_string());
+                    r.push(PropositionNode::from_single(single));
+                }
+            }
+        }
+        info!("Resulting vector: {:?}", r);
+        r
+    }
+
     pub fn get_roots(&self) -> HashSet<Proposition> {
         self.roots.clone()
     }
