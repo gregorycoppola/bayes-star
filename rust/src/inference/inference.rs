@@ -246,5 +246,10 @@ pub fn inference_compute_marginals(
 }
 
 fn premise_from_backlinks(backlinks:&Vec<PropositionNode>) -> Vec<PropositionGroup> {
-    todo!()
+    let mut result = vec![];
+    for backlink in backlinks {
+        let group = backlink.extract_group();
+        result.push(group);
+    }
+    result
 }
