@@ -5,7 +5,9 @@ use crate::common::model::InferenceModel;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
+use crate::model::choose::extract_existence_factor_for_proposition;
 use crate::model::creators::predicate;
+use crate::print_red;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -52,6 +54,7 @@ impl ScenarioMaker for OneVariable {
         trace!("Initial number of jacks: {}", jacks.len());
         let exciting = constant(Domain::Verb, "exciting".to_string());
 
+        let mut propositions = vec![];
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
@@ -74,26 +77,23 @@ impl ScenarioMaker for OneVariable {
             {
                 trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_lonely = proposition(exciting.to_string(), vec![sub(jack)]);
+                let jack_exciting = proposition(exciting.to_string(), vec![sub(jack)]);
 
                 trace!(
-                    "Jack Lonely: {:?}, Probability: {}",
-                    jack_lonely.predicate.hash_string(),
+                    "Jack exciting: {:?}, Probability: {}",
+                    jack_exciting.predicate.hash_string(),
                     p_jack_exciting
                 );
-                proposition_db.store_proposition_probability(&jack_lonely, p_jack_exciting)?;
-                plan.maybe_add_to_training(is_training, &jack_lonely)?;
+                proposition_db.store_proposition_probability(&jack_exciting, p_jack_exciting)?;
+                plan.maybe_add_to_training(is_training, &jack_exciting)?;
+                propositions.push(jack_exciting.clone());
             }
         }
 
-        let xjack = variable(Domain::Jack);
-        let xjill = variable(Domain::Jill);
-        let implications = vec![];
-        for implication in implications.iter() {
-            trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
-            // Assuming `store_implication` is a method of your GraphicalModel struct
-            graph.store_predicate_implication(implication)?;
-        }
+        let example_proposition = &propositions[0];
+        print_red!("making factor for {:?}", &example_proposition);
+        let implication = extract_existence_factor_for_proposition(example_proposition)?;
+        graph.store_predicate_implication(&implication)?;
 
         // Additional functions
         fn numeric_or(a: f64, b: f64) -> f64 {
