@@ -112,22 +112,3 @@ pub fn compute_joint_probability(
     );
     Ok(joint_probability)
 }
-
-fn each_combination(propositions: &Vec<Predicate>) -> Vec<HashMap<String, bool>> {
-    let n = propositions.len();
-    let mut all_combinations = Vec::new();
-
-    for i in 0..(1 << n) {
-        let mut current_combination = HashMap::new();
-
-        for j in 0..n {
-            let prop = &propositions[j];
-            let state = i & (1 << j) != 0;
-            current_combination.insert(prop.hash_string(), state);
-        }
-
-        all_combinations.push(current_combination);
-    }
-
-    all_combinations
-}
