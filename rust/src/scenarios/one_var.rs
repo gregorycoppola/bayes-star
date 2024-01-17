@@ -7,7 +7,7 @@ use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
 use crate::model::choose::extract_existence_factor_for_proposition;
 use crate::model::creators::predicate;
-use crate::print_red;
+use crate::{print_red, print_yellow};
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -79,7 +79,7 @@ impl ScenarioMaker for OneVariable {
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
                 let jack_exciting = proposition(exciting.to_string(), vec![sub(jack)]);
 
-                trace!(
+                print_yellow!(
                     "Jack exciting: {:?}, Probability: {}",
                     jack_exciting.predicate.hash_string(),
                     p_jack_exciting
