@@ -11,12 +11,20 @@ fn random_weight() -> f64 {
     (rng.gen::<f64>() - rng.gen::<f64>()) / 5.0
 }
 
+fn sign_char(value:usize) -> String {
+    if value == 0 {
+        '-'.to_string()
+    } else {
+        "+".to_string()
+    }
+}
+
 pub fn positive_feature(feature: &str, class_label:usize) -> String {
-    format!("+>{} {}", class_label, feature)
+    format!("+>{} {}", sign_char(class_label), feature)
 }
 
 pub fn negative_feature(feature: &str, class_label : usize) -> String {
-    format!("->{} {}", class_label, feature)
+    format!("->{} {}", sign_char(class_label), feature)
 }
 
 pub struct ExponentialWeights {
