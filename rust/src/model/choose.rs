@@ -129,7 +129,7 @@ pub fn extract_factor_for_proposition(
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
     let mut probabilities = vec![];
-    for factor in factors {
+    for factor in &factors {
         // let opt = proposition_db.get_proposition_probability(term)?;
         let probability: f64 = todo!(); //  = opt.unwrap();
         probabilities.push(probability);

@@ -183,31 +183,32 @@ impl Inferencer {
 
     fn build_factor_context_for_map(
         &self,
-        premise: &PropositionGroup,
+        premise: &Vec<PropositionGroup>,
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &Proposition,
     ) -> FactorContext {
-        let mut probabilities = vec![];
-        for (premise, &value) in premise_assignment.iter() {
-            if value {
-                probabilities.push(1f64);
-            } else {
-                probabilities.push(0f64);
-            }
-        }
-        let inference = self
-            .proposition_graph
-            .get_inference_used(premise, conclusion);
-        let factor = PropositionFactor {
-            premise: premise.clone(),
-            conclusion: conclusion.clone(),
-            inference,
-        };
-        let context = FactorContext {
-            factor,
-            probabilities,
-        };
-        context
+        todo!()
+        // let mut probabilities = vec![];
+        // for (premise, &value) in premise_assignment.iter() {
+        //     if value {
+        //         probabilities.push(1f64);
+        //     } else {
+        //         probabilities.push(0f64);
+        //     }
+        // }
+        // let inference = self
+        //     .proposition_graph
+        //     .get_inference_used(premise, conclusion);
+        // let factor = PropositionFactor {
+        //     premise: premise.clone(),
+        //     conclusion: conclusion.clone(),
+        //     inference,
+        // };
+        // let context = FactorContext {
+        //     factor,
+        //     probabilities,
+        // };
+        // context
     }
 }
 
