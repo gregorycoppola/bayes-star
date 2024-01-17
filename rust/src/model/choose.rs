@@ -6,6 +6,7 @@ use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
 use crate::model::objects::{PropositionGroup, EXISTENCE_FUNCTION, RoleMap, GroupRoleMap};
+use crate::print_green;
 use crate::{
     common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
@@ -169,5 +170,6 @@ pub fn extract_existence_factor_for_predicate(
         role_maps: mapping_group,
         conclusion: conclusion.clone(),
     };
+    print_green!("extracted existence predicate {:?}", &factor);
     Ok(factor)
 }

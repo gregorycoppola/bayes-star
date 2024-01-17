@@ -119,8 +119,8 @@ impl InferenceGraph {
         implication: &PredicateInferenceFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
-        self.store_predicate_backward_link(&implication)?;
-        // self.store_existence_backlinks_for_factor(implication)?;
+        self.store_predicate_backward_link(implication)?;
+        self.store_existence_backlinks_for_factor(implication)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
