@@ -54,7 +54,7 @@ fn initialize_visit_single(
     );
     graph
         .all_nodes
-        .insert(PropositionNode::from_proposition(single));
+        .insert(PropositionNode::from_single(single));
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     // Yellow for showing counts or lengths
@@ -181,7 +181,7 @@ impl PropositionGraph {
                 print_green!("Initial groups: {}", initial.len());
                 for single in &initial {
                     print_green!("Adding single from initial groups: {:?}", single.debug_string());
-                    r.push(PropositionNode::from_proposition(single));
+                    r.push(PropositionNode::from_single(single));
                 }
             }
         }

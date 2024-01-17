@@ -26,7 +26,7 @@ pub struct PropositionNode {
 
 impl PropositionNode {
     // Constructor for an InferenceNode with a Proposition
-    pub fn from_proposition(proposition: &Proposition) -> PropositionNode {
+    pub fn from_single(proposition: &Proposition) -> PropositionNode {
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
             debug_string: proposition.hash_string(),

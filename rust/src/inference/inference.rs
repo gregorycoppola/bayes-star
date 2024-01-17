@@ -82,8 +82,8 @@ impl Inferencer {
         let roots = self.proposition_graph.roots.clone();
         for root in &roots {
             assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
-            self.data.set_pi_value(&PropositionNode::from_proposition(&root), 1, 1.0f64);
-            self.data.set_pi_value(&PropositionNode::from_proposition(&root), 0, 0.0f64);
+            self.data.set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
+            self.data.set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
         }
 
         for root in &roots {
@@ -93,12 +93,9 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn send_pi_from_group(&mut self) -> Result<(), Box<dyn Error>> {
-        todo!()
-    }
-
     pub fn send_pi_from_single(&mut self, proposition:&Proposition) -> Result<(), Box<dyn Error>> {
-        let from_node = PropositionNode::from_proposition(proposition);
+        // Part 1: For each value of z, compute pi_X(z)
+        let from_node = PropositionNode::from_single(proposition);
         let forward_groups = self.proposition_graph.get_single_forward(proposition);
         for (this_index, this_value) in forward_groups.iter().enumerate() {
             let to_node = PropositionNode::from_group(&this_value);
@@ -116,9 +113,35 @@ impl Inferencer {
                 self.data.set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
+        // Part 2: For children not in evidence, recursive into.
+        todo!()
+    }
+
+    pub fn send_pi_from_group(&mut self, proposition:&PropositionGroup) -> Result<(), Box<dyn Error>> {
+        // Part 1: For each value of z, compute pi_X(z)
+        let from_node = PropositionNode::from_group(proposition);
+        let forward_groups = self.proposition_graph.get_group_forward(proposition);
+        for (this_index, this_value) in forward_groups.iter().enumerate() {
+            let to_node = PropositionNode::from_single(&this_value);
+            for class_label in &CLASS_LABELS {
+                let mut lambda_part = 1f64;
+                for (other_index, other_value) in forward_groups.iter().enumerate() {
+                    if other_index != this_index {
+                        let node = PropositionNode::from_single(other_value);
+                        let this_lambda = self.data.get_lambda_value(&node, *class_label).unwrap();
+                        lambda_part *= this_lambda;
+                    }
+                }
+                let pi_part = self.data.get_pi_value(&to_node, *class_label).unwrap();
+                let message = pi_part * lambda_part;
+                self.data.set_pi_message(&from_node, &to_node, *class_label, message);
+            }
+        }
+        // Part 2: For children not in evidence, recursive into.
         todo!()
     }
 }
+
 
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
