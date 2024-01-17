@@ -10,36 +10,6 @@ use std::{collections::HashMap, error::Error};
 use super::objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION};
 use super::weights::ExponentialWeights;
 
-fn print_premise_probabilities(
-    storage: &mut InferenceModel,
-    conjunction: &PropositionGroup,
-) -> Result<(), Box<dyn Error>> {
-    for (i, term) in conjunction.terms.iter().enumerate() {
-        match storage.proposition_db.get_proposition_probability(term) {
-            Ok(term_prob_opt) => match term_prob_opt {
-                Some(term_prob) => {
-                    info!(
-                        "\x1b[32mactivation: {} {}\x1b[0m",
-                        term.predicate.hash_string(),
-                        term_prob
-                    );
-                }
-                None => {
-                    panic!("Should have the probability by now");
-                }
-            },
-            Err(e) => {
-                error!(
-                    "Error getting proposition probability for term {}: {}",
-                    i, e
-                );
-                return Err(e);
-            }
-        }
-    }
-    Ok(())
-}
-
 pub struct MapBackedProbabilityStorage {
     underlying: HashMap<String, bool>,
 }
