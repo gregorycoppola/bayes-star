@@ -164,7 +164,6 @@ impl PropositionGraph {
 
     pub fn get_all_backward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
         print_green!("get_all_backward called for node: {:?}", node.debug_string());
-
         let mut r = vec![];
         match &node.node {
             GenericNodeType::Single(proposition) => {
