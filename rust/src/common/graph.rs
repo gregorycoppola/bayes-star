@@ -83,7 +83,9 @@ impl InferenceGraph {
         predicate: &Predicate,
     ) -> Result<(), Box<dyn Error>> {
         let factor = extract_existence_factor_for_predicate(predicate)?;
-        todo!()
+        self.store_implication(&factor)?;
+        self.store_predicate_backward_link(&factor)?;
+        Ok(())
     }
 
     fn store_existence_backlinks_for_factor(
