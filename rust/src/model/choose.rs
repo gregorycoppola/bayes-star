@@ -1,4 +1,4 @@
-use super::objects::Proposition;
+use super::objects::{Proposition, PredicateInferenceFactor};
 use super::{
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
@@ -142,4 +142,10 @@ pub fn extract_factors_for_proposition(
         })
     }
     Ok(result)
+}
+
+pub fn extract_existence_factor_for_predicate(
+    conclusion: &Predicate,
+) -> Result<PredicateInferenceFactor, Box<dyn Error>> {
+    todo!()
 }

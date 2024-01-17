@@ -13,7 +13,7 @@ use crate::{
         objects::{
             Domain, Entity, Predicate, PredicateGroup,
             PredicateInferenceFactor, Proposition, PropositionGroup,
-        },
+        }, choose::extract_existence_factor_for_predicate,
     },
 };
 use redis::{Commands, Connection};
@@ -102,6 +102,7 @@ impl InferenceGraph {
         &mut self,
         predicate: &Predicate,
     ) -> Result<(), Box<dyn Error>> {
+        let factor = extract_existence_factor_for_predicate(predicate)?;
         todo!()
     }
 
