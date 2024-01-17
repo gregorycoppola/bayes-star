@@ -39,6 +39,7 @@ pub struct PropositionGraph {
     pub single_forward: HashMap<Proposition, Vec<PropositionGroup>>,
     pub single_backward: HashMap<Proposition, Vec<PropositionGroup>>,
     pub group_forward: HashMap<PropositionGroup, Vec<Proposition>>,
+    pub inference_used: HashMap<(PropositionGroup, Proposition), PredicateInferenceFactor>,
     pub roots: HashSet<Proposition>,
     pub all_nodes: HashSet<PropositionNode>,
 }
@@ -74,6 +75,9 @@ fn initialize_visit_single(
                 "\x1b[36mProcessing inference factor: {:?}\x1b[0m",
                 inference_factor.debug_string()
             );
+
+            let inference_used_key = (inference_factor.premise.clone(), inference_factor.conclusion.clone());
+            graph.inference_used.insert(inference_used_key, inference_factor.inference.clone());
 
             info!(
                 "\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m",
@@ -133,6 +137,7 @@ impl PropositionGraph {
             single_forward: HashMap::new(),
             single_backward: HashMap::new(),
             group_forward: HashMap::new(),
+            inference_used: HashMap::new(),
             roots: HashSet::new(),
             all_nodes: HashSet::new(),
         };
