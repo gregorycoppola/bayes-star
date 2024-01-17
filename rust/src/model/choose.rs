@@ -174,3 +174,32 @@ pub fn extract_existence_factor_for_predicate(
     print_green!("extracted existence predicate {:?}", &factor);
     Ok(factor)
 }
+
+pub fn extract_existence_factor_for_proposition(
+    basis: &Proposition,
+) -> Result<PredicateInferenceFactor, Box<dyn Error>> {
+    let mut new_roles = vec![];
+    let mut mapping = HashMap::new();
+    for old_role in &basis.predicate.roles {
+        new_roles.push(old_role.convert_to_quantified());
+        mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
+    }
+    let premise = Predicate {
+        function: EXISTENCE_FUNCTION.to_string(),
+        roles: new_roles.clone(),
+    };
+    let role_map = RoleMap::new(mapping);
+    let premise_group = PredicateGroup::new(vec![premise]);
+    let mapping_group = GroupRoleMap::new(vec![role_map]);
+    let conclusion = Predicate {
+        function: basis.predicate.function.clone(),
+        roles: new_roles.clone(),
+    };
+    let factor = PredicateInferenceFactor {
+        premise: premise_group,
+        role_maps: mapping_group,
+        conclusion,
+    };
+    print_green!("extracted existence predicate {:?}", &factor);
+    Ok(factor)
+}
