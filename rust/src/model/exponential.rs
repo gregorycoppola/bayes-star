@@ -134,7 +134,7 @@ impl FactorModel for ExponentialModel {
     fn train(
         &mut self,
         factor: &FactorContext,
-        probability: f64,
+        gold_probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
         trace!("train_on_example - Getting features from backimplications");
         let features = match features_from_factor(factor) {
@@ -178,9 +178,9 @@ impl FactorModel for ExponentialModel {
             let probability = potentials[class_label] / normalization;
             trace!("train_on_example - Computing expected features");
             let this_true_prob = if class_label == 0 {
-                1f64 - probability
+                1f64 - gold_probability
             } else {
-                probability
+                gold_probability
             };
             let gold = compute_expected_features(this_true_prob, &features[class_label]);
             let expected = compute_expected_features(probability, &features[class_label]);
