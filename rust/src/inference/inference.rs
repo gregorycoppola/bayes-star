@@ -85,8 +85,20 @@ impl Inferencer {
             self.data.set_pi_value(&PropositionNode::from_proposition(&root), 1, 1.0f64);
             self.data.set_pi_value(&PropositionNode::from_proposition(&root), 0, 0.0f64);
         }
+
+        for root in &roots {
+            self.send_pi_from_single(root)?;
+        }
         print_yellow!("{:?}", &roots);
         Ok(())
+    }
+
+    pub fn send_pi_from_group(&mut self) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn send_pi_from_single(&mut self, proposition:&Proposition) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 }
 
