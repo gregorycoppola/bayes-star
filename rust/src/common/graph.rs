@@ -97,6 +97,14 @@ impl InferenceGraph {
         }
         Ok(())
     }
+
+    fn store_existence_backlinks_for_predicate(
+        &mut self,
+        predicate: &Predicate,
+    ) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     fn store_existence_backlinks_for_factor(
         &mut self,
         inference: &PredicateInferenceFactor,
