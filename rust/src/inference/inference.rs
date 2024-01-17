@@ -6,7 +6,7 @@ use crate::{
     common::{interface::PropositionDB, model::InferenceModel},
     inference::table::HashMapInferenceResult,
     model::{
-        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
+        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
     }, print_red, print_yellow, print_green,
 };
@@ -79,9 +79,14 @@ impl Inferencer {
     }
 
     pub fn initialize_pi_roots(&mut self) -> Result<(), Box<dyn Error>> {
-        let roots = &self.proposition_graph.roots;
+        let roots = self.proposition_graph.roots.clone();
+        for root in &roots {
+            assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
+            self.data.set_pi_value(&PropositionNode::from_proposition(&root), 1, 1.0f64);
+            self.data.set_pi_value(&PropositionNode::from_proposition(&root), 0, 0.0f64);
+        }
         print_yellow!("{:?}", &roots);
-        todo!()
+        Ok(())
     }
 
     pub fn initialize_pi_proposition(
