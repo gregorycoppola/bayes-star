@@ -4,11 +4,12 @@ use super::{
 };
 use crate::{
     common::{interface::PropositionDB, model::InferenceModel},
-    inference::table::{HashMapInferenceResult, GenericNodeType},
+    inference::table::{GenericNodeType, HashMapInferenceResult},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
-    }, print_red, print_yellow, print_green,
+    },
+    print_green, print_red, print_yellow,
 };
 use redis::Connection;
 use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
@@ -82,8 +83,10 @@ impl Inferencer {
         let roots = self.proposition_graph.roots.clone();
         for root in &roots {
             assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
-            self.data.set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
-            self.data.set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
+            self.data
+                .set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
+            self.data
+                .set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
         }
 
         for root in &roots {
@@ -94,7 +97,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_visit_node(&mut self, from_node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
@@ -102,20 +105,24 @@ impl Inferencer {
                 let mut lambda_part = 1f64;
                 for (other_index, other_node) in forward_groups.iter().enumerate() {
                     if other_index != this_index {
-                        let this_lambda = self.data.get_lambda_value(&other_node, *class_label).unwrap();
+                        let this_lambda = self
+                            .data
+                            .get_lambda_value(&other_node, *class_label)
+                            .unwrap();
                         lambda_part *= this_lambda;
                     }
                 }
                 let pi_part = self.data.get_pi_value(&to_node, *class_label).unwrap();
                 let message = pi_part * lambda_part;
-                self.data.set_pi_message(&from_node, &to_node, *class_label, message);
+                self.data
+                    .set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
         // Part 2: For children not in evidence, recursive into.
         todo!()
     }
 
-    pub fn pi_compute_generic(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         match &node.node {
             GenericNodeType::Single(proposition) => {
                 self.pi_compute_single(node)?;
@@ -127,24 +134,39 @@ impl Inferencer {
         todo!()
     }
 
-    pub fn pi_compute_single(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_single(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let backlinks = self.proposition_graph.get_all_backward(node);
         todo!()
     }
 
-    pub fn pi_compute_group(&mut self, from_node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_group(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let backlinks = self.proposition_graph.get_all_backward(from_node);
-        let mut product = 1f64;
-        for (index, to_node) in backlinks.iter().enumerate() {
-            let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
-            product *= pi_x_z;
+        let all_combinations = compute_each_combination(&backlinks);
+        let mut sum_true = 0f64;
+        let mut sum_false = 0f64;
+        for combination in &all_combinations {
+            // check if this is the "all true" case, and bail if so
+            let mut product = 1f64;
+            let mut condition = true;
+            for (index, to_node) in backlinks.iter().enumerate() {
+                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+                product *= pi_x_z;
+                let combination_val = combination[to_node];
+                condition = condition && combination_val;
+            }
+            if condition {
+                sum_true += product;
+            } else {
+                sum_false += product;
+            }
         }
-        self.data.set_pi_value(from_node, 1, product);
-        todo!()
+        self.data.set_pi_value(from_node, 1, sum_true);
+        self.data.set_pi_value(from_node, 0, sum_false);
+        Ok(())
     }
 }
 
-fn each_combination(propositions: &Vec<PropositionNode>) -> Vec<HashMap<PropositionNode, bool>> {
+fn compute_each_combination(propositions: &Vec<PropositionNode>) -> Vec<HashMap<PropositionNode, bool>> {
     let n = propositions.len();
     let mut all_combinations = Vec::new();
     for i in 0..(1 << n) {
@@ -158,7 +180,6 @@ fn each_combination(propositions: &Vec<PropositionNode>) -> Vec<HashMap<Proposit
     }
     all_combinations
 }
-
 
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
