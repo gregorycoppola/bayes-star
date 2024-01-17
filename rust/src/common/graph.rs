@@ -24,7 +24,6 @@ pub struct InferenceGraph {
 }
 
 impl InferenceGraph {
-    // Initialize new GraphicalModel with a Redis connection
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
         Ok(Box::new(InferenceGraph { redis_connection }))
@@ -35,7 +34,6 @@ impl InferenceGraph {
         Ok(Rc::new(InferenceGraph { redis_connection }))
     }
     
-    // Store an entity
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
@@ -49,6 +47,7 @@ impl InferenceGraph {
         )?;
         Ok(())
     }
+
     pub fn get_entities_in_domain(&self, domain: &str) -> Result<Vec<Entity>, Box<dyn Error>> {
         trace!("Getting entities in domain '{}'", domain.clone()); // Logging
         let names: Vec<String> = set_members(&mut *self.redis_connection.borrow_mut(), domain)?;
@@ -160,8 +159,7 @@ impl InferenceGraph {
                     result.push(implication);
                 },
                 Err(e) => {
-                    error!("Error deserializing record {}: {}", i, e);
-                    // You might want to continue, return an error, or handle it differently
+                    panic!("Error deserializing record {}: {}", i, e);
                 }
             }
         }
@@ -183,38 +181,6 @@ impl InferenceGraph {
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
-    // pub fn predicate_forward_links(
-    //     &self,
-    //     predicate: &Predicate,
-    // ) -> Result<Vec<PredicateGroup>, Box<dyn Error>> {
-    //     let set_members: Vec<String> = set_members(
-    //         &mut *self.redis_connection.borrow_mut(),
-    //         &Self::predicate_forward_set_name(predicate),
-    //     )?;
-    //     set_members
-    //         .into_iter()
-    //         .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
-    //         .collect()
-    // }
-    // pub fn conjoined_backward_links(
-    //     &self,
-    //     conjunction: &PredicateGroup,
-    // ) -> Result<Vec<Predicate>, Box<dyn Error>> {
-    //     Ok(conjunction.terms.clone())
-    // }
-    // pub fn conjoined_forward_links(
-    //     &self,
-    //     conjunction: &PredicateGroup,
-    // ) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
-    //     let set_members: Vec<String> = set_members(
-    //         &mut *self.redis_connection.borrow_mut(),
-    //         &&Self::conjunction_forward_set_name(conjunction),
-    //     )?;
-    //     set_members
-    //         .into_iter()
-    //         .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
-    //         .collect()
-    // }
 }
 
 pub fn serialize_record<T>(obj: &T) -> Result<String, Box<dyn Error>>
