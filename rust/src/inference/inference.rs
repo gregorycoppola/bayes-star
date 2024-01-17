@@ -135,7 +135,6 @@ impl Inferencer {
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
             }
-
             let factor = self.build_factor_context_for_map(combination, from_node);
             let prediction = self.model.model.predict(&factor)?;
             let true_marginal = &prediction.marginal;
