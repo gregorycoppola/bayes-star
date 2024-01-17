@@ -134,8 +134,29 @@ impl Inferencer {
         todo!()
     }
 
-    pub fn pi_compute_single(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let backlinks = self.proposition_graph.get_all_backward(node);
+    pub fn pi_compute_single(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let backlinks = self.proposition_graph.get_all_backward(from_node);
+        let all_combinations = compute_each_combination(&backlinks);
+        let mut sum_true = 0f64;
+        let mut sum_false = 0f64;
+        for combination in &all_combinations {
+            // check if this is the "all true" case, and bail if so
+            let mut product = 1f64;
+            let mut condition = true;
+            for (index, to_node) in backlinks.iter().enumerate() {
+                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+                product *= pi_x_z;
+                let combination_val = combination[to_node];
+                condition = condition && combination_val;
+            }
+            if condition {
+                sum_true += product;
+            } else {
+                sum_false += product;
+            }
+        }
+        self.data.set_pi_value(from_node, 1, sum_true);
+        self.data.set_pi_value(from_node, 0, sum_false);
         todo!()
     }
 
