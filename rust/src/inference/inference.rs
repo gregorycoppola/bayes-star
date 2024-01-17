@@ -36,7 +36,20 @@ macro_rules! print_red {
         info!("{}", format!($($arg)*).red());
     };
 }
-
+#[macro_export]
+macro_rules! print_green {
+    ($($arg:tt)*) => {
+        use colored::*;
+        info!("{}", format!($($arg)*).green());
+    };
+}
+#[macro_export]
+macro_rules! print_yellow {
+    ($($arg:tt)*) => {
+        use colored::*;
+        info!("{}", format!($($arg)*).yellow());
+    };
+}
 #[macro_export]
 macro_rules! print_blue {
     ($($arg:tt)*) => {
@@ -66,7 +79,7 @@ impl Inferencer {
     }
 
     pub fn initialize_pi(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        info!("initialize_pi: proposition {:?}", proposition.hash_string());
+        print_red!("initialize_pi: proposition {:?}", proposition.hash_string());
         for root in &self.proposition_graph.get_roots() {
             self.initialize_pi_proposition(root, true)?;
         }
@@ -78,9 +91,10 @@ impl Inferencer {
         node: &Proposition,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        info!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
+        print_yellow!("initialize_pi_proposition: is_root {} node {}", is_root, node.hash_string());
         let children = self.proposition_graph.get_single_forward(node);
         for child in children {
+            print_yellow!("found child {}", child.hash_string());
             self.initialize_pi_conjunct(&child, false)?;
         }
         if is_root {
