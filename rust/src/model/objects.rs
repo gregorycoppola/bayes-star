@@ -183,7 +183,7 @@ impl Predicate {
         let role_strings: Vec<String> = self
             .roles
             .iter()
-            .map(|role| role.hash_string()) // Assuming FilledRole has a hash_string method
+            .map(|role| role.hash_string())
             .collect();
 
         format!("{}[{}]", &self.function, role_strings.join(","))
@@ -195,7 +195,7 @@ impl Predicate {
             .collect()
     }
     pub fn is_fact(&self) -> bool {
-        self.roles.iter().all(|role| role.argument.is_constant()) // Assuming `is_constant` method exists on Argument
+        self.roles.iter().all(|role| role.argument.is_constant())
     }
 }
 

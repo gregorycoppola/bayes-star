@@ -5,11 +5,12 @@ use super::{
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
-use crate::model::objects::PropositionGroup;
+use crate::model::objects::{PropositionGroup, EXISTENCE_FUNCTION, RoleMap, GroupRoleMap};
 use crate::{
     common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
 };
+use std::collections::{HashSet, HashMap};
 use std::{borrow::Borrow, error::Error};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
@@ -144,8 +145,29 @@ pub fn extract_factors_for_proposition(
     Ok(result)
 }
 
+pub fn create_existence_predicate(predicate:&Predicate) -> Predicate {
+    todo!()
+}
 pub fn extract_existence_factor_for_predicate(
     conclusion: &Predicate,
 ) -> Result<PredicateInferenceFactor, Box<dyn Error>> {
-    todo!()
+    let mut new_roles = vec![];
+    let mut mapping = HashMap::new();
+    for old_role in &conclusion.roles {
+        new_roles.push(old_role.convert_to_quantified());
+        mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
+    }
+    let premise = Predicate {
+        function: EXISTENCE_FUNCTION.to_string(),
+        roles: new_roles,
+    };
+    let role_map = RoleMap::new(mapping);
+    let premise_group = PredicateGroup::new(vec![premise]);
+    let mapping_group = GroupRoleMap::new(vec![role_map]);
+    let factor = PredicateInferenceFactor {
+        premise: premise_group,
+        role_maps: mapping_group,
+        conclusion: conclusion.clone(),
+    };
+    Ok(factor)
 }

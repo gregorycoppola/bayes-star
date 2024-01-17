@@ -14,7 +14,7 @@ use crate::{
             Domain, Entity, Predicate, PredicateGroup,
             PredicateInferenceFactor, Proposition, PropositionGroup,
         }, choose::extract_existence_factor_for_predicate,
-    },
+    }, print_blue,
 };
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
@@ -83,6 +83,7 @@ impl InferenceGraph {
         predicate: &Predicate,
     ) -> Result<(), Box<dyn Error>> {
         let factor = extract_existence_factor_for_predicate(predicate)?;
+        print_blue!("for predicate {:?}, storing existence factor {:?}", &predicate, &factor);
         self.store_implication(&factor)?;
         self.store_predicate_backward_link(&factor)?;
         Ok(())
