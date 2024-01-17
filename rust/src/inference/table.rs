@@ -1,5 +1,5 @@
 use crate::{
-    common::{interface::PropositionDB, graph::serialize_record},
+    common::{graph::serialize_record, interface::PropositionDB},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
@@ -53,6 +53,20 @@ impl PropositionNode {
     pub fn is_group(&self) -> bool {
         matches!(self.node, GenericNodeType::Group(_))
     }
+
+    pub fn extract_single(&self) -> Proposition {
+        match &self.node {
+            GenericNodeType::Single(proposition) => proposition.clone(),
+            _ => panic!("This is not a single."),
+        }
+    }
+
+    pub fn extract_group(&self) -> PropositionGroup {
+        match &self.node {
+            GenericNodeType::Group(group) => group.clone(),
+            _ => panic!("This is not a group."),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -66,7 +80,7 @@ pub struct HashMapBeliefTable {
 
 fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
-    
+
     // Sorting by InferenceNode.debug_string and then by usize
     map_entries.sort_by(|a, b| {
         let ((node_a, index_a), _) = a;
@@ -103,10 +117,12 @@ fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize)
 
     // Printing in sorted order
     for ((node1, node2, index), value) in map_entries {
-        info!("{} - {} ({}): {}", node1.debug_string, node2.debug_string, index, value);
+        info!(
+            "{} - {} ({}): {}",
+            node1.debug_string, node2.debug_string, index, value
+        );
     }
 }
-
 
 impl HashMapBeliefTable {
     pub fn print_debug(&self) {
