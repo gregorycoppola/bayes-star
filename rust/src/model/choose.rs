@@ -128,7 +128,7 @@ pub fn extract_factor_for_proposition(
     proposition_db: &Box<dyn PropositionDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
-) -> Result<Vec<FactorContext>, Box<dyn Error>> {
+) -> Result<FactorContext, Box<dyn Error>> {
     let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
     let mut result = vec![];
     for factor in factors {

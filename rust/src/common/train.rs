@@ -156,13 +156,11 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let mut examples_processed = 0;
     for proposition in &training_questions {
         info!("do_training - Processing proposition: {:?}", proposition);
-        let factors = extract_factor_for_proposition(&proposition_db, &graph, proposition.clone())?;
-        info!("do_training - Backimplications: {:?}", &factors);
+        let factor = extract_factor_for_proposition(&proposition_db, &graph, proposition.clone())?;
+        info!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
-        for factor in &factors {
-            let _stats = factor_model.train(&factor, probability) ?;
-        }
+        let _stats = factor_model.train(&factor, probability) ?;
         examples_processed += 1;
     }
     info!(
