@@ -8,7 +8,7 @@ use bayes_star::{
     },
     model::{
         creators::{
-            conjunction, constant, implication, object, predicate, subject, variable,
+            conjunction, constant, implication, obj, predicate, sub, variable,
         },
         objects::{Domain, RoleMap},
     },
@@ -40,62 +40,62 @@ fn test_get_all_implications() {
         // if jack is lonely, he will date any jill
         implication(
             conjunction(vec![predicate(vec![
-                subject(xjack.clone()),
+                sub(xjack.clone()),
                 relation(lonely.clone()),
             ])]),
             predicate(vec![
-                subject(xjack.clone()),
+                sub(xjack.clone()),
                 relation(like.clone()),
-                object(xjill.clone()),
+                obj(xjill.clone()),
             ]),
             vec![RoleMap::new(HashMap::from([(
-                "subject".to_string(),
-                "subject".to_string(),
+                "sub".to_string(),
+                "sub".to_string(),
             )]))],
         ),
         // if jill is exciting, any jack will date her
         implication(
             conjunction(vec![predicate(vec![
-                subject(xjill.clone()),
+                sub(xjill.clone()),
                 relation(exciting.clone()),
             ])]),
             predicate(vec![
-                subject(xjack.clone()),
+                sub(xjack.clone()),
                 relation(like.clone()),
-                object(xjill.clone()),
+                obj(xjill.clone()),
             ]),
             vec![RoleMap::new(HashMap::from([(
-                "object".to_string(),
-                "subject".to_string(),
+                "obj".to_string(),
+                "sub".to_string(),
             )]))],
         ),
         // if jill likes jack, then jack dates jill
         implication(
             conjunction(vec![
                 predicate(vec![
-                    subject(xjill.clone()),
+                    sub(xjill.clone()),
                     relation(like.clone()),
-                    object(xjack.clone()),
+                    obj(xjack.clone()),
                 ]),
                 predicate(vec![
-                    subject(xjack.clone()),
+                    sub(xjack.clone()),
                     relation(like.clone()),
-                    object(xjill.clone()),
+                    obj(xjill.clone()),
                 ]),
             ]),
             predicate(vec![
-                subject(xjack.clone()),
+                sub(xjack.clone()),
                 relation(date.clone()),
-                object(xjill.clone()),
+                obj(xjill.clone()),
             ]),
             vec![
                 RoleMap::new(HashMap::from([
-                    ("subject".to_string(), "object".to_string()),
-                    ("object".to_string(), "subject".to_string()),
+                    ("sub".to_string(), "obj".to_string()),
+                    ("obj".to_string(), "sub".to_string()),
                 ])),
                 RoleMap::new(HashMap::from([
-                    ("subject".to_string(), "subject".to_string()),
-                    ("object".to_string(), "object".to_string()),
+                    ("sub".to_string(), "sub".to_string()),
+                    ("obj".to_string(), "obj".to_string()),
                 ])),
             ],
         ),
@@ -125,9 +125,9 @@ fn test_get_all_implications() {
 //     let xjill = variable(Domain::Jill);
 
 //     let predicate = predicate(vec![
-//         subject(xjack.clone()),
+//         sub(xjack.clone()),
 //         relation(like.clone()),
-//         object(xjill.clone()),
+//         obj(xjill.clone()),
 //     ]);
 
 //     let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
@@ -152,9 +152,9 @@ fn test_get_predicate_backward_links() {
     let xjill = variable(Domain::Jill);
 
     let predicate = predicate(vec![
-        subject(xjack.clone()),
+        sub(xjack.clone()),
         relation(like.clone()),
-        object(xjill.clone()),
+        obj(xjill.clone()),
     ]);
 
     let result = predicate_graph.predicate_backward_links(&predicate).unwrap();
@@ -183,14 +183,14 @@ fn test_get_predicate_backward_links() {
 
 //     let conjoined = conjunction(vec![
 //         predicate(vec![
-//             subject(xjill.clone()),
+//             sub(xjill.clone()),
 //             relation(like.clone()),
-//             object(xjack.clone()),
+//             obj(xjack.clone()),
 //         ]),
 //         predicate(vec![
-//             subject(xjack.clone()),
+//             sub(xjack.clone()),
 //             relation(like.clone()),
-//             object(xjill.clone()),
+//             obj(xjill.clone()),
 //         ]),
 //     ]);
 
@@ -220,14 +220,14 @@ fn test_get_predicate_backward_links() {
 
 //     let conjoined = conjunction(vec![
 //         predicate(vec![
-//             subject(xjill.clone()),
+//             sub(xjill.clone()),
 //             relation(like.clone()),
-//             object(xjack.clone()),
+//             obj(xjack.clone()),
 //         ]),
 //         predicate(vec![
-//             subject(xjack.clone()),
+//             sub(xjack.clone()),
 //             relation(like.clone()),
-//             object(xjill.clone()),
+//             obj(xjill.clone()),
 //         ]),
 //     ]);
 

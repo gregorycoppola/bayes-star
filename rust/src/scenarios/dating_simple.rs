@@ -9,7 +9,7 @@ use crate::model::creators::predicate;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
-        creators::{conjunction, constant, implication, object, proposition, subject, variable},
+        creators::{conjunction, constant, implication, obj, proposition, sub, variable},
         objects::{Domain, Entity, RoleMap},
     },
 };
@@ -90,7 +90,7 @@ impl ScenarioMaker for SimpleDating {
             {
                 trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_lonely = proposition(lonely.to_string(), vec![subject(jack)]);
+                let jack_lonely = proposition(lonely.to_string(), vec![sub(jack)]);
 
                 trace!(
                     "Jack Lonely: {:?}, Probability: {}",
@@ -103,7 +103,7 @@ impl ScenarioMaker for SimpleDating {
             {
                 let jill = constant(jill_entity.domain, jill_entity.name.clone());
                 let jill_exciting = proposition("exciting".to_string(),
-                vec![subject(jill)]);
+                vec![sub(jill)]);
 
                 trace!(
                     "Jill Exciting: {:?}, Probability: {}",
@@ -121,8 +121,8 @@ impl ScenarioMaker for SimpleDating {
                 let jill_likes_jack = proposition(
                     "like".to_string(),
                     vec![
-                    subject(jill.clone()),
-                    object(jack.clone()),
+                    sub(jill.clone()),
+                    obj(jack.clone()),
                 ]);
                 trace!(
                     "Jill likes Jack: {:?}, Probability: {}",
@@ -138,8 +138,8 @@ impl ScenarioMaker for SimpleDating {
                 let jack_likes_jill = proposition(
                     "like".to_string(),
                     vec![
-                    subject(jack.clone()),
-                    object(jill.clone()),
+                    sub(jack.clone()),
+                    obj(jill.clone()),
                 ]);
                 trace!(
                     "Jack likes Jill: {:?}, Probability: {}",
@@ -159,7 +159,7 @@ impl ScenarioMaker for SimpleDating {
                 let jack_dates_jill =
                     proposition(
                         "date".to_string(),
-                        vec![subject(jack),  object(jill)]);
+                        vec![sub(jack),  obj(jill)]);
                 trace!(
                     "Jack dates Jill: {:?}, Probability: {}",
                     jack_dates_jill.predicate.hash_string(),
@@ -181,32 +181,32 @@ impl ScenarioMaker for SimpleDating {
             // if jack is lonely, he will date any jill
             implication(
                 conjunction(vec![predicate("lonely".to_string(), vec![
-                    subject(xjack.clone()),
+                    sub(xjack.clone()),
                 ])]),
                 predicate(like.to_string(), 
                 vec![
-                    subject(xjack.clone()),
-                    object(xjill.clone()),
+                    sub(xjack.clone()),
+                    obj(xjill.clone()),
                 ]),
                 vec![RoleMap::new(HashMap::from([(
-                    "subject".to_string(),
-                    "subject".to_string(),
+                    "sub".to_string(),
+                    "sub".to_string(),
                 )]))],
             ),
             // if jill is exciting, any jack will date her
             implication(
                 conjunction(vec![predicate("exciting".to_string(),
                 vec![
-                    subject(xjill.clone()),
+                    sub(xjill.clone()),
                 ])]),
                 predicate("like".to_string(),
                 vec![
-                    subject(xjack.clone()),
-                    object(xjill.clone()),
+                    sub(xjack.clone()),
+                    obj(xjill.clone()),
                 ]),
                 vec![RoleMap::new(HashMap::from([(
-                    "object".to_string(),
-                    "subject".to_string(),
+                    "obj".to_string(),
+                    "sub".to_string(),
                 )]))],
             ),
             // if jill likes jack, then jack dates jill
@@ -214,27 +214,27 @@ impl ScenarioMaker for SimpleDating {
                 conjunction(vec![
                     predicate("like".to_string(),
                     vec![
-                        subject(xjill.clone()),
-                        object(xjack.clone()),
+                        sub(xjill.clone()),
+                        obj(xjack.clone()),
                     ]),
                     predicate("like".to_string(), vec![
-                        subject(xjack.clone()),
-                        object(xjill.clone()),
+                        sub(xjack.clone()),
+                        obj(xjill.clone()),
                     ]),
                 ]),
                 predicate("date".to_string(),
                 vec![
-                    subject(xjack.clone()),
-                    object(xjill.clone()),
+                    sub(xjack.clone()),
+                    obj(xjill.clone()),
                 ]),
                 vec![
                     RoleMap::new(HashMap::from([
-                        ("subject".to_string(), "object".to_string()),
-                        ("object".to_string(), "subject".to_string()),
+                        ("sub".to_string(), "obj".to_string()),
+                        ("obj".to_string(), "sub".to_string()),
                     ])),
                     RoleMap::new(HashMap::from([
-                        ("subject".to_string(), "subject".to_string()),
-                        ("object".to_string(), "object".to_string()),
+                        ("sub".to_string(), "sub".to_string()),
+                        ("obj".to_string(), "obj".to_string()),
                     ])),
                 ],
             ),

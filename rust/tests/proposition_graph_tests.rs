@@ -10,7 +10,7 @@ use bayes_star::{
     },
     model::{
         creators::{
-            conjunction, constant, implication, object, predicate,  subject, variable,
+            conjunction, constant, implication, obj, predicate,  sub, variable,
         },
         objects::{Domain, RoleMap},
     },
@@ -39,15 +39,15 @@ fn test_get_proposition_forward_links() {
     let jill1 = constant(Domain::Jill, "jill1".to_string());
 
     let test_predicate = predicate(vec![
-        subject(jack1.clone()),
+        sub(jack1.clone()),
         relation(like.clone()),
-        object(jill1.clone()),
+        obj(jill1.clone()),
     ]);
     let test_proposition = Proposition::from(test_predicate);
     let predicate = predicate(vec![
-        subject(jack1.clone()),
+        sub(jack1.clone()),
         relation(date.clone()),
-        object(jill1.clone()),
+        obj(jill1.clone()),
     ]);
     let proposition = Proposition::from(predicate);
 

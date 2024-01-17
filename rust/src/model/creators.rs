@@ -50,10 +50,10 @@ pub fn constant(domain: Domain, entity_id: String) -> Argument {
 }
 
 // Helper functions for specific roles
-pub fn subject(argument: Argument) -> LabeledArgument {
-    role("subject".to_string(), argument)
+pub fn sub(argument: Argument) -> LabeledArgument {
+    role("sub".to_string(), argument)
 }
 
-pub fn object(argument: Argument) -> LabeledArgument {
-    role("object".to_string(), argument)
+pub fn obj(argument: Argument) -> LabeledArgument {
+    role("obj".to_string(), argument)
 }
