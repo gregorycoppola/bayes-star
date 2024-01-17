@@ -98,8 +98,10 @@ impl Inferencer {
     }
 
     pub fn send_pi_from_single(&mut self, proposition:&Proposition) -> Result<(), Box<dyn Error>> {
+        let from_node = PropositionNode::from_proposition(proposition);
         let forward_groups = self.proposition_graph.get_single_forward(proposition);
         for (this_index, this_value) in forward_groups.iter().enumerate() {
+            let to_node = PropositionNode::from_group(&this_value);
             for class_label in &CLASS_LABELS {
                 let mut lambda_part = 1f64;
                 for (other_index, other_value) in forward_groups.iter().enumerate() {
@@ -109,6 +111,9 @@ impl Inferencer {
                         lambda_part *= this_lambda;
                     }
                 }
+                let pi_part = self.data.get_pi_value(&to_node, *class_label).unwrap();
+                let message = pi_part * lambda_part;
+                self.data.set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
         todo!()
