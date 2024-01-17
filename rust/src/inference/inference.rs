@@ -51,26 +51,26 @@ impl Inferencer {
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
-        self.initialize_pi()?;
-        self.initialize_lambda(proposition)?;
+        // self.initialize_pi()?;
+        self.initialize_lambda()?;
         Ok(())
     }
 
-    pub fn initialize_pi(&mut self) -> Result<(), Box<dyn Error>> {
-        print_red!("initialize_pi: proposition");
+    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
+        print_red!("initialize_lambda: proposition");
         for node in &self.proposition_graph.all_nodes {
             print_red!("initializing: {}", node.debug_string());
             for outcome in CLASS_LABELS {
-                self.data.set_pi_value(node, outcome, 1f64);
+                self.data.set_lambda_value(node, outcome, 1f64);
             }
             for parent in &self.proposition_graph.get_all_backward(node) {
                 print_red!(
-                    "initializing pi link from {} to {}",
+                    "initializing lambda link from {} to {}",
                     node.debug_string(),
                     parent.debug_string()
                 );
                 for outcome in CLASS_LABELS {
-                    self.data.set_pi_message(node, parent, outcome, 1f64);
+                    self.data.set_lambda_message(node, parent, outcome, 1f64);
                 }
             }
         }
@@ -148,14 +148,6 @@ impl Inferencer {
                     1f64,
                 );
             }
-        }
-        Ok(())
-    }
-
-    pub fn initialize_lambda(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        let roots = self.proposition_graph.get_roots();
-        for root in roots {
-            self.initialize_lambda_proposition(&root)?;
         }
         Ok(())
     }
