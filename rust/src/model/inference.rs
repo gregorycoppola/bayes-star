@@ -4,6 +4,7 @@ use crate::model::{
     choose::extract_backimplications_from_proposition, maxent::compute_potential,
     weights::CLASS_LABELS,
 };
+use crate::print_red;
 use std::{collections::HashMap, error::Error};
 
 use super::objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION};
@@ -50,6 +51,7 @@ impl PropositionDB for MapBackedProbabilityStorage {
     ) -> Result<Option<f64>, Box<dyn Error>> {
         // NOTE: Should perhaps check set membership here.
         if proposition.predicate.function == EXISTENCE_FUNCTION {
+            print_red!("Giving 1.0 probability to existence function {:?}", proposition);
             Ok(Some(1f64))
         } else {
             let search_key = proposition.predicate.hash_string();
