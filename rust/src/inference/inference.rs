@@ -93,7 +93,14 @@ impl Inferencer {
                 self.data.set_pi_value(node, outcome, 1f64);
             }
             for parent in &self.proposition_graph.get_all_backward(node) {
-                print_red!("initializing pi link from {} to {}", node.debug_string(), parent.debug_string());
+                print_red!(
+                    "initializing pi link from {} to {}",
+                    node.debug_string(),
+                    parent.debug_string()
+                );
+                for outcome in CLASS_LABELS {
+                    self.data.set_pi_message(node, parent, outcome, 1f64);
+                }
             }
         }
         Ok(())
