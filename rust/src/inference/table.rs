@@ -25,7 +25,6 @@ pub struct PropositionNode {
 }
 
 impl PropositionNode {
-    // Constructor for an InferenceNode with a Proposition
     pub fn from_single(proposition: &Proposition) -> PropositionNode {
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
@@ -33,7 +32,6 @@ impl PropositionNode {
         }
     }
 
-    // Constructor for an InferenceNode with a Conjunct
     pub fn from_group(group: &PropositionGroup) -> PropositionNode {
         PropositionNode {
             node: GenericNodeType::Group(group.clone()),
@@ -46,6 +44,14 @@ impl PropositionNode {
             GenericNodeType::Single(proposition) => proposition.debug_string(),
             GenericNodeType::Group(group) => group.debug_string(),
         }
+    }
+
+    pub fn is_single(&self) -> bool {
+        matches!(self.node, GenericNodeType::Single(_))
+    }
+
+    pub fn is_group(&self) -> bool {
+        matches!(self.node, GenericNodeType::Group(_))
     }
 }
 
