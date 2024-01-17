@@ -83,20 +83,20 @@ impl InferenceGraph {
         )?;
         Ok(())
     }
-    fn store_predicate_forward_links(
-        &mut self,
-        conjunction: &PredicateGroup,
-    ) -> Result<(), Box<dyn Error>> {
-        for predicate in &conjunction.terms {
-            let record = serialize_record(conjunction)?;
-            set_add(
-                &mut *self.redis_connection.borrow_mut(),
-                &Self::predicate_forward_set_name(predicate),
-                &record,
-            )?;
-        }
-        Ok(())
-    }
+    // fn store_predicate_forward_links(
+    //     &mut self,
+    //     conjunction: &PredicateGroup,
+    // ) -> Result<(), Box<dyn Error>> {
+    //     for predicate in &conjunction.terms {
+    //         let record = serialize_record(conjunction)?;
+    //         set_add(
+    //             &mut *self.redis_connection.borrow_mut(),
+    //             &Self::predicate_forward_set_name(predicate),
+    //             &record,
+    //         )?;
+    //     }
+    //     Ok(())
+    // }
 
     fn store_existence_backlinks_for_predicate(
         &mut self,
@@ -130,28 +130,28 @@ impl InferenceGraph {
         )?;
         Ok(())
     }
-    fn store_conjunction_forward_link(
-        &mut self,
-        premise: &PredicateGroup,
-        implication: &PredicateInferenceFactor,
-    ) -> Result<(), Box<dyn Error>> {
-        let record = serialize_record(implication)?;
-        set_add(
-            &mut *self.redis_connection.borrow_mut(),
-            &&Self::conjunction_forward_set_name(premise),
-            &record,
-        )?;
-        Ok(())
-    }
+    // fn store_conjunction_forward_link(
+    //     &mut self,
+    //     premise: &PredicateGroup,
+    //     implication: &PredicateInferenceFactor,
+    // ) -> Result<(), Box<dyn Error>> {
+    //     let record = serialize_record(implication)?;
+    //     set_add(
+    //         &mut *self.redis_connection.borrow_mut(),
+    //         &&Self::conjunction_forward_set_name(premise),
+    //         &record,
+    //     )?;
+    //     Ok(())
+    // }
     pub fn store_predicate_implication(
         &mut self,
         implication: &PredicateInferenceFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(&implication.conclusion, &implication)?;
-        self.store_conjunction_forward_link(&implication.premise, &implication)?;
-        self.store_predicate_forward_links(&implication.premise)?;
-        self.store_existence_backlinks_for_factor(implication)?;
+        // self.store_conjunction_forward_link(&implication.premise, &implication)?;
+        // self.store_predicate_forward_links(&implication.premise)?;
+        // self.store_existence_backlinks_for_factor(implication)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {
