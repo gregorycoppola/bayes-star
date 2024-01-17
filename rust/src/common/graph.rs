@@ -13,7 +13,7 @@ use crate::{
         objects::{
             Domain, Entity, Predicate, PredicateGroup,
             PredicateInferenceFactor, Proposition, PropositionGroup,
-        }, choose::extract_existence_factor_for_predicate,
+        }, choose::{extract_existence_factor_for_predicate, extract_existence_factor_for_proposition},
     }, print_blue,
 };
 use redis::{Commands, Connection};
@@ -78,25 +78,12 @@ impl InferenceGraph {
         Ok(())
     }
 
-    fn store_existence_backlinks_for_predicate(
+    pub fn ensure_existence_backlinks_for_proposition(
         &mut self,
-        predicate: &Predicate,
+        proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        let factor = extract_existence_factor_for_predicate(predicate)?;
-        print_blue!("for predicate {:?}, storing existence factor {:?}", &predicate, &factor);
-        self.store_implication(&factor)?;
-        self.store_predicate_backward_link(&factor)?;
-        Ok(())
-    }
-
-    fn store_existence_backlinks_for_factor(
-        &mut self,
-        inference: &PredicateInferenceFactor,
-    ) -> Result<(), Box<dyn Error>> {
-        for premise in &inference.premise.terms {
-            self.store_existence_backlinks_for_predicate(premise)?;
-        }
-        self.store_existence_backlinks_for_predicate(&inference.conclusion)?;
+        let implication = extract_existence_factor_for_proposition(proposition)?;
+        self.store_predicate_implication(&implication)?;
         Ok(())
     }
 
@@ -120,7 +107,6 @@ impl InferenceGraph {
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(implication)?;
-        self.store_existence_backlinks_for_factor(implication)?;
         Ok(())
     }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateInferenceFactor>, Box<dyn Error>> {

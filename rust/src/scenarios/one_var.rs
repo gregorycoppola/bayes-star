@@ -84,16 +84,12 @@ impl ScenarioMaker for OneVariable {
                     jack_exciting.predicate.hash_string(),
                     p_jack_exciting
                 );
+                graph.ensure_existence_backlinks_for_proposition(&jack_exciting)?;
                 proposition_db.store_proposition_probability(&jack_exciting, p_jack_exciting)?;
                 plan.maybe_add_to_training(is_training, &jack_exciting)?;
                 propositions.push(jack_exciting.clone());
             }
         }
-
-        let example_proposition = &propositions[0];
-        print_red!("making factor for {:?}", &example_proposition);
-        let implication = extract_existence_factor_for_proposition(example_proposition)?;
-        graph.store_predicate_implication(&implication)?;
 
         // Additional functions
         fn numeric_or(a: f64, b: f64) -> f64 {
