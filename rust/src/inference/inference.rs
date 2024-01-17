@@ -87,48 +87,22 @@ impl Inferencer {
         }
 
         for root in &roots {
-            self.send_pi_from_single(root)?;
+            let node = PropositionNode::from_single(root);
+            self.pi_visit_node(&node)?;
         }
         print_yellow!("{:?}", &roots);
         Ok(())
     }
 
-    pub fn send_pi_from_single(&mut self, proposition:&Proposition) -> Result<(), Box<dyn Error>> {
+    pub fn pi_visit_node(&mut self, from_node:&PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: For each value of z, compute pi_X(z)
-        let from_node = PropositionNode::from_single(proposition);
-        let forward_groups = self.proposition_graph.get_single_forward(proposition);
-        for (this_index, this_value) in forward_groups.iter().enumerate() {
-            let to_node = PropositionNode::from_group(&this_value);
+        let forward_groups = self.proposition_graph.get_all_forward(from_node);
+        for (this_index, to_node) in forward_groups.iter().enumerate() {
             for class_label in &CLASS_LABELS {
                 let mut lambda_part = 1f64;
-                for (other_index, other_value) in forward_groups.iter().enumerate() {
+                for (other_index, other_node) in forward_groups.iter().enumerate() {
                     if other_index != this_index {
-                        let node = PropositionNode::from_group(other_value);
-                        let this_lambda = self.data.get_lambda_value(&node, *class_label).unwrap();
-                        lambda_part *= this_lambda;
-                    }
-                }
-                let pi_part = self.data.get_pi_value(&to_node, *class_label).unwrap();
-                let message = pi_part * lambda_part;
-                self.data.set_pi_message(&from_node, &to_node, *class_label, message);
-            }
-        }
-        // Part 2: For children not in evidence, recursive into.
-        todo!()
-    }
-
-    pub fn send_pi_from_group(&mut self, proposition:&PropositionGroup) -> Result<(), Box<dyn Error>> {
-        // Part 1: For each value of z, compute pi_X(z)
-        let from_node = PropositionNode::from_group(proposition);
-        let forward_groups = self.proposition_graph.get_group_forward(proposition);
-        for (this_index, this_value) in forward_groups.iter().enumerate() {
-            let to_node = PropositionNode::from_single(&this_value);
-            for class_label in &CLASS_LABELS {
-                let mut lambda_part = 1f64;
-                for (other_index, other_value) in forward_groups.iter().enumerate() {
-                    if other_index != this_index {
-                        let node = PropositionNode::from_single(other_value);
-                        let this_lambda = self.data.get_lambda_value(&node, *class_label).unwrap();
+                        let this_lambda = self.data.get_lambda_value(&other_node, *class_label).unwrap();
                         lambda_part *= this_lambda;
                     }
                 }
