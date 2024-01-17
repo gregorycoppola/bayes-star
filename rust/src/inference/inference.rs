@@ -98,7 +98,7 @@ impl Inferencer {
                         lambda_part *= this_lambda;
                     }
                 }
-                let pi_part = self.data.get_pi_value(&to_node, *class_label).unwrap();
+                let pi_part = self.data.get_pi_value(&from_node, *class_label).unwrap();
                 let message = pi_part * lambda_part;
                 self.data
                     .set_pi_message(&from_node, &to_node, *class_label, message);
