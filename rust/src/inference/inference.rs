@@ -118,20 +118,20 @@ impl Inferencer {
     pub fn pi_compute_generic(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
         match &node.node {
             GenericNodeType::Single(proposition) => {
-                self.pi_compute_single(proposition)?;
+                self.pi_compute_single(node)?;
             }
             GenericNodeType::Group(group) => {
-                self.pi_compute_group(group)?;
+                self.pi_compute_group(node)?;
             }
         }
         todo!()
     }
 
-    pub fn pi_compute_single(&mut self, node:&Proposition) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_single(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
         todo!()
     }
 
-    pub fn pi_compute_group(&mut self, node:&PropositionGroup) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_group(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
         todo!()
     }
 }
