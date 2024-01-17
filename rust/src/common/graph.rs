@@ -110,7 +110,11 @@ impl InferenceGraph {
         &mut self,
         inference: &PredicateInferenceFactor,
     ) -> Result<(), Box<dyn Error>> {
-        todo!()
+        for premise in &inference.premise.terms {
+            self.store_existence_backlinks_for_predicate(premise)?;
+        }
+        self.store_existence_backlinks_for_predicate(&inference.conclusion)?;
+        Ok(())
     }
 
     fn store_predicate_backward_link(
