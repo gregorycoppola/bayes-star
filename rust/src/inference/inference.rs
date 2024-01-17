@@ -84,7 +84,9 @@ impl Inferencer {
     }
 
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Part 1: For each value of z, compute pi_X(z)
+        // Part 1: Compute pi for this node.
+        self.pi_compute_generic(&from_node)?;
+        // Part 2: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
             for class_label in &CLASS_LABELS {
@@ -104,9 +106,9 @@ impl Inferencer {
                     .set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
-        // Part 2: For children not in evidence, recursive into.
+        // Part 3: For children not in evidence, recursive into.
         for child in &forward_groups {
-            self.pi_compute_generic(&child)?;
+            self.pi_visit_node(&child)?;
         }
         // Success.
         Ok(())
