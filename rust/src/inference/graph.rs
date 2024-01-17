@@ -145,6 +145,12 @@ impl PropositionGraph {
         Ok(Rc::new(graph))
     }
 
+    pub fn get_inference_used(&self, premise:&PropositionGroup, conclusion: &Proposition) -> PredicateInferenceFactor {
+        let key = (premise.clone(), conclusion.clone());
+        self.inference_used
+            .get(&key).unwrap().clone()
+    }
+
     pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
         self.single_forward
             .get(key)
