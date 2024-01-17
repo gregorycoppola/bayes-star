@@ -244,6 +244,6 @@ pub fn inference_compute_marginals(
     HashMapInferenceResult::new_shared(inferencer.data)
 }
 
-fn premise_from_backlinks(backlinks:&Vec<PropositionNode>) -> PropositionGroup {
+fn premise_from_backlinks(backlinks:&Vec<PropositionNode>) -> Vec<PropositionGroup> {
     todo!()
 }
