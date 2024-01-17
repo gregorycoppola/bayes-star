@@ -12,10 +12,10 @@ use crate::{
     model::{
         choose::{compute_search_predicates, extract_backimplications_from_proposition},
         objects::{GroupRoleMap, PredicateInferenceFactor, Proposition, PropositionGroup},
-    },
+    }, print_green,
 };
 
-use super::table::{PropositionNode, GenericNodeType};
+use super::table::{GenericNodeType, PropositionNode};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PropositionFactor {
@@ -26,7 +26,11 @@ pub struct PropositionFactor {
 
 impl PropositionFactor {
     pub fn debug_string(&self) -> String {
-        format!("{} -> {}", self.premise.hash_string(), self.conclusion.hash_string())
+        format!(
+            "{} -> {}",
+            self.premise.hash_string(),
+            self.conclusion.hash_string()
+        )
     }
 }
 
@@ -44,12 +48,20 @@ fn initialize_visit_single(
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     // Green for starting a new operation
-    info!("\x1b[32mInitializing visit for proposition: {:?}\x1b[0m", single.hash_string());
-    graph.all_nodes.insert(PropositionNode::from_proposition(single));
+    info!(
+        "\x1b[32mInitializing visit for proposition: {:?}\x1b[0m",
+        single.hash_string()
+    );
+    graph
+        .all_nodes
+        .insert(PropositionNode::from_proposition(single));
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     // Yellow for showing counts or lengths
-    info!("\x1b[33mInference factors count: {}\x1b[0m", inference_factors.len());
+    info!(
+        "\x1b[33mInference factors count: {}\x1b[0m",
+        inference_factors.len()
+    );
 
     if inference_factors.is_empty() {
         // Blue for specific condition-related messages
@@ -58,23 +70,34 @@ fn initialize_visit_single(
     } else {
         for inference_factor in &inference_factors {
             // Cyan for loop iteration
-            info!("\x1b[36mProcessing inference factor: {:?}\x1b[0m", inference_factor.debug_string());
+            info!(
+                "\x1b[36mProcessing inference factor: {:?}\x1b[0m",
+                inference_factor.debug_string()
+            );
 
-            info!("\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m", inference_factor.conclusion.hash_string());
+            info!(
+                "\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m",
+                inference_factor.conclusion.hash_string()
+            );
             graph
                 .single_backward
                 .entry(inference_factor.conclusion.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.premise.clone());
 
-            info!("\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m", inference_factor.premise.hash_string());
+            info!(
+                "\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m",
+                inference_factor.premise.hash_string()
+            );
             graph
                 .group_forward
                 .entry(inference_factor.premise.clone())
                 .or_insert_with(Vec::new)
                 .push(inference_factor.conclusion.clone());
 
-            graph.all_nodes.insert(PropositionNode::from_group(&inference_factor.premise));
+            graph
+                .all_nodes
+                .insert(PropositionNode::from_group(&inference_factor.premise));
 
             for term in &inference_factor.premise.terms {
                 info!("\x1b[35mProcessing term: {:?}\x1b[0m", term.hash_string());
@@ -83,14 +106,20 @@ fn initialize_visit_single(
                     .entry(term.clone())
                     .or_insert_with(Vec::new)
                     .push(inference_factor.premise.clone());
-                info!("\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m", term.hash_string());
+                info!(
+                    "\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m",
+                    term.hash_string()
+                );
                 initialize_visit_single(graph, term)?;
             }
         }
     }
 
     // Green for completion messages
-    info!("\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m", single.hash_string());
+    info!(
+        "\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m",
+        single.hash_string()
+    );
     Ok(())
 }
 
@@ -112,11 +141,17 @@ impl PropositionGraph {
     }
 
     pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
-        self.single_forward.get(key).cloned().unwrap_or_else(Vec::new)
+        self.single_forward
+            .get(key)
+            .cloned()
+            .unwrap_or_else(Vec::new)
     }
 
     pub fn get_single_backward(&self, key: &Proposition) -> Vec<PropositionGroup> {
-        self.single_backward.get(key).cloned().unwrap_or_else(Vec::new)
+        self.single_backward
+            .get(key)
+            .cloned()
+            .unwrap_or_else(Vec::new)
     }
 
     pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
@@ -128,21 +163,30 @@ impl PropositionGraph {
     }
 
     pub fn get_all_backward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
+        print_green!("get_all_backward called for node: {:?}", node.debug_string());
+
         let mut r = vec![];
         match &node.node {
             GenericNodeType::Single(proposition) => {
+                print_green!("Processing as Single: {:?}", proposition.debug_string());
                 let initial = self.get_single_backward(proposition);
+                print_green!("Initial singles: {}", initial.len());
                 for group in &initial {
+                    print_green!("Adding group from initial singles: {:?}", group.debug_string());
                     r.push(PropositionNode::from_group(group));
                 }
-            },
+            }
             GenericNodeType::Group(group) => {
+                print_green!("Processing as Group: {:?}", group.debug_string());
                 let initial = self.get_group_backward(group);
+                print_green!("Initial groups: {}", initial.len());
                 for single in &initial {
+                    print_green!("Adding single from initial groups: {:?}", single.debug_string());
                     r.push(PropositionNode::from_proposition(single));
                 }
             }
         }
+        info!("Resulting vector: {:?}", r);
         r
     }
 

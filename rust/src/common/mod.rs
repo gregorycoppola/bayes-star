@@ -8,3 +8,4 @@ pub mod train;
 pub mod resources;
 pub mod setup;
 pub mod test;
+pub mod logging;
