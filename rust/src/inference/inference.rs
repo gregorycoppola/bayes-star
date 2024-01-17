@@ -128,9 +128,9 @@ impl Inferencer {
 
     // from_node is a single.. compute it from the group
     pub fn pi_compute_single(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let from_group = from_node.extract_group();
         let conclusion = from_node.extract_single();
         let backlinks = self.proposition_graph.get_all_backward(from_node);
+        let from_group = premise_from_backlinks(&backlinks);
         let all_combinations = compute_each_combination(&backlinks);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
@@ -242,4 +242,8 @@ pub fn inference_compute_marginals(
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     HashMapInferenceResult::new_shared(inferencer.data)
+}
+
+fn premise_from_backlinks(backlinks:&Vec<PropositionNode>) -> PropositionGroup {
+    todo!()
 }
