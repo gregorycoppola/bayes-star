@@ -7,7 +7,6 @@ use crate::common::model::InferenceModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
-use crate::model::inference::MapBackedProbabilityStorage;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
 use redis::Connection;
