@@ -1,17 +1,15 @@
-use super::objects::{Proposition, PredicateFactor};
-use super::{
-    ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
-};
+use super::objects::{PredicateFactor, Proposition};
+use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
-use crate::model::objects::{PropositionGroup, EXISTENCE_FUNCTION, RoleMap, GroupRoleMap};
-use crate::{print_green, print_red};
+use crate::model::objects::{GroupRoleMap, PropositionGroup, RoleMap, EXISTENCE_FUNCTION};
 use crate::{
     common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
 };
-use std::collections::{HashSet, HashMap};
+use crate::{print_green, print_red};
+use std::collections::{HashMap, HashSet};
 use std::{borrow::Borrow, error::Error};
 
 fn combine(input_array: &[usize], k: usize) -> Vec<Vec<usize>> {
@@ -130,24 +128,20 @@ pub fn extract_factor_for_proposition(
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
     let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
-    let mut result = vec![];
+    let mut probabilities = vec![];
     for factor in factors {
-        let mut probabilities = vec![];
-        for term in &factor.premise.terms {
-            print_red!("get prob for {:?}", &term);
-            let opt = proposition_db.get_proposition_probability(term)?;
-            let probability = opt.unwrap();
-            probabilities.push(probability);
-        }
-        result.push(FactorContext {
-            factor,
-            probabilities,
-        })
+        // let opt = proposition_db.get_proposition_probability(term)?;
+        let probability: f64 = todo!(); //  = opt.unwrap();
+        probabilities.push(probability);
     }
+    let result = FactorContext {
+        factor: factors,
+        probabilities,
+    };
     Ok(result)
 }
 
-pub fn create_existence_predicate(predicate:&Predicate) -> Predicate {
+pub fn create_existence_predicate(predicate: &Predicate) -> Predicate {
     todo!()
 }
 pub fn extract_existence_factor_for_predicate(
