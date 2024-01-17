@@ -53,6 +53,7 @@ impl Inferencer {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
         // self.initialize_pi()?;
         self.initialize_lambda()?;
+        self.initialize_pi_roots()?;
         Ok(())
     }
 
@@ -75,6 +76,10 @@ impl Inferencer {
             }
         }
         Ok(())
+    }
+
+    pub fn initialize_pi_roots(&mut self) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 
     pub fn initialize_pi_proposition(
