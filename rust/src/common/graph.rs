@@ -9,7 +9,7 @@ use crate::{
     },
     model::{
         self,
-        maxent::ExponentialModel,
+        exponential::ExponentialModel,
         objects::{
             Domain, Entity, Predicate, PredicateGroup,
             PredicateInferenceFactor, Proposition, PropositionGroup,

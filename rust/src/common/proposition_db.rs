@@ -2,7 +2,7 @@ use crate::{
     common::interface::PropositionDB,
     model::{
         self,
-        maxent::ExponentialModel,
+        exponential::ExponentialModel,
         objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition},
     },
 };

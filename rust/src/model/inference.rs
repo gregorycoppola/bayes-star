@@ -1,7 +1,7 @@
 use crate::common::interface::PropositionDB;
 use crate::common::model::InferenceModel;
 use crate::model::{
-    choose::extract_backimplications_from_proposition, maxent::compute_potential,
+    choose::extract_backimplications_from_proposition, exponential::compute_potential,
     weights::CLASS_LABELS,
 };
 use crate::print_red;

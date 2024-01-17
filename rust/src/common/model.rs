@@ -3,7 +3,7 @@ use crate::{
     inference::graph::PropositionFactor,
     model::{
         self,
-        maxent::ExponentialModel,
+        exponential::ExponentialModel,
         objects::{
             Domain, Entity, Predicate, PredicateGroup, PredicateInferenceFactor, Proposition,
         },
