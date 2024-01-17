@@ -3,7 +3,7 @@ use crate::{
     model::{
         self,
         exponential::ExponentialModel,
-        objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition},
+        objects::{PredicateGroup, Domain, Entity, PredicateInferenceFactor, Predicate, Proposition, EXISTENCE_FUNCTION},
     },
 };
 use redis::{Commands, Connection};
@@ -35,6 +35,9 @@ impl PropositionDB for RedisFactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
+        if proposition.predicate.function == EXISTENCE_FUNCTION {
+            return Ok(Some(1f64));
+        }
         let hash_string = proposition.predicate.hash_string();
 
         // Use a match statement to handle the different outcomes
