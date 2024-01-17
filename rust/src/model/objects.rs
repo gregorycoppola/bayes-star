@@ -186,9 +186,15 @@ impl Predicate {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Proposition {
     pub predicate: Predicate,
+}
+
+impl fmt::Debug for Proposition {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.debug_string())
+    }
 }
 
 impl Proposition {
