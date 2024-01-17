@@ -128,9 +128,10 @@ impl Inferencer {
         group: &PropositionGroup,
         is_root: bool,
     ) -> Result<(), Box<dyn Error>> {
-        info!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
+        print_green!("initialize_pi_conjunct: starts; is_root {} group {}", is_root, group.hash_string());
         let children = self.proposition_graph.get_group_forward(group);
         for child in children {
+            print_green!("found child: single {}", child.hash_string());
             self.initialize_pi_proposition(&child, false)?;
         }
         for outcome in CLASS_LABELS {
