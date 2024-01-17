@@ -196,6 +196,7 @@ fn build_factor_context_for_map(
     todo!()
 }
 
+// Return 1 HashMap for each of the 2^N ways to assign each of the N memebers of `propositions` to either true or false.
 fn compute_each_combination(
     propositions: &Vec<PropositionNode>,
 ) -> Vec<HashMap<PropositionNode, bool>> {
