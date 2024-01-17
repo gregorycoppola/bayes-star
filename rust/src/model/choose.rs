@@ -1,7 +1,5 @@
-use super::conjunction::get_conjunction_probability;
 use super::objects::Proposition;
 use super::{
-    conjunction,
     ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map},
 };
 use crate::common::graph::InferenceGraph;

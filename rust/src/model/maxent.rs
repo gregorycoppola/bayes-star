@@ -1,6 +1,5 @@
 use super::choose::extract_backimplications_from_proposition;
 use super::config::ConfigurationOptions;
-use super::conjunction::get_conjunction_probability;
 use super::objects::PredicateInferenceFactor;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{PropositionDB, PredictStatistics, TrainStatistics};
