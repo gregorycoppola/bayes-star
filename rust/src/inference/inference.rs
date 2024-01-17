@@ -3,7 +3,7 @@ use super::{
     table::{HashMapBeliefTable, InferenceResult, PropositionNode},
 };
 use crate::{
-    common::{interface::PropositionDB, model::InferenceModel},
+    common::{interface::PropositionDB, model::{InferenceModel, FactorContext}},
     inference::table::{GenericNodeType, HashMapInferenceResult},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
@@ -151,7 +151,11 @@ impl Inferencer {
             }
 
             let factor = build_factor_context_for_map(combination, from_node);
-            let prediction = self.model.model.predict(factor);
+            let prediction = self.model.model.predict(&factor)?;
+            let true_marginal = &prediction.marginal;
+            let false_marginal = 1f64 - true_marginal;
+            sum_true += true_marginal;
+            sum_false += false_marginal;
         }
         self.data.set_pi_value(from_node, 1, sum_true);
         self.data.set_pi_value(from_node, 0, sum_false);
@@ -188,7 +192,7 @@ impl Inferencer {
 fn build_factor_context_for_map(
     premises: &HashMap<PropositionNode, bool>,
     conclusion: &PropositionNode,
-) -> PropositionFactor {
+) -> FactorContext {
     todo!()
 }
 
