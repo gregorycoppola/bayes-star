@@ -5,4 +5,3 @@ pub mod ops;
 pub mod weights;
 pub mod exponential;
 pub mod config;
-pub mod inference;
