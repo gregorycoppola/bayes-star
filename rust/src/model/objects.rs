@@ -123,7 +123,7 @@ impl fmt::Display for Argument {
         match self {
             Argument::Constant(arg) => write!(f, "Constant({})", arg), // Update as needed
             Argument::Variable(arg) => write!(f, "Variable({})", arg), // Update as needed
-                                                                                  // Add cases for other variants if they exist
+                                                                        // Add cases for other variants if they exist
         }
     }
 }
@@ -157,12 +157,14 @@ impl LabeledArgument {
     }
 }
 
+pub const EXISTENCE_FUNCTION: &str = "exists";
+
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
-    pub function:String, 
+    pub function: String,
     pub roles: Vec<LabeledArgument>,
 }
- 
+
 impl fmt::Debug for Predicate {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.debug_string())
@@ -170,7 +172,7 @@ impl fmt::Debug for Predicate {
 }
 
 impl Predicate {
-    pub fn new(function:String, roles: Vec<LabeledArgument>) -> Self {
+    pub fn new(function: String, roles: Vec<LabeledArgument>) -> Self {
         Predicate { function, roles }
     }
 
@@ -178,7 +180,8 @@ impl Predicate {
         self.hash_string()
     }
     pub fn hash_string(&self) -> String {
-        let role_strings: Vec<String> = self.roles
+        let role_strings: Vec<String> = self
+            .roles
             .iter()
             .map(|role| role.hash_string()) // Assuming FilledRole has a hash_string method
             .collect();
@@ -208,9 +211,12 @@ impl fmt::Debug for Proposition {
 }
 
 impl Proposition {
-    pub fn from(predicate:Predicate) -> Self {
+    pub fn from(predicate: Predicate) -> Self {
         if !predicate.is_fact() {
-            panic!("This predicate is not a fact {:?}.", predicate.hash_string());
+            panic!(
+                "This predicate is not a fact {:?}.",
+                predicate.hash_string()
+            );
         }
         Proposition { predicate }
     }
@@ -240,7 +246,8 @@ impl PredicateGroup {
     }
 
     pub fn hash_string(&self) -> String {
-        let mut hash_strings: Vec<String> = self.terms
+        let mut hash_strings: Vec<String> = self
+            .terms
             .iter()
             .map(|term| term.hash_string()) // Map each term to its search string
             .collect();
@@ -268,7 +275,8 @@ impl PropositionGroup {
         PropositionGroup { terms }
     }
     pub fn hash_string(&self) -> String {
-        let mut hash_strings: Vec<String> = self.terms
+        let mut hash_strings: Vec<String> = self
+            .terms
             .iter()
             .map(|term| term.predicate.hash_string()) // Map each term to its search string
             .collect();
@@ -347,18 +355,19 @@ impl fmt::Display for RoleMap {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GroupRoleMap {
-    pub role_maps:Vec<RoleMap>,
+    pub role_maps: Vec<RoleMap>,
 }
 
 impl GroupRoleMap {
-    pub fn new(role_maps:Vec<RoleMap>) -> Self {
-        GroupRoleMap{role_maps}
+    pub fn new(role_maps: Vec<RoleMap>) -> Self {
+        GroupRoleMap { role_maps }
     }
 }
 
 impl fmt::Display for GroupRoleMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let role_maps_str = self.role_maps
+        let role_maps_str = self
+            .role_maps
             .iter()
             .map(|role_map| role_map.to_string()) // Convert each RoleMap to a String using its Display implementation
             .collect::<Vec<String>>()

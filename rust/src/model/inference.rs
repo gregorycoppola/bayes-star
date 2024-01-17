@@ -1,14 +1,13 @@
-use std::{collections::HashMap, error::Error};
 use crate::common::interface::PropositionDB;
 use crate::common::model::InferenceModel;
 use crate::model::{
-    choose::extract_backimplications_from_proposition,
-    maxent::compute_potential,
-    weights::{CLASS_LABELS},
+    choose::extract_backimplications_from_proposition, maxent::compute_potential,
+    weights::CLASS_LABELS,
 };
+use std::{collections::HashMap, error::Error};
 
+use super::objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION};
 use super::weights::ExponentialWeights;
-use super::objects::{ PredicateGroup, Predicate, Proposition, PropositionGroup};
 
 fn print_premise_probabilities(
     storage: &mut InferenceModel,
@@ -49,12 +48,17 @@ impl PropositionDB for MapBackedProbabilityStorage {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        let search_key = proposition.predicate.hash_string();
-        if let Some(&value) = self.underlying.get(&search_key) {
-            // Assuming true = 1.0 probability and false = 0.0
-            Ok(Some(if value { 1.0 } else { 0.0 }))
+        // NOTE: Should perhaps check set membership here.
+        if proposition.predicate.function == EXISTENCE_FUNCTION {
+            Ok(Some(1f64))
         } else {
-            panic!("proposition key not found in local map {:?}", &search_key);
+            let search_key = proposition.predicate.hash_string();
+            if let Some(&value) = self.underlying.get(&search_key) {
+                // Assuming true = 1.0 probability and false = 0.0
+                Ok(Some(if value { 1.0 } else { 0.0 }))
+            } else {
+                panic!("proposition key not found in local map {:?}", &search_key);
+            }
         }
     }
     fn store_proposition_probability(
@@ -71,7 +75,10 @@ pub fn compute_joint_probability(
     assumed_probabilities: &HashMap<String, f64>,
 ) -> Result<f64, Box<dyn Error>> {
     let mut joint_probability = 1.0;
-    info!("\x1b[94mStarting computation of joint probability\x1b[0m {:?}", assumed_probabilities);
+    info!(
+        "\x1b[94mStarting computation of joint probability\x1b[0m {:?}",
+        assumed_probabilities
+    );
 
     for (event, &is_true) in boolean_assignment {
         info!("\x1b[94mProcessing event: {}\x1b[0m", event);
@@ -79,10 +86,16 @@ pub fn compute_joint_probability(
             Some(&prob_true) => {
                 let prob = if is_true { prob_true } else { 1.0 - prob_true };
                 joint_probability *= prob;
-                info!("\x1b[94mEvent: {}, Probability: {}, Cumulative Probability: {}\x1b[0m", event, prob, joint_probability);
-            },
+                info!(
+                    "\x1b[94mEvent: {}, Probability: {}, Cumulative Probability: {}\x1b[0m",
+                    event, prob, joint_probability
+                );
+            }
             None => {
-                error!("\x1b[94mError: Probability not found for event: {}\x1b[0m", event);
+                error!(
+                    "\x1b[94mError: Probability not found for event: {}\x1b[0m",
+                    event
+                );
                 return Err(Box::new(std::io::Error::new(
                     std::io::ErrorKind::NotFound,
                     format!("Probability not found for event: {}", event),
@@ -91,10 +104,12 @@ pub fn compute_joint_probability(
         }
     }
 
-    info!("\x1b[94mFinal joint probability: {}\x1b[0m", joint_probability);
+    info!(
+        "\x1b[94mFinal joint probability: {}\x1b[0m",
+        joint_probability
+    );
     Ok(joint_probability)
 }
-
 
 fn each_combination(propositions: &Vec<Predicate>) -> Vec<HashMap<String, bool>> {
     let n = propositions.len();
