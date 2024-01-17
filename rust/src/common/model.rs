@@ -41,7 +41,7 @@ impl InferenceModel {
 
 #[derive(Debug)]
 pub struct FactorContext {
-    pub factor: PropositionFactor,
+    pub factor: Vec<PropositionFactor>,
     pub probabilities: Vec<f64>,
 }
 

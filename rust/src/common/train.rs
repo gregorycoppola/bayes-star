@@ -24,7 +24,7 @@ use super::resources::FactoryResources;
 use crate::common::proposition_db::RedisFactDB;
 use crate::common::model::InferenceModel;
 use crate::model::choose::{
-    extract_backimplications_from_proposition, extract_factors_for_proposition,
+    extract_backimplications_from_proposition, extract_factor_for_proposition,
 };
 use std::borrow::BorrowMut;
 
@@ -156,7 +156,7 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let mut examples_processed = 0;
     for proposition in &training_questions {
         info!("do_training - Processing proposition: {:?}", proposition);
-        let factors = extract_factors_for_proposition(&proposition_db, &graph, proposition.clone())?;
+        let factors = extract_factor_for_proposition(&proposition_db, &graph, proposition.clone())?;
         info!("do_training - Backimplications: {:?}", &factors);
         let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");

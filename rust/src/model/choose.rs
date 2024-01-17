@@ -124,7 +124,7 @@ pub fn extract_backimplications_from_proposition(
     Ok(backimplications)
 }
 
-pub fn extract_factors_for_proposition(
+pub fn extract_factor_for_proposition(
     proposition_db: &Box<dyn PropositionDB>,
     graph: &InferenceGraph,
     conclusion: Proposition,
