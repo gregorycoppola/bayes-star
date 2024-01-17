@@ -173,7 +173,7 @@ impl Predicate {
             .map(|role| role.hash_string()) // Assuming FilledRole has a hash_string method
             .collect();
 
-        format!("[{}]", role_strings.join(","))
+        format!("{}[{}]", &self.function, role_strings.join(","))
     }
     pub fn role_names(&self) -> Vec<String> {
         self.roles
