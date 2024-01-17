@@ -6,7 +6,7 @@ use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
 use crate::model::objects::{PropositionGroup, EXISTENCE_FUNCTION, RoleMap, GroupRoleMap};
-use crate::print_green;
+use crate::{print_green, print_red};
 use crate::{
     common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
@@ -134,6 +134,7 @@ pub fn extract_factors_for_proposition(
     for factor in factors {
         let mut probabilities = vec![];
         for term in &factor.premise.terms {
+            print_red!("get prob for {:?}", &term);
             let opt = proposition_db.get_proposition_probability(term)?;
             let probability = opt.unwrap();
             probabilities.push(probability);
