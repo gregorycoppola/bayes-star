@@ -68,8 +68,7 @@ pub fn compute_search_predicates(
     let mut result = Vec::new();
     for configuration in configurations1.into_iter().chain(configurations2) {
         let quantified_roles = extract_roles_from_indices(&roles, &configuration);
-        let quantified = convert_to_quantified(proposition, &quantified_roles); // Assuming this function exists
-                                                                                // let hash_string = quantified.hash_string(); // Assuming this method exists
+        let quantified = convert_to_quantified(proposition, &quantified_roles);
         result.push(quantified);
     }
     Ok(result)
@@ -95,14 +94,14 @@ pub fn extract_backimplications_from_proposition(
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
                 trace!("Processing term {}: {:?}", index, proposition);
                 let extracted_mapping =
-                    extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]); // Assuming this function exists
+                    extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]);
                 trace!(
                     "Extracted mapping for term {}: {:?}",
                     index,
                     &extracted_mapping
                 );
                 let extracted_proposition =
-                    convert_to_proposition(&proposition, &extracted_mapping)?; // Assuming this function exists
+                    convert_to_proposition(&proposition, &extracted_mapping)?;
                 trace!(
                     "Converted to proposition for term {}: {:?}",
                     index,
