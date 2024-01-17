@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
+use std::hash::Hash;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ArgumentType {
@@ -156,10 +157,16 @@ impl LabeledArgument {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
     pub function:String, 
     pub roles: Vec<LabeledArgument>,
+}
+ 
+impl fmt::Debug for Predicate {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.debug_string())
+    }
 }
 
 impl Predicate {
@@ -167,6 +174,9 @@ impl Predicate {
         Predicate { function, roles }
     }
 
+    pub fn debug_string(&self) -> String {
+        self.hash_string()
+    }
     pub fn hash_string(&self) -> String {
         let role_strings: Vec<String> = self.roles
             .iter()
