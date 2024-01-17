@@ -12,39 +12,31 @@ use std::{collections::HashMap, error::Error, rc::Rc};
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
-pub enum InferenceNodeType {
-    PropositionHash(u64),
-    ConjunctHash(u64),
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+pub enum GenericNodeType {
+    Single(Proposition),
+    Group(PropositionGroup),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct InferenceNode {
-    node_type: InferenceNodeType,
-    debug_string:String,
+pub struct PropositionNode {
+    node: GenericNodeType,
+    debug_string: String,
 }
 
-impl InferenceNode {
+impl PropositionNode {
     // Constructor for an InferenceNode with a Proposition
-    pub fn from_proposition(proposition: &Proposition) -> InferenceNode {
-        let mut hasher = DefaultHasher::new();
-        proposition.hash(&mut hasher);
-        let hash = hasher.finish();
-
-        InferenceNode {
-            node_type: InferenceNodeType::PropositionHash(hash),
-            debug_string: proposition.predicate.hash_string(),
+    pub fn from_proposition(proposition: &Proposition) -> PropositionNode {
+        PropositionNode {
+            node: GenericNodeType::Single(proposition.clone()),
+            debug_string: proposition.hash_string(),
         }
     }
 
     // Constructor for an InferenceNode with a Conjunct
-    pub fn from_group(group: &PropositionGroup) -> InferenceNode {
-        let mut hasher = DefaultHasher::new();
-        group.hash(&mut hasher);
-        let hash = hasher.finish();
-
-        InferenceNode {
-            node_type: InferenceNodeType::ConjunctHash(hash),
+    pub fn from_group(group: &PropositionGroup) -> PropositionNode {
+        PropositionNode {
+            node: GenericNodeType::Group(group.clone()),
             debug_string: group.hash_string(),
         }
     }
@@ -53,13 +45,13 @@ impl InferenceNode {
 #[derive(Debug, Clone)]
 
 pub struct HashMapBeliefTable {
-    pi_values: HashMap<(InferenceNode, usize), f64>,
-    lambda_values: HashMap<(InferenceNode, usize), f64>,
-    pi_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
-    lambda_messages: HashMap<(InferenceNode, InferenceNode, usize), f64>,
+    pi_values: HashMap<(PropositionNode, usize), f64>,
+    lambda_values: HashMap<(PropositionNode, usize), f64>,
+    pi_messages: HashMap<(PropositionNode, PropositionNode, usize), f64>,
+    lambda_messages: HashMap<(PropositionNode, PropositionNode, usize), f64>,
 }
 
-fn print_sorted_map(map: &HashMap<(InferenceNode, usize), f64>) {
+fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
     
     // Sorting by InferenceNode.debug_string and then by usize
@@ -79,7 +71,7 @@ fn print_sorted_map(map: &HashMap<(InferenceNode, usize), f64>) {
     }
 }
 
-fn print_sorted_messages(map: &HashMap<(InferenceNode, InferenceNode, usize), f64>) {
+fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
 
     // Sorting by the first InferenceNode.debug_string, then the second, and then by usize
@@ -128,25 +120,25 @@ impl HashMapBeliefTable {
     }
 
     // Getter for pi values
-    pub fn get_pi_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
+    pub fn get_pi_value(&self, node: &PropositionNode, outcome: usize) -> Option<f64> {
         let key = (node.clone(), outcome);
         self.pi_values.get(&key).cloned()
     }
 
     // Setter for pi values
-    pub fn set_pi_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
+    pub fn set_pi_value(&mut self, node: &PropositionNode, outcome: usize, value: f64) {
         let key = (node.clone(), outcome);
         self.pi_values.insert(key, value);
     }
 
     // Getter for lambda values
-    pub fn get_lambda_value(&self, node: &InferenceNode, outcome: usize) -> Option<f64> {
+    pub fn get_lambda_value(&self, node: &PropositionNode, outcome: usize) -> Option<f64> {
         let key = (node.clone(), outcome);
         self.lambda_values.get(&key).cloned()
     }
 
     // Setter for lambda values
-    pub fn set_lambda_value(&mut self, node: &InferenceNode, outcome: usize, value: f64) {
+    pub fn set_lambda_value(&mut self, node: &PropositionNode, outcome: usize, value: f64) {
         let key = (node.clone(), outcome);
         self.lambda_values.insert(key, value);
     }
@@ -154,8 +146,8 @@ impl HashMapBeliefTable {
     // Getter for pi messages
     pub fn get_pi_message(
         &self,
-        from: &InferenceNode,
-        to: &InferenceNode,
+        from: &PropositionNode,
+        to: &PropositionNode,
         outcome: usize,
     ) -> Option<f64> {
         let key = (from.clone(), to.clone(), outcome);
@@ -165,8 +157,8 @@ impl HashMapBeliefTable {
     // Setter for pi messages
     pub fn set_pi_message(
         &mut self,
-        from: &InferenceNode,
-        to: &InferenceNode,
+        from: &PropositionNode,
+        to: &PropositionNode,
         outcome: usize,
         value: f64,
     ) {
@@ -177,8 +169,8 @@ impl HashMapBeliefTable {
     // Getter for lambda messages
     pub fn get_lambda_message(
         &self,
-        from: &InferenceNode,
-        to: &InferenceNode,
+        from: &PropositionNode,
+        to: &PropositionNode,
         outcome: usize,
     ) -> Option<f64> {
         let key = (from.clone(), to.clone(), outcome);
@@ -188,8 +180,8 @@ impl HashMapBeliefTable {
     // Setter for lambda messages
     pub fn set_lambda_message(
         &mut self,
-        from: &InferenceNode,
-        to: &InferenceNode,
+        from: &PropositionNode,
+        to: &PropositionNode,
         outcome: usize,
         value: f64,
     ) {

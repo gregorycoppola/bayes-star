@@ -1,4 +1,4 @@
-use super::{table::{HashMapBeliefTable, InferenceNode, InferenceResult}, graph::PropositionGraph};
+use super::{table::{HashMapBeliefTable, PropositionNode, InferenceResult}, graph::PropositionGraph};
 use crate::{
     common::{interface::PropositionDB, model::InferenceModel},
     model::{
@@ -100,9 +100,9 @@ impl Inferencer {
         if is_root {
             let prior_prob = inference_proposition_probability(self.model.proposition_db.borrow(), node)?;
             self.data
-                .set_pi_value(&InferenceNode::from_proposition(node), 1, prior_prob);
+                .set_pi_value(&PropositionNode::from_proposition(node), 1, prior_prob);
             self.data.set_pi_value(
-                &InferenceNode::from_proposition(node),
+                &PropositionNode::from_proposition(node),
                 0,
                 1f64 - prior_prob,
             );
@@ -113,8 +113,8 @@ impl Inferencer {
                 .get_single_forward(node);
             for child in children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_proposition(node),
-                    &InferenceNode::from_group(&child),
+                    &PropositionNode::from_proposition(node),
+                    &PropositionNode::from_group(&child),
                     outcome,
                     1f64,
                 );
@@ -141,8 +141,8 @@ impl Inferencer {
                 .get_group_forward(group);
             for child in children {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_group(group),
-                    &InferenceNode::from_proposition(&child),
+                    &PropositionNode::from_group(group),
+                    &PropositionNode::from_proposition(&child),
                     outcome,
                     1f64,
                 );
@@ -165,12 +165,12 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_proposition(node), outcome, 1f64);
+                .set_lambda_value(&PropositionNode::from_proposition(node), outcome, 1f64);
             let parents = self.proposition_graph.get_single_backward(node);
             for parent in parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_proposition(node),
-                    &InferenceNode::from_group(&parent),
+                    &PropositionNode::from_proposition(node),
+                    &PropositionNode::from_group(&parent),
                     outcome,
                     1f64,
                 );
@@ -189,12 +189,12 @@ impl Inferencer {
     ) -> Result<(), Box<dyn Error>> {
         for outcome in CLASS_LABELS {
             self.data
-                .set_lambda_value(&InferenceNode::from_group(group), outcome, 1f64);
+                .set_lambda_value(&PropositionNode::from_group(group), outcome, 1f64);
             let parents = self.proposition_graph.get_group_backward(group);
             for parent in &parents {
                 self.data.set_lambda_message(
-                    &InferenceNode::from_group(group),
-                    &InferenceNode::from_proposition(parent),
+                    &PropositionNode::from_group(group),
+                    &PropositionNode::from_proposition(parent),
                     outcome,
                     1f64,
                 );
