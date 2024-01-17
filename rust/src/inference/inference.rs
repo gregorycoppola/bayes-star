@@ -128,10 +128,18 @@ impl Inferencer {
     }
 
     pub fn pi_compute_single(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+        let backlinks = self.proposition_graph.get_all_backward(node);
         todo!()
     }
 
-    pub fn pi_compute_group(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_group(&mut self, from_node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+        let backlinks = self.proposition_graph.get_all_backward(from_node);
+        let mut product = 1f64;
+        for (index, to_node) in backlinks.iter().enumerate() {
+            let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+            product *= pi_x_z;
+        }
+        self.data.set_pi_value(from_node, 1, product);
         todo!()
     }
 }
