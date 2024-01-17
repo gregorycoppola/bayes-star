@@ -20,23 +20,6 @@ struct Inferencer {
     pub data: HashMapBeliefTable,
 }
 
-fn inference_proposition_probability(
-    proposition_db: &dyn PropositionDB,
-    proposition: &Proposition,
-) -> Result<f64, Box<dyn Error>> {
-    Ok(proposition_db
-        .get_proposition_probability(proposition)
-        .unwrap()
-        .unwrap())
-}
-
-fn inference_conjoined_probability(
-    proposition_db: &dyn PropositionDB,
-    group: &PropositionGroup,
-) -> Result<f64, Box<dyn Error>> {
-    todo!()
-}
-
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new_mutable(
