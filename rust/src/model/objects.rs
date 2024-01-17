@@ -158,12 +158,13 @@ impl LabeledArgument {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
+    pub function:String, 
     pub roles: Vec<LabeledArgument>,
 }
 
 impl Predicate {
-    pub fn new(roles: Vec<LabeledArgument>) -> Self {
-        Predicate { roles }
+    pub fn new(function:String, roles: Vec<LabeledArgument>) -> Self {
+        Predicate { function, roles }
     }
 
     pub fn hash_string(&self) -> String {

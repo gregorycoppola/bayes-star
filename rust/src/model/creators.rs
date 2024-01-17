@@ -22,11 +22,11 @@ pub fn implication(
     }
 }
 
-pub fn proposition(roles: Vec<LabeledArgument>) -> Proposition {
-    Proposition::from(Predicate { roles })
+pub fn proposition(function:String, roles: Vec<LabeledArgument>) -> Proposition {
+    Proposition::from(Predicate { function,  roles })
 }
-pub fn predicate(roles: Vec<LabeledArgument>) -> Predicate {
-    Predicate { roles }
+pub fn predicate(function:String, roles: Vec<LabeledArgument>) -> Predicate {
+    Predicate { function, roles }
 }
 
 // Function to create a FilledRole
@@ -56,8 +56,4 @@ pub fn subject(argument: Argument) -> LabeledArgument {
 
 pub fn object(argument: Argument) -> LabeledArgument {
     role("object".to_string(), argument)
-}
-
-pub fn relation(argument: Argument) -> LabeledArgument {
-    role("relation".to_string(), argument)
 }

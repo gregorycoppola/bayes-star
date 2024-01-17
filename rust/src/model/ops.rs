@@ -18,7 +18,7 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pre
         })
         .collect();
 
-    Predicate::new(result)
+    Predicate::new(proposition.predicate.function, result)
 }
 
 pub fn convert_to_proposition(
@@ -63,8 +63,10 @@ pub fn convert_to_proposition(
         }
     }
     debug!("Conversion to proposition completed successfully.");
+    let function = predicate.function;
     Ok(Proposition {
         predicate: Predicate {
+            function,
             roles: result_roles,
         },
     })
