@@ -23,11 +23,11 @@ use std::{
     rc::Rc,
 };
 
-struct Inferencer {
-    model: Rc<InferenceModel>,
-    proposition_graph: Rc<PropositionGraph>,
+pub struct Inferencer {
+    pub model: Rc<InferenceModel>,
+    pub proposition_graph: Rc<PropositionGraph>,
     pub data: HashMapBeliefTable,
-    bfs_order: Vec<PropositionNode>,
+    pub bfs_order: Vec<PropositionNode>,
 }
 
 fn reverse_prune_duplicates(raw_order: &Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
@@ -125,16 +125,6 @@ impl Inferencer {
                     self.data.set_lambda_message(node, parent, outcome, 1f64);
                 }
             }
-        }
-        Ok(())
-    }
-
-    pub fn send_pi_messages(&mut self) -> Result<(), Box<dyn Error>> {
-        let bfs_order = self.bfs_order.clone();
-        print_red!("send_pi_messages bfs_order: {:?}", &bfs_order);
-        for node in &bfs_order {
-            print_yellow!("send pi bfs selects {:?}", node);
-            self.pi_visit_node(node)?;
         }
         Ok(())
     }
