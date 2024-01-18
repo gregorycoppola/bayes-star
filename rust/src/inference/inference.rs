@@ -217,16 +217,18 @@ impl Inferencer {
             let mut product = 1f64;
             let mut condition = true;
             for (index, to_node) in backlinks.iter().enumerate() {
-                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+                let boolean_outcome = combination.get(to_node).unwrap();
+                let usize_outcome = if *boolean_outcome { 1 } else { 0 };
+                let pi_x_z = self.data.get_lambda_message(from_node, to_node, usize_outcome).unwrap();
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
             }
             if condition {
-                print_blue!("true combination: {:?}", &combination);
+                print_blue!("true combination: {:?}, product {}", &combination, product);
                 sum_true += product;
             } else {
-                print_blue!("false combination: {:?}", &combination);
+                print_blue!("false combination: {:?}, product {}", &combination, product);
                 sum_false += product;
             }
         }
