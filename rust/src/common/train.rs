@@ -5,7 +5,7 @@ use crate::{
         exponential::ExponentialModel,
         objects::{
             Domain, Entity, PredicateFactor, Predicate, PredicateGroup,
-            Proposition,
+            Proposition, PropositionGroup,
         },
     },
 };
@@ -134,6 +134,19 @@ where
     serde_json::from_str(record).map_err(|e| Box::new(e) as Box<dyn Error>)
 }
 
+// Probabilities are either 0 or 1, so assume independent, i.e., just boolean combine them as AND.
+fn extract_group_probability_for_training(
+    proposition_db: &Box<dyn PropositionDB>,
+    premise:&PropositionGroup,
+) -> Result<f64, Box<dyn Error>> {
+    let mut product = 1f64;
+    for term in &premise.terms {
+        let part = proposition_db.get_proposition_probability(term)?.unwrap();
+        product *= part;
+    }
+    Ok(product)
+}
+
 fn extract_factor_for_proposition_for_training(
     proposition_db: &Box<dyn PropositionDB>,
     graph: &InferenceGraph,
@@ -142,8 +155,7 @@ fn extract_factor_for_proposition_for_training(
     let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
     let mut probabilities = vec![];
     for factor in &factors {
-        // let opt = proposition_db.get_proposition_probability(term)?;
-        let probability: f64 = todo!(); //  = opt.unwrap();
+        let probability = extract_group_probability_for_training(proposition_db, &factor.premise)?;
         probabilities.push(probability);
     }
     let result = FactorContext {
