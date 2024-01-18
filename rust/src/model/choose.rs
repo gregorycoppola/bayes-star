@@ -59,7 +59,7 @@ fn extract_roles_from_indices(roles: &[String], indices: &[usize]) -> Vec<String
 pub fn compute_search_predicates(
     proposition: &Proposition,
 ) -> Result<Vec<Predicate>, Box<dyn Error>> {
-    let num_roles = proposition.predicate.roles.len();
+    let num_roles = proposition.predicate.roles().len();
     let configurations1 = compute_choose_configurations(num_roles, 1);
     let configurations2 = compute_choose_configurations(num_roles, 2);
     let roles = proposition.predicate.role_names();
@@ -127,7 +127,7 @@ pub fn extract_existence_factor_for_predicate(
 ) -> Result<PredicateFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
-    for old_role in &conclusion.roles {
+    for old_role in &conclusion.roles() {
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }
@@ -152,7 +152,7 @@ pub fn extract_existence_factor_for_proposition(
 ) -> Result<PredicateFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
-    for old_role in &basis.predicate.roles {
+    for old_role in &basis.predicate.roles() {
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }

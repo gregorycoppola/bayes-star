@@ -7,7 +7,7 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pre
     let role_set: std::collections::HashSet<String> = roles.iter().cloned().collect();
     let result: Vec<LabeledArgument> = proposition
         .predicate
-        .roles
+        .roles()
         .iter()
         .map(|crole| {
             if role_set.contains(&crole.role_name) {
@@ -30,7 +30,7 @@ pub fn convert_to_proposition(
         predicate, &role_map
     );
     let mut result_roles = Vec::new();
-    for role in &predicate.roles {
+    for role in &predicate.roles() {
         debug!("Processing role: {:?}", role);
         if role.argument.is_variable() {
             debug!("Role is a variable, attempting substitution.");
@@ -81,7 +81,7 @@ pub fn extract_premise_role_map(
         proposition
     );
     let mut result = HashMap::new();
-    for crole in &proposition.predicate.roles {
+    for crole in &proposition.predicate.roles() {
         assert!(
             crole.argument.is_constant(),
             "crole must be a constant {:?}",

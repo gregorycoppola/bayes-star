@@ -160,7 +160,7 @@ pub const EXISTENCE_FUNCTION: &str = "exist";
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
     pub function: String,
-    pub roles: Vec<LabeledArgument>,
+    roles: Vec<LabeledArgument>,
 }
 
 impl fmt::Debug for Predicate {
@@ -196,6 +196,10 @@ impl Predicate {
     }
     pub fn is_fact(&self) -> bool {
         self.roles.iter().all(|role| role.argument.is_constant())
+    }
+
+    pub fn roles(&self) -> Vec<LabeledArgument> {
+        self.roles.clone()
     }
 }
 
