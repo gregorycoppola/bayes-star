@@ -2,7 +2,7 @@ use std::{error::Error, rc::Rc};
 
 use crate::common::interface::ScenarioMaker;
 
-use super::{dating_simple::SimpleDating, one_var::OneVariable};
+use super::{dating_simple::SimpleDating, one_var::OneVariable, two_var::TwoVariable};
 
 pub struct ScenarioMakerFactory;
 
@@ -11,6 +11,7 @@ impl ScenarioMakerFactory {
         match type_name {
             "SimpleDating" => Ok(Rc::new(SimpleDating {})),
             "OneVariable" => Ok(Rc::new(OneVariable {})),
+            "TwoVariable" => Ok(Rc::new(TwoVariable {})),
             _ => Err("Unknown ScenarioMaker type".into()),
         }
     }
