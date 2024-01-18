@@ -97,7 +97,7 @@ pub fn compute_expected_features(
     result
 }
 
-const LEARNING_RATE: f64 = 0.1;
+const LEARNING_RATE: f64 = 0.01;
 
 pub fn do_sgd_update(
     weights: &HashMap<String, f64>,
