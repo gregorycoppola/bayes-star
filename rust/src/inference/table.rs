@@ -3,7 +3,7 @@ use crate::{
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
-    },
+    }, print_yellow, print_green,
 };
 use redis::Connection;
 use serde::{Deserialize, Serialize};
@@ -45,6 +45,7 @@ impl Hash for PropositionNode {
 impl PropositionNode {
     pub fn from_single(proposition: &Proposition) -> PropositionNode {
         let underlying_hash = hash_proposition(proposition);
+        print_yellow!("got hash {} {:?}", underlying_hash, proposition);
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
             underlying_hash,
@@ -53,6 +54,7 @@ impl PropositionNode {
 
     pub fn from_group(group: &PropositionGroup) -> PropositionNode {
         let underlying_hash = hash_group(group);
+        print_green!("got hash {} {:?}", underlying_hash, group);
         PropositionNode {
             node: GenericNodeType::Group(group.clone()),
             underlying_hash,
