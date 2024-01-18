@@ -333,16 +333,22 @@ pub struct Entity {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RoleMap {
-    pub role_map: std::collections::HashMap<String, String>,
+    pub role_map: Vec<(String, String)>,
 }
 
 impl RoleMap {
-    pub fn new(role_map: HashMap<String, String>) -> Self {
-        RoleMap { role_map }
+    pub fn new(role_map: Vec<(String, String)>) -> Self {
+        todo!("check that the roles are in sorted order or sort them");
+        // RoleMap { role_map }
     }
 
     pub fn get(&self, role_name: &str) -> Option<&String> {
-        self.role_map.get(role_name)
+        for (from, to) in &self.role_map {
+            if role_name == from {
+                return Some(to);
+            }
+        }
+        None
     }
 }
 
