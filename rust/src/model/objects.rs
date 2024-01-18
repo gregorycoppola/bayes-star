@@ -337,7 +337,7 @@ pub struct RoleMap {
 }
 
 impl RoleMap {
-    pub fn new(role_map: Vec<(String, String)>) -> Self {
+    pub fn new(role_map: HashMap<String, String>) -> Self {
         todo!("check that the roles are in sorted order or sort them");
         // RoleMap { role_map }
     }
