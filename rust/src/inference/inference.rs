@@ -37,6 +37,8 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
         queue.push_back(PropositionNode::from_single(&root));
     }
 
+    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
+
     while let Some(node) = queue.pop_front() {
         buffer.push(node.clone());
         let forward = proposition_graph.get_all_forward(&node);
