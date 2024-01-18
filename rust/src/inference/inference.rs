@@ -25,10 +25,19 @@ struct Inferencer {
 
 fn create_bfs_order(proposition_graph:&PropositionGraph) -> Vec<PropositionNode> {
     let mut queue = VecDeque::new();
+    let mut buffer = vec![];
     for root in &proposition_graph.roots {
-        queue.push_back(root.clone());
+        queue.push_back(PropositionNode::from_single(&root));
     }
-    todo!()
+
+    while let Some(node) = queue.pop_front() {
+        buffer.push(node.clone());
+        let forward = proposition_graph.get_all_forward(&node);
+        for child in &forward {
+            queue.push_back(child.clone());
+        }
+    }
+    buffer
 }
 
 impl Inferencer {
