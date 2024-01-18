@@ -11,6 +11,7 @@ use std::{collections::HashMap, error::Error, rc::Rc};
 
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
+use std::fmt;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GenericNodeType {
@@ -18,7 +19,7 @@ pub enum GenericNodeType {
     Group(PropositionGroup),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
     underlying_hash:u64,
@@ -89,6 +90,11 @@ impl PropositionNode {
             GenericNodeType::Group(group) => group.clone(),
             _ => panic!("This is not a group."),
         }
+    }
+}
+impl fmt::Debug for PropositionNode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.debug_string())
     }
 }
 
