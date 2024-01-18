@@ -191,6 +191,17 @@ impl Inferencer {
         }
     }
 
+    fn is_observed(&self, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
+        if node.is_single() {
+            let as_single = node.extract_single();
+            let has_evidence = self.model.proposition_db.get_proposition_probability(&as_single)?.is_some();
+            print_green!("is_observed? node {:?}, has_evidence {}", &as_single, has_evidence);
+            Ok(has_evidence)
+        } else {
+            Ok(false)
+        }
+    }
+
     pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         match &node.node {
             GenericNodeType::Single(proposition) => {
