@@ -79,7 +79,7 @@ impl ScenarioMaker for SimpleDating {
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
             let p_jill_likes_jack: f64 = weighted_cointoss(0.4f64);
             let p_jack_likes_jill =
-                weighted_cointoss(0.8 * numeric_or(p_jack_lonely, p_jill_exciting));
+                weighted_cointoss(numeric_or(p_jack_lonely, p_jill_exciting));
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
             {
@@ -168,9 +168,9 @@ impl ScenarioMaker for SimpleDating {
                     p_jack_dates_jill
                 ); // Logging
 
-                let adusted_p = p_jack_dates_jill * 0.7;
-                let effective_p = weighted_cointoss(adusted_p);
-                proposition_db.store_proposition_probability(&jack_dates_jill, effective_p)?;
+                if is_training {
+                    proposition_db.store_proposition_probability(&jack_dates_jill, p_jack_dates_jill)?;
+                }
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
                 graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
