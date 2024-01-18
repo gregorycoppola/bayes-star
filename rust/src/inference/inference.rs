@@ -5,7 +5,7 @@ use super::{
 use crate::{
     common::{
         interface::PropositionDB,
-        model::{FactorContext, InferenceModel},
+        model::{FactorContext, InferenceModel}, proposition_db,
     },
     inference::table::{GenericNodeType, HashMapInferenceResult},
     model::{
@@ -66,7 +66,19 @@ impl Inferencer {
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
-        todo!()
+        for node in &self.bfs_order {
+            let pi0 = self.data.get_pi_value(node, 0).unwrap();
+            let pi1 = self.data.get_pi_value(node, 1).unwrap();
+            let lambda0 = self.data.get_lambda_value(node, 0).unwrap();
+            let lambda1 = self.data.get_lambda_value(node, 1).unwrap();
+            let potential0 = pi0 * lambda0;
+            let potential1 = pi1 * lambda1;
+            let norm = potential0 + potential1;
+            let probability0 = potential0 / norm;
+            let probability1 = potential1 / norm;
+            print_red!("node {:?} p0 {} p1 {}", node, probability0, probability1);
+        }
+        Ok(())
     }
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
