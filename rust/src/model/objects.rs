@@ -155,7 +155,7 @@ impl LabeledArgument {
     }
 }
 
-pub const EXISTENCE_FUNCTION: &str = "exists";
+pub const EXISTENCE_FUNCTION: &str = "exist";
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
