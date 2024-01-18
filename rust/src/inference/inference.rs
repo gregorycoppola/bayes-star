@@ -61,7 +61,12 @@ impl Inferencer {
         // self.initialize_pi()?;
         self.initialize_lambda()?;
         self.initialize_pi_roots()?;
+        self.update_marginals()?;
         Ok(())
+    }
+
+    pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
