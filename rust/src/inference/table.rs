@@ -21,21 +21,18 @@ pub enum GenericNodeType {
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
-    pub debug_string: String,
 }
 
 impl PropositionNode {
     pub fn from_single(proposition: &Proposition) -> PropositionNode {
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
-            debug_string: proposition.hash_string(),
         }
     }
 
     pub fn from_group(group: &PropositionGroup) -> PropositionNode {
         PropositionNode {
             node: GenericNodeType::Group(group.clone()),
-            debug_string: group.hash_string(),
         }
     }
 
@@ -82,12 +79,12 @@ fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
     info!("entries in map: {}", map_entries.len());
 
-    // Sorting by InferenceNode.debug_string and then by usize
+    // Sorting by InferenceNode.debug_string() and then by usize
     map_entries.sort_by(|a, b| {
         let ((node_a, index_a), _) = a;
         let ((node_b, index_b), _) = b;
 
-        match node_a.debug_string.cmp(&node_b.debug_string) {
+        match node_a.debug_string().cmp(&node_b.debug_string()) {
             std::cmp::Ordering::Equal => index_a.cmp(index_b),
             other => other,
         }
@@ -95,20 +92,20 @@ fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
 
     // Printing in sorted order
     for ((node, index), value) in map_entries {
-        info!("{} ({}): {}", node.debug_string, index, value);
+        info!("{} ({}): {}", node.debug_string(), index, value);
     }
 }
 
 fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
 
-    // Sorting by the first InferenceNode.debug_string, then the second, and then by usize
+    // Sorting by the first InferenceNode.debug_string(), then the second, and then by usize
     map_entries.sort_by(|a, b| {
         let ((node_a1, node_a2, index_a), _) = a;
         let ((node_b1, node_b2, index_b), _) = b;
 
-        match node_a1.debug_string.cmp(&node_b1.debug_string) {
-            std::cmp::Ordering::Equal => match node_a2.debug_string.cmp(&node_b2.debug_string) {
+        match node_a1.debug_string().cmp(&node_b1.debug_string()) {
+            std::cmp::Ordering::Equal => match node_a2.debug_string().cmp(&node_b2.debug_string()) {
                 std::cmp::Ordering::Equal => index_a.cmp(index_b),
                 other => other,
             },
@@ -120,7 +117,7 @@ fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize)
     for ((node1, node2, index), value) in map_entries {
         info!(
             "{} - {} ({}): {}",
-            node1.debug_string, node2.debug_string, index, value
+            node1.debug_string(), node2.debug_string(), index, value
         );
     }
 }
