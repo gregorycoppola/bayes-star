@@ -115,6 +115,11 @@ impl Inferencer {
     }
 
     pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        if node.is_single() {
+            let as_single = node.extract_single();
+            let is_root = self.proposition_graph.roots.contains(&as_single);
+            assert!(is_root);
+        }
         match &node.node {
             GenericNodeType::Single(proposition) => {
                 self.pi_compute_single(node)?;
