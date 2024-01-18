@@ -35,7 +35,7 @@ impl PropositionDB for RedisFactDB {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.function == EXISTENCE_FUNCTION {
+        if proposition.predicate.function == EXISTENCE_FUNCTION.to_string() {
             return Ok(Some(1f64));
         }
         let hash_string = proposition.predicate.hash_string();
