@@ -174,7 +174,8 @@ impl fmt::Debug for Predicate {
 
 impl Predicate {
     pub fn new(function: String, roles: Vec<LabeledArgument>) -> Self {
-        Predicate { function, roles }
+        todo!("make sure that the roles are in teh right order, and make 'roles' private.");
+        // Predicate { function, roles }
     }
 
     pub fn debug_string(&self) -> String {
