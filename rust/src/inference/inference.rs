@@ -45,6 +45,9 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
         for child in &forward {
             queue.push_back(child.clone());
         }
+
+    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
+    print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
     }
     buffer
 }
