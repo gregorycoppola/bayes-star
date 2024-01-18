@@ -4,7 +4,8 @@ use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combinat
 
 impl Inferencer {
     pub fn send_lambda_messages(&mut self) -> Result<(), Box<dyn Error>> {
-        let bfs_order = self.bfs_order.clone();
+        let mut bfs_order = self.bfs_order.clone();
+        bfs_order.reverse();
         print_red!("send_lambda_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
             print_yellow!("send pi bfs selects {:?}", node);
