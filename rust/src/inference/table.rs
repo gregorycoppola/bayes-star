@@ -233,7 +233,7 @@ impl HashMapInferenceResult {
 
 impl InferenceResult for HashMapInferenceResult {
     fn get_proposition_probability(&self, proposition: &Predicate) -> Result<f64, Box<dyn Error>> {
-        todo!()
+        panic!("implement")
     }
 }
 
