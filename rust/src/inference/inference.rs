@@ -196,22 +196,19 @@ impl Inferencer {
         let mut sum_false = 0f64;
         for combination in &all_combinations {
             let mut product = 1f64;
-            let mut condition = true;
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 let pi_x_z = self.data.get_pi_message(parent_node, node, usize_outcome).unwrap();
                 product *= pi_x_z;
-                let combination_val = combination[parent_node];
-                condition = condition && combination_val;
             }
             let factor =
                 self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
-            sum_true += true_marginal;
-            sum_false += false_marginal;
+            sum_true += true_marginal * product;
+            sum_false += false_marginal * product;
         }
         self.data.set_pi_value(node, 1, sum_true);
         self.data.set_pi_value(node, 0, sum_false);
