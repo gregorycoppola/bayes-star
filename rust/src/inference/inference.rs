@@ -225,18 +225,18 @@ impl Inferencer {
         for combination in &all_combinations {
             let mut product = 1f64;
             let mut condition = true;
-            for (index, to_node) in parent_nodes.iter().enumerate() {
-                let boolean_outcome = combination.get(to_node).unwrap();
+            for (index, parent_node) in parent_nodes.iter().enumerate() {
+                let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 print_green!(
                     "get pi message: from_node {:?}, to_node {:?}, outcome: {}",
                     node,
-                    to_node,
+                    parent_node,
                     usize_outcome
                 );
                 let pi_x_z = self
                     .data
-                    .get_pi_message(node, to_node, usize_outcome)
+                    .get_pi_message(node, parent_node, usize_outcome)
                     .unwrap();
                 print_yellow!(
                     "boolean_outcome {} usize_outcome {} pi_x_z {}",
@@ -245,7 +245,7 @@ impl Inferencer {
                     pi_x_z
                 );
                 product *= pi_x_z;
-                let combination_val = combination[to_node];
+                let combination_val = combination[parent_node];
                 condition = condition && combination_val;
                 print_yellow!(
                     "combination_val {} condition {}",
