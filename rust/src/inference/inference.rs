@@ -208,6 +208,7 @@ impl Inferencer {
 
     pub fn pi_compute_group(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let backlinks = self.proposition_graph.get_all_backward(from_node);
+        print_yellow!("pi_compute_group {:?}", &backlinks);
         let all_combinations = compute_each_combination(&backlinks);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
@@ -216,7 +217,7 @@ impl Inferencer {
             let mut product = 1f64;
             let mut condition = true;
             for (index, to_node) in backlinks.iter().enumerate() {
-                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+                let pi_x_z = self.data.get_pi_message(from_node, to_node, 1).unwrap();
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
