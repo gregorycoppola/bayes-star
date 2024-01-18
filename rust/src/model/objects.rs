@@ -281,6 +281,8 @@ impl fmt::Debug for PropositionGroup {
 
 impl PropositionGroup {
     pub fn new(terms: Vec<Proposition>) -> Self {
+        let mut buffer = terms.clone();
+        buffer.sort_by(|a, b| a.predicate.function.cmp(&b.predicate.function));
         PropositionGroup { terms }
     }
     pub fn hash_string(&self) -> String {
