@@ -64,14 +64,6 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
 
     let result = reverse_prune_duplicates(&buffer);
     print_yellow!("create_bfs_order result: {:?}", &result);
-    // buffer.sort_by(|a, b| a.0.cmp(&b.0));
-
-    // print_yellow!("create_bfs_order sorted order {:?}", &buffer);
-
-    // let mut result = vec![];
-    // for (depth, node) in buffer {
-    //     result.push(node);
-    // }
     result
 }
 
