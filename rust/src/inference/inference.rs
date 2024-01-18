@@ -5,26 +5,32 @@ use super::{
 use crate::{
     common::{
         interface::PropositionDB,
-        model::{FactorContext, InferenceModel}, proposition_db,
+        model::{FactorContext, InferenceModel},
+        proposition_db,
     },
     inference::table::{GenericNodeType, HashMapInferenceResult},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
     },
-    print_green, print_red, print_yellow, print_blue,
+    print_blue, print_green, print_red, print_yellow,
 };
 use redis::Connection;
-use std::{borrow::Borrow, collections::{HashMap, VecDeque}, error::Error, rc::Rc};
+use std::{
+    borrow::Borrow,
+    collections::{HashMap, VecDeque},
+    error::Error,
+    rc::Rc,
+};
 
 struct Inferencer {
     model: Rc<InferenceModel>,
     proposition_graph: Rc<PropositionGraph>,
     pub data: HashMapBeliefTable,
-    bfs_order:Vec<PropositionNode>,
+    bfs_order: Vec<PropositionNode>,
 }
 
-fn create_bfs_order(proposition_graph:&PropositionGraph) -> Vec<PropositionNode> {
+fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
     let mut queue = VecDeque::new();
     let mut buffer = vec![];
     for root in &proposition_graph.roots {
@@ -60,7 +66,7 @@ impl Inferencer {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
         // self.initialize_pi()?;
         self.initialize_lambda()?;
-        self.initialize_pi_roots()?;
+        self.send_pi_messages()?;
         self.update_marginals()?;
         Ok(())
     }
@@ -103,21 +109,22 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn initialize_pi_roots(&mut self) -> Result<(), Box<dyn Error>> {
-        let roots = self.proposition_graph.roots.clone();
-        for root in &roots {
-            assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
-            self.data
-                .set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
-            self.data
-                .set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
+    pub fn send_pi_messages(&mut self) -> Result<(), Box<dyn Error>> {
+        for node in &self.bfs_order {
+            print_yellow!("send pi bfs selects {:?}", node);
+            let _ = self.pi_visit_node(node)?;
         }
+        Ok(())
+    }
 
-        for root in &roots {
-            let node = PropositionNode::from_single(root);
-            self.pi_visit_node(&node)?;
-        }
-        print_yellow!("{:?}", &roots);
+    fn pi_compute_root(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let root = node.extract_single();
+        assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
+        self.data
+            .set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
+        self.data
+            .set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
+
         Ok(())
     }
 
@@ -154,7 +161,7 @@ impl Inferencer {
         Ok(())
     }
 
-    fn is_root(&self, node:&PropositionNode) -> bool {
+    fn is_root(&self, node: &PropositionNode) -> bool {
         if node.is_single() {
             let as_single = node.extract_single();
             let is_root = self.proposition_graph.roots.contains(&as_single);
@@ -218,13 +225,30 @@ impl Inferencer {
             for (index, to_node) in backlinks.iter().enumerate() {
                 let boolean_outcome = combination.get(to_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                print_green!("get pi message: from_node {:?}, to_node {:?}, outcome: {}", from_node, to_node, usize_outcome);
-                let pi_x_z = self.data.get_pi_message(from_node, to_node, usize_outcome).unwrap();
-                print_yellow!("boolean_outcome {} usize_outcome {} pi_x_z {}", boolean_outcome, usize_outcome, pi_x_z);
+                print_green!(
+                    "get pi message: from_node {:?}, to_node {:?}, outcome: {}",
+                    from_node,
+                    to_node,
+                    usize_outcome
+                );
+                let pi_x_z = self
+                    .data
+                    .get_pi_message(from_node, to_node, usize_outcome)
+                    .unwrap();
+                print_yellow!(
+                    "boolean_outcome {} usize_outcome {} pi_x_z {}",
+                    boolean_outcome,
+                    usize_outcome,
+                    pi_x_z
+                );
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
-                print_yellow!("combination_val {} condition {}", combination_val, condition);
+                print_yellow!(
+                    "combination_val {} condition {}",
+                    combination_val,
+                    condition
+                );
             }
             if condition {
                 print_blue!("true combination: {:?}, product {}", &combination, product);
