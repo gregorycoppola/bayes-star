@@ -231,3 +231,30 @@ impl PropositionGraph {
         self.roots.clone()
     }
 }
+
+impl PropositionGraph {
+    pub fn visualize(&self) {
+        info!("Single Forward:");
+        for (key, value) in self.single_forward.iter() {
+            info!("  {:?}: {:?}", key, value);
+        }
+
+        info!("Single Backward:");
+        for (key, value) in self.single_backward.iter() {
+            info!("  {:?}: {:?}", key, value);
+        }
+
+        info!("Group Forward:");
+        for (key, value) in self.group_forward.iter() {
+            info!("  {:?}: {:?}", key, value);
+        }
+
+        info!("Inference Used:");
+        for (key, value) in self.inference_used.iter() {
+            info!("  ({:?}, {:?}): {:?}", key.0, key.1, value);
+        }
+
+        info!("Roots: {:?}", self.roots);
+        info!("All Nodes: {:?}", self.all_nodes);
+    }
+}
