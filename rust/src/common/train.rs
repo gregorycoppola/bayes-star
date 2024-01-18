@@ -15,7 +15,7 @@ use std::{cell::RefCell, error::Error};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager,
+    redis::RedisManager, model::FactorContext,
 };
 use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
@@ -23,9 +23,7 @@ use super::model::FactorModel;
 use super::resources::FactoryResources;
 use crate::common::proposition_db::RedisFactDB;
 use crate::common::model::InferenceModel;
-use crate::model::choose::{
-    extract_backimplications_from_proposition, extract_factor_for_proposition,
-};
+use crate::model::choose::extract_backimplications_from_proposition;
 use std::borrow::BorrowMut;
 
 
@@ -134,6 +132,25 @@ where
     T: Deserialize<'a>,
 {
     serde_json::from_str(record).map_err(|e| Box::new(e) as Box<dyn Error>)
+}
+
+pub fn extract_factor_for_proposition(
+    proposition_db: &Box<dyn PropositionDB>,
+    graph: &InferenceGraph,
+    conclusion: Proposition,
+) -> Result<FactorContext, Box<dyn Error>> {
+    let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
+    let mut probabilities = vec![];
+    for factor in &factors {
+        // let opt = proposition_db.get_proposition_probability(term)?;
+        let probability: f64 = todo!(); //  = opt.unwrap();
+        probabilities.push(probability);
+    }
+    let result = FactorContext {
+        factor: factors,
+        probabilities,
+    };
+    Ok(result)
 }
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {

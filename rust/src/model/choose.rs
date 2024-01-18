@@ -122,25 +122,6 @@ pub fn extract_backimplications_from_proposition(
     Ok(backimplications)
 }
 
-pub fn extract_factor_for_proposition(
-    proposition_db: &Box<dyn PropositionDB>,
-    graph: &InferenceGraph,
-    conclusion: Proposition,
-) -> Result<FactorContext, Box<dyn Error>> {
-    let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
-    let mut probabilities = vec![];
-    for factor in &factors {
-        // let opt = proposition_db.get_proposition_probability(term)?;
-        let probability: f64 = todo!(); //  = opt.unwrap();
-        probabilities.push(probability);
-    }
-    let result = FactorContext {
-        factor: factors,
-        probabilities,
-    };
-    Ok(result)
-}
-
 pub fn extract_existence_factor_for_predicate(
     conclusion: &Predicate,
 ) -> Result<PredicateFactor, Box<dyn Error>> {
