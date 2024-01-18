@@ -217,7 +217,7 @@ impl Inferencer {
             let mut product = 1f64;
             let mut condition = true;
             for (index, to_node) in backlinks.iter().enumerate() {
-                let pi_x_z = self.data.get_pi_message(from_node, to_node, 1).unwrap();
+                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
