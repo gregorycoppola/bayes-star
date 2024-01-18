@@ -213,7 +213,6 @@ impl Inferencer {
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
         for combination in &all_combinations {
-            // check if this is the "all true" case, and bail if so
             let mut product = 1f64;
             let mut condition = true;
             for (index, to_node) in backlinks.iter().enumerate() {
