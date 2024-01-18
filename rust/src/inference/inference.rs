@@ -220,9 +220,7 @@ impl Inferencer {
 fn compute_each_combination(
     propositions: &Vec<PropositionNode>,
 ) -> Vec<HashMap<PropositionNode, bool>> {
-    for node in propositions {
-        assert!(node.is_single());
-    }
+    print_yellow!("compute_each_combination: propositions={:?}", &propositions);
     let n = propositions.len();
     let mut all_combinations = Vec::new();
     for i in 0..(1 << n) {
