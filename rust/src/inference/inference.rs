@@ -30,6 +30,9 @@ struct Inferencer {
     bfs_order: Vec<PropositionNode>,
 }
 
+fn reverse_prune_duplicates(raw_order:&Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
+    todo!()
+}
 fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
     let mut queue = VecDeque::new();
     let mut buffer = vec![];
@@ -49,14 +52,16 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
         print_yellow!("create_bfs_order initial: queue {:?}", &queue);
         print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
     }
-    buffer.sort_by(|a, b| a.0.cmp(&b.0));
 
-    print_yellow!("create_bfs_order sorted order {:?}", &buffer);
+    let result = reverse_prune_duplicates(&buffer);
+    // buffer.sort_by(|a, b| a.0.cmp(&b.0));
 
-    let mut result = vec![];
-    for (depth, node) in buffer {
-        result.push(node);
-    }
+    // print_yellow!("create_bfs_order sorted order {:?}", &buffer);
+
+    // let mut result = vec![];
+    // for (depth, node) in buffer {
+    //     result.push(node);
+    // }
     result
 }
 
