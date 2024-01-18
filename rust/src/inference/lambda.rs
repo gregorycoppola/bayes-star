@@ -14,17 +14,6 @@ impl Inferencer {
         Ok(())
     }
 
-    fn lambda_compute_leaf(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let root = node.extract_single();
-        assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
-        self.data
-            .set_lambda_value(&PropositionNode::from_single(&root), 1, 1.0f64);
-        self.data
-            .set_lambda_value(&PropositionNode::from_single(&root), 0, 0.0f64);
-
-        Ok(())
-    }
-
     pub fn lambda_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let as_single = node.extract_single();
         let probability = self
@@ -41,15 +30,11 @@ impl Inferencer {
 
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: Compute pi for this node.
-        if !self.is_root(from_node) {
-            let is_observed = self.is_observed(from_node)?;
-            if is_observed {
-                self.lambda_set_from_evidence(from_node)?;
-            } else {
-                self.lambda_compute_generic(&from_node)?;
-            }
+        let is_observed = self.is_observed(from_node)?;
+        if is_observed {
+            self.lambda_set_from_evidence(from_node)?;
         } else {
-            self.lambda_compute_leaf(from_node)?;
+            self.lambda_compute_generic(&from_node)?;
         }
         // Part 2: For each value of z, compute lambda_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
