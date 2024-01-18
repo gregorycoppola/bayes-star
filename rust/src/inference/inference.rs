@@ -66,6 +66,7 @@ impl Inferencer {
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
+        print_red!("update_marginals over {:?}", &self.bfs_order);
         for node in &self.bfs_order {
             let pi0 = self.data.get_pi_value(node, 0).unwrap();
             let pi1 = self.data.get_pi_value(node, 1).unwrap();
