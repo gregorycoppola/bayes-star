@@ -12,7 +12,7 @@ use crate::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
     },
-    print_green, print_red, print_yellow,
+    print_green, print_red, print_yellow, print_blue,
 };
 use redis::Connection;
 use std::{borrow::Borrow, collections::{HashMap, VecDeque}, error::Error, rc::Rc};
@@ -223,8 +223,10 @@ impl Inferencer {
                 condition = condition && combination_val;
             }
             if condition {
+                print_blue!("true combination: {:?}", &combination);
                 sum_true += product;
             } else {
+                print_blue!("false combination: {:?}", &combination);
                 sum_false += product;
             }
         }
