@@ -14,7 +14,7 @@ impl Inferencer {
         Ok(())
     }
 
-    fn lambda_compute_root(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    fn lambda_compute_leaf(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let root = node.extract_single();
         assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
         self.data
@@ -49,7 +49,7 @@ impl Inferencer {
                 self.lambda_compute_generic(&from_node)?;
             }
         } else {
-            self.lambda_compute_root(from_node)?;
+            self.lambda_compute_leaf(from_node)?;
         }
         // Part 2: For each value of z, compute lambda_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);

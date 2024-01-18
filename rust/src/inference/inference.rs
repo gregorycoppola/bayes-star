@@ -139,6 +139,16 @@ impl Inferencer {
         }
     }
 
+    pub fn is_leaf(&self, node: &PropositionNode) -> bool {
+        if node.is_single() {
+            let as_single = node.extract_single();
+            let forward_links = self.proposition_graph.single_forward.get(&as_single).unwrap();
+            forward_links.is_empty()
+        } else {
+            false
+        }
+    }
+
     pub fn is_observed(&self, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
         if node.is_single() {
             let as_single = node.extract_single();
