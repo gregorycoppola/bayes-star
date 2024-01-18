@@ -151,7 +151,17 @@ impl Inferencer {
     }
 
     pub fn pi_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let as_single = node.extract_single();
+        let probability = self
+            .model
+            .proposition_db
+            .get_proposition_probability(&as_single)?
+            .unwrap();
+        self.data
+            .set_pi_value(node, 1, probability);
+        self.data
+            .set_pi_value(node, 0, 1f64 - probability);
+        Ok(())
     }
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: Compute pi for this node.
