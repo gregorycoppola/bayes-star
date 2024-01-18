@@ -87,6 +87,7 @@ impl ScenarioMaker for OneVariable {
                 proposition_db.store_proposition_probability(&jack_exciting, p_jack_exciting)?;
                 plan.maybe_add_to_training(is_training, &jack_exciting)?;
                 propositions.push(jack_exciting.clone());
+                plan.maybe_add_to_test(is_test, &jack_exciting)?;
             }
         }
 
