@@ -195,6 +195,7 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
+                print_red!("getting pi message parent_node {:?}, node {:?}, usize_outcome {}", &parent_node, &node, usize_outcome);
                 let pi_x_z = self.data.get_pi_message(parent_node, node, usize_outcome).unwrap();
                 product *= pi_x_z;
             }
