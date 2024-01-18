@@ -153,7 +153,7 @@ impl Inferencer {
         }
         self.data.set_pi_value(from_node, 1, sum_true);
         self.data.set_pi_value(from_node, 0, sum_false);
-        todo!()
+        Ok(())
     }
 
     pub fn pi_compute_group(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
