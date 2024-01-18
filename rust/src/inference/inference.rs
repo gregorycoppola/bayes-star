@@ -187,18 +187,18 @@ impl Inferencer {
     }
 
     // from_node is a single.. compute it from the group
-    pub fn pi_compute_single(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let conclusion = from_node.extract_single();
-        let backlinks = self.proposition_graph.get_all_backward(from_node);
-        let premise_groups = groups_from_backlinks(&backlinks);
-        let all_combinations = compute_each_combination(&backlinks);
+    pub fn pi_compute_single(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let conclusion = node.extract_single();
+        let parent_nodes = self.proposition_graph.get_all_backward(node);
+        let premise_groups = groups_from_backlinks(&parent_nodes);
+        let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
         for combination in &all_combinations {
             let mut product = 1f64;
             let mut condition = true;
-            for (index, to_node) in backlinks.iter().enumerate() {
-                let pi_x_z = self.data.get_lambda_message(from_node, to_node, 1).unwrap();
+            for (index, to_node) in parent_nodes.iter().enumerate() {
+                let pi_x_z = self.data.get_lambda_message(node, to_node, 1).unwrap();
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
@@ -211,8 +211,8 @@ impl Inferencer {
             sum_true += true_marginal;
             sum_false += false_marginal;
         }
-        self.data.set_pi_value(from_node, 1, sum_true);
-        self.data.set_pi_value(from_node, 0, sum_false);
+        self.data.set_pi_value(node, 1, sum_true);
+        self.data.set_pi_value(node, 0, sum_false);
         Ok(())
     }
 
