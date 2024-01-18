@@ -97,7 +97,6 @@ impl TrainingPlan {
         }
     }
 
-    // TODO: Right now this is consuming the queue.. should just be a vector, or an interator.
     fn get_propositions_from_queue(
         &self,
         seq_name: &String,
