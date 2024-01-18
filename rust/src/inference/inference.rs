@@ -21,6 +21,7 @@ struct Inferencer {
     model: Rc<InferenceModel>,
     proposition_graph: Rc<PropositionGraph>,
     pub data: HashMapBeliefTable,
+    bfs_order:Vec<PropositionNode>,
 }
 
 fn create_bfs_order(proposition_graph:&PropositionGraph) -> Vec<PropositionNode> {
@@ -46,10 +47,12 @@ impl Inferencer {
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
     ) -> Result<Box<Self>, redis::RedisError> {
+        let bfs_order = create_bfs_order(&proposition_graph);
         Ok(Box::new(Inferencer {
             model,
             proposition_graph,
             data: HashMapBeliefTable::new(),
+            bfs_order,
         }))
     }
 
