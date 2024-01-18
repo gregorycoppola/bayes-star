@@ -183,6 +183,11 @@ impl Inferencer {
     }
 
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let forward_groups = self.proposition_graph.get_all_forward(from_node);
+        // Part 1: Visit the lower nodes first.
+        for child in &forward_groups {
+            self.lambda_visit_node(&child)?;
+        }
         todo!()
     }
 

@@ -80,6 +80,7 @@ pub struct HashMapBeliefTable {
 
 fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
     let mut map_entries: Vec<_> = map.iter().collect();
+    info!("entries in map: {}", map_entries.len());
 
     // Sorting by InferenceNode.debug_string and then by usize
     map_entries.sort_by(|a, b| {
