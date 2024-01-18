@@ -60,10 +60,11 @@ impl PropositionNode {
     }
 
     pub fn debug_string(&self) -> String {
-        match &self.node {
+        let string_part = match &self.node {
             GenericNodeType::Single(proposition) => proposition.debug_string(),
             GenericNodeType::Group(group) => group.debug_string(),
-        }
+        };
+        format!("({} {})", self.underlying_hash, string_part)
     }
 
     pub fn is_single(&self) -> bool {
