@@ -89,6 +89,22 @@ impl ScenarioMaker for TwoVariable {
                 propositions.push(jack_exciting.clone());
                 plan.maybe_add_to_test(is_test, &jack_exciting)?;
             }
+            {
+                trace!("Jack entity part 2: {:?}", jack_entity);
+                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jack_rich = proposition("rich".to_string(), vec![sub(jack)]);
+
+                print_yellow!(
+                    "Jack rich: {:?}, Probability: {}",
+                    jack_rich.predicate.hash_string(),
+                    p_jack_exciting
+                );
+                graph.ensure_existence_backlinks_for_proposition(&jack_rich)?;
+                proposition_db.store_proposition_probability(&jack_rich, p_jack_exciting)?;
+                plan.maybe_add_to_training(is_training, &jack_rich)?;
+                propositions.push(jack_rich.clone());
+                plan.maybe_add_to_test(is_test, &jack_rich)?;
+            }
         }
 
         // Additional functions
