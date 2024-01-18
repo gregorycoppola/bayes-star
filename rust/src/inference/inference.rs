@@ -197,10 +197,12 @@ impl Inferencer {
         for combination in &all_combinations {
             let mut product = 1f64;
             let mut condition = true;
-            for (index, to_node) in parent_nodes.iter().enumerate() {
-                let pi_x_z = self.data.get_lambda_message(node, to_node, 1).unwrap();
+            for (index, parent_node) in parent_nodes.iter().enumerate() {
+                let boolean_outcome = combination.get(parent_node).unwrap();
+                let usize_outcome = if *boolean_outcome { 1 } else { 0 };
+                let pi_x_z = self.data.get_pi_message(parent_node, node, usize_outcome).unwrap();
                 product *= pi_x_z;
-                let combination_val = combination[to_node];
+                let combination_val = combination[parent_node];
                 condition = condition && combination_val;
             }
             let factor =
