@@ -21,18 +21,35 @@ pub enum GenericNodeType {
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
+    underlying_hash:u64,
+}
+
+fn hash_proposition(proposition: &Proposition) -> u64 {
+    let mut hasher = DefaultHasher::new();
+    proposition.hash(&mut hasher);
+    hasher.finish() // This returns the hash as u64
+}
+
+fn hash_group(group: &PropositionGroup) -> u64 {
+    let mut hasher = DefaultHasher::new();
+    group.hash(&mut hasher);
+    hasher.finish() // This returns the hash as u64
 }
 
 impl PropositionNode {
     pub fn from_single(proposition: &Proposition) -> PropositionNode {
+        let underlying_hash = hash_proposition(proposition);
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
+            underlying_hash,
         }
     }
 
     pub fn from_group(group: &PropositionGroup) -> PropositionNode {
+        let underlying_hash = hash_group(group);
         PropositionNode {
             node: GenericNodeType::Group(group.clone()),
+            underlying_hash,
         }
     }
 
