@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::collections::hash_map::DefaultHasher;
 use std::fmt;
-use std::hash::Hash;
+use std::hash::{Hash, Hasher};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ArgumentType {
@@ -208,6 +209,12 @@ impl fmt::Debug for Proposition {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.debug_string())
     }
+}
+
+fn hash_proposition(proposition: &Proposition) -> u64 {
+    let mut hasher = DefaultHasher::new();
+    proposition.hash(&mut hasher);
+    hasher.finish()
 }
 
 impl Proposition {
