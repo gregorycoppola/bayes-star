@@ -37,11 +37,11 @@ impl Inferencer {
             self.lambda_compute_generic(&from_node)?;
         }
         // Part 2: For each value of z, compute lambda_X(z)
-        let forward_groups = self.proposition_graph.get_all_backward(from_node);
-        for (this_index, to_node) in forward_groups.iter().enumerate() {
+        let backward_groups = self.proposition_graph.get_all_backward(from_node);
+        for (this_index, to_node) in backward_groups.iter().enumerate() {
             for class_label in &CLASS_LABELS {
                 let mut lambda_part = 1f64;
-                for (other_index, other_node) in forward_groups.iter().enumerate() {
+                for (other_index, other_node) in backward_groups.iter().enumerate() {
                     if other_index != this_index {
                         let this_lambda = self
                             .data
