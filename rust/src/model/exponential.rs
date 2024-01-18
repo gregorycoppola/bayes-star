@@ -9,6 +9,7 @@ use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
+use crate::print_yellow;
 use redis::Connection;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -201,7 +202,7 @@ impl FactorModel for ExponentialModel {
         let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
-                trace!(
+                print_yellow!(
                     "inference_probability - Error in features_from_backimplications: {:?}",
                     e
                 );
@@ -212,24 +213,24 @@ impl FactorModel for ExponentialModel {
         for class_label in CLASS_LABELS {
             let this_features = &features[class_label];
             for (feature, weight) in this_features.iter() {
-                trace!("feature {:?} {}", &feature, weight);
+                print_yellow!("feature {:?} {}", &feature, weight);
             }
-            trace!("inference_probability - Reading weights");
+            print_yellow!("inference_probability - Reading weights");
             let weight_vector = match self
                 .weights
                 .read_weights(&this_features.keys().cloned().collect::<Vec<_>>())
             {
                 Ok(w) => w,
                 Err(e) => {
-                    trace!("inference_probability - Error in read_weights: {:?}", e);
+                    print_yellow!("inference_probability - Error in read_weights: {:?}", e);
                     return Err(e);
                 }
             };
             for (feature, weight) in weight_vector.iter() {
-                trace!("weight {:?} {}", &feature, weight);
+                print_yellow!("weight {:?} {}", &feature, weight);
             }
-            trace!("inference_probability - Computing probability");
             let potential = compute_potential(&weight_vector, &this_features);
+            print_yellow!("potential for {} {} {:?}", class_label, potential, &factor);
             potentials.push(potential);
         }
         let normalization = potentials[0] + potentials[1];
