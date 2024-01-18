@@ -89,7 +89,9 @@ impl Inferencer {
 
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: Compute pi for this node.
-        self.pi_compute_generic(&from_node)?;
+        if !self.is_root(from_node) {
+            self.pi_compute_generic(&from_node)?;
+        }
         // Part 2: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
@@ -118,12 +120,17 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    fn is_root(&self, node:&PropositionNode) -> bool {
         if node.is_single() {
             let as_single = node.extract_single();
             let is_root = self.proposition_graph.roots.contains(&as_single);
-            assert!(is_root);
+            is_root
+        } else {
+            false
         }
+    }
+
+    pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         match &node.node {
             GenericNodeType::Single(proposition) => {
                 self.pi_compute_single(node)?;
