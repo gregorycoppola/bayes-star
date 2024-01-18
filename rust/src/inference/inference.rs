@@ -133,6 +133,8 @@ impl Inferencer {
         // Part 1: Compute pi for this node.
         if !self.is_root(from_node) {
             self.pi_compute_generic(&from_node)?;
+        } else {
+            self.pi_compute_root(from_node)?;
         }
         // Part 2: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
