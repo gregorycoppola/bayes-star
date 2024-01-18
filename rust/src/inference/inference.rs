@@ -15,7 +15,7 @@ use crate::{
     print_green, print_red, print_yellow,
 };
 use redis::Connection;
-use std::{borrow::Borrow, collections::HashMap, error::Error, rc::Rc};
+use std::{borrow::Borrow, collections::{HashMap, VecDeque}, error::Error, rc::Rc};
 
 struct Inferencer {
     model: Rc<InferenceModel>,
@@ -24,6 +24,10 @@ struct Inferencer {
 }
 
 fn create_bfs_order(proposition_graph:&PropositionGraph) -> Vec<PropositionNode> {
+    let mut queue = VecDeque::new();
+    for root in &proposition_graph.roots {
+        queue.push_back(root.clone());
+    }
     todo!()
 }
 
