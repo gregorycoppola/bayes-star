@@ -9,7 +9,7 @@ use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
-use crate::print_yellow;
+use crate::{print_yellow, print_blue};
 use redis::Connection;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -44,7 +44,7 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     for (key, &v1) in dict1 {
         if let Some(&v2) = dict2.get(key) {
             let product = v1 * v2;
-            trace!("\x1b[33mpotential {} for {:?}\x1b[0m", product, key);
+            print_blue!("dot_product: key {}, v1 {}, v2 {}, product {}", key, v1, v2, product);
             result += product;
         }
         // In case of null (None), we skip the key as per the original JavaScript logic.
@@ -235,6 +235,7 @@ impl FactorModel for ExponentialModel {
         }
         let normalization = potentials[0] + potentials[1];
         let marginal = potentials[1] / normalization;
+        print_yellow!("dot_product: normalization {}, marginal {}", normalization, marginal);
         Ok(PredictStatistics { marginal })
     }
 }
