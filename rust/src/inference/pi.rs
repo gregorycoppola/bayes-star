@@ -38,18 +38,8 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Part 1: Compute pi for this node.
-        if !self.is_root(from_node) {
-            let is_observed = self.is_observed(from_node)?;
-            if is_observed {
-                self.pi_set_from_evidence(from_node)?;
-            } else {
-                self.pi_compute_generic(&from_node)?;
-            }
-        } else {
-            self.pi_compute_root(from_node)?;
-        }
+
+    pub fn pi_send_messages(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 2: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
@@ -70,7 +60,22 @@ impl Inferencer {
                     .set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
+        Ok(())
+    }
+    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        // Part 1: Compute pi for this node.
+        if !self.is_root(from_node) {
+            let is_observed = self.is_observed(from_node)?;
+            if is_observed {
+                self.pi_set_from_evidence(from_node)?;
+            } else {
+                self.pi_compute_generic(&from_node)?;
+            }
+        } else {
+            self.pi_compute_root(from_node)?;
+        }
         // Success.
+        self.pi_send_messages(from_node)?;
         Ok(())
     }
 

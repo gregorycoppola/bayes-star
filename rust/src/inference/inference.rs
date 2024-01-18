@@ -42,6 +42,7 @@ fn reverse_prune_duplicates(raw_order: &Vec<(i32, PropositionNode)>) -> Vec<Prop
     result.reverse();
     result
 }
+
 fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
     let mut queue = VecDeque::new();
     let mut buffer = vec![];
