@@ -229,14 +229,14 @@ impl Inferencer {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 print_green!(
-                    "get pi message: from_node {:?}, to_node {:?}, outcome: {}",
-                    node,
+                    "get pi message: parent_node {:?}, node {:?}, outcome: {}",
                     parent_node,
+                    node,
                     usize_outcome
                 );
                 let pi_x_z = self
                     .data
-                    .get_pi_message(node, parent_node, usize_outcome)
+                    .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
                 print_yellow!(
                     "boolean_outcome {} usize_outcome {} pi_x_z {}",
