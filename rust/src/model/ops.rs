@@ -65,10 +65,7 @@ pub fn convert_to_proposition(
     debug!("Conversion to proposition completed successfully.");
     let function = predicate.function.clone();
     Ok(Proposition {
-        predicate: Predicate {
-            function,
-            roles: result_roles,
-        },
+        predicate: Predicate::new(function, result_roles),
     })
 }
 

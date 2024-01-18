@@ -131,10 +131,7 @@ pub fn extract_existence_factor_for_predicate(
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }
-    let premise = Predicate {
-        function: EXISTENCE_FUNCTION.to_string(),
-        roles: new_roles,
-    };
+    let premise = Predicate::new(EXISTENCE_FUNCTION.to_string(), new_roles);
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
@@ -156,17 +153,11 @@ pub fn extract_existence_factor_for_proposition(
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }
-    let premise = Predicate {
-        function: EXISTENCE_FUNCTION.to_string(),
-        roles: new_roles.clone(),
-    };
+    let premise = Predicate::new(EXISTENCE_FUNCTION.to_string(), new_roles.clone());
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
-    let conclusion = Predicate {
-        function: basis.predicate.function.clone(),
-        roles: new_roles.clone(),
-    };
+    let conclusion = Predicate::new(basis.predicate.function.clone(), new_roles.clone());
     let factor = PredicateFactor {
         premise: premise_group,
         role_maps: mapping_group,

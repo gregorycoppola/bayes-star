@@ -23,10 +23,10 @@ pub fn implication(
 }
 
 pub fn proposition(function:String, roles: Vec<LabeledArgument>) -> Proposition {
-    Proposition::from(Predicate { function,  roles })
+    Proposition::from(Predicate::new(function, roles))
 }
 pub fn predicate(function:String, roles: Vec<LabeledArgument>) -> Predicate {
-    Predicate { function, roles }
+    Predicate::new(function, roles)
 }
 
 // Function to create a FilledRole
