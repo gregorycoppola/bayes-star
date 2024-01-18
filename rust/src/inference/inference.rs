@@ -156,10 +156,6 @@ impl Inferencer {
                     .set_pi_message(&from_node, &to_node, *class_label, message);
             }
         }
-        // Part 3: For children not in evidence, recursive into.
-        for child in &forward_groups {
-            self.pi_visit_node(&child)?;
-        }
         // Success.
         Ok(())
     }
