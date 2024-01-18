@@ -254,21 +254,23 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                print_red!(
-                    "getting pi message parent_node {:?}, node {:?}, usize_outcome {}",
-                    &parent_node,
-                    &node,
-                    usize_outcome
-                );
                 let pi_x_z = self
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
+                print_red!(
+                    "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",
+                    &parent_node,
+                    &node,
+                    usize_outcome,
+                    pi_x_z,
+                );
                 product *= pi_x_z;
             }
             let factor =
                 self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
+            print_yellow!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
