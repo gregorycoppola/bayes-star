@@ -151,7 +151,7 @@ impl ScenarioMaker for SimpleDating {
                     proposition_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
                 plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
-                graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
+                // graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
             }
             {
                 let jill = constant(jill_entity.domain, jill_entity.name.clone());
@@ -173,7 +173,7 @@ impl ScenarioMaker for SimpleDating {
                 }
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
-                graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
+                // graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
             }
         }
 
