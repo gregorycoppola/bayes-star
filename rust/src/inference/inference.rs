@@ -216,27 +216,27 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_compute_group(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let backlinks = self.proposition_graph.get_all_backward(from_node);
-        print_yellow!("pi_compute_group {:?}", &backlinks);
-        let all_combinations = compute_each_combination(&backlinks);
+    pub fn pi_compute_group(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let parent_nodes = self.proposition_graph.get_all_backward(node);
+        print_yellow!("pi_compute_group {:?}", &parent_nodes);
+        let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
         for combination in &all_combinations {
             let mut product = 1f64;
             let mut condition = true;
-            for (index, to_node) in backlinks.iter().enumerate() {
+            for (index, to_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(to_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 print_green!(
                     "get pi message: from_node {:?}, to_node {:?}, outcome: {}",
-                    from_node,
+                    node,
                     to_node,
                     usize_outcome
                 );
                 let pi_x_z = self
                     .data
-                    .get_pi_message(from_node, to_node, usize_outcome)
+                    .get_pi_message(node, to_node, usize_outcome)
                     .unwrap();
                 print_yellow!(
                     "boolean_outcome {} usize_outcome {} pi_x_z {}",
@@ -261,8 +261,8 @@ impl Inferencer {
                 sum_false += product;
             }
         }
-        self.data.set_pi_value(from_node, 1, sum_true);
-        self.data.set_pi_value(from_node, 0, sum_false);
+        self.data.set_pi_value(node, 1, sum_true);
+        self.data.set_pi_value(node, 0, sum_false);
         Ok(())
     }
 
