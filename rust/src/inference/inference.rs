@@ -163,6 +163,7 @@ impl Inferencer {
             .set_pi_value(node, 0, 1f64 - probability);
         Ok(())
     }
+
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: Compute pi for this node.
         if !self.is_root(from_node) {
