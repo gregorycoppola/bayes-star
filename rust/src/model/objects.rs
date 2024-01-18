@@ -174,8 +174,9 @@ impl fmt::Debug for Predicate {
 
 impl Predicate {
     pub fn new(function: String, roles: Vec<LabeledArgument>) -> Self {
-        todo!("make sure that the roles are in teh right order, and make 'roles' private.");
-        // Predicate { function, roles }
+        let mut buffer = roles.clone();
+        buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
+        Predicate { function, roles: buffer }
     }
 
     pub fn debug_string(&self) -> String {
