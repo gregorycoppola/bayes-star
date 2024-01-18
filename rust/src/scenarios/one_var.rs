@@ -52,7 +52,6 @@ impl ScenarioMaker for OneVariable {
         let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
-        let exciting = constant(Domain::Verb, "exciting".to_string());
 
         let mut propositions = vec![];
         for i in 0..total_members_each_class {
@@ -77,7 +76,7 @@ impl ScenarioMaker for OneVariable {
             {
                 trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_exciting = proposition(exciting.to_string(), vec![sub(jack)]);
+                let jack_exciting = proposition("exciting".to_string(), vec![sub(jack)]);
 
                 print_yellow!(
                     "Jack exciting: {:?}, Probability: {}",

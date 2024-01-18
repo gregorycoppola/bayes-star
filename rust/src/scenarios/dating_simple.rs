@@ -56,11 +56,6 @@ impl ScenarioMaker for SimpleDating {
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 
-        let exciting = constant(Domain::Verb, "exciting".to_string());
-        let lonely = constant(Domain::Verb, "lonely".to_string());
-        let like = constant(Domain::Verb, "like".to_string());
-        let date = constant(Domain::Verb, "date".to_string());
-
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
@@ -90,7 +85,7 @@ impl ScenarioMaker for SimpleDating {
             {
                 trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_lonely = proposition(lonely.to_string(), vec![sub(jack)]);
+                let jack_lonely = proposition("lonely".to_string(), vec![sub(jack)]);
 
                 trace!(
                     "Jack Lonely: {:?}, Probability: {}",
@@ -191,7 +186,7 @@ impl ScenarioMaker for SimpleDating {
                 conjunction(vec![predicate("lonely".to_string(), vec![
                     sub(xjack.clone()),
                 ])]),
-                predicate(like.to_string(), 
+                predicate("like".to_string(), 
                 vec![
                     sub(xjack.clone()),
                     obj(xjill.clone()),

@@ -14,7 +14,6 @@ pub enum ArgumentType {
 pub enum Domain {
     Jack,
     Jill,
-    Verb,
 }
 
 impl Domain {
@@ -22,7 +21,6 @@ impl Domain {
         match s {
             "Jack" => Some(Domain::Jack),
             "Jill" => Some(Domain::Jill),
-            "Verb" => Some(Domain::Verb),
             _ => None,
         }
     }
@@ -33,7 +31,6 @@ impl fmt::Display for Domain {
         let domain_str = match self {
             Domain::Jack => "Jack",
             Domain::Jill => "Jill",
-            Domain::Verb => "Verb",
         };
         write!(f, "{}", domain_str)
     }
