@@ -252,7 +252,6 @@ pub fn inference_compute_marginals(
 ) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
-    panic!();
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
