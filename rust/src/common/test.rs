@@ -17,8 +17,6 @@ pub fn do_testing(
     for proposition in &test_questions {
         info!("testing proposition {:?}", &proposition.hash_string());
         inference_compute_marginals(model.clone(), proposition).unwrap();
-
-        break;
     }
     info!("TODO: implement test");
     Ok(())
