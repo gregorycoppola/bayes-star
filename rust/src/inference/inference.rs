@@ -110,9 +110,10 @@ impl Inferencer {
     }
 
     pub fn send_pi_messages(&mut self) -> Result<(), Box<dyn Error>> {
-        for node in &self.bfs_order {
+        let bfs_order = self.bfs_order.clone();
+        for node in &bfs_order {
             print_yellow!("send pi bfs selects {:?}", node);
-            let _ = self.pi_visit_node(node)?;
+            self.pi_visit_node(node)?;
         }
         Ok(())
     }
