@@ -130,7 +130,7 @@ impl Inferencer {
     pub fn pi_compute_single(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let conclusion = from_node.extract_single();
         let backlinks = self.proposition_graph.get_all_backward(from_node);
-        let from_group = premise_from_backlinks(&backlinks);
+        let premise_groups = groups_from_backlinks(&backlinks);
         let all_combinations = compute_each_combination(&backlinks);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
@@ -143,7 +143,8 @@ impl Inferencer {
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
             }
-            let factor = self.build_factor_context_for_map(&from_group, combination, &conclusion);
+            let factor =
+                self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
@@ -181,34 +182,37 @@ impl Inferencer {
         Ok(())
     }
 
-    fn build_factor_context_for_map(
+    fn build_factor_context_for_assignment(
         &self,
-        premise: &Vec<PropositionGroup>,
+        premises: &Vec<PropositionGroup>,
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &Proposition,
     ) -> FactorContext {
-        todo!()
-        // let mut probabilities = vec![];
-        // for (premise, &value) in premise_assignment.iter() {
-        //     if value {
-        //         probabilities.push(1f64);
-        //     } else {
-        //         probabilities.push(0f64);
-        //     }
-        // }
-        // let inference = self
-        //     .proposition_graph
-        //     .get_inference_used(premise, conclusion);
-        // let factor = PropositionFactor {
-        //     premise: premise.clone(),
-        //     conclusion: conclusion.clone(),
-        //     inference,
-        // };
-        // let context = FactorContext {
-        //     factor,
-        //     probabilities,
-        // };
-        // context
+        let mut probabilities = vec![];
+        let mut factors = vec![];
+        for proposition_group in premises {
+            let node = PropositionNode::from_group(proposition_group);
+            let assignment = *premise_assignment.get(&node).unwrap();
+            if assignment {
+                probabilities.push(1f64);
+            } else {
+                probabilities.push(0f64);
+            }
+            let inference = self
+                .proposition_graph
+                .get_inference_used(proposition_group, conclusion);
+            let factor = PropositionFactor {
+                premise: proposition_group.clone(),
+                conclusion: conclusion.clone(),
+                inference,
+            };
+            factors.push(factor);
+        }
+        let context = FactorContext {
+            factor: factors,
+            probabilities,
+        };
+        context
     }
 }
 
@@ -245,7 +249,7 @@ pub fn inference_compute_marginals(
     HashMapInferenceResult::new_shared(inferencer.data)
 }
 
-fn premise_from_backlinks(backlinks:&Vec<PropositionNode>) -> Vec<PropositionGroup> {
+fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<PropositionGroup> {
     let mut result = vec![];
     for backlink in backlinks {
         let group = backlink.extract_group();
