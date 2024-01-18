@@ -18,7 +18,7 @@ use crate::{
 use redis::Connection;
 use std::{
     borrow::Borrow,
-    collections::{HashMap, VecDeque},
+    collections::{HashMap, VecDeque, HashSet},
     error::Error,
     rc::Rc,
 };
@@ -31,7 +31,16 @@ struct Inferencer {
 }
 
 fn reverse_prune_duplicates(raw_order:&Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
-    todo!()
+    let mut seen = HashSet::new();
+    let mut result = vec![];
+    for (depth, node) in raw_order.iter().rev() {
+        if !seen.contains(node) {
+            result.push(node.clone());
+        }
+        seen.insert(node);
+    }
+    result.reverse();
+    result
 }
 fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
     let mut queue = VecDeque::new();
@@ -54,6 +63,7 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
     }
 
     let result = reverse_prune_duplicates(&buffer);
+    print_yellow!("create_bfs_order result: {:?}", &result);
     // buffer.sort_by(|a, b| a.0.cmp(&b.0));
 
     // print_yellow!("create_bfs_order sorted order {:?}", &buffer);
