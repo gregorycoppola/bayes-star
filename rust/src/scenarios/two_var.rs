@@ -105,6 +105,28 @@ impl ScenarioMaker for TwoVariable {
                 plan.maybe_add_to_test(is_test, &jack_rich)?;
             }
         }
+        // Implications.
+        let xjack = variable(Domain::Jack);
+        let implications = vec![
+            // if jack is lonely, he will date any jill
+            implication(
+                conjunction(vec![predicate("exciting".to_string(), vec![
+                    sub(xjack.clone()),
+                ])]),
+                predicate("rich".to_string(), 
+                vec![
+                    sub(xjack.clone()),
+                ]),
+                vec![RoleMap::new(HashMap::from([(
+                    "sub".to_string(),
+                    "sub".to_string(),
+                )]))],
+            ),
+        ];
+        for implication in implications.iter() {
+            trace!("Storing implication: {:?}", implication);
+            graph.store_predicate_implication(implication)?;
+        }
 
         // Additional functions
         fn numeric_or(a: f64, b: f64) -> f64 {

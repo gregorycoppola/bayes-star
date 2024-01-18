@@ -244,9 +244,7 @@ impl ScenarioMaker for SimpleDating {
         ];
 
         for implication in implications.iter() {
-            trace!("Storing implication: {:?}", implication); // Logging, replace with your actual logger if necessary
-
-            // Assuming `store_implication` is a method of your GraphicalModel struct
+            trace!("Storing implication: {:?}", implication);
             graph.store_predicate_implication(implication)?;
         }
 
