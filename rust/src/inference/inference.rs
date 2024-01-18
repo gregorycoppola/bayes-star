@@ -18,7 +18,7 @@ use crate::{
 use redis::Connection;
 use std::{
     borrow::Borrow,
-    collections::{HashMap, VecDeque, HashSet},
+    collections::{HashMap, HashSet, VecDeque},
     error::Error,
     rc::Rc,
 };
@@ -30,7 +30,7 @@ struct Inferencer {
     bfs_order: Vec<PropositionNode>,
 }
 
-fn reverse_prune_duplicates(raw_order:&Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
+fn reverse_prune_duplicates(raw_order: &Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
     let mut seen = HashSet::new();
     let mut result = vec![];
     for (depth, node) in raw_order.iter().rev() {
@@ -150,10 +150,18 @@ impl Inferencer {
         Ok(())
     }
 
+    pub fn pi_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 1: Compute pi for this node.
         if !self.is_root(from_node) {
-            self.pi_compute_generic(&from_node)?;
+            let is_observed = self.is_observed(from_node)?;
+            if is_observed {
+                self.pi_set_from_evidence(from_node)?;
+            } else {
+                self.pi_compute_generic(&from_node)?;
+            }
         } else {
             self.pi_compute_root(from_node)?;
         }
@@ -194,8 +202,16 @@ impl Inferencer {
     fn is_observed(&self, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
         if node.is_single() {
             let as_single = node.extract_single();
-            let has_evidence = self.model.proposition_db.get_proposition_probability(&as_single)?.is_some();
-            print_green!("is_observed? node {:?}, has_evidence {}", &as_single, has_evidence);
+            let has_evidence = self
+                .model
+                .proposition_db
+                .get_proposition_probability(&as_single)?
+                .is_some();
+            print_green!(
+                "is_observed? node {:?}, has_evidence {}",
+                &as_single,
+                has_evidence
+            );
             Ok(has_evidence)
         } else {
             Ok(false)
