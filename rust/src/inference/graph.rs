@@ -36,9 +36,9 @@ impl PropositionFactor {
 
 pub struct PropositionGraph {
     pub predicate_graph: Rc<InferenceGraph>,
-    pub single_forward: HashMap<Proposition, Vec<PropositionGroup>>,
-    pub single_backward: HashMap<Proposition, Vec<PropositionGroup>>,
-    pub group_forward: HashMap<PropositionGroup, Vec<Proposition>>,
+    pub single_forward: HashMap<Proposition, HashSet<PropositionGroup>>,
+    pub single_backward: HashMap<Proposition, HashSet<PropositionGroup>>,
+    pub group_forward: HashMap<PropositionGroup, HashSet<Proposition>>,
     pub inference_used: HashMap<(PropositionGroup, Proposition), PredicateFactor>,
     pub roots: HashSet<Proposition>,
     pub all_nodes: HashSet<PropositionNode>,
@@ -86,8 +86,8 @@ fn initialize_visit_single(
             graph
                 .single_backward
                 .entry(inference_factor.conclusion.clone())
-                .or_insert_with(Vec::new)
-                .push(inference_factor.premise.clone());
+                .or_insert_with(HashSet::new)
+                .insert(inference_factor.premise.clone());
 
             info!(
                 "\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m",
@@ -96,8 +96,8 @@ fn initialize_visit_single(
             graph
                 .group_forward
                 .entry(inference_factor.premise.clone())
-                .or_insert_with(Vec::new)
-                .push(inference_factor.conclusion.clone());
+                .or_insert_with(HashSet::new)
+                .insert(inference_factor.conclusion.clone());
 
             graph
                 .all_nodes
@@ -108,8 +108,8 @@ fn initialize_visit_single(
                 graph
                     .single_forward
                     .entry(term.clone())
-                    .or_insert_with(Vec::new)
-                    .push(inference_factor.premise.clone());
+                    .or_insert_with(HashSet::new)
+                    .insert(inference_factor.premise.clone());
                 info!(
                     "\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m",
                     term.hash_string()
@@ -151,21 +151,21 @@ impl PropositionGraph {
             .get(&key).unwrap().clone()
     }
 
-    pub fn get_single_forward(&self, key: &Proposition) -> Vec<PropositionGroup> {
+    pub fn get_single_forward(&self, key: &Proposition) -> HashSet<PropositionGroup> {
         self.single_forward
             .get(key)
             .cloned()
-            .unwrap_or_else(Vec::new)
+            .unwrap_or_else(HashSet::new)
     }
 
-    pub fn get_single_backward(&self, key: &Proposition) -> Vec<PropositionGroup> {
+    pub fn get_single_backward(&self, key: &Proposition) -> HashSet<PropositionGroup> {
         self.single_backward
             .get(key)
             .cloned()
-            .unwrap_or_else(Vec::new)
+            .unwrap_or_else(HashSet::new)
     }
 
-    pub fn get_group_forward(&self, key: &PropositionGroup) -> Vec<Proposition> {
+    pub fn get_group_forward(&self, key: &PropositionGroup) -> HashSet<Proposition> {
         self.group_forward.get(key).unwrap().clone()
     }
 
