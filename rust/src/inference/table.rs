@@ -18,7 +18,7 @@ pub enum GenericNodeType {
     Group(PropositionGroup),
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
     underlying_hash:u64,
@@ -34,6 +34,12 @@ fn hash_group(group: &PropositionGroup) -> u64 {
     let mut hasher = DefaultHasher::new();
     group.hash(&mut hasher);
     hasher.finish() // This returns the hash as u64
+}
+
+impl Hash for PropositionNode {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.underlying_hash.hash(state);
+    }
 }
 
 impl PropositionNode {
