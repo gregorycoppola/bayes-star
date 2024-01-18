@@ -182,6 +182,11 @@ impl Inferencer {
         Ok(())
     }
 
+    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
+    // TODO: move this out of the class
     fn build_factor_context_for_assignment(
         &self,
         premises: &Vec<PropositionGroup>,
