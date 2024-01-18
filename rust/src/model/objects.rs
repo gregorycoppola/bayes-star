@@ -283,13 +283,13 @@ impl PropositionGroup {
         PropositionGroup { terms }
     }
     pub fn hash_string(&self) -> String {
-        let mut hash_strings: Vec<String> = self
+        let hash_strings: Vec<String> = self
             .terms
             .iter()
             .map(|term| term.predicate.hash_string()) // Map each term to its search string
             .collect();
-        hash_strings.sort(); // Sort the search strings in ascending order
-        hash_strings.join(";") // Join the sorted strings, separated by a comma and a space
+        let join = hash_strings.join("&"); // Join the sorted strings, separated by a comma and a space
+        format!("({})", &join)
     }
     pub fn debug_string(&self) -> String {
         self.hash_string()
