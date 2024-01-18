@@ -28,14 +28,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Part 1: Compute pi for this node.
-        let is_observed = self.is_observed(from_node)?;
-        if is_observed {
-            self.lambda_set_from_evidence(from_node)?;
-        } else {
-            self.lambda_compute_generic(&from_node)?;
-        }
+    pub fn lambda_send_messages(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 2: For each value of z, compute lambda_X(z)
         let backward_groups = self.proposition_graph.get_all_backward(from_node);
         for (this_index, to_node) in backward_groups.iter().enumerate() {
@@ -56,7 +49,17 @@ impl Inferencer {
                     .set_lambda_message(&from_node, &to_node, *class_label, message);
             }
         }
+        Ok(())
+    }
+    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let is_observed = self.is_observed(from_node)?;
+        if is_observed {
+            self.lambda_set_from_evidence(from_node)?;
+        } else {
+            self.lambda_compute_generic(&from_node)?;
+        }
         // Success.
+        self.lambda_send_messages(from_node)?;
         Ok(())
     }
 
