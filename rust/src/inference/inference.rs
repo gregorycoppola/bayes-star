@@ -219,9 +219,11 @@ impl Inferencer {
                 let boolean_outcome = combination.get(to_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 let pi_x_z = self.data.get_lambda_message(from_node, to_node, usize_outcome).unwrap();
+                print_yellow!("boolean_outcome {} usize_outcome {} pi_x_z {}", boolean_outcome, usize_outcome, pi_x_z);
                 product *= pi_x_z;
                 let combination_val = combination[to_node];
                 condition = condition && combination_val;
+                print_yellow!("combination_val {} condition {}", combination_val, condition);
             }
             if condition {
                 print_blue!("true combination: {:?}, product {}", &combination, product);
