@@ -34,22 +34,30 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
     let mut queue = VecDeque::new();
     let mut buffer = vec![];
     for root in &proposition_graph.roots {
-        queue.push_back(PropositionNode::from_single(&root));
+        queue.push_back((0, PropositionNode::from_single(&root)));
     }
 
     print_yellow!("create_bfs_order initial: queue {:?}", &queue);
 
-    while let Some(node) = queue.pop_front() {
-        buffer.push(node.clone());
+    while let Some((depth, node)) = queue.pop_front() {
+        buffer.push((depth, node.clone()));
         let forward = proposition_graph.get_all_forward(&node);
         for child in &forward {
-            queue.push_back(child.clone());
+            queue.push_back((depth + 1, child.clone()));
         }
 
-    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
-    print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
+        print_yellow!("create_bfs_order initial: queue {:?}", &queue);
+        print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
     }
-    buffer
+    buffer.sort_by(|a, b| a.0.cmp(&b.0));
+
+    print_yellow!("create_bfs_order sorted order {:?}", &buffer);
+
+    let mut result = vec![];
+    for (depth, node) in buffer {
+        result.push(node);
+    }
+    result
 }
 
 impl Inferencer {
@@ -201,8 +209,16 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                print_red!("getting pi message parent_node {:?}, node {:?}, usize_outcome {}", &parent_node, &node, usize_outcome);
-                let pi_x_z = self.data.get_pi_message(parent_node, node, usize_outcome).unwrap();
+                print_red!(
+                    "getting pi message parent_node {:?}, node {:?}, usize_outcome {}",
+                    &parent_node,
+                    &node,
+                    usize_outcome
+                );
+                let pi_x_z = self
+                    .data
+                    .get_pi_message(parent_node, node, usize_outcome)
+                    .unwrap();
                 product *= pi_x_z;
             }
             let factor =
