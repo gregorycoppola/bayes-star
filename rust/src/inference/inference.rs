@@ -23,6 +23,10 @@ struct Inferencer {
     pub data: HashMapBeliefTable,
 }
 
+fn create_bfs_order(proposition_graph:&PropositionGraph) -> Vec<PropositionNode> {
+    todo!()
+}
+
 impl Inferencer {
     // Initialize new Storage with a Redis connection
     pub fn new_mutable(
