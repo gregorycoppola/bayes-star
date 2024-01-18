@@ -338,8 +338,9 @@ pub struct RoleMap {
 
 impl RoleMap {
     pub fn new(role_map: HashMap<String, String>) -> Self {
-        todo!("check that the roles are in sorted order or sort them");
-        // RoleMap { role_map }
+        let mut sorted_vec: Vec<(String, String)> = role_map.into_iter().collect();
+        sorted_vec.sort_by(|a, b| a.0.cmp(&b.0));
+        RoleMap { role_map: sorted_vec }
     }
 
     pub fn get(&self, role_name: &str) -> Option<&String> {
