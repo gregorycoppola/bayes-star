@@ -3,15 +3,16 @@ use crate::{
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
-    }, print_yellow, print_green,
+    },
+    print_green, print_yellow,
 };
 use redis::Connection;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, rc::Rc};
 
 use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 use std::fmt;
+use std::hash::{Hash, Hasher};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GenericNodeType {
@@ -22,7 +23,7 @@ pub enum GenericNodeType {
 #[derive(PartialEq, Eq, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
-    underlying_hash:u64,
+    underlying_hash: u64,
 }
 
 fn hash_proposition(proposition: &Proposition) -> u64 {
@@ -107,7 +108,10 @@ pub struct HashMapBeliefTable {
     bfs_order: Vec<PropositionNode>,
 }
 
-fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>, bfs_order: &Vec<PropositionNode>) {
+fn print_sorted_map(
+    map: &HashMap<(PropositionNode, usize), f64>,
+    bfs_order: &Vec<PropositionNode>,
+) {
     info!("map size: {}", map.len());
     for proposition in bfs_order {
         for label in &CLASS_LABELS {
@@ -118,29 +122,27 @@ fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>, bfs_order: &Ve
     }
 }
 
-fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize), f64>) {
-    let mut map_entries: Vec<_> = map.iter().collect();
-
-    // Sorting by the first InferenceNode.debug_string(), then the second, and then by usize
-    map_entries.sort_by(|a, b| {
-        let ((node_a1, node_a2, index_a), _) = a;
-        let ((node_b1, node_b2, index_b), _) = b;
-
-        match node_a1.debug_string().cmp(&node_b1.debug_string()) {
-            std::cmp::Ordering::Equal => match node_a2.debug_string().cmp(&node_b2.debug_string()) {
-                std::cmp::Ordering::Equal => index_a.cmp(index_b),
-                other => other,
-            },
-            other => other,
+fn print_sorted_messages(
+    map: &HashMap<(PropositionNode, PropositionNode, usize), f64>,
+    bfs_order: &Vec<PropositionNode>,
+) {
+    info!("map size: {}", map.len());
+    for from in bfs_order {
+        for to in bfs_order {
+            for label in &CLASS_LABELS {
+                let key = (from.clone(), to.clone(), *label);
+                let value = map.get(&key);
+                if value.is_some() {
+                    print_yellow!(
+                        "{} {} ({}): {}",
+                        from.debug_string(),
+                        to.debug_string(),
+                        *label,
+                        value.unwrap()
+                    );
+                }
+            }
         }
-    });
-
-    // Printing in sorted order
-    for ((node1, node2, index), value) in map_entries {
-        print_yellow!(
-            "{} - {} ({}): {}",
-            node1.debug_string(), node2.debug_string(), index, value
-        );
     }
 }
 
@@ -151,15 +153,15 @@ impl HashMapBeliefTable {
         info!("lambda_values:");
         print_sorted_map(&self.lambda_values, &self.bfs_order);
         info!("pi_messages:");
-        print_sorted_messages(&self.pi_messages);
+        print_sorted_messages(&self.pi_messages, &self.bfs_order);
         info!("lambda_messages:");
-        print_sorted_messages(&self.lambda_messages);
+        print_sorted_messages(&self.lambda_messages, &self.bfs_order);
     }
 }
 
 impl HashMapBeliefTable {
     // Constructor to create a new instance
-    pub fn new(bfs_order:Vec<PropositionNode>) -> Self {
+    pub fn new(bfs_order: Vec<PropositionNode>) -> Self {
         HashMapBeliefTable {
             pi_values: HashMap::new(),
             lambda_values: HashMap::new(),
