@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::InferenceModel}, model::{exponential::ExponentialModel}, inference::{inference::{inference_compute_marginals, Inferencer}, graph::PropositionGraph}};
+use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::InferenceModel}, model::{exponential::ExponentialModel}, inference::{inference::{inference_compute_marginals, Inferencer}, graph::PropositionGraph}, print_yellow};
 
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
 
@@ -24,8 +24,9 @@ pub fn interactive_inference_example(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
+    print_yellow!("nodes {:?}", &proposition_graph.all_nodes);
     for node in &proposition_graph.all_nodes {
-        println!("node {:?}", &node);
+        print_yellow!("node {:?}", &node);
     }
     info!("done");
     Ok(())
