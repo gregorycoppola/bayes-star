@@ -47,13 +47,13 @@ impl Inferencer {
         }))
     }
 
-    pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn reinitialize_chard(&mut self) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
-        self.do_pass()?;
+        self.do_full_forward_and_backward()?;
         Ok(())
     }
 
-    pub fn do_pass(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn do_full_forward_and_backward(&mut self) -> Result<(), Box<dyn Error>> {
         self.do_pi_traversal()?;
         self.do_lambda_traversal()?;
         self.update_marginals()?;
@@ -73,26 +73,6 @@ impl Inferencer {
             let probability0 = potential0 / norm;
             let probability1 = potential1 / norm;
             print_red!("node {:?} p0 {} p1 {}", node, probability0, probability1);
-        }
-        Ok(())
-    }
-
-    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        for node in &self.proposition_graph.all_nodes {
-            print_red!("initializing: {}", node.debug_string());
-            for outcome in CLASS_LABELS {
-                self.data.set_lambda_value(node, outcome, 1f64);
-            }
-            for parent in &self.proposition_graph.get_all_backward(node) {
-                print_red!(
-                    "initializing lambda link from {} to {}",
-                    node.debug_string(),
-                    parent.debug_string()
-                );
-                for outcome in CLASS_LABELS {
-                    self.data.set_lambda_message(node, parent, outcome, 1f64);
-                }
-            }
         }
         Ok(())
     }
@@ -200,7 +180,7 @@ pub fn inference_compute_marginals(
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize()?;
+    inferencer.reinitialize_chard()?;
     inferencer.data.print_debug();
     Ok(())
 }

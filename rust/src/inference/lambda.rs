@@ -21,6 +21,15 @@ impl Inferencer {
         Ok(())
     }
 
+
+    pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
+        let order = self.bfs_order.clone();
+        for node in &order {
+            self.lambda_visit_node(node)?;
+        }
+        Ok(())
+    }
+
     pub fn lambda_set_from_evidence(
         &mut self,
         node: &PropositionNode,
