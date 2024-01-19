@@ -226,7 +226,6 @@ pub fn compute_each_combination(
     all_combinations
 }
 
-// Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
     fact_memory: Rc<dyn PropositionDB>,
