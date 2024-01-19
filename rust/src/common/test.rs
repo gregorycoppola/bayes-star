@@ -21,24 +21,16 @@ use super::{interface::PropositionDB, resources::FactoryResources, setup::Config
 
 struct ReplState {
     inferencer: Box<Inferencer>,
+    fact_memory: Rc<dyn PropositionDB>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
     question_index: HashMap<u64, PropositionNode>,
 }
 
 impl ReplState {
-    pub fn new(inferencer: Box<Inferencer>) -> ReplState {
-        let mut evidence = HashMap::new();
-        for node in inferencer.proposition_graph.get_bfs_order().iter() {
-            if node.is_single() {
-                let single = node.extract_single();
-                if single.predicate.function == EXISTENCE_FUNCTION.to_string() {
-                    evidence.insert(node.clone(), 1f64);
-                }
-            }
-        }
+    pub fn new(inferencer: Box<Inferencer>, fact_memory:Rc<dyn PropositionDB>) -> ReplState {
         ReplState {
             inferencer,
-            evidence,
+            fact_memory,
             question_index: HashMap::new(),
         }
     }
@@ -67,7 +59,8 @@ impl ReplState {
         let select_index = tokens[1].parse::<u64>().unwrap();
         let new_prob = tokens[2].parse::<f64>().unwrap();
         let prop_index = self.question_index.get(&select_index).unwrap();
-        self.evidence.insert(prop_index.clone(), new_prob);
+        let prop = prop_index.extract_single();
+        self.fact_memory.store_proposition_probability(&prop, new_prob);
     }
 
     fn print_ordering(&mut self) -> Result<(), Box<dyn Error>> {
@@ -76,7 +69,7 @@ impl ReplState {
         for (index, node) in bfs.iter().enumerate() {
             if node.is_single() {
                 let single = node.extract_single();
-                let probability = self.get_proposition_probability(&single)?;
+                let probability = self.fact_memory.get_proposition_probability(&single)?;
                 info!("node {} {:?} {:?}", index, &node, probability);
             } else {
                 print_green!("node {} {:?} *", index, &node);
@@ -117,7 +110,7 @@ pub fn interactive_inference_example(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.reinitialize_chart()?;
     inferencer.data.print_debug();
-    let mut repl = ReplState::new(inferencer);
+    let mut repl = ReplState::new(inferencer, fact_memory);
     repl.do_repl_loop()?;
     info!("done");
     Ok(())
