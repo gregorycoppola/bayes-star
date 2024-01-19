@@ -52,7 +52,6 @@ impl Inferencer {
         } else {
             self.lambda_compute_generic(&from_node)?;
         }
-        // Success.
         self.lambda_send_generic(from_node)?;
         Ok(())
     }
