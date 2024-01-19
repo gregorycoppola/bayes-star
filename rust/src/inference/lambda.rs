@@ -53,6 +53,8 @@ impl Inferencer {
         print_red!("set from evidence {:?} {}", node, probability);
         self.data.set_lambda_value(node, 1, probability);
         self.data.set_lambda_value(node, 0, 1f64 - probability);
+        self.data.print_debug();
+        panic!();
         Ok(())
     }
 
@@ -60,6 +62,8 @@ impl Inferencer {
         &mut self,
         from_node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
+        let is_observed = self.is_observed(from_node)?;
+        assert!(!is_observed);
         let children = self.proposition_graph.get_all_forward(from_node);
         for class_label in &CLASS_LABELS {
             let mut product = 1f64;
