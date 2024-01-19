@@ -20,13 +20,23 @@ impl Inferencer {
         }
         Ok(())
     }
-
-
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        let mut bfs_order = self.bfs_order.clone();
-        bfs_order.reverse();
-        for node in &bfs_order {
-            self.lambda_visit_node(node)?;
+        print_red!("initialize_lambda: proposition");
+        for node in &self.proposition_graph.all_nodes {
+            print_red!("initializing: {}", node.debug_string());
+            for outcome in CLASS_LABELS {
+                self.data.set_lambda_value(node, outcome, 1f64);
+            }
+            for parent in &self.proposition_graph.get_all_backward(node) {
+                print_red!(
+                    "initializing lambda link from {} to {}",
+                    node.debug_string(),
+                    parent.debug_string()
+                );
+                for outcome in CLASS_LABELS {
+                    self.data.set_lambda_message(node, parent, outcome, 1f64);
+                }
+            }
         }
         Ok(())
     }
