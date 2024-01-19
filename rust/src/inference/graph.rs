@@ -12,7 +12,7 @@ use crate::{
     model::{
         choose::{compute_search_predicates, extract_backimplications_from_proposition},
         objects::{GroupRoleMap, PredicateFactor, Proposition, PropositionGroup},
-    }, print_green, print_yellow,
+    }, print_yellow,
 };
 
 use super::table::{GenericNodeType, PropositionNode};
@@ -174,24 +174,24 @@ impl PropositionGraph {
     }
 
     pub fn get_all_backward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
-        print_green!("get_all_backward called for node: {:?}", node.debug_string());
+        trace!("get_all_backward called for node: {:?}", node.debug_string());
         let mut r = vec![];
         match &node.node {
             GenericNodeType::Single(proposition) => {
-                print_green!("Processing as Single: {:?}", proposition.debug_string());
+                trace!("Processing as Single: {:?}", proposition.debug_string());
                 let initial = self.get_single_backward(proposition);
-                print_green!("Initial singles: {}", initial.len());
+                trace!("Initial singles: {}", initial.len());
                 for group in &initial {
-                    print_green!("Adding group from initial singles: {:?}", group.debug_string());
+                    trace!("Adding group from initial singles: {:?}", group.debug_string());
                     r.push(PropositionNode::from_group(group));
                 }
             }
             GenericNodeType::Group(group) => {
-                print_green!("Processing as Group: {:?}", group.debug_string());
+                trace!("Processing as Group: {:?}", group.debug_string());
                 let initial = self.get_group_backward(group);
-                print_green!("Initial groups: {}", initial.len());
+                trace!("Initial groups: {}", initial.len());
                 for single in &initial {
-                    print_green!("Adding single from initial groups: {:?}", single.debug_string());
+                    trace!("Adding single from initial groups: {:?}", single.debug_string());
                     r.push(PropositionNode::from_single(single));
                 }
             }
@@ -201,29 +201,29 @@ impl PropositionGraph {
     }
 
     pub fn get_all_forward(&self, node: &PropositionNode) -> Vec<PropositionNode> {
-        print_green!("get_all_backward called for node: {:?}", node.debug_string());
+        trace!("get_all_backward called for node: {:?}", node.debug_string());
         let mut r = vec![];
         match &node.node {
             GenericNodeType::Single(proposition) => {
-                print_green!("Processing as Single: {:?}", proposition.debug_string());
+                trace!("Processing as Single: {:?}", proposition.debug_string());
                 let initial = self.get_single_forward(proposition);
-                print_green!("Initial singles: {}", initial.len());
+                trace!("Initial singles: {}", initial.len());
                 for group in &initial {
-                    print_green!("Adding group from initial singles: {:?}", group.debug_string());
+                    trace!("Adding group from initial singles: {:?}", group.debug_string());
                     r.push(PropositionNode::from_group(group));
                 }
             }
             GenericNodeType::Group(group) => {
-                print_green!("Processing as Group: {:?}", group.debug_string());
+                trace!("Processing as Group: {:?}", group.debug_string());
                 let initial = self.get_group_forward(group);
-                print_green!("Initial groups: {}", initial.len());
+                trace!("Initial groups: {}", initial.len());
                 for single in &initial {
-                    print_green!("Adding single from initial groups: {:?}", single.debug_string());
+                    trace!("Adding single from initial groups: {:?}", single.debug_string());
                     r.push(PropositionNode::from_single(single));
                 }
             }
         }
-        info!("Resulting vector: {:?}", r);
+        trace!("Resulting vector: {:?}", r);
         r
     }
 
@@ -282,21 +282,13 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
     for root in &proposition_graph.roots {
         queue.push_back((0, PropositionNode::from_single(&root)));
     }
-
-    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
-
     while let Some((depth, node)) = queue.pop_front() {
         buffer.push((depth, node.clone()));
         let forward = proposition_graph.get_all_forward(&node);
         for child in &forward {
             queue.push_back((depth + 1, child.clone()));
         }
-
-        print_yellow!("create_bfs_order initial: queue {:?}", &queue);
-        print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
     }
-
     let result = reverse_prune_duplicates(&buffer);
-    print_yellow!("create_bfs_order result: {:?}", &result);
     result
 }

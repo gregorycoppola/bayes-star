@@ -54,7 +54,7 @@ impl PropositionNode {
 
     pub fn from_group(group: &PropositionGroup) -> PropositionNode {
         let underlying_hash = hash_group(group);
-        print_green!("got hash {} {:?}", underlying_hash, group);
+        trace!("got hash {} {:?}", underlying_hash, group);
         PropositionNode {
             node: GenericNodeType::Group(group.clone()),
             underlying_hash,
