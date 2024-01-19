@@ -9,6 +9,7 @@ use std::io::Write;
 pub struct ConfigurationOptions {
     pub entities_per_domain: i32,
     pub print_training_loss: bool,
+    pub test_example: Option<u32>,
 }
 
 pub fn parse_configuration_options() -> ConfigurationOptions {
@@ -59,5 +60,6 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
     ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
+        test_example,
     }
 }
