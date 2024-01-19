@@ -5,7 +5,7 @@ use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combinat
 impl Inferencer {
     pub fn do_pi_traversal(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs_order = self.bfs_order.clone();
-        print_red!("send_pi_messages bfs_order: {:?}", &bfs_order);
+        trace!("send_pi_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
             trace!("send pi bfs selects {:?}", node);
             self.pi_visit_node(node)?;
@@ -107,7 +107,7 @@ impl Inferencer {
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
-                print_red!(
+                trace!(
                     "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",
                     &parent_node,
                     &node,
@@ -142,7 +142,7 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                print_green!(
+                trace!(
                     "get pi message: parent_node {:?}, node {:?}, outcome: {}",
                     parent_node,
                     node,
@@ -168,10 +168,10 @@ impl Inferencer {
                 );
             }
             if condition {
-                print_blue!("true combination: {:?}, product {}", &combination, product);
+                trace!("true combination: {:?}, product {}", &combination, product);
                 sum_true += product;
             } else {
-                print_blue!("false combination: {:?}, product {}", &combination, product);
+                trace!("false combination: {:?}, product {}", &combination, product);
                 sum_false += product;
             }
         }

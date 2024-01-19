@@ -13,7 +13,7 @@ impl Inferencer {
     pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
         let mut bfs_order = self.bfs_order.clone();
         bfs_order.reverse();
-        print_red!("send_lambda_messages bfs_order: {:?}", &bfs_order);
+        trace!("send_lambda_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
             print_yellow!("send pi bfs selects {:?}", node);
             self.lambda_visit_node(node)?;
@@ -21,14 +21,14 @@ impl Inferencer {
         Ok(())
     }
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        print_red!("initialize_lambda: proposition");
+        trace!("initialize_lambda: proposition");
         for node in &self.proposition_graph.all_nodes {
-            print_red!("initializing: {}", node.debug_string());
+            trace!("initializing: {}", node.debug_string());
             for outcome in CLASS_LABELS {
                 self.data.set_lambda_value(node, outcome, 1f64);
             }
             for parent in &self.proposition_graph.get_all_backward(node) {
-                print_red!(
+                trace!(
                     "initializing lambda link from {} to {}",
                     node.debug_string(),
                     parent.debug_string()
@@ -115,7 +115,7 @@ impl Inferencer {
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
-                print_red!(
+                trace!(
                     "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",
                     &parent_node,
                     &node,
@@ -158,7 +158,7 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                print_green!(
+                trace!(
                     "get pi message: parent_node {:?}, node {:?}, outcome: {}",
                     parent_node,
                     node,
@@ -168,7 +168,7 @@ impl Inferencer {
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
-                print_yellow!(
+                trace!(
                     "boolean_outcome {} usize_outcome {} lambda_x_z {}",
                     boolean_outcome,
                     usize_outcome,
@@ -177,7 +177,7 @@ impl Inferencer {
                 product *= lambda_x_z;
                 let combination_val = combination[parent_node];
                 condition = condition && combination_val;
-                print_yellow!(
+                trace!(
                     "combination_val {} condition {}",
                     combination_val,
                     condition
