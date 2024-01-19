@@ -7,7 +7,7 @@ use crate::{
     },
     inference::{
         graph::PropositionGraph,
-        inference::{inference_compute_marginals, Inferencer},
+        inference::{inference_compute_marginals, Inferencer}, table::PropositionNode,
     },
     model::{exponential::ExponentialModel, objects::Proposition},
     print_blue, print_green, print_red, print_yellow,
@@ -18,29 +18,33 @@ use super::{resources::FactoryResources, setup::ConfigurationOptions};
 struct ReplState {
     proposition_graph: Rc<PropositionGraph>,
     /// Evidence that the user has selected to add.
-    evidence: HashMap<Proposition, f64>,
+    evidence: HashMap<PropositionNode, f64>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
-    question_index: HashMap<i32, Proposition>,
+    question_index: HashMap<u64, PropositionNode>,
 }
 
 impl ReplState {
-    fn do_loop(&mut self) {}
-
-    fn handle_set(&mut self, tokens: &Vec<String>) {
-        let select_index = tokens[1].parse::<u64>();
-        let new_prob = tokens[2].parse::<f64>();
+    fn do_loop(&mut self) {
         loop {
             self.print_ordering();
             let tokens = get_input_tokens_from_user();
             println!("tokens {:?}", tokens);
             let function = &tokens[0];
             match function.as_str() {
-                "set" => println!("Found 'hello'"),
+                "set" => self.handle_set(&tokens),
                 "quit" => break,
                 _ => println!("Command not recognized."),
             };
         }
     }
+
+    fn handle_set(&mut self, tokens: &Vec<String>) {
+        let select_index = tokens[1].parse::<u64>().unwrap();
+        let new_prob = tokens[2].parse::<f64>().unwrap();
+        let prop_index = self.question_index.get(&select_index).unwrap();
+        self.evidence.insert(prop_index.clone(), new_prob);
+    }
+
     fn print_ordering(&self) {
         let bfs = self.proposition_graph.get_bfs_order();
         for (index, node) in bfs.iter().enumerate() {
