@@ -73,10 +73,10 @@ impl ReplState {
                 let single = node.extract_single();
                 let probability = self.fact_memory.get_proposition_probability(&single)?;
                 info!("node {} {:?} {:?}", index, &node, probability);
+                self.question_index.insert(index as u64, node.clone());
             } else {
-                print_green!("node {} {:?} *", index, &node);
+                // print_green!("node {} {:?} *", index, &node);
             }
-            self.question_index.insert(index as u64, node.clone());
         }
         Ok(())
     }
