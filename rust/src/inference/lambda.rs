@@ -84,7 +84,7 @@ impl Inferencer {
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 let lambda_x_z = self
                     .data
-                    .get_lambda_message(parent_node, node, usize_outcome)
+                    .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
                 print_red!(
                     "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, lambda_x_z {}",
@@ -129,7 +129,7 @@ impl Inferencer {
                 );
                 let lambda_x_z = self
                     .data
-                    .get_lambda_message(parent_node, node, usize_outcome)
+                    .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
                 print_yellow!(
                     "boolean_outcome {} usize_outcome {} lambda_x_z {}",
