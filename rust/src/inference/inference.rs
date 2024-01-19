@@ -47,9 +47,13 @@ impl Inferencer {
         }))
     }
 
-    pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
-        print_red!("initialize: proposition {:?}", proposition.hash_string());
+    pub fn initialize(&mut self) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
+        self.do_pass()?;
+        Ok(())
+    }
+
+    pub fn do_pass(&mut self) -> Result<(), Box<dyn Error>> {
         self.do_pi_traversal()?;
         self.do_lambda_traversal()?;
         self.update_marginals()?;
@@ -74,7 +78,6 @@ impl Inferencer {
     }
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        print_red!("initialize_lambda: proposition");
         for node in &self.proposition_graph.all_nodes {
             print_red!("initializing: {}", node.debug_string());
             for outcome in CLASS_LABELS {
@@ -197,7 +200,7 @@ pub fn inference_compute_marginals(
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize(target)?;
+    inferencer.initialize()?;
     inferencer.data.print_debug();
     Ok(())
 }

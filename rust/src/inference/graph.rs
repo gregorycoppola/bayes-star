@@ -42,6 +42,7 @@ pub struct PropositionGraph {
     pub inference_used: HashMap<(PropositionGroup, Proposition), PredicateFactor>,
     pub roots: HashSet<Proposition>,
     pub all_nodes: HashSet<PropositionNode>,
+    pub target: Proposition,
 }
 
 fn initialize_visit_single(
@@ -140,6 +141,7 @@ impl PropositionGraph {
             inference_used: HashMap::new(),
             roots: HashSet::new(),
             all_nodes: HashSet::new(),
+            target: target.clone(),
         };
         initialize_visit_single(&mut graph, target)?;
         Ok(Rc::new(graph))
