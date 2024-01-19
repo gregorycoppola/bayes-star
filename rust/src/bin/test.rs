@@ -1,6 +1,6 @@
 use bayes_star::common::setup::parse_configuration_options;
 use bayes_star::common::resources::FactoryResources;
-use bayes_star::common::test::inference_example;
+use bayes_star::common::test::{inference_example, summarize_examples};
 
 #[macro_use]
 extern crate log;
@@ -12,7 +12,7 @@ fn main() {
     if test_example.is_some() {
         inference_example(&config, &resources).expect("Testing failed.");
     } else {
-        todo!()
+        summarize_examples(&config, &resources).expect("Summarize failed.");
     }
     info!("main finishes");
 }

@@ -15,14 +15,14 @@ pub fn inference_example(
     let model = InferenceModel::new_shared(&resources).unwrap();
     // test
     let test_questions = plan.get_test_questions().unwrap();
-    for proposition in &test_questions {
-        info!("testing proposition {:?}", &proposition.hash_string());
-        inference_compute_marginals(model.clone(), proposition).unwrap();
-    }
+    let proposition = &test_questions[config.test_example.unwrap() as usize];
+    info!("testing proposition {:?}", &proposition.hash_string());
+    inference_compute_marginals(model.clone(), proposition).unwrap();
     Ok(())
 }
 
-pub fn show_questions(
+pub fn summarize_examples(
+    config:&ConfigurationOptions,
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
