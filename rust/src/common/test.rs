@@ -94,7 +94,8 @@ pub fn interactive_inference_example(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
-    let repl = ReplState::new(inferencer);
+    let mut repl = ReplState::new(inferencer);
+    repl.do_loop();
     info!("done");
     Ok(())
 }
