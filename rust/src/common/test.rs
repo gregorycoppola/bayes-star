@@ -25,6 +25,17 @@ pub fn get_input_tokens_from_user() -> Vec<String> {
     tokens
 }
 
+fn print_ordering(proposition_graph:&PropositionGraph) {
+    let bfs = proposition_graph.get_bfs_order();
+    for (index, node) in bfs.iter().enumerate() {
+        if node.is_single() {
+            info!("node {} {:?}", index, &node);
+        } else {
+            print_green!("node {} {:?}", index, &node);
+        }
+    }
+}
+
 pub fn interactive_inference_example(
     config: &ConfigurationOptions,
     resources: &FactoryResources,
@@ -45,15 +56,6 @@ pub fn interactive_inference_example(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
-    print_yellow!("nodes {:?}", &proposition_graph.all_nodes);
-    let bfs = proposition_graph.get_bfs_order();
-    for (index, node) in bfs.iter().enumerate() {
-        if node.is_single() {
-            info!("node {} {:?}", index, &node);
-        } else {
-            print_green!("node {} {:?}", index, &node);
-        }
-    }
     info!("done");
     Ok(())
 }
