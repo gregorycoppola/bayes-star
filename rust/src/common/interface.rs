@@ -17,8 +17,9 @@ pub trait PropositionDB {
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 
+    // Note: This is immutable reference, but a `store`. Idea is it handles its own sync to write db.
     fn store_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>>;

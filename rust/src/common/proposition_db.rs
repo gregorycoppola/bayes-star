@@ -67,7 +67,7 @@ impl PropositionDB for RedisFactDB {
     }
 
     fn store_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
@@ -119,11 +119,11 @@ impl PropositionDB for EmptyFactDB {
     }
 
     fn store_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
-        panic!("Can't call this.")
+        panic!("Shouldn't call this.")
     }
 }
 
@@ -146,7 +146,7 @@ impl PropositionDB for HashMapPropositionDB {
     }
 
     fn store_proposition_probability(
-        &mut self,
+        &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
