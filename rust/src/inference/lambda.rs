@@ -44,7 +44,7 @@ impl Inferencer {
                     }
                 }
                 let lambda_part = self.data.get_lambda_value(&from_node, *class_label).unwrap();
-                let message = lambda_part * lambda_part;
+                let message = lambda_part;
                 self.data
                     .set_lambda_message(&from_node, &to_node, *class_label, message);
             }
