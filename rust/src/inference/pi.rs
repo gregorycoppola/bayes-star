@@ -3,7 +3,7 @@ use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weight
 use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
-    pub fn send_pi_messages(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn do_pi_traversal(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs_order = self.bfs_order.clone();
         print_red!("send_pi_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {

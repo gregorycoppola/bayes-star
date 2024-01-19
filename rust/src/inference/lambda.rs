@@ -3,7 +3,7 @@ use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weight
 use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
-    pub fn send_lambda_messages(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
         let mut bfs_order = self.bfs_order.clone();
         bfs_order.reverse();
         print_red!("send_lambda_messages bfs_order: {:?}", &bfs_order);
@@ -59,7 +59,7 @@ impl Inferencer {
             self.lambda_compute_generic(&from_node)?;
         }
         // Success.
-        self.lambda_compute_generic(from_node)?;
+        self.lambda_send_generic(from_node)?;
         Ok(())
     }
 

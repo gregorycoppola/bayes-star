@@ -87,7 +87,8 @@ impl Inferencer {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
         // self.initialize_pi()?;
         self.initialize_lambda()?;
-        self.send_pi_messages()?;
+        self.do_pi_traversal()?;
+        self.do_lambda_traversal()?;
         self.update_marginals()?;
         Ok(())
     }
