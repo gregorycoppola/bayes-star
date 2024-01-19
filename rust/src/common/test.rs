@@ -4,7 +4,7 @@ use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::
 
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
 
-pub fn inference_example(
+pub fn interactive_inference_example(
     config: &ConfigurationOptions,
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {

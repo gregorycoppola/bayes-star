@@ -1,6 +1,6 @@
 use bayes_star::common::setup::parse_configuration_options;
 use bayes_star::common::resources::FactoryResources;
-use bayes_star::common::test::{inference_example, summarize_examples};
+use bayes_star::common::test::{interactive_inference_example, summarize_examples};
 
 #[macro_use]
 extern crate log;
@@ -10,7 +10,7 @@ fn main() {
     let resources = FactoryResources::new(&config).expect("Couldn't create resources.");
     let test_example = config.test_example;
     if test_example.is_some() {
-        inference_example(&config, &resources).expect("Testing failed.");
+        interactive_inference_example(&config, &resources).expect("Testing failed.");
     } else {
         summarize_examples(&config, &resources).expect("Summarize failed.");
     }
