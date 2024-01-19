@@ -28,7 +28,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_send_messages(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_compute_generic(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 2: For each value of z, compute lambda_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(from_node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
@@ -59,24 +59,24 @@ impl Inferencer {
             self.lambda_compute_generic(&from_node)?;
         }
         // Success.
-        self.lambda_send_messages(from_node)?;
+        self.lambda_compute_generic(from_node)?;
         Ok(())
     }
 
-    pub fn lambda_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_send_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         match &node.node {
             GenericNodeType::Single(proposition) => {
-                self.lambda_compute_single(node)?;
+                self.lambda_send_single(node)?;
             }
             GenericNodeType::Group(group) => {
-                self.lambda_compute_group(node)?;
+                self.lambda_send_group(node)?;
             }
         }
         Ok(())
     }
 
     // from_node is a single.. compute it from the group
-    pub fn lambda_compute_single(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_send_single(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let conclusion = node.extract_single();
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let premise_groups = groups_from_backlinks(&parent_nodes);
@@ -115,9 +115,9 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_compute_group(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_send_group(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        print_yellow!("lambda_compute_group {:?}", &parent_nodes);
+        print_yellow!("lambda_send_group {:?}", &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
