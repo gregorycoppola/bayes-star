@@ -17,8 +17,7 @@ impl Inferencer {
     pub fn lambda_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let as_single = node.extract_single();
         let probability = self
-            .model
-            .proposition_db
+            .fact_memory
             .get_proposition_probability(&as_single)?
             .unwrap();
         self.data

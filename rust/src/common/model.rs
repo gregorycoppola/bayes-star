@@ -23,7 +23,6 @@ use super::{
 pub struct InferenceModel {
     pub graph: Rc<InferenceGraph>,
     pub model: Rc<dyn FactorModel>,
-    pub proposition_db: Rc<dyn PropositionDB>,
 }
 
 impl InferenceModel {
@@ -34,7 +33,6 @@ impl InferenceModel {
         Ok(Rc::new(InferenceModel {
             graph,
             model,
-            proposition_db,
         }))
     }
 }

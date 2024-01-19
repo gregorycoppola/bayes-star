@@ -25,6 +25,7 @@ use std::{
 
 pub struct Inferencer {
     pub model: Rc<InferenceModel>,
+    pub fact_memory: Rc<dyn PropositionDB>,
     pub proposition_graph: Rc<PropositionGraph>,
     pub data: HashMapBeliefTable,
     pub bfs_order: Vec<PropositionNode>,
@@ -73,10 +74,12 @@ impl Inferencer {
     pub fn new_mutable(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
+        fact_memory: Rc<dyn PropositionDB>,
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = create_bfs_order(&proposition_graph);
         Ok(Box::new(Inferencer {
             model,
+            fact_memory,
             proposition_graph,
             data: HashMapBeliefTable::new(),
             bfs_order,
@@ -155,8 +158,7 @@ impl Inferencer {
         if node.is_single() {
             let as_single = node.extract_single();
             let has_evidence = self
-                .model
-                .proposition_db
+                .fact_memory
                 .get_proposition_probability(&as_single)?
                 .is_some();
             print_green!(
@@ -227,11 +229,12 @@ pub fn compute_each_combination(
 // Note: GraphicalModel contains PropositionDB, which contains the "evidence".
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
+    fact_memory: Rc<dyn PropositionDB>,
     target: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
-    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
+    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     Ok(())
