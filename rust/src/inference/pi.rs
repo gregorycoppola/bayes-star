@@ -1,5 +1,5 @@
 use std::error::Error;
-use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue, inference::inference::build_factor_context_for_assignment};
+use crate::{print_red, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue, inference::inference::build_factor_context_for_assignment};
 use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
@@ -7,7 +7,7 @@ impl Inferencer {
         let bfs_order = self.bfs_order.clone();
         print_red!("send_pi_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
-            print_yellow!("send pi bfs selects {:?}", node);
+            trace!("send pi bfs selects {:?}", node);
             self.pi_visit_node(node)?;
         }
         Ok(())
@@ -119,7 +119,7 @@ impl Inferencer {
             let factor =
                 build_factor_context_for_assignment(&self.proposition_graph, &premise_groups, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
-            print_yellow!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
+            trace!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
@@ -132,7 +132,7 @@ impl Inferencer {
 
     pub fn pi_compute_group(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        print_yellow!("pi_compute_group {:?}", &parent_nodes);
+        trace!("pi_compute_group {:?}", &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
@@ -152,7 +152,7 @@ impl Inferencer {
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
-                print_yellow!(
+                trace!(
                     "boolean_outcome {} usize_outcome {} pi_x_z {}",
                     boolean_outcome,
                     usize_outcome,
@@ -161,7 +161,7 @@ impl Inferencer {
                 product *= pi_x_z;
                 let combination_val = combination[parent_node];
                 condition = condition && combination_val;
-                print_yellow!(
+                trace!(
                     "combination_val {} condition {}",
                     combination_val,
                     condition
