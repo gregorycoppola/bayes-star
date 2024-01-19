@@ -62,7 +62,7 @@ impl ReplState {
         let new_prob = tokens[2].parse::<f64>().unwrap();
         let prop_index = self.question_index.get(&select_index).unwrap();
         let prop = prop_index.extract_single();
-        self.fact_memory.store_proposition_probability(&prop, new_prob);
+        self.fact_memory.store_proposition_probability(&prop, new_prob).unwrap();
     }
 
     fn print_ordering(&mut self) -> Result<(), Box<dyn Error>> {
