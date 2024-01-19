@@ -17,7 +17,8 @@ pub fn inference_example(
     let test_questions = plan.get_test_questions().unwrap();
     let proposition = &test_questions[config.test_example.unwrap() as usize];
     info!("testing proposition {:?}", &proposition.hash_string());
-    inference_compute_marginals(model.clone(), proposition).unwrap();
+    let fact_memory = RedisFactDB::new_shared(&resources.redis)?;
+    inference_compute_marginals(model.clone(), fact_memory, proposition).unwrap();
     Ok(())
 }
 

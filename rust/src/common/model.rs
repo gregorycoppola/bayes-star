@@ -29,7 +29,6 @@ impl InferenceModel {
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(resources)?;
         let model = ExponentialModel::new_shared(&resources)?;
-        let proposition_db = RedisFactDB::new_shared(&resources.redis)?;
         Ok(Rc::new(InferenceModel {
             graph,
             model,
