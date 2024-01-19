@@ -123,7 +123,7 @@ fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
 
     // Printing in sorted order
     for ((node, index), value) in map_entries {
-        info!("{} ({}): {}", node.debug_string(), index, value);
+        print_yellow!("{} ({}): {}", node.debug_string(), index, value);
     }
 }
 
@@ -146,7 +146,7 @@ fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize)
 
     // Printing in sorted order
     for ((node1, node2, index), value) in map_entries {
-        info!(
+        print_yellow!(
             "{} - {} ({}): {}",
             node1.debug_string(), node2.debug_string(), index, value
         );
