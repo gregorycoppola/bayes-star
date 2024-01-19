@@ -232,7 +232,7 @@ impl PropositionGraph {
     }
 
     pub fn get_bfs_order(&self) -> Vec<PropositionNode> {
-        todo!()
+        create_bfs_order(&self)
     }
 }
 
