@@ -50,6 +50,7 @@ impl Inferencer {
             .fact_memory
             .get_proposition_probability(&as_single)?
             .unwrap();
+        print_red!("set from evidence {:?} {}", node, probability);
         self.data.set_lambda_value(node, 1, probability);
         self.data.set_lambda_value(node, 0, 1f64 - probability);
         Ok(())
@@ -77,6 +78,7 @@ impl Inferencer {
 
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let is_observed = self.is_observed(from_node)?;
+        print_yellow!("lambda_visit_node {:?} is_observed {}", from_node, is_observed);
         if is_observed {
             self.lambda_set_from_evidence(from_node)?;
         } else {

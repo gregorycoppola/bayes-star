@@ -70,10 +70,13 @@ impl Inferencer {
                 started = true;
             }
             if started {
+                print_red!("will visit {:?}", &visiting);
                 self.lambda_visit_node(visiting)?;
+            } else {
+                print_red!("wont visit {:?}", &visiting);
             }
         }
-        self.do_pi_traversal();
+        self.do_pi_traversal()?;
         self.update_marginals()?;
         Ok(())
     }
