@@ -1,6 +1,13 @@
+use super::{
+    inference::{compute_each_combination, groups_from_backlinks, Inferencer},
+    table::{GenericNodeType, PropositionNode},
+};
+use crate::{
+    inference::inference::build_factor_context_for_assignment,
+    model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS},
+    print_blue, print_green, print_red, print_yellow,
+};
 use std::error::Error;
-use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue};
-use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
     pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
@@ -14,20 +21,24 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_set_from_evidence(
+        &mut self,
+        node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         let as_single = node.extract_single();
         let probability = self
             .fact_memory
             .get_proposition_probability(&as_single)?
             .unwrap();
-        self.data
-            .set_lambda_value(node, 1, probability);
-        self.data
-            .set_lambda_value(node, 0, 1f64 - probability);
+        self.data.set_lambda_value(node, 1, probability);
+        self.data.set_lambda_value(node, 0, 1f64 - probability);
         Ok(())
     }
 
-    pub fn lambda_compute_generic(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_compute_generic(
+        &mut self,
+        from_node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         let children = self.proposition_graph.get_all_forward(from_node);
         for class_label in &CLASS_LABELS {
             let mut product = 1f64;
@@ -93,10 +104,18 @@ impl Inferencer {
                 );
                 product *= pi_x_z;
             }
-            let factor =
-                self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
+            let factor = build_factor_context_for_assignment(
+                &self.proposition_graph,
+                &premise_groups,
+                combination,
+                &conclusion,
+            );
             let prediction = self.model.model.predict(&factor)?;
-            print_yellow!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
+            print_yellow!(
+                "local probability {}  for factor {:?}",
+                &prediction.marginal,
+                &factor
+            );
             let true_marginal = &prediction.marginal;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;

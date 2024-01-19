@@ -1,5 +1,5 @@
 use std::error::Error;
-use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue};
+use crate::{print_red, print_yellow, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue, inference::inference::build_factor_context_for_assignment};
 use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
@@ -117,7 +117,7 @@ impl Inferencer {
                 product *= pi_x_z;
             }
             let factor =
-                self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
+                build_factor_context_for_assignment(&self.proposition_graph, &premise_groups, combination, &conclusion);
             let prediction = self.model.model.predict(&factor)?;
             print_yellow!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
             let true_marginal = &prediction.marginal;

@@ -147,7 +147,11 @@ impl Inferencer {
     pub fn is_leaf(&self, node: &PropositionNode) -> bool {
         if node.is_single() {
             let as_single = node.extract_single();
-            let forward_links = self.proposition_graph.single_forward.get(&as_single).unwrap();
+            let forward_links = self
+                .proposition_graph
+                .single_forward
+                .get(&as_single)
+                .unwrap();
             forward_links.is_empty()
         } else {
             false
@@ -171,40 +175,38 @@ impl Inferencer {
             Ok(false)
         }
     }
+}
 
-    // TODO: move this out of the class
-    pub fn build_factor_context_for_assignment(
-        &self,
-        premises: &Vec<PropositionGroup>,
-        premise_assignment: &HashMap<PropositionNode, bool>,
-        conclusion: &Proposition,
-    ) -> FactorContext {
-        let mut probabilities = vec![];
-        let mut factors = vec![];
-        for proposition_group in premises {
-            let node = PropositionNode::from_group(proposition_group);
-            let assignment = *premise_assignment.get(&node).unwrap();
-            if assignment {
-                probabilities.push(1f64);
-            } else {
-                probabilities.push(0f64);
-            }
-            let inference = self
-                .proposition_graph
-                .get_inference_used(proposition_group, conclusion);
-            let factor = PropositionFactor {
-                premise: proposition_group.clone(),
-                conclusion: conclusion.clone(),
-                inference,
-            };
-            factors.push(factor);
+pub fn build_factor_context_for_assignment(
+    proposition_graph:&PropositionGraph,
+    premises: &Vec<PropositionGroup>,
+    premise_assignment: &HashMap<PropositionNode, bool>,
+    conclusion: &Proposition,
+) -> FactorContext {
+    let mut probabilities = vec![];
+    let mut factors = vec![];
+    for proposition_group in premises {
+        let node = PropositionNode::from_group(proposition_group);
+        let assignment = *premise_assignment.get(&node).unwrap();
+        if assignment {
+            probabilities.push(1f64);
+        } else {
+            probabilities.push(0f64);
         }
-        let context = FactorContext {
-            factor: factors,
-            probabilities,
+        let inference = proposition_graph
+            .get_inference_used(proposition_group, conclusion);
+        let factor = PropositionFactor {
+            premise: proposition_group.clone(),
+            conclusion: conclusion.clone(),
+            inference,
         };
-        context
+        factors.push(factor);
     }
+    let context = FactorContext {
+        factor: factors,
+        probabilities,
+    };
+    context
 }
 
 // Return 1 HashMap for each of the 2^N ways to assign each of the N memebers of `propositions` to either true or false.
@@ -233,7 +235,8 @@ pub fn inference_compute_marginals(
 ) -> Result<(), Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
-    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+    let mut inferencer =
+        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     Ok(())
