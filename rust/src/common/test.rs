@@ -1,8 +1,29 @@
-use std::error::Error;
+use std::{error::Error, io};
 
-use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::InferenceModel}, model::{exponential::ExponentialModel}, inference::{inference::{inference_compute_marginals, Inferencer}, graph::PropositionGraph}, print_yellow};
+use crate::{
+    common::{
+        graph::InferenceGraph, model::InferenceModel, proposition_db::RedisFactDB,
+        train::TrainingPlan,
+    },
+    inference::{
+        graph::PropositionGraph,
+        inference::{inference_compute_marginals, Inferencer},
+    },
+    model::exponential::ExponentialModel,
+    print_blue, print_green, print_red, print_yellow,
+};
 
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
+
+pub fn get_input_tokens_from_user() -> Vec<String> {
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+    let trimmed = input.trim();
+    let tokens: Vec<String> = trimmed.split_whitespace().map(|s| s.to_string()).collect();
+    tokens
+}
 
 pub fn interactive_inference_example(
     config: &ConfigurationOptions,
@@ -27,14 +48,18 @@ pub fn interactive_inference_example(
     print_yellow!("nodes {:?}", &proposition_graph.all_nodes);
     let bfs = proposition_graph.get_bfs_order();
     for (index, node) in bfs.iter().enumerate() {
-        print_yellow!("node {} {:?}", index, &node);
+        if node.is_single() {
+            info!("node {} {:?}", index, &node);
+        } else {
+            print_green!("node {} {:?}", index, &node);
+        }
     }
     info!("done");
     Ok(())
 }
 
 pub fn summarize_examples(
-    config:&ConfigurationOptions,
+    config: &ConfigurationOptions,
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
