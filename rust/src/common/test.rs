@@ -88,7 +88,9 @@ impl PropositionDB for ReplState {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        todo!()
+        let node = PropositionNode::from_single(proposition);
+        let result = self.evidence.get(&node);
+        Ok(result.copied())
     }
 
     fn store_proposition_probability(
