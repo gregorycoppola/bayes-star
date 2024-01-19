@@ -70,7 +70,6 @@ fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode
 }
 
 impl Inferencer {
-    // Initialize new Storage with a Redis connection
     pub fn new_mutable(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
@@ -88,7 +87,6 @@ impl Inferencer {
 
     pub fn initialize(&mut self, proposition: &Proposition) -> Result<(), Box<dyn Error>> {
         print_red!("initialize: proposition {:?}", proposition.hash_string());
-        // self.initialize_pi()?;
         self.initialize_lambda()?;
         self.do_pi_traversal()?;
         self.do_lambda_traversal()?;
