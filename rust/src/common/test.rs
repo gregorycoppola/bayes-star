@@ -21,8 +21,6 @@ use super::{interface::PropositionDB, resources::FactoryResources, setup::Config
 
 struct ReplState {
     inferencer: Box<Inferencer>,
-    /// Evidence that the user has selected to add.
-    evidence: HashMap<PropositionNode, f64>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
     question_index: HashMap<u64, PropositionNode>,
 }
@@ -86,25 +84,6 @@ impl ReplState {
             self.question_index.insert(index as u64, node.clone());
         }
         Ok(())
-    }
-}
-
-impl PropositionDB for ReplState {
-    fn get_proposition_probability(
-        &self,
-        proposition: &Proposition,
-    ) -> Result<Option<f64>, Box<dyn Error>> {
-        let node = PropositionNode::from_single(proposition);
-        let result = self.evidence.get(&node);
-        Ok(result.copied())
-    }
-
-    fn store_proposition_probability(
-        &mut self,
-        proposition: &Proposition,
-        probability: f64,
-    ) -> Result<(), Box<dyn Error>> {
-        todo!()
     }
 }
 

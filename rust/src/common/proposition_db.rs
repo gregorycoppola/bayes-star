@@ -4,10 +4,10 @@ use crate::{
         self,
         exponential::ExponentialModel,
         objects::{PredicateGroup, Domain, Entity, PredicateFactor, Predicate, Proposition, EXISTENCE_FUNCTION},
-    },
+    }, inference::table::PropositionNode,
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error, rc::Rc, io::Empty};
+use std::{cell::RefCell, error::Error, rc::Rc, io::Empty, collections::HashMap};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
@@ -124,5 +124,34 @@ impl PropositionDB for EmptyFactDB {
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         panic!("Can't call this.")
+    }
+}
+
+pub struct HashMapPropositionDB {
+    /// Evidence that the user has selected to add.
+    evidence: HashMap<PropositionNode, f64>,
+}
+
+impl PropositionDB for HashMapPropositionDB {
+    fn get_proposition_probability(
+        &self,
+        proposition: &Proposition,
+    ) -> Result<Option<f64>, Box<dyn Error>> {
+        if proposition.predicate.function == EXISTENCE_FUNCTION.to_string() {
+            return Ok(Some(1f64));
+        }
+        let node = PropositionNode::from_single(proposition);
+        let result = self.evidence.get(&node);
+        Ok(result.copied())
+    }
+
+    fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        let node = PropositionNode::from_single(proposition);
+        self.evidence.insert(node, probability);
+        Ok(())
     }
 }
