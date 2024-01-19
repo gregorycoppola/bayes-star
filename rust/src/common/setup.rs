@@ -45,6 +45,13 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
                 .help("Enables printing of training loss")
                 .takes_value(false), // No value is expected, presence of flag sets it to true
         )
+        .arg(
+            Arg::with_name("test_example")
+                .long("test_example")
+                .value_name("NUMBER")
+                .help("Sets the test example number (optional)")
+                .takes_value(true), // This argument is optional and takes a value
+        )
         .get_matches();
     let entities_per_domain: i32 = matches
         .value_of("entities_per_domain")
