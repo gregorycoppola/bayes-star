@@ -16,7 +16,7 @@ use crate::{
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
 
 struct ReplState {
-    proposition_graph: Rc<PropositionGraph>,
+    inferencer: Rc<Inferencer>,
     /// Evidence that the user has selected to add.
     evidence: HashMap<PropositionNode, f64>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
@@ -24,9 +24,9 @@ struct ReplState {
 }
 
 impl ReplState {
-    pub fn new(proposition_graph: Rc<PropositionGraph>) -> ReplState {
+    pub fn new(inferencer: Rc<Inferencer>) -> ReplState {
         ReplState {
-            proposition_graph,
+            inferencer,
             evidence: HashMap::new(),
             question_index: HashMap::new(),
         }
@@ -53,7 +53,7 @@ impl ReplState {
     }
 
     fn print_ordering(&self) {
-        let bfs = self.proposition_graph.get_bfs_order();
+        let bfs = self.inferencer.proposition_graph.get_bfs_order();
         for (index, node) in bfs.iter().enumerate() {
             if node.is_single() {
                 info!("node {} {:?}", index, &node);
