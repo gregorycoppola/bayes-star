@@ -81,18 +81,18 @@ impl Inferencer {
             for (index, parent_node) in parent_nodes.iter().enumerate() {
                 let boolean_outcome = combination.get(parent_node).unwrap();
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
-                let lambda_x_z = self
+                let pi_x_z = self
                     .data
                     .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
                 print_red!(
-                    "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, lambda_x_z {}",
+                    "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",
                     &parent_node,
                     &node,
                     usize_outcome,
-                    lambda_x_z,
+                    pi_x_z,
                 );
-                product *= lambda_x_z;
+                product *= pi_x_z;
             }
             let factor =
                 self.build_factor_context_for_assignment(&premise_groups, combination, &conclusion);
