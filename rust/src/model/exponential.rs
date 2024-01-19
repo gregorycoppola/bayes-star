@@ -1,5 +1,4 @@
 use super::choose::extract_backimplications_from_proposition;
-use super::config::ConfigurationOptions;
 use super::objects::PredicateFactor;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{PropositionDB, PredictStatistics, TrainStatistics};
@@ -7,6 +6,7 @@ use crate::common::model::InferenceModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
+use crate::common::setup::ConfigurationOptions;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
 use crate::{print_yellow, print_blue};

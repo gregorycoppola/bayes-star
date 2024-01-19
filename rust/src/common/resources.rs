@@ -1,8 +1,5 @@
 use std::error::Error;
-
-use crate::model::config::ConfigurationOptions;
-
-use super::redis::RedisManager;
+use super::{redis::RedisManager, setup::ConfigurationOptions};
 
 pub struct FactoryResources {
     pub config: ConfigurationOptions,

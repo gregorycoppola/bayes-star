@@ -1,9 +1,15 @@
 use crate::common::resources::FactoryResources;
-use crate::model::config::ConfigurationOptions;
 use crate::scenarios::dating_simple::SimpleDating;
-use env_logger::{Builder, Env};
-use std::io::Write;
 use clap::{App, Arg};
+use env_logger::{Builder, Env};
+use serde::Deserialize;
+use std::io::Write;
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct ConfigurationOptions {
+    pub entities_per_domain: i32,
+    pub print_training_loss: bool,
+}
 
 pub fn parse_configuration_options() -> ConfigurationOptions {
     Builder::from_env(Env::default().default_filter_or("info"))
@@ -45,9 +51,13 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         .parse()
         .expect("entities_per_domain needs to be an integer");
     let print_training_loss = matches.is_present("print_training_loss");
+    let test_example: Option<u32> = matches.value_of("test_example").map(|v| {
+        v.parse()
+            .expect("test_example needs to be a positive integer or omitted")
+    });
+
     ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
     }
 }
-
