@@ -25,8 +25,8 @@ pub fn interactive_inference_example(
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     print_yellow!("nodes {:?}", &proposition_graph.all_nodes);
-    for node in &proposition_graph.all_nodes {
-        print_yellow!("node {:?}", &node);
+    for (index, node) in proposition_graph.all_nodes.iter().enumerate() {
+        print_yellow!("node {} {:?}", index, &node);
     }
     info!("done");
     Ok(())
