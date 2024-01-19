@@ -31,51 +31,13 @@ pub struct Inferencer {
     pub bfs_order: Vec<PropositionNode>,
 }
 
-fn reverse_prune_duplicates(raw_order: &Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
-    let mut seen = HashSet::new();
-    let mut result = vec![];
-    for (depth, node) in raw_order.iter().rev() {
-        if !seen.contains(node) {
-            result.push(node.clone());
-        }
-        seen.insert(node);
-    }
-    result.reverse();
-    result
-}
-
-fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
-    let mut queue = VecDeque::new();
-    let mut buffer = vec![];
-    for root in &proposition_graph.roots {
-        queue.push_back((0, PropositionNode::from_single(&root)));
-    }
-
-    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
-
-    while let Some((depth, node)) = queue.pop_front() {
-        buffer.push((depth, node.clone()));
-        let forward = proposition_graph.get_all_forward(&node);
-        for child in &forward {
-            queue.push_back((depth + 1, child.clone()));
-        }
-
-        print_yellow!("create_bfs_order initial: queue {:?}", &queue);
-        print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
-    }
-
-    let result = reverse_prune_duplicates(&buffer);
-    print_yellow!("create_bfs_order result: {:?}", &result);
-    result
-}
-
 impl Inferencer {
     pub fn new_mutable(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
         fact_memory: Rc<dyn PropositionDB>,
     ) -> Result<Box<Self>, redis::RedisError> {
-        let bfs_order = create_bfs_order(&proposition_graph);
+        let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {
             model,
             fact_memory,

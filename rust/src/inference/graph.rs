@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{HashMap, HashSet, VecDeque},
     error::Error,
     rc::Rc,
 };
@@ -12,7 +12,7 @@ use crate::{
     model::{
         choose::{compute_search_predicates, extract_backimplications_from_proposition},
         objects::{GroupRoleMap, PredicateFactor, Proposition, PropositionGroup},
-    }, print_green,
+    }, print_green, print_yellow,
 };
 
 use super::table::{GenericNodeType, PropositionNode};
@@ -230,6 +230,10 @@ impl PropositionGraph {
     pub fn get_roots(&self) -> HashSet<Proposition> {
         self.roots.clone()
     }
+
+    pub fn get_bfs_order(&self) -> Vec<PropositionNode> {
+        todo!()
+    }
 }
 
 impl PropositionGraph {
@@ -257,4 +261,42 @@ impl PropositionGraph {
         info!("Roots: {:?}", self.roots);
         info!("All Nodes: {:?}", self.all_nodes);
     }
+}
+
+fn reverse_prune_duplicates(raw_order: &Vec<(i32, PropositionNode)>) -> Vec<PropositionNode> {
+    let mut seen = HashSet::new();
+    let mut result = vec![];
+    for (depth, node) in raw_order.iter().rev() {
+        if !seen.contains(node) {
+            result.push(node.clone());
+        }
+        seen.insert(node);
+    }
+    result.reverse();
+    result
+}
+
+fn create_bfs_order(proposition_graph: &PropositionGraph) -> Vec<PropositionNode> {
+    let mut queue = VecDeque::new();
+    let mut buffer = vec![];
+    for root in &proposition_graph.roots {
+        queue.push_back((0, PropositionNode::from_single(&root)));
+    }
+
+    print_yellow!("create_bfs_order initial: queue {:?}", &queue);
+
+    while let Some((depth, node)) = queue.pop_front() {
+        buffer.push((depth, node.clone()));
+        let forward = proposition_graph.get_all_forward(&node);
+        for child in &forward {
+            queue.push_back((depth + 1, child.clone()));
+        }
+
+        print_yellow!("create_bfs_order initial: queue {:?}", &queue);
+        print_yellow!("create_bfs_order initial: buffer {:?}", &buffer);
+    }
+
+    let result = reverse_prune_duplicates(&buffer);
+    print_yellow!("create_bfs_order result: {:?}", &result);
+    result
 }
