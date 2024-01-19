@@ -1,6 +1,6 @@
 use super::{
     graph::{PropositionFactor, PropositionGraph},
-    table::{HashMapBeliefTable, InferenceResult, PropositionNode},
+    table::{HashMapBeliefTable, PropositionNode},
 };
 use crate::{
     common::{
@@ -8,7 +8,7 @@ use crate::{
         model::{FactorContext, InferenceModel},
         proposition_db,
     },
-    inference::table::{GenericNodeType, HashMapInferenceResult},
+    inference::table::GenericNodeType,
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, EXISTENCE_FUNCTION},
         weights::CLASS_LABELS,
@@ -228,13 +228,13 @@ pub fn compute_each_combination(
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
     target: &Proposition,
-) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
+) -> Result<(), Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone())?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
-    HashMapInferenceResult::new_shared(inferencer.data)
+    Ok(())
 }
 
 pub fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<PropositionGroup> {

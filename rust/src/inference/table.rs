@@ -248,25 +248,3 @@ impl HashMapBeliefTable {
         self.lambda_messages.insert(key, value);
     }
 }
-
-pub struct HashMapInferenceResult {
-    underlying: HashMapBeliefTable,
-}
-
-impl HashMapInferenceResult {
-    pub fn new_shared(
-        underlying: HashMapBeliefTable,
-    ) -> Result<Rc<dyn InferenceResult>, Box<dyn Error>> {
-        Ok(Rc::new(HashMapInferenceResult { underlying }))
-    }
-}
-
-impl InferenceResult for HashMapInferenceResult {
-    fn get_proposition_probability(&self, proposition: &Predicate) -> Result<f64, Box<dyn Error>> {
-        panic!("implement")
-    }
-}
-
-pub trait InferenceResult {
-    fn get_proposition_probability(&self, proposition: &Predicate) -> Result<f64, Box<dyn Error>>;
-}
