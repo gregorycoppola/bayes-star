@@ -18,6 +18,20 @@ pub fn do_testing(
         info!("testing proposition {:?}", &proposition.hash_string());
         inference_compute_marginals(model.clone(), proposition).unwrap();
     }
-    info!("TODO: implement test");
+    Ok(())
+}
+
+pub fn show_questions(
+    resources: &FactoryResources,
+) -> Result<(), Box<dyn Error>> {
+    let plan = TrainingPlan::new(&resources.redis)?;
+    let graphical_model = InferenceModel::new_shared(&resources)?;
+    let plan = TrainingPlan::new(&resources.redis)?;
+    let model = InferenceModel::new_shared(&resources).unwrap();
+    // test
+    let test_questions = plan.get_test_questions().unwrap();
+    for (index, proposition) in test_questions.iter().enumerate() {
+        info!("testing proposition {:?}", &proposition.hash_string());
+    }
     Ok(())
 }
