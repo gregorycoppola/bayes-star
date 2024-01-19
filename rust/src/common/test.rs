@@ -44,7 +44,7 @@ impl ReplState {
             question_index: HashMap::new(),
         }
     }
-    fn do_loop(&mut self)  -> Result<(), Box<dyn Error>> {
+    fn do_repl_loop(&mut self)  -> Result<(), Box<dyn Error>> {
         loop {
             self.print_ordering()?;
             let tokens = get_input_tokens_from_user();
@@ -133,7 +133,7 @@ pub fn interactive_inference_example(
     inferencer.reinitialize_chard()?;
     inferencer.data.print_debug();
     let mut repl = ReplState::new(inferencer);
-    repl.do_loop()?;
+    repl.do_repl_loop()?;
     info!("done");
     Ok(())
 }
