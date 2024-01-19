@@ -29,28 +29,22 @@ impl Inferencer {
     }
 
     pub fn lambda_compute_generic(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Part 2: For each value of z, compute lambda_X(z)
-        let forward_groups = self.proposition_graph.get_all_forward(from_node);
-        for (this_index, to_node) in forward_groups.iter().enumerate() {
-            for class_label in &CLASS_LABELS {
-                let mut lambda_part = 1f64;
-                for (other_index, other_node) in forward_groups.iter().enumerate() {
-                    if other_index != this_index {
-                        let this_lambda = self
-                            .data
-                            .get_lambda_value(&other_node, *class_label)
-                            .unwrap();
-                        lambda_part *= this_lambda;
-                    }
-                }
-                let lambda_part = self.data.get_lambda_value(&from_node, *class_label).unwrap();
-                let message = lambda_part;
-                self.data
-                    .set_lambda_message(&from_node, &to_node, *class_label, message);
+        let children = self.proposition_graph.get_all_forward(from_node);
+        for class_label in &CLASS_LABELS {
+            let mut product = 1f64;
+            for (_child_index, child_node) in children.iter().enumerate() {
+                let child_lambda = self
+                    .data
+                    .get_lambda_value(&child_node, *class_label)
+                    .unwrap();
+                product *= child_lambda;
             }
+            self.data
+                .set_lambda_value(&from_node, *class_label, product);
         }
         Ok(())
     }
+
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let is_observed = self.is_observed(from_node)?;
         if is_observed {
