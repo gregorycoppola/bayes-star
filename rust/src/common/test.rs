@@ -27,8 +27,9 @@ struct ReplState {
 }
 
 impl ReplState {
-    pub fn new(inferencer: Box<Inferencer>) -> ReplState {
+    pub fn new(mut inferencer: Box<Inferencer>) -> ReplState {
         let fact_memory = HashMapPropositionDB::new();
+        inferencer.fact_memory = fact_memory.clone();
         ReplState {
             inferencer,
             fact_memory,
