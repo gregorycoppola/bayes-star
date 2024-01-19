@@ -16,7 +16,7 @@ use crate::{
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
 
 struct ReplState {
-    inferencer: Rc<Inferencer>,
+    inferencer: Box<Inferencer>,
     /// Evidence that the user has selected to add.
     evidence: HashMap<PropositionNode, f64>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
@@ -24,7 +24,7 @@ struct ReplState {
 }
 
 impl ReplState {
-    pub fn new(inferencer: Rc<Inferencer>) -> ReplState {
+    pub fn new(inferencer: Box<Inferencer>) -> ReplState {
         ReplState {
             inferencer,
             evidence: HashMap::new(),
@@ -94,6 +94,7 @@ pub fn interactive_inference_example(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
+    let repl = ReplState::new(inferencer);
     info!("done");
     Ok(())
 }
