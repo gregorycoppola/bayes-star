@@ -23,7 +23,7 @@ pub enum GenericNodeType {
 #[derive(PartialEq, Eq, Clone)]
 pub struct PropositionNode {
     pub node: GenericNodeType,
-    underlying_hash: u64,
+    pub underlying_hash: u64,
 }
 
 fn hash_proposition(proposition: &Proposition) -> u64 {

@@ -62,7 +62,20 @@ impl Inferencer {
     }
 
     pub fn do_fan_out_from_node(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let mut backward_order = self.bfs_order.clone();
+        backward_order.reverse();
+        let mut started = false;
+        for visiting in &backward_order {
+            if visiting.underlying_hash == node.underlying_hash {
+                started = true;
+            }
+            if started {
+                self.lambda_visit_node(visiting)?;
+            }
+        }
+        self.do_pi_traversal();
+        self.update_marginals()?;
+        Ok(())
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
