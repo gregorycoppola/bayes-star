@@ -24,6 +24,13 @@ struct ReplState {
 }
 
 impl ReplState {
+    pub fn new(proposition_graph: Rc<PropositionGraph>) -> ReplState {
+        ReplState {
+            proposition_graph,
+            evidence: HashMap::new(),
+            question_index: HashMap::new(),
+        }
+    }
     fn do_loop(&mut self) {
         loop {
             self.print_ordering();
