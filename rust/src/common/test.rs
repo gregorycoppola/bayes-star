@@ -61,7 +61,12 @@ pub fn interactive_inference_example(
         print_ordering(&proposition_graph);
         let tokens = get_input_tokens_from_user();
         println!("tokens {:?}", tokens);
-        break;
+        let function = &tokens[0];
+        match function.as_str() {
+            "set" => println!("Found 'hello'"),
+            "quit" => break,
+            _ => println!("Command not recognized."),
+        };
     }
     Ok(())
 }
