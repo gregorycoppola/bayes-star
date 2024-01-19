@@ -1,17 +1,22 @@
 use crate::{
     common::interface::PropositionDB,
+    inference::table::PropositionNode,
     model::{
         self,
         exponential::ExponentialModel,
-        objects::{PredicateGroup, Domain, Entity, PredicateFactor, Predicate, Proposition, EXISTENCE_FUNCTION},
-    }, inference::table::PropositionNode,
+        objects::{
+            Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
+            EXISTENCE_FUNCTION,
+        },
+    },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error, rc::Rc, io::Empty, collections::HashMap};
+use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc};
 
 use super::{
+    graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, graph::InferenceGraph,
+    redis::RedisManager,
 };
 
 pub struct RedisFactDB {
@@ -94,7 +99,6 @@ impl PropositionDB for RedisFactDB {
         trace!("GraphicalModel::store_proposition_probability - Completed successfully");
         Ok(())
     }
-
 }
 
 pub struct EmptyFactDB;
@@ -128,8 +132,7 @@ impl PropositionDB for EmptyFactDB {
 }
 
 pub struct HashMapPropositionDB {
-    /// Evidence that the user has selected to add.
-    evidence: HashMap<PropositionNode, f64>,
+    evidence: RefCell<HashMap<PropositionNode, f64>>,
 }
 
 impl PropositionDB for HashMapPropositionDB {
@@ -141,7 +144,8 @@ impl PropositionDB for HashMapPropositionDB {
             return Ok(Some(1f64));
         }
         let node = PropositionNode::from_single(proposition);
-        let result = self.evidence.get(&node);
+        let map = self.evidence.borrow();
+        let result = map.get(&node);
         Ok(result.copied())
     }
 
@@ -151,7 +155,8 @@ impl PropositionDB for HashMapPropositionDB {
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         let node = PropositionNode::from_single(proposition);
-        self.evidence.insert(node, probability);
+        // Use `borrow_mut` to get a mutable reference to the HashMap
+        self.evidence.borrow_mut().insert(node, probability);
         Ok(())
     }
 }
