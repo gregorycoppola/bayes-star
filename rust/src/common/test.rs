@@ -57,6 +57,12 @@ pub fn interactive_inference_example(
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     info!("done");
+    loop {
+        print_ordering(&proposition_graph);
+        let tokens = get_input_tokens_from_user();
+        println!("tokens {:?}", tokens);
+        break;
+    }
     Ok(())
 }
 
