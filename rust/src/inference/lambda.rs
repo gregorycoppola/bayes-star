@@ -23,8 +23,9 @@ impl Inferencer {
 
 
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
-        let order = self.bfs_order.clone();
-        for node in &order {
+        let mut bfs_order = self.bfs_order.clone();
+        bfs_order.reverse();
+        for node in &bfs_order {
             self.lambda_visit_node(node)?;
         }
         Ok(())

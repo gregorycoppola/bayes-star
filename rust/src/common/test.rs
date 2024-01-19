@@ -52,6 +52,12 @@ impl ReplState {
             let function = &tokens[0];
             match function.as_str() {
                 "set" => self.handle_set(&tokens),
+                "reinit" => {
+                    self.inferencer.reinitialize_chart()?;
+                },
+                "pass" => {
+                    self.inferencer.do_full_forward_and_backward()?;
+                },
                 "quit" => break,
                 _ => println!("Command not recognized."),
             };
@@ -130,7 +136,7 @@ pub fn interactive_inference_example(
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.reinitialize_chard()?;
+    inferencer.reinitialize_chart()?;
     inferencer.data.print_debug();
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;

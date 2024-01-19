@@ -47,9 +47,10 @@ impl Inferencer {
         }))
     }
 
-    pub fn reinitialize_chard(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn reinitialize_chart(&mut self) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
-        self.do_full_forward_and_backward()?;
+        self.do_pi_traversal()?;
+        self.update_marginals()?;
         Ok(())
     }
 
@@ -180,7 +181,7 @@ pub fn inference_compute_marginals(
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.reinitialize_chard()?;
+    inferencer.reinitialize_chart()?;
     inferencer.data.print_debug();
     Ok(())
 }
