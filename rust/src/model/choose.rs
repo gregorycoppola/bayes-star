@@ -8,7 +8,7 @@ use crate::{
     common::interface::PropositionDB,
     model::objects::{Predicate, PredicateGroup},
 };
-use crate::{print_green, print_red, print_yellow};
+use crate::{print_green, print_red};
 use std::collections::{HashMap, HashSet};
 use std::{borrow::Borrow, error::Error};
 
@@ -76,31 +76,31 @@ pub fn extract_backimplications_from_proposition(
     graph: &InferenceGraph,
     conclusion: &Proposition,
 ) -> Result<Vec<PropositionFactor>, Box<dyn Error>> {
-    print_yellow!(
+    trace!(
         "Computing backimplications for proposition {:?}",
         conclusion
     );
     let search_keys = compute_search_predicates(conclusion)?;
-    print_yellow!("Computed search_keys {:?}", &search_keys);
+    trace!("Computed search_keys {:?}", &search_keys);
     let mut backimplications = Vec::new();
     for predicate in &search_keys {
-        print_yellow!("Processing search_key {:?}", &predicate.hash_string());
+        trace!("Processing search_key {:?}", &predicate.hash_string());
         let implications = graph.predicate_backward_links(&predicate)?;
-        print_yellow!("Found implications {:?}", &implications);
+        trace!("Found implications {:?}", &implications);
         for implication in &implications {
             let mut terms = Vec::new();
             for (index, proposition) in implication.premise.terms.iter().enumerate() {
-                print_yellow!("Processing term {}: {:?}", index, proposition);
+                trace!("Processing term {}: {:?}", index, proposition);
                 let extracted_mapping =
                     extract_premise_role_map(&conclusion, &implication.role_maps.role_maps[index]);
-                print_yellow!(
+                trace!(
                     "Extracted mapping for term {}: {:?}",
                     index,
                     &extracted_mapping
                 );
                 let extracted_proposition =
                     convert_to_proposition(&proposition, &extracted_mapping)?;
-                print_yellow!(
+                trace!(
                     "Converted to proposition for term {}: {:?}",
                     index,
                     extracted_proposition

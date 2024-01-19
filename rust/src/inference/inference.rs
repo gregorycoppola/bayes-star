@@ -62,7 +62,7 @@ impl Inferencer {
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
-        print_red!("update_marginals over {:?}", &self.bfs_order);
+        trace!("update_marginals over {:?}", &self.bfs_order);
         for node in &self.bfs_order {
             let pi0 = self.data.get_pi_value(node, 0).unwrap();
             let pi1 = self.data.get_pi_value(node, 1).unwrap();
@@ -73,7 +73,7 @@ impl Inferencer {
             let norm = potential0 + potential1;
             let probability0 = potential0 / norm;
             let probability1 = potential1 / norm;
-            print_red!("node {:?} p0 {} p1 {}", node, probability0, probability1);
+            trace!("node {:?} p0 {} p1 {}", node, probability0, probability1);
         }
         Ok(())
     }
@@ -109,7 +109,7 @@ impl Inferencer {
                 .fact_memory
                 .get_proposition_probability(&as_single)?
                 .is_some();
-            print_green!(
+            trace!(
                 "is_observed? node {:?}, has_evidence {}",
                 &as_single,
                 has_evidence
@@ -157,7 +157,7 @@ pub fn build_factor_context_for_assignment(
 pub fn compute_each_combination(
     propositions: &Vec<PropositionNode>,
 ) -> Vec<HashMap<PropositionNode, bool>> {
-    print_yellow!("compute_each_combination: propositions={:?}", &propositions);
+    trace!("compute_each_combination: propositions={:?}", &propositions);
     let n = propositions.len();
     let mut all_combinations = Vec::new();
     for i in 0..(1 << n) {

@@ -50,7 +50,7 @@ fn initialize_visit_single(
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     // Green for starting a new operation
-    info!(
+    trace!(
         "\x1b[32mInitializing visit for proposition: {:?}\x1b[0m",
         single.hash_string()
     );
@@ -60,19 +60,19 @@ fn initialize_visit_single(
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
     // Yellow for showing counts or lengths
-    info!(
+    trace!(
         "\x1b[33mInference factors count: {}\x1b[0m",
         inference_factors.len()
     );
 
     if inference_factors.is_empty() {
         // Blue for specific condition-related messages
-        info!("\x1b[34mNo inference factors. Adding to roots.\x1b[0m");
+        trace!("\x1b[34mNo inference factors. Adding to roots.\x1b[0m");
         graph.roots.insert(single.clone());
     } else {
         for inference_factor in &inference_factors {
             // Cyan for loop iteration
-            info!(
+            trace!(
                 "\x1b[36mProcessing inference factor: {:?}\x1b[0m",
                 inference_factor.debug_string()
             );
@@ -80,7 +80,7 @@ fn initialize_visit_single(
             let inference_used_key = (inference_factor.premise.clone(), inference_factor.conclusion.clone());
             graph.inference_used.insert(inference_used_key, inference_factor.inference.clone());
 
-            info!(
+            trace!(
                 "\x1b[36mUpdating single_backward for conclusion: {:?}\x1b[0m",
                 inference_factor.conclusion.hash_string()
             );
@@ -90,7 +90,7 @@ fn initialize_visit_single(
                 .or_insert_with(HashSet::new)
                 .insert(inference_factor.premise.clone());
 
-            info!(
+            trace!(
                 "\x1b[36mUpdating group_forward for premise: {:?}\x1b[0m",
                 inference_factor.premise.hash_string()
             );
@@ -105,13 +105,13 @@ fn initialize_visit_single(
                 .insert(PropositionNode::from_group(&inference_factor.premise));
 
             for term in &inference_factor.premise.terms {
-                info!("\x1b[35mProcessing term: {:?}\x1b[0m", term.hash_string());
+                trace!("\x1b[35mProcessing term: {:?}\x1b[0m", term.hash_string());
                 graph
                     .single_forward
                     .entry(term.clone())
                     .or_insert_with(HashSet::new)
                     .insert(inference_factor.premise.clone());
-                info!(
+                trace!(
                     "\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m",
                     term.hash_string()
                 );
@@ -121,7 +121,7 @@ fn initialize_visit_single(
     }
 
     // Green for completion messages
-    info!(
+    trace!(
         "\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m",
         single.hash_string()
     );
@@ -198,7 +198,7 @@ impl PropositionGraph {
                 }
             }
         }
-        info!("Resulting vector: {:?}", r);
+        trace!("Resulting vector: {:?}", r);
         r
     }
 
@@ -240,28 +240,28 @@ impl PropositionGraph {
 
 impl PropositionGraph {
     pub fn visualize(&self) {
-        info!("Single Forward:");
+        trace!("Single Forward:");
         for (key, value) in self.single_forward.iter() {
-            info!("  {:?}: {:?}", key, value);
+            trace!("  {:?}: {:?}", key, value);
         }
 
-        info!("Single Backward:");
+        trace!("Single Backward:");
         for (key, value) in self.single_backward.iter() {
-            info!("  {:?}: {:?}", key, value);
+            trace!("  {:?}: {:?}", key, value);
         }
 
-        info!("Group Forward:");
+        trace!("Group Forward:");
         for (key, value) in self.group_forward.iter() {
-            info!("  {:?}: {:?}", key, value);
+            trace!("  {:?}: {:?}", key, value);
         }
 
-        info!("Inference Used:");
+        trace!("Inference Used:");
         for (key, value) in self.inference_used.iter() {
-            info!("  ({:?}, {:?}): {:?}", key.0, key.1, value);
+            trace!("  ({:?}, {:?}): {:?}", key.0, key.1, value);
         }
 
-        info!("Roots: {:?}", self.roots);
-        info!("All Nodes: {:?}", self.all_nodes);
+        trace!("Roots: {:?}", self.roots);
+        trace!("All Nodes: {:?}", self.all_nodes);
     }
 }
 
