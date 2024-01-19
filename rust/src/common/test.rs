@@ -44,7 +44,9 @@ impl ReplState {
             println!("tokens {:?}", tokens);
             let function = &tokens[0];
             match function.as_str() {
-                "set" => self.handle_set(&tokens),
+                "set" => {
+                    self.handle_set(&tokens);
+                },
                 "reinit" => {
                     self.inferencer.reinitialize_chart()?;
                 },
@@ -61,9 +63,10 @@ impl ReplState {
     fn handle_set(&mut self, tokens: &Vec<String>) {
         let select_index = tokens[1].parse::<u64>().unwrap();
         let new_prob = tokens[2].parse::<f64>().unwrap();
-        let prop_index = self.question_index.get(&select_index).unwrap();
-        let prop = prop_index.extract_single();
+        let node = self.question_index.get(&select_index).unwrap();
+        let prop = node.extract_single();
         self.fact_memory.store_proposition_probability(&prop, new_prob).unwrap();
+        self.inferencer.do_fan_out_from_node(&node).unwrap();
     }
 
     fn print_ordering(&mut self) -> Result<(), Box<dyn Error>> {

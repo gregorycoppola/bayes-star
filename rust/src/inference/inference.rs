@@ -61,6 +61,10 @@ impl Inferencer {
         Ok(())
     }
 
+    pub fn do_fan_out_from_node(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
         trace!("update_marginals over {:?}", &self.bfs_order);
         for node in &self.bfs_order {
