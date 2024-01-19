@@ -7,7 +7,7 @@ use crate::{
     },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, error::Error, rc::Rc};
+use std::{cell::RefCell, error::Error, rc::Rc, io::Empty};
 
 use super::{
     interface::{PredictStatistics, TrainStatistics},
@@ -95,4 +95,34 @@ impl PropositionDB for RedisFactDB {
         Ok(())
     }
 
+}
+
+pub struct EmptyFactDB;
+
+impl EmptyFactDB {
+    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn PropositionDB>, Box<dyn Error>> {
+        let redis_connection = client.get_connection()?;
+        Ok(Rc::new(EmptyFactDB {}))
+    }
+}
+
+impl PropositionDB for EmptyFactDB {
+    // Return Some if the probability exists in the table, or else None.
+    fn get_proposition_probability(
+        &self,
+        proposition: &Proposition,
+    ) -> Result<Option<f64>, Box<dyn Error>> {
+        if proposition.predicate.function == EXISTENCE_FUNCTION.to_string() {
+            return Ok(Some(1f64));
+        }
+        Ok(None)
+    }
+
+    fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        panic!("Can't call this.")
+    }
 }
