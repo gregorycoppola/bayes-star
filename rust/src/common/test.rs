@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::InferenceModel}, model::{exponential::ExponentialModel}, inference::inference::inference_compute_marginals};
+use crate::{common::{graph::InferenceGraph, proposition_db::RedisFactDB, train::TrainingPlan, model::InferenceModel}, model::{exponential::ExponentialModel}, inference::{inference::{inference_compute_marginals, Inferencer}, graph::PropositionGraph}};
 
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
 
@@ -15,10 +15,19 @@ pub fn interactive_inference_example(
     let model = InferenceModel::new_shared(&resources).unwrap();
     // test
     let test_questions = plan.get_test_questions().unwrap();
-    let proposition = &test_questions[config.test_example.unwrap() as usize];
-    info!("testing proposition {:?}", &proposition.hash_string());
+    let target = &test_questions[config.test_example.unwrap() as usize];
+    info!("testing proposition {:?}", &target.hash_string());
     let fact_memory = RedisFactDB::new_shared(&resources.redis)?;
-    inference_compute_marginals(model.clone(), fact_memory, proposition).unwrap();
+    let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
+    proposition_graph.visualize();
+    let mut inferencer =
+        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+    inferencer.initialize(target)?;
+    inferencer.data.print_debug();
+    for node in &proposition_graph.all_nodes {
+        println!("node {:?}", &node);
+    }
+    info!("done");
     Ok(())
 }
 
