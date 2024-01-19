@@ -1,4 +1,4 @@
-use std::{error::Error, io};
+use std::{collections::HashMap, error::Error, io, rc::Rc};
 
 use crate::{
     common::{
@@ -9,11 +9,49 @@ use crate::{
         graph::PropositionGraph,
         inference::{inference_compute_marginals, Inferencer},
     },
-    model::exponential::ExponentialModel,
+    model::{exponential::ExponentialModel, objects::Proposition},
     print_blue, print_green, print_red, print_yellow,
 };
 
 use super::{resources::FactoryResources, setup::ConfigurationOptions};
+
+struct ReplState {
+    proposition_graph: Rc<PropositionGraph>,
+    /// Evidence that the user has selected to add.
+    evidence: HashMap<Proposition, f64>,
+    /// Relative set by the `print_ordering` last time it serialized an ordering.
+    question_index: HashMap<i32, Proposition>,
+}
+
+impl ReplState {
+    fn do_loop(&mut self) {}
+
+    fn handle_set(&mut self, tokens: &Vec<String>) {
+        let select_index = tokens[1].parse::<u64>();
+        let new_prob = tokens[2].parse::<f64>();
+        loop {
+            self.print_ordering();
+            let tokens = get_input_tokens_from_user();
+            println!("tokens {:?}", tokens);
+            let function = &tokens[0];
+            match function.as_str() {
+                "set" => println!("Found 'hello'"),
+                "quit" => break,
+                _ => println!("Command not recognized."),
+            };
+        }
+    }
+    fn print_ordering(&self) {
+        let bfs = self.proposition_graph.get_bfs_order();
+        for (index, node) in bfs.iter().enumerate() {
+            if node.is_single() {
+                info!("node {} {:?}", index, &node);
+            } else {
+                print_green!("node {} {:?}", index, &node);
+            }
+        }
+    }
+}
 
 pub fn get_input_tokens_from_user() -> Vec<String> {
     let mut input = String::new();
@@ -23,17 +61,6 @@ pub fn get_input_tokens_from_user() -> Vec<String> {
     let trimmed = input.trim();
     let tokens: Vec<String> = trimmed.split_whitespace().map(|s| s.to_string()).collect();
     tokens
-}
-
-fn print_ordering(proposition_graph:&PropositionGraph) {
-    let bfs = proposition_graph.get_bfs_order();
-    for (index, node) in bfs.iter().enumerate() {
-        if node.is_single() {
-            info!("node {} {:?}", index, &node);
-        } else {
-            print_green!("node {} {:?}", index, &node);
-        }
-    }
 }
 
 pub fn interactive_inference_example(
@@ -57,17 +84,6 @@ pub fn interactive_inference_example(
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     info!("done");
-    loop {
-        print_ordering(&proposition_graph);
-        let tokens = get_input_tokens_from_user();
-        println!("tokens {:?}", tokens);
-        let function = &tokens[0];
-        match function.as_str() {
-            "set" => println!("Found 'hello'"),
-            "quit" => break,
-            _ => println!("Command not recognized."),
-        };
-    }
     Ok(())
 }
 
