@@ -7,13 +7,17 @@ use crate::{
     },
     inference::{
         graph::PropositionGraph,
-        inference::{inference_compute_marginals, Inferencer}, table::PropositionNode,
+        inference::{inference_compute_marginals, Inferencer},
+        table::PropositionNode,
     },
-    model::{exponential::ExponentialModel, objects::Proposition},
+    model::{
+        exponential::ExponentialModel,
+        objects::{Proposition, EXISTENCE_FUNCTION},
+    },
     print_blue, print_green, print_red, print_yellow,
 };
 
-use super::{resources::FactoryResources, setup::ConfigurationOptions};
+use super::{interface::PropositionDB, resources::FactoryResources, setup::ConfigurationOptions};
 
 struct ReplState {
     inferencer: Box<Inferencer>,
@@ -25,15 +29,24 @@ struct ReplState {
 
 impl ReplState {
     pub fn new(inferencer: Box<Inferencer>) -> ReplState {
+        let mut evidence = HashMap::new();
+        for node in inferencer.proposition_graph.get_bfs_order().iter() {
+            if node.is_single() {
+                let single = node.extract_single();
+                if single.predicate.function == EXISTENCE_FUNCTION.to_string() {
+                    evidence.insert(node.clone(), 1f64);
+                }
+            }
+        }
         ReplState {
             inferencer,
-            evidence: HashMap::new(),
+            evidence,
             question_index: HashMap::new(),
         }
     }
-    fn do_loop(&mut self) {
+    fn do_loop(&mut self)  -> Result<(), Box<dyn Error>> {
         loop {
-            self.print_ordering();
+            self.print_ordering()?;
             let tokens = get_input_tokens_from_user();
             println!("tokens {:?}", tokens);
             let function = &tokens[0];
@@ -43,6 +56,7 @@ impl ReplState {
                 _ => println!("Command not recognized."),
             };
         }
+        Ok(())
     }
 
     fn handle_set(&mut self, tokens: &Vec<String>) {
@@ -52,15 +66,37 @@ impl ReplState {
         self.evidence.insert(prop_index.clone(), new_prob);
     }
 
-    fn print_ordering(&self) {
+    fn print_ordering(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs = self.inferencer.proposition_graph.get_bfs_order();
+        self.question_index.clear();
         for (index, node) in bfs.iter().enumerate() {
             if node.is_single() {
-                info!("node {} {:?}", index, &node);
+                let single = node.extract_single();
+                let probability = self.get_proposition_probability(&single)?;
+                info!("node {} {:?} {:?}", index, &node, probability);
             } else {
-                print_green!("node {} {:?}", index, &node);
+                print_green!("node {} {:?} *", index, &node);
             }
+            self.question_index.insert(index as u64, node.clone());
         }
+        Ok(())
+    }
+}
+
+impl PropositionDB for ReplState {
+    fn get_proposition_probability(
+        &self,
+        proposition: &Proposition,
+    ) -> Result<Option<f64>, Box<dyn Error>> {
+        todo!()
+    }
+
+    fn store_proposition_probability(
+        &mut self,
+        proposition: &Proposition,
+        probability: f64,
+    ) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 }
 
@@ -95,7 +131,7 @@ pub fn interactive_inference_example(
     inferencer.initialize(target)?;
     inferencer.data.print_debug();
     let mut repl = ReplState::new(inferencer);
-    repl.do_loop();
+    repl.do_loop()?;
     info!("done");
     Ok(())
 }
