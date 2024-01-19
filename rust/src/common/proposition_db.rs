@@ -135,6 +135,14 @@ pub struct HashMapPropositionDB {
     evidence: RefCell<HashMap<PropositionNode, f64>>,
 }
 
+impl HashMapPropositionDB {
+    pub fn new() -> Rc<dyn PropositionDB> {
+        Rc::new(HashMapPropositionDB {
+            evidence: RefCell::new(HashMap::new()),
+        })
+    }
+}
+
 impl PropositionDB for HashMapPropositionDB {
     fn get_proposition_probability(
         &self,
