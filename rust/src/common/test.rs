@@ -27,7 +27,6 @@ pub fn summarize_examples(
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
-    let plan = TrainingPlan::new(&resources.redis)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
     // test
     let test_questions = plan.get_test_questions().unwrap();
