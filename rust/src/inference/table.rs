@@ -46,7 +46,6 @@ impl Hash for PropositionNode {
 impl PropositionNode {
     pub fn from_single(proposition: &Proposition) -> PropositionNode {
         let underlying_hash = hash_proposition(proposition);
-        print_yellow!("got hash {} {:?}", underlying_hash, proposition);
         PropositionNode {
             node: GenericNodeType::Single(proposition.clone()),
             underlying_hash,
