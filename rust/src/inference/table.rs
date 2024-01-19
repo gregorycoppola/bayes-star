@@ -104,26 +104,17 @@ pub struct HashMapBeliefTable {
     lambda_values: HashMap<(PropositionNode, usize), f64>,
     pi_messages: HashMap<(PropositionNode, PropositionNode, usize), f64>,
     lambda_messages: HashMap<(PropositionNode, PropositionNode, usize), f64>,
+    bfs_order: Vec<PropositionNode>,
 }
 
-fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>) {
-    let mut map_entries: Vec<_> = map.iter().collect();
-    info!("entries in map: {}", map_entries.len());
-
-    // Sorting by InferenceNode.debug_string() and then by usize
-    map_entries.sort_by(|a, b| {
-        let ((node_a, index_a), _) = a;
-        let ((node_b, index_b), _) = b;
-
-        match node_a.debug_string().cmp(&node_b.debug_string()) {
-            std::cmp::Ordering::Equal => index_a.cmp(index_b),
-            other => other,
+fn print_sorted_map(map: &HashMap<(PropositionNode, usize), f64>, bfs_order: &Vec<PropositionNode>) {
+    info!("map size: {}", map.len());
+    for proposition in bfs_order {
+        for label in &CLASS_LABELS {
+            let key = (proposition.clone(), *label);
+            let value = map.get(&key).unwrap();
+            print_yellow!("{} ({}): {}", proposition.debug_string(), *label, value);
         }
-    });
-
-    // Printing in sorted order
-    for ((node, index), value) in map_entries {
-        print_yellow!("{} ({}): {}", node.debug_string(), index, value);
     }
 }
 
@@ -156,9 +147,9 @@ fn print_sorted_messages(map: &HashMap<(PropositionNode, PropositionNode, usize)
 impl HashMapBeliefTable {
     pub fn print_debug(&self) {
         info!("pi_values:");
-        print_sorted_map(&self.pi_values);
+        print_sorted_map(&self.pi_values, &self.bfs_order);
         info!("lambda_values:");
-        print_sorted_map(&self.lambda_values);
+        print_sorted_map(&self.lambda_values, &self.bfs_order);
         info!("pi_messages:");
         print_sorted_messages(&self.pi_messages);
         info!("lambda_messages:");
@@ -168,12 +159,13 @@ impl HashMapBeliefTable {
 
 impl HashMapBeliefTable {
     // Constructor to create a new instance
-    pub fn new() -> Self {
+    pub fn new(bfs_order:Vec<PropositionNode>) -> Self {
         HashMapBeliefTable {
             pi_values: HashMap::new(),
             lambda_values: HashMap::new(),
             pi_messages: HashMap::new(),
             lambda_messages: HashMap::new(),
+            bfs_order,
         }
     }
 

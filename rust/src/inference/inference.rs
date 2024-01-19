@@ -42,7 +42,7 @@ impl Inferencer {
             model,
             fact_memory,
             proposition_graph,
-            data: HashMapBeliefTable::new(),
+            data: HashMapBeliefTable::new(bfs_order.clone()),
             bfs_order,
         }))
     }
