@@ -109,7 +109,7 @@ impl Inferencer {
                     if other_index != to_index {
                         let class_bool = combination.get(other_parent).unwrap();
                         let class_label = if *class_bool { 1 } else { 0 };
-                        let this_pi = self.data.get_pi_value(&other_parent, class_label).unwrap();
+                        let this_pi = self.data.get_pi_message(&other_parent, node, class_label).unwrap();
                         pi_product *= this_pi;
                     }
                 }
