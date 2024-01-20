@@ -124,6 +124,8 @@ impl Inferencer {
             }
             let final_true = sum_true * lambda_true;
             let final_false = sum_false * lambda_false;
+            print_green!("final 1 lambda message {} from {:?} to {:?}", final_true, node, to_parent);
+            print_green!("final 0 lambda message {} from {:?} to {:?}", final_false, node, to_parent);
             self.data.set_lambda_message(node, to_parent, 1, final_true);
             self.data.set_lambda_message(node, to_parent, 0, final_false);
         }
