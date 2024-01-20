@@ -93,11 +93,12 @@ impl ReplState {
     fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs = self.inferencer.proposition_graph.get_bfs_order();
         self.question_index.clear();
+        println!("NODES");
         for (index, node) in bfs.iter().enumerate() {
             if node.is_single() {
                 let single = node.extract_single();
                 let probability = self.fact_memory.get_proposition_probability(&single)?;
-                println!("node {} {:?} {:?}", index, &node, probability);
+                println!("{}\t{:?} {:?}", index, &node, probability);
                 self.question_index.insert(index as u64, node.clone());
             } else {
                 // trace!("node {} {:?} *", index, &node);
