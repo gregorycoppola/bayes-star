@@ -96,7 +96,7 @@ impl Inferencer {
 
     pub fn lambda_send_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        trace!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
+        print_green!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
         let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
@@ -111,6 +111,7 @@ impl Inferencer {
                         let class_bool = combination.get(other_parent).unwrap();
                         let class_label = if *class_bool { 1 } else { 0 };
                         let this_pi = self.data.get_pi_message(&other_parent, node, class_label).unwrap();
+                        info!("using pi message parent {:?}, node {:?}, label {}: pi={}", &other_parent, node, class_label, this_pi);
                         pi_product *= this_pi;
                     }
                 }
