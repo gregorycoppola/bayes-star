@@ -13,6 +13,7 @@ use std::{collections::HashMap, error::Error, rc::Rc};
 use std::collections::hash_map::DefaultHasher;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+use colored::*;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GenericNodeType {
@@ -112,12 +113,23 @@ fn print_sorted_map(
     map: &HashMap<(PropositionNode, usize), f64>,
     bfs_order: &Vec<PropositionNode>,
 ) {
-    println!("map size: {}", map.len());
     for proposition in bfs_order {
         for label in &CLASS_LABELS {
             let key = (proposition.clone(), *label);
-            let value = map.get(&key).unwrap();
-            trace!("{} ({}): {}", proposition.debug_string(), *label, value);
+            let prob_true = map.get(&key).unwrap();
+
+            // Calculating probability for false
+            let prob_false = 1.0 - prob_true;
+
+            // Formatting the probabilities
+            let formatted_prob_true = format!("{:.8}", prob_true);
+            let formatted_prob_false = format!("{:.8}", prob_false);
+
+            // Color the probabilities and print them along with the key
+            println!("{:<12} {:<12} {}", 
+                     formatted_prob_true.green(), 
+                     formatted_prob_false.red(), 
+                     proposition.debug_string());
         }
     }
 }
