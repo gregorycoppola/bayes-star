@@ -117,7 +117,7 @@ fn print_sorted_map(
         for label in &CLASS_LABELS {
             let key = (proposition.clone(), *label);
             let value = map.get(&key).unwrap();
-            print_yellow!("{} ({}): {}", proposition.debug_string(), *label, value);
+            trace!("{} ({}): {}", proposition.debug_string(), *label, value);
         }
     }
 }
@@ -133,7 +133,7 @@ fn print_sorted_messages(
                 let key = (from.clone(), to.clone(), *label);
                 let value = map.get(&key);
                 if value.is_some() {
-                    print_yellow!(
+                    trace!(
                         "{} {} ({}): {}",
                         from.debug_string(),
                         to.debug_string(),

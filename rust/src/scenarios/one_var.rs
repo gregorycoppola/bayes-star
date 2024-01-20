@@ -78,7 +78,7 @@ impl ScenarioMaker for OneVariable {
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
                 let jack_exciting = proposition("exciting".to_string(), vec![sub(jack)]);
 
-                print_yellow!(
+                trace!(
                     "Jack exciting: {:?}, Probability: {}",
                     jack_exciting.predicate.hash_string(),
                     p_jack_exciting

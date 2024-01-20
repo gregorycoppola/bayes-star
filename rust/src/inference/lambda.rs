@@ -15,7 +15,7 @@ impl Inferencer {
         bfs_order.reverse();
         trace!("send_lambda_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
-            print_yellow!("send pi bfs selects {:?}", node);
+            trace!("send pi bfs selects {:?}", node);
             self.lambda_visit_node(node)?;
         }
         Ok(())
@@ -82,7 +82,7 @@ impl Inferencer {
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         self.lambda_send_generic(from_node)?;
         let is_observed = self.is_observed(from_node)?;
-        print_yellow!(
+        trace!(
             "lambda_visit_node {:?} is_observed {}",
             from_node,
             is_observed
@@ -97,7 +97,7 @@ impl Inferencer {
 
     pub fn lambda_send_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        print_yellow!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
+        trace!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
         let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
