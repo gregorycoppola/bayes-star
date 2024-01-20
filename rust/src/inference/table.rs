@@ -155,19 +155,19 @@ impl HashMapBeliefTable {
     pub fn print_table(&self, table_name: &String) {
         match table_name.as_str() {
             "pv" => {
-                println!("pi_values:");
+                println!("PI VALUES");
                 print_sorted_map(&self.pi_values, &self.bfs_order);
             }
             "lv" => {
-                println!("lambda_values:");
+                println!("LAMBDA VALUES");
                 print_sorted_map(&self.lambda_values, &self.bfs_order);
             }
             "pm" => {
-                println!("pi_messages:");
+                println!("PI MESSAGES");
                 print_sorted_messages(&self.pi_messages, &self.bfs_order);
             }
             "lm" => {
-                println!("lambda_messages:");
+                println!("LAMBDA MESSAGES");
                 print_sorted_messages(&self.lambda_messages, &self.bfs_order);
             }
             _ => println!("Table not recognized."),
