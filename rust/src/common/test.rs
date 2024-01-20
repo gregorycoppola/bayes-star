@@ -40,7 +40,6 @@ impl ReplState {
     }
     fn do_repl_loop(&mut self) -> Result<(), Box<dyn Error>> {
         loop {
-            self.inferencer.update_marginals()?;
             self.print_menu_options()?;
             let tokens = get_input_tokens_from_user();
             println!("tokens {:?}", tokens);
@@ -54,6 +53,9 @@ impl ReplState {
                 }
                 "print" => {
                     self.print_table(&tokens);
+                }
+                "m" => {
+                    self.inferencer.update_marginals()?;
                 }
                 "pass" => {
                     self.inferencer.do_full_forward_and_backward()?;

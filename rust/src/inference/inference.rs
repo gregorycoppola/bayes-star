@@ -51,14 +51,12 @@ impl Inferencer {
     pub fn initialize_chart(&mut self) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
         self.do_pi_traversal()?;
-        self.update_marginals()?;
         Ok(())
     }
 
     pub fn do_full_forward_and_backward(&mut self) -> Result<(), Box<dyn Error>> {
         self.do_pi_traversal()?;
         self.do_lambda_traversal()?;
-        self.update_marginals()?;
         Ok(())
     }
 
@@ -78,7 +76,6 @@ impl Inferencer {
             }
         }
         self.do_pi_traversal()?;
-        self.update_marginals()?;
         Ok(())
     }
 
