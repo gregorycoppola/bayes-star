@@ -138,20 +138,24 @@ fn print_sorted_messages(
     map: &HashMap<(PropositionNode, PropositionNode, usize), f64>,
     bfs_order: &Vec<PropositionNode>,
 ) {
-    println!("map size: {}", map.len());
     for from in bfs_order {
         for to in bfs_order {
             for label in &CLASS_LABELS {
                 let key = (from.clone(), to.clone(), *label);
-                let value = map.get(&key);
-                if value.is_some() {
-                    trace!(
-                        "{} {} ({}): {}",
-                        from.debug_string(),
-                        to.debug_string(),
-                        *label,
-                        value.unwrap()
-                    );
+                if let Some(&prob_true) = map.get(&key) {
+                    // Calculating probability for false
+                    let prob_false = 1.0 - prob_true;
+
+                    // Formatting the probabilities
+                    let formatted_prob_true = format!("{:.8}", prob_true);
+                    let formatted_prob_false = format!("{:.8}", prob_false);
+
+                    // Color the probabilities and print them along with the keys
+                    println!("{:<12} {:<12} {:<20} {}", 
+                             formatted_prob_true.green(), 
+                             formatted_prob_false.red(), 
+                             from.debug_string(),
+                             to.debug_string());
                 }
             }
         }
