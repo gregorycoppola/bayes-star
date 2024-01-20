@@ -141,6 +141,10 @@ impl HashMapBeliefTable {
             evidence: RefCell::new(HashMap::new()),
         })
     }
+
+    pub fn clear(&self, node:&PropositionNode) -> () {
+        self.evidence.borrow_mut().remove(node);
+    }
 }
 
 impl BeliefTable for HashMapBeliefTable {

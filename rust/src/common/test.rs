@@ -70,6 +70,13 @@ impl ReplState {
         self.inferencer.do_fan_out_from_node(&node).unwrap();
     }
 
+    fn handle_unset(&mut self, tokens: &Vec<String>) {
+        let select_index = tokens[1].parse::<u64>().unwrap();
+        let node = self.question_index.get(&select_index).unwrap();
+        self.fact_memory.clear(node);
+        self.inferencer.do_fan_out_from_node(&node).unwrap();
+    }
+
     fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs = self.inferencer.proposition_graph.get_bfs_order();
         self.question_index.clear();
