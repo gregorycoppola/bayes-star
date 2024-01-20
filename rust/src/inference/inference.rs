@@ -168,7 +168,16 @@ impl Inferencer {
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
-        todo!()
+        let mut and_result = true;
+        for (_node, value) in premise_assignment {
+            and_result &= *value; 
+        }
+        let result = if and_result {
+            1f64
+        } else {
+            0f64
+        };
+        Ok(result)
     }
 }
 
