@@ -21,7 +21,7 @@ use super::{interface::BeliefTable, resources::FactoryResources, setup::Configur
 
 struct ReplState {
     inferencer: Box<Inferencer>,
-    fact_memory: Rc<dyn BeliefTable>,
+    fact_memory: Rc<HashMapBeliefTable>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
     question_index: HashMap<u64, PropositionNode>,
 }
