@@ -22,6 +22,7 @@ use std::{
     error::Error,
     rc::Rc,
 };
+use colored::*;
 
 pub struct Inferencer {
     pub model: Rc<InferenceModel>,
@@ -83,6 +84,7 @@ impl Inferencer {
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
         trace!("update_marginals over {:?}", &self.bfs_order);
+        println!("\nMARGINALS");
         for node in &self.bfs_order {
             let pi0 = self.data.get_pi_value(node, 0).unwrap();
             let pi1 = self.data.get_pi_value(node, 1).unwrap();
@@ -93,7 +95,13 @@ impl Inferencer {
             let norm = potential0 + potential1;
             let probability0 = potential0 / norm;
             let probability1 = potential1 / norm;
-            println!("marginal {:?} p0 {} p1 {}", node, probability0, probability1);
+
+            let formatted_prob0 = format!("{:.8}", probability0);
+            let formatted_prob1 = format!("{:.8}", probability1);
+            println!("{:<12} {:<12} {:?}", 
+                     formatted_prob0.green(), 
+                     formatted_prob1.red(), 
+                     node);
         }
         Ok(())
     }
