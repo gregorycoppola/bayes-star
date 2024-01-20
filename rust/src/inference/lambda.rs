@@ -53,7 +53,7 @@ impl Inferencer {
         if is_observed {
             self.lambda_set_from_evidence(from_node)?;
         } else {
-            self.lambda_compute(&from_node)?;
+            self.lambda_compute_value(&from_node)?;
         }
         Ok(())
     }
@@ -74,7 +74,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_compute(
+    pub fn lambda_compute_value(
         &mut self,
         node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
