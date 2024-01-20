@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error, io, rc::Rc};
 
 use crate::{
     common::{
-        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisFactDB, EmptyFactDB, HashMapPropositionDB},
+        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisFactDB, EmptyFactDB, HashMapBeliefTable},
         train::TrainingPlan,
     },
     inference::{
@@ -28,7 +28,7 @@ struct ReplState {
 
 impl ReplState {
     pub fn new(mut inferencer: Box<Inferencer>) -> ReplState {
-        let fact_memory = HashMapPropositionDB::new();
+        let fact_memory = HashMapBeliefTable::new();
         inferencer.fact_memory = fact_memory.clone();
         ReplState {
             inferencer,

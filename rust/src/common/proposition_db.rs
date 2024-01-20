@@ -131,19 +131,19 @@ impl BeliefTable for EmptyFactDB {
     }
 }
 
-pub struct HashMapPropositionDB {
+pub struct HashMapBeliefTable {
     evidence: RefCell<HashMap<PropositionNode, f64>>,
 }
 
-impl HashMapPropositionDB {
+impl HashMapBeliefTable {
     pub fn new() -> Rc<dyn BeliefTable> {
-        Rc::new(HashMapPropositionDB {
+        Rc::new(HashMapBeliefTable {
             evidence: RefCell::new(HashMap::new()),
         })
     }
 }
 
-impl BeliefTable for HashMapPropositionDB {
+impl BeliefTable for HashMapBeliefTable {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,
