@@ -170,7 +170,8 @@ impl Inferencer {
             premise_assignment,
             &proposition_conclusion,
         );
-        todo!()
+        let statistics = self.model.model.predict(&context)?;
+        Ok(statistics.marginal)
     }
 
     pub fn score_factor_assignment_conjunction(
