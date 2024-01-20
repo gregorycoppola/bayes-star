@@ -80,6 +80,7 @@ impl Inferencer {
     }
 
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        self.lambda_send_generic(from_node)?;
         let is_observed = self.is_observed(from_node)?;
         print_yellow!(
             "lambda_visit_node {:?} is_observed {}",
@@ -91,7 +92,6 @@ impl Inferencer {
         } else {
             self.lambda_compute_generic(&from_node)?;
         }
-        self.lambda_send_generic(from_node)?;
         Ok(())
     }
 
@@ -115,20 +115,21 @@ impl Inferencer {
                         pi_product *= this_pi;
                     }
                 }
-                let true_probability =
+                let probability_true =
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
-                print_green!("probability {} for {:?} on assignment {:?}", true_probability, node, combination);
-                let false_probability = 1f64 - true_probability;
-                // bug is here.. need to add according to the assignment
+                let probability_false = 1f64 - probability_true;
+                print_green!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
                 let parent_assignment = combination.get(to_parent).unwrap();
-                let true_factor = true_probability * pi_product * lambda_true;
-                let false_factor = false_probability * pi_product * lambda_false;
                 if *parent_assignment {
+                    let true_factor = probability_true * pi_product * lambda_true;
+                    let false_factor = probability_false * pi_product * lambda_true;
                     sum_true += true_factor;
                     sum_false += false_factor;
                 } else {
-                    sum_false += false_factor;
+                    let true_factor = probability_true * pi_product * lambda_false;
+                    let false_factor = probability_false * pi_product * lambda_false;
                     sum_true += true_factor;
+                    sum_false += false_factor;
                 }
             }
             print_green!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
