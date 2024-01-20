@@ -97,10 +97,12 @@ impl Inferencer {
 
     pub fn lambda_send_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
+        print_yellow!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
         let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
         for (to_index, to_parent) in parent_nodes.iter().enumerate() {
+            print_blue!("to_index {} to_parent {:?}", to_index, to_parent);
             let mut sum_true = 0f64;
             let mut sum_false = 0f64;
             for combination in &all_combinations {
@@ -113,11 +115,12 @@ impl Inferencer {
                         pi_product *= this_pi;
                     }
                 }
-                let true_marginal =
+                let true_probability =
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
-                let false_marginal = 1f64 - true_marginal;
-                sum_true += true_marginal * pi_product;
-                sum_false += false_marginal * pi_product;
+                print_green!("probability {} for {:?} on assignment {:?}", true_probability, node, combination);
+                let false_probability = 1f64 - true_probability;
+                sum_true += true_probability * pi_product;
+                sum_false += false_probability * pi_product;
             }
             let final_true = sum_true * lambda_true;
             let final_false = sum_false * lambda_false;
