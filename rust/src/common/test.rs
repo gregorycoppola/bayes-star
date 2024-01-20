@@ -2,7 +2,9 @@ use std::{collections::HashMap, error::Error, io, rc::Rc};
 
 use crate::{
     common::{
-        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisBeliefTable, EmptyBeliefTable, HashMapBeliefTable},
+        graph::InferenceGraph,
+        model::InferenceModel,
+        proposition_db::{EmptyBeliefTable, HashMapBeliefTable, RedisBeliefTable},
         train::TrainingPlan,
     },
     inference::{
@@ -36,9 +38,8 @@ impl ReplState {
             question_index: HashMap::new(),
         }
     }
-    fn do_repl_loop(&mut self)  -> Result<(), Box<dyn Error>> {
+    fn do_repl_loop(&mut self) -> Result<(), Box<dyn Error>> {
         loop {
-            self.inferencer.data.print_debug();
             self.inferencer.update_marginals()?;
             self.print_menu_options()?;
             let tokens = get_input_tokens_from_user();
@@ -47,13 +48,13 @@ impl ReplState {
             match function.as_str() {
                 "set" => {
                     self.handle_set(&tokens);
-                },
+                }
                 "reinit" => {
                     self.inferencer.initialize_chart()?;
-                },
+                }
                 "pass" => {
                     self.inferencer.do_full_forward_and_backward()?;
-                },
+                }
                 "quit" => break,
                 _ => println!("Command not recognized."),
             };
@@ -66,7 +67,9 @@ impl ReplState {
         let new_prob = tokens[2].parse::<f64>().unwrap();
         let node = self.question_index.get(&select_index).unwrap();
         let prop = node.extract_single();
-        self.fact_memory.store_proposition_probability(&prop, new_prob).unwrap();
+        self.fact_memory
+            .store_proposition_probability(&prop, new_prob)
+            .unwrap();
         self.inferencer.do_fan_out_from_node(&node).unwrap();
     }
 
@@ -75,6 +78,10 @@ impl ReplState {
         let node = self.question_index.get(&select_index).unwrap();
         self.fact_memory.clear(node);
         self.inferencer.do_fan_out_from_node(&node).unwrap();
+    }
+
+    fn print_table(&mut self, tokens: &Vec<String>) {
+        self.inferencer.data.print_debug();
     }
 
     fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
