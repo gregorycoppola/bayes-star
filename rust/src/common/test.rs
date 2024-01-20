@@ -1,5 +1,7 @@
 use std::{collections::HashMap, error::Error, io, rc::Rc};
 
+use colored::Colorize;
+
 use crate::{
     common::{
         graph::InferenceGraph,
@@ -10,7 +12,7 @@ use crate::{
     inference::{
         graph::PropositionGraph,
         inference::Inferencer,
-        table::{PropositionNode, self},
+        table::{self, PropositionNode},
     },
     model::{
         exponential::ExponentialModel,
@@ -98,7 +100,17 @@ impl ReplState {
             if node.is_single() {
                 let single = node.extract_single();
                 let probability = self.fact_memory.get_proposition_probability(&single)?;
-                println!("{}\t{:?} {:?}", index, &node, probability);
+                let probability_string = match &probability {
+                    Some(value) => {
+                        if *value > 0.5f64 {
+                            "Yes".green()
+                        } else {
+                            "No".green()
+                        }
+                    }
+                    None => "None".yellow(),
+                };
+                println!("{}\t{}\t{:?}", index, &probability_string, &node);
                 self.question_index.insert(index as u64, node.clone());
             } else {
                 // trace!("node {} {:?} *", index, &node);
