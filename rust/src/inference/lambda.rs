@@ -50,7 +50,7 @@ impl Inferencer {
             .fact_memory
             .get_proposition_probability(&as_single)?
             .unwrap();
-        print_red!("set from evidence {:?} {}", node, probability);
+        trace!("set from evidence {:?} {}", node, probability);
         self.data.set_lambda_value(node, 1, probability);
         self.data.set_lambda_value(node, 0, 1f64 - probability);
         Ok(())
