@@ -12,9 +12,7 @@ use std::error::Error;
 impl Inferencer {
     pub fn do_pi_traversal(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs_order = self.bfs_order.clone();
-        trace!("send_pi_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
-            trace!("send pi bfs selects {:?}", node);
             self.pi_visit_node(node)?;
         }
         Ok(())
@@ -43,14 +41,12 @@ impl Inferencer {
     }
 
     pub fn pi_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Part 2: For each value of z, compute pi_X(z)
         let forward_groups = self.proposition_graph.get_all_forward(node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
             for class_label in &CLASS_LABELS {
                 let mut lambda_part = 1f64;
                 for (other_index, other_child) in forward_groups.iter().enumerate() {
                     if other_index != this_index {
-                        // This should be a message.
                         let this_lambda = self
                             .data
                             .get_lambda_message(&other_child, node, *class_label)
@@ -67,7 +63,6 @@ impl Inferencer {
         Ok(())
     }
     pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        // Compute pi's.
         if !self.is_root(from_node) {
             let is_observed = self.is_observed(from_node)?;
             if is_observed {
@@ -78,7 +73,6 @@ impl Inferencer {
         } else {
             self.pi_compute_root(from_node)?;
         }
-        // Compute messages.
         self.pi_send_messages(from_node)?;
         Ok(())
     }
