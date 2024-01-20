@@ -42,25 +42,25 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_send_messages(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 2: For each value of z, compute pi_X(z)
-        let forward_groups = self.proposition_graph.get_all_forward(from_node);
+        let forward_groups = self.proposition_graph.get_all_forward(node);
         for (this_index, to_node) in forward_groups.iter().enumerate() {
             for class_label in &CLASS_LABELS {
                 let mut lambda_part = 1f64;
-                for (other_index, other_node) in forward_groups.iter().enumerate() {
+                for (other_index, other_child) in forward_groups.iter().enumerate() {
                     if other_index != this_index {
                         let this_lambda = self
                             .data
-                            .get_lambda_value(&other_node, *class_label)
+                            .get_lambda_value(&other_child, *class_label)
                             .unwrap();
                         lambda_part *= this_lambda;
                     }
                 }
-                let pi_part = self.data.get_pi_value(&from_node, *class_label).unwrap();
+                let pi_part = self.data.get_pi_value(&node, *class_label).unwrap();
                 let message = pi_part * lambda_part;
                 self.data
-                    .set_pi_message(&from_node, &to_node, *class_label, message);
+                    .set_pi_message(&node, &to_node, *class_label, message);
             }
         }
         Ok(())
