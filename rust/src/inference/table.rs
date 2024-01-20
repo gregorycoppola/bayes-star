@@ -1,5 +1,5 @@
 use crate::{
-    common::{graph::serialize_record, interface::PropositionDB},
+    common::{graph::serialize_record, interface::BeliefTable},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,

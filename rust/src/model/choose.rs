@@ -5,7 +5,7 @@ use crate::common::model::{FactorContext, InferenceModel};
 use crate::inference::graph::PropositionFactor;
 use crate::model::objects::{GroupRoleMap, PropositionGroup, RoleMap, EXISTENCE_FUNCTION};
 use crate::{
-    common::interface::PropositionDB,
+    common::interface::BeliefTable,
     model::objects::{Predicate, PredicateGroup},
 };
 use crate::{print_green, print_red};

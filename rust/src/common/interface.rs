@@ -11,7 +11,7 @@ pub struct PredictStatistics {
     pub probability: f64,
 }
 
-pub trait PropositionDB {
+pub trait BeliefTable {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,

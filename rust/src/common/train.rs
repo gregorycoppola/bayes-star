@@ -1,5 +1,5 @@
 use crate::{
-    common::{interface::PropositionDB, redis::seq_get_all},
+    common::{interface::BeliefTable, redis::seq_get_all},
     model::{
         self,
         exponential::ExponentialModel,
@@ -135,7 +135,7 @@ where
 
 // Probabilities are either 0 or 1, so assume independent, i.e., just boolean combine them as AND.
 fn extract_group_probability_for_training(
-    proposition_db: &Box<dyn PropositionDB>,
+    proposition_db: &Box<dyn BeliefTable>,
     premise:&PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     let mut product = 1f64;
@@ -147,7 +147,7 @@ fn extract_group_probability_for_training(
 }
 
 fn extract_factor_for_proposition_for_training(
-    proposition_db: &Box<dyn PropositionDB>,
+    proposition_db: &Box<dyn BeliefTable>,
     graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {

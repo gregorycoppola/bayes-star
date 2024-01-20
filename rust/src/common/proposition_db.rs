@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::PropositionDB,
+    common::interface::BeliefTable,
     inference::table::PropositionNode,
     model::{
         self,
@@ -24,17 +24,17 @@ pub struct RedisFactDB {
 }
 
 impl RedisFactDB {
-    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn PropositionDB>, Box<dyn Error>> {
+    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Box::new(RedisFactDB { redis_connection }))
     }
-    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn PropositionDB>, Box<dyn Error>> {
+    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Rc::new(RedisFactDB { redis_connection }))
     }
 }
 
-impl PropositionDB for RedisFactDB {
+impl BeliefTable for RedisFactDB {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
@@ -104,13 +104,13 @@ impl PropositionDB for RedisFactDB {
 pub struct EmptyFactDB;
 
 impl EmptyFactDB {
-    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn PropositionDB>, Box<dyn Error>> {
+    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
         Ok(Rc::new(EmptyFactDB {}))
     }
 }
 
-impl PropositionDB for EmptyFactDB {
+impl BeliefTable for EmptyFactDB {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
@@ -136,14 +136,14 @@ pub struct HashMapPropositionDB {
 }
 
 impl HashMapPropositionDB {
-    pub fn new() -> Rc<dyn PropositionDB> {
+    pub fn new() -> Rc<dyn BeliefTable> {
         Rc::new(HashMapPropositionDB {
             evidence: RefCell::new(HashMap::new()),
         })
     }
 }
 
-impl PropositionDB for HashMapPropositionDB {
+impl BeliefTable for HashMapPropositionDB {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,

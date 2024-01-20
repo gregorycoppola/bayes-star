@@ -1,6 +1,6 @@
 use crate::common::proposition_db::RedisFactDB;
 use crate::common::graph::InferenceGraph;
-use crate::common::interface::PropositionDB;
+use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};

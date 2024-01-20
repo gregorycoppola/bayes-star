@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     common::{
-        interface::PropositionDB,
+        interface::BeliefTable,
         model::{FactorContext, InferenceModel},
         proposition_db,
     },
@@ -25,7 +25,7 @@ use std::{
 
 pub struct Inferencer {
     pub model: Rc<InferenceModel>,
-    pub fact_memory: Rc<dyn PropositionDB>,
+    pub fact_memory: Rc<dyn BeliefTable>,
     pub proposition_graph: Rc<PropositionGraph>,
     pub data: HashMapBeliefTable,
     pub bfs_order: Vec<PropositionNode>,
@@ -35,7 +35,7 @@ impl Inferencer {
     pub fn new_mutable(
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
-        fact_memory: Rc<dyn PropositionDB>,
+        fact_memory: Rc<dyn BeliefTable>,
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {
@@ -242,7 +242,7 @@ pub fn compute_each_combination(
 
 pub fn inference_compute_marginals(
     model: Rc<InferenceModel>,
-    fact_memory: Rc<dyn PropositionDB>,
+    fact_memory: Rc<dyn BeliefTable>,
     target: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;

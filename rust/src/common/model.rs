@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::PropositionDB,
+    common::interface::BeliefTable,
     inference::graph::PropositionFactor,
     model::{
         self,

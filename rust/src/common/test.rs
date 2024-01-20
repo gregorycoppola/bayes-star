@@ -17,11 +17,11 @@ use crate::{
     print_blue, print_green, print_red, print_yellow,
 };
 
-use super::{interface::PropositionDB, resources::FactoryResources, setup::ConfigurationOptions};
+use super::{interface::BeliefTable, resources::FactoryResources, setup::ConfigurationOptions};
 
 struct ReplState {
     inferencer: Box<Inferencer>,
-    fact_memory: Rc<dyn PropositionDB>,
+    fact_memory: Rc<dyn BeliefTable>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
     question_index: HashMap<u64, PropositionNode>,
 }
