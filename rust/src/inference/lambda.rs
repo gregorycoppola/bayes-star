@@ -120,15 +120,21 @@ impl Inferencer {
                 print_green!("probability {} for {:?} on assignment {:?}", true_probability, node, combination);
                 let false_probability = 1f64 - true_probability;
                 // bug is here.. need to add according to the assignment
-                sum_true += true_probability * pi_product;
-                sum_false += false_probability * pi_product;
+                let parent_assignment = combination.get(to_parent).unwrap();
+                let true_factor = true_probability * pi_product * lambda_true;
+                let false_factor = false_probability * pi_product * lambda_false;
+                if *parent_assignment {
+                    sum_true += true_factor;
+                    sum_false += false_factor;
+                } else {
+                    sum_false += false_factor;
+                    sum_true += true_factor;
+                }
             }
-            let final_true = sum_true * lambda_true;
-            let final_false = sum_false * lambda_false;
-            print_green!("final 1 lambda message {} from {:?} to {:?}", final_true, node, to_parent);
-            print_green!("final 0 lambda message {} from {:?} to {:?}", final_false, node, to_parent);
-            self.data.set_lambda_message(node, to_parent, 1, final_true);
-            self.data.set_lambda_message(node, to_parent, 0, final_false);
+            print_green!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
+            print_green!("final 0 lambda message {} from {:?} to {:?}", sum_false, node, to_parent);
+            self.data.set_lambda_message(node, to_parent, 1, sum_true);
+            self.data.set_lambda_message(node, to_parent, 0, sum_false);
         }
         Ok(())
     }
