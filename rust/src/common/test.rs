@@ -84,7 +84,7 @@ impl ReplState {
             if node.is_single() {
                 let single = node.extract_single();
                 let probability = self.fact_memory.get_proposition_probability(&single)?;
-                info!("node {} {:?} {:?}", index, &node, probability);
+                println!("node {} {:?} {:?}", index, &node, probability);
                 self.question_index.insert(index as u64, node.clone());
             } else {
                 // print_green!("node {} {:?} *", index, &node);
@@ -110,13 +110,13 @@ pub fn interactive_inference_example(
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
-    info!("do_training - Getting all implications");
+    println!("do_training - Getting all implications");
     let plan = TrainingPlan::new(&resources.redis)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
     // test
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
-    info!("testing proposition {:?}", &target.hash_string());
+    println!("testing proposition {:?}", &target.hash_string());
     let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
@@ -125,7 +125,7 @@ pub fn interactive_inference_example(
     inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;
-    info!("done");
+    println!("done");
     Ok(())
 }
 
@@ -139,7 +139,7 @@ pub fn summarize_examples(
     // test
     let test_questions = plan.get_test_questions().unwrap();
     for (index, proposition) in test_questions.iter().enumerate() {
-        info!("testing proposition {:?}", &proposition.hash_string());
+        println!("testing proposition {:?}", &proposition.hash_string());
     }
     Ok(())
 }

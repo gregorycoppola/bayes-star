@@ -14,5 +14,5 @@ fn main() {
     } else {
         summarize_examples(&config, &resources).expect("Summarize failed.");
     }
-    info!("main finishes");
+    println!("main finishes");
 }

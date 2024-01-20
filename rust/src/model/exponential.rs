@@ -113,7 +113,7 @@ pub fn do_sgd_update(
         let new_weight = wv + LEARNING_RATE * (gv - ev);
         let loss = (gv - ev).abs();
         if print_training_loss {
-            info!(
+            println!(
                 "feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}",
                 feature, gv, ev, loss, wv, new_weight
             );

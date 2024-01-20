@@ -112,7 +112,7 @@ fn print_sorted_map(
     map: &HashMap<(PropositionNode, usize), f64>,
     bfs_order: &Vec<PropositionNode>,
 ) {
-    info!("map size: {}", map.len());
+    println!("map size: {}", map.len());
     for proposition in bfs_order {
         for label in &CLASS_LABELS {
             let key = (proposition.clone(), *label);
@@ -126,7 +126,7 @@ fn print_sorted_messages(
     map: &HashMap<(PropositionNode, PropositionNode, usize), f64>,
     bfs_order: &Vec<PropositionNode>,
 ) {
-    info!("map size: {}", map.len());
+    println!("map size: {}", map.len());
     for from in bfs_order {
         for to in bfs_order {
             for label in &CLASS_LABELS {
@@ -148,13 +148,13 @@ fn print_sorted_messages(
 
 impl HashMapBeliefTable {
     pub fn print_debug(&self) {
-        info!("pi_values:");
+        println!("pi_values:");
         print_sorted_map(&self.pi_values, &self.bfs_order);
-        info!("lambda_values:");
+        println!("lambda_values:");
         print_sorted_map(&self.lambda_values, &self.bfs_order);
-        info!("pi_messages:");
+        println!("pi_messages:");
         print_sorted_messages(&self.pi_messages, &self.bfs_order);
-        info!("lambda_messages:");
+        println!("lambda_messages:");
         print_sorted_messages(&self.lambda_messages, &self.bfs_order);
     }
 }

@@ -93,7 +93,7 @@ impl Inferencer {
             let norm = potential0 + potential1;
             let probability0 = potential0 / norm;
             let probability1 = potential1 / norm;
-            info!("node {:?} p0 {} p1 {}", node, probability0, probability1);
+            println!("node {:?} p0 {} p1 {}", node, probability0, probability1);
         }
         Ok(())
     }

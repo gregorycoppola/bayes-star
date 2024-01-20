@@ -43,21 +43,21 @@ impl TrainingPlan {
         queue_name: &String,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        info!(
+        println!(
             "GraphicalModel::add_to_training_queue - Start. Input proposition: {:?}",
             proposition
         );
         let serialized_proposition = match serde_json::to_string(proposition) {
             Ok(record) => record,
             Err(e) => {
-                info!(
+                println!(
                     "GraphicalModel::add_to_training_queue - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
-        info!(
+        println!(
             "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
@@ -66,10 +66,10 @@ impl TrainingPlan {
             .borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
-            info!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
+            println!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
             return Err(Box::new(e));
         }
-        info!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
+        println!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
         Ok(())
     }
 
@@ -101,7 +101,7 @@ impl TrainingPlan {
         &self,
         seq_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        info!(
+        println!(
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
@@ -111,7 +111,7 @@ impl TrainingPlan {
             let proposition = deserialize_record(record)?;
             result.push(proposition);
         }
-        info!("GraphicalModel::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
+        println!("GraphicalModel::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
         Ok(result)
     }
 
@@ -169,29 +169,29 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
-    info!("do_training - Getting all implications");
+    println!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
     for implication in implications {
-        info!("do_training - Processing implication: {:?}", implication);
+        println!("do_training - Processing implication: {:?}", implication);
         factor_model.initialize_connection(&implication)?;
     }
-    info!("do_training - Getting all propositions");
+    println!("do_training - Getting all propositions");
     let training_questions = plan.get_training_questions()?;
-    info!(
+    println!(
         "do_training - Processing propositions: {}",
         training_questions.len()
     );
     let mut examples_processed = 0;
     for proposition in &training_questions {
-        info!("do_training - Processing proposition: {:?}", proposition);
+        println!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_for_proposition_for_training(&proposition_db, &graph, proposition.clone())?;
-        info!("do_training - Backimplications: {:?}", &factor);
+        println!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
         let _stats = factor_model.train(&factor, probability) ?;
         examples_processed += 1;
     }
-    info!(
+    println!(
         "do_training - Training complete: examples processed {}",
         examples_processed
     );
@@ -206,8 +206,8 @@ pub fn setup_and_train(
     redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(resources);
-    info!("scenario result: {:?}", result);
+    println!("scenario result: {:?}", result);
     let train_result = do_training(resources);
-    info!("train result: {:?}", train_result);
+    println!("train result: {:?}", train_result);
     Ok(())
 }

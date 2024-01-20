@@ -131,7 +131,7 @@ fn test_get_all_implications() {
 //     ]);
 
 //     let result = predicate_graph.predicate_forward_links(&predicate).unwrap();
-//     info!("{:?}", &result);
+//     println!("{:?}", &result);
 // }
 
 #[test]
@@ -195,7 +195,7 @@ fn test_get_predicate_backward_links() {
 //     ]);
 
 //     let result = predicate_graph.conjoined_forward_links(&conjoined).unwrap();
-//     info!("{:?}", &result);
+//     println!("{:?}", &result);
 // }
 
 // #[test]
@@ -232,5 +232,5 @@ fn test_get_predicate_backward_links() {
 //     ]);
 
 //     let result = predicate_graph.conjoined_backward_links(&conjoined).unwrap();
-//     info!("{:?}", &result);
+//     println!("{:?}", &result);
 // }
