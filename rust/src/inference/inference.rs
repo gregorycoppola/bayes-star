@@ -142,9 +142,9 @@ impl Inferencer {
 
     pub fn score_factor_assignment(
         &self,
-        premises: &Vec<PropositionGroup>,
+        premises: &Vec<PropositionNode>,
         premise_assignment: &HashMap<PropositionNode, bool>,
-        conclusion: &Proposition,
+        conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
         todo!()
     }

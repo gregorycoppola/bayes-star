@@ -83,9 +83,7 @@ impl Inferencer {
     }
 
     pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let conclusion = node.extract_single();
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        let premise_groups = groups_from_backlinks(&parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
         let mut sum_false = 0f64;
@@ -108,7 +106,7 @@ impl Inferencer {
                 product *= pi_x_z;
             }
             let true_marginal =
-                self.score_factor_assignment(&premise_groups, combination, &conclusion)?;
+                self.score_factor_assignment(&parent_nodes, combination, node)?;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
             sum_false += false_marginal * product;
