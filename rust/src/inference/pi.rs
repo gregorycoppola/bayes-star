@@ -50,6 +50,7 @@ impl Inferencer {
                 let mut lambda_part = 1f64;
                 for (other_index, other_child) in forward_groups.iter().enumerate() {
                     if other_index != this_index {
+                        // This should be a message.
                         let this_lambda = self
                             .data
                             .get_lambda_value(&other_child, *class_label)
