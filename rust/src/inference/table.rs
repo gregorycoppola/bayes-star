@@ -147,15 +147,26 @@ fn print_sorted_messages(
 }
 
 impl HashMapBeliefTable {
-    pub fn print_table(&self, table_name:&String) {
-        println!("pi_values:");
-        print_sorted_map(&self.pi_values, &self.bfs_order);
-        println!("lambda_values:");
-        print_sorted_map(&self.lambda_values, &self.bfs_order);
-        println!("pi_messages:");
-        print_sorted_messages(&self.pi_messages, &self.bfs_order);
-        println!("lambda_messages:");
-        print_sorted_messages(&self.lambda_messages, &self.bfs_order);
+    pub fn print_table(&self, table_name: &String) {
+        match table_name.as_str() {
+            "pv" => {
+                println!("pi_values:");
+                print_sorted_map(&self.pi_values, &self.bfs_order);
+            }
+            "lv" => {
+                println!("lambda_values:");
+                print_sorted_map(&self.lambda_values, &self.bfs_order);
+            }
+            "pm" => {
+                println!("pi_messages:");
+                print_sorted_messages(&self.pi_messages, &self.bfs_order);
+            }
+            "lm" => {
+                println!("lambda_messages:");
+                print_sorted_messages(&self.lambda_messages, &self.bfs_order);
+            }
+            _ => println!("Table not recognized."),
+        };
     }
 }
 
