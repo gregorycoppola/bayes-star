@@ -53,7 +53,7 @@ impl Inferencer {
                         // This should be a message.
                         let this_lambda = self
                             .data
-                            .get_lambda_value(&other_child, *class_label)
+                            .get_lambda_message(&other_child, node, *class_label)
                             .unwrap();
                         lambda_part *= this_lambda;
                     }
@@ -95,7 +95,7 @@ impl Inferencer {
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 let pi_x_z = self
                     .data
-                    .get_pi_message(parent_node, node, usize_outcome)
+                    .get_lambda_message(node, parent_node, usize_outcome)
                     .unwrap();
                 trace!(
                     "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",
