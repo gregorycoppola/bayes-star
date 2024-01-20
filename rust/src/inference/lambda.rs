@@ -117,7 +117,7 @@ impl Inferencer {
                 let probability_true =
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
                 let probability_false = 1f64 - probability_true;
-                trace!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
+                print_yellow!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
                 let parent_assignment = combination.get(to_parent).unwrap();
                 if *parent_assignment {
                     let true_factor = probability_true * pi_product * lambda_true;
