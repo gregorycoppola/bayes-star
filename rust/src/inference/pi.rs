@@ -95,7 +95,7 @@ impl Inferencer {
                 let usize_outcome = if *boolean_outcome { 1 } else { 0 };
                 let pi_x_z = self
                     .data
-                    .get_lambda_message(node, parent_node, usize_outcome)
+                    .get_pi_message(parent_node, node, usize_outcome)
                     .unwrap();
                 trace!(
                     "getting pi message parent_node {:?}, node {:?}, usize_outcome {}, pi_x_z {}",

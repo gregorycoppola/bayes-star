@@ -120,16 +120,12 @@ impl Inferencer {
                 let probability_false = 1f64 - probability_true;
                 print_yellow!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
                 let parent_assignment = combination.get(to_parent).unwrap();
+                let true_factor = probability_true * pi_product * lambda_true;
+                let false_factor = probability_false * pi_product * lambda_false;
                 if *parent_assignment {
-                    let true_factor = probability_true * pi_product * lambda_true;
-                    let false_factor = probability_false * pi_product * lambda_true;
-                    sum_true += true_factor;
-                    sum_false += false_factor;
+                    sum_true += true_factor + false_factor;
                 } else {
-                    let true_factor = probability_true * pi_product * lambda_false;
-                    let false_factor = probability_false * pi_product * lambda_false;
-                    sum_true += true_factor;
-                    sum_false += false_factor;
+                    sum_false += true_factor + false_factor;
                 }
             }
             trace!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
