@@ -10,10 +10,10 @@ use redis::Connection;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error, rc::Rc};
 
+use colored::*;
 use std::collections::hash_map::DefaultHasher;
 use std::fmt;
 use std::hash::{Hash, Hasher};
-use colored::*;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GenericNodeType {
@@ -126,10 +126,12 @@ fn print_sorted_map(
             let formatted_prob_false = format!("{:.8}", prob_false);
 
             // Color the probabilities and print them along with the key
-            println!("{:<12} {:<12} {}", 
-                     formatted_prob_true.green(), 
-                     formatted_prob_false.red(), 
-                     proposition.debug_string());
+            println!(
+                "{:<12} {:<12} {}",
+                formatted_prob_true.green(),
+                formatted_prob_false.red(),
+                proposition.debug_string()
+            );
         }
     }
 }
@@ -140,23 +142,23 @@ fn print_sorted_messages(
 ) {
     for from in bfs_order {
         for to in bfs_order {
-            for label in &CLASS_LABELS {
-                let key = (from.clone(), to.clone(), *label);
-                if let Some(&prob_true) = map.get(&key) {
-                    // Calculating probability for false
-                    let prob_false = 1.0 - prob_true;
+            let key = (from.clone(), to.clone(), 1);
+            if let Some(&prob_true) = map.get(&key) {
+                // Calculating probability for false
+                let prob_false = 1.0 - prob_true;
 
-                    // Formatting the probabilities
-                    let formatted_prob_true = format!("{:.8}", prob_true);
-                    let formatted_prob_false = format!("{:.8}", prob_false);
+                // Formatting the probabilities
+                let formatted_prob_true = format!("{:.8}", prob_true);
+                let formatted_prob_false = format!("{:.8}", prob_false);
 
-                    // Color the probabilities and print them along with the keys
-                    println!("{:<12} {:<12} {:<20} {}", 
-                             formatted_prob_true.green(), 
-                             formatted_prob_false.red(), 
-                             from.debug_string(),
-                             to.debug_string());
-                }
+                // Color the probabilities and print them along with the keys
+                println!(
+                    "{:<12} {:<12} {:<20} {}",
+                    formatted_prob_true.green(),
+                    formatted_prob_false.red(),
+                    from.debug_string(),
+                    to.debug_string()
+                );
             }
         }
     }
