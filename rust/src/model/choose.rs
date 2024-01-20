@@ -140,7 +140,7 @@ pub fn extract_existence_factor_for_predicate(
         role_maps: mapping_group,
         conclusion: conclusion.clone(),
     };
-    print_green!("extracted existence predicate {:?}", &factor);
+    trace!("extracted existence predicate {:?}", &factor);
     Ok(factor)
 }
 
@@ -163,6 +163,6 @@ pub fn extract_existence_factor_for_proposition(
         role_maps: mapping_group,
         conclusion,
     };
-    print_green!("extracted existence predicate {:?}", &factor);
+    trace!("extracted existence predicate {:?}", &factor);
     Ok(factor)
 }

@@ -101,7 +101,7 @@ impl Inferencer {
         let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
         let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
         for (to_index, to_parent) in parent_nodes.iter().enumerate() {
-            print_blue!("to_index {} to_parent {:?}", to_index, to_parent);
+            trace!("to_index {} to_parent {:?}", to_index, to_parent);
             let mut sum_true = 0f64;
             let mut sum_false = 0f64;
             for combination in &all_combinations {
@@ -117,7 +117,7 @@ impl Inferencer {
                 let probability_true =
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
                 let probability_false = 1f64 - probability_true;
-                print_green!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
+                trace!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
                 let parent_assignment = combination.get(to_parent).unwrap();
                 if *parent_assignment {
                     let true_factor = probability_true * pi_product * lambda_true;
@@ -131,8 +131,8 @@ impl Inferencer {
                     sum_false += false_factor;
                 }
             }
-            print_green!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
-            print_green!("final 0 lambda message {} from {:?} to {:?}", sum_false, node, to_parent);
+            trace!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
+            trace!("final 0 lambda message {} from {:?} to {:?}", sum_false, node, to_parent);
             self.data.set_lambda_message(node, to_parent, 1, sum_true);
             self.data.set_lambda_message(node, to_parent, 0, sum_false);
         }

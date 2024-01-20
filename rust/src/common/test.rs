@@ -100,7 +100,7 @@ impl ReplState {
                 println!("node {} {:?} {:?}", index, &node, probability);
                 self.question_index.insert(index as u64, node.clone());
             } else {
-                // print_green!("node {} {:?} *", index, &node);
+                // trace!("node {} {:?} *", index, &node);
             }
         }
         Ok(())
