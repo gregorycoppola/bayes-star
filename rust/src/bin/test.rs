@@ -2,7 +2,6 @@ use bayes_star::common::setup::parse_configuration_options;
 use bayes_star::common::resources::FactoryResources;
 use bayes_star::common::test::{interactive_inference_example, summarize_examples};
 
-#[macro_use]
 extern crate log;
 
 fn main() {
