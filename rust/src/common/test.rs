@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error, io, rc::Rc};
 
 use crate::{
     common::{
-        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisFactDB, EmptyFactDB, HashMapBeliefTable},
+        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisFactDB, EmptyBeliefTable, HashMapBeliefTable},
         train::TrainingPlan,
     },
     inference::{
@@ -110,7 +110,7 @@ pub fn interactive_inference_example(
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
     info!("testing proposition {:?}", &target.hash_string());
-    let fact_memory = EmptyFactDB::new_shared(&resources.redis)?;
+    let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
     let mut inferencer =

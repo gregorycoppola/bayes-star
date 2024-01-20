@@ -101,16 +101,16 @@ impl BeliefTable for RedisFactDB {
     }
 }
 
-pub struct EmptyFactDB;
+pub struct EmptyBeliefTable;
 
-impl EmptyFactDB {
+impl EmptyBeliefTable {
     pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
-        Ok(Rc::new(EmptyFactDB {}))
+        Ok(Rc::new(EmptyBeliefTable {}))
     }
 }
 
-impl BeliefTable for EmptyFactDB {
+impl BeliefTable for EmptyBeliefTable {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
