@@ -147,7 +147,7 @@ fn print_sorted_messages(
 }
 
 impl HashMapBeliefTable {
-    pub fn print_debug(&self) {
+    pub fn print_table(&self, table_name:&String) {
         println!("pi_values:");
         print_sorted_map(&self.pi_values, &self.bfs_order);
         println!("lambda_values:");

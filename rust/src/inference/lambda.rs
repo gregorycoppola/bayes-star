@@ -53,7 +53,6 @@ impl Inferencer {
         print_red!("set from evidence {:?} {}", node, probability);
         self.data.set_lambda_value(node, 1, probability);
         self.data.set_lambda_value(node, 0, 1f64 - probability);
-        self.data.print_debug();
         Ok(())
     }
 

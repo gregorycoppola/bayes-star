@@ -248,20 +248,6 @@ pub fn compute_each_combination(
     all_combinations
 }
 
-pub fn inference_compute_marginals(
-    model: Rc<InferenceModel>,
-    fact_memory: Rc<dyn BeliefTable>,
-    target: &Proposition,
-) -> Result<(), Box<dyn Error>> {
-    let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
-    proposition_graph.visualize();
-    let mut inferencer =
-        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart()?;
-    inferencer.data.print_debug();
-    Ok(())
-}
-
 pub fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<PropositionGroup> {
     let mut result = vec![];
     for backlink in backlinks {

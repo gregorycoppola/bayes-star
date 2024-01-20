@@ -9,8 +9,8 @@ use crate::{
     },
     inference::{
         graph::PropositionGraph,
-        inference::{inference_compute_marginals, Inferencer},
-        table::PropositionNode,
+        inference::Inferencer,
+        table::{PropositionNode, self},
     },
     model::{
         exponential::ExponentialModel,
@@ -84,7 +84,8 @@ impl ReplState {
     }
 
     fn print_table(&mut self, tokens: &Vec<String>) {
-        self.inferencer.data.print_debug();
+        let table_name = tokens[1].clone();
+        self.inferencer.data.print_table(&table_name);
     }
 
     fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
