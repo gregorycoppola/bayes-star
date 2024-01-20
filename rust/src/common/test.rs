@@ -44,7 +44,6 @@ impl ReplState {
         loop {
             self.print_menu_options()?;
             let tokens = get_input_tokens_from_user();
-            println!("tokens {:?}", tokens);
             let function = &tokens[0];
             match function.as_str() {
                 "s" => {
@@ -64,6 +63,7 @@ impl ReplState {
                 }
                 "p" => {
                     self.inferencer.do_full_forward_and_backward()?;
+                    self.inferencer.update_marginals()?;
                 }
                 "q" => break,
                 _ => println!("Command not recognized."),
