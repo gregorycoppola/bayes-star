@@ -47,8 +47,11 @@ impl ReplState {
             println!("tokens {:?}", tokens);
             let function = &tokens[0];
             match function.as_str() {
-                "set" => {
+                "s" => {
                     self.handle_set(&tokens);
+                }
+                "u" => {
+                    self.handle_unset(&tokens);
                 }
                 "reinit" => {
                     self.inferencer.initialize_chart()?;
@@ -59,10 +62,10 @@ impl ReplState {
                 "m" => {
                     self.inferencer.update_marginals()?;
                 }
-                "pass" => {
+                "p" => {
                     self.inferencer.do_full_forward_and_backward()?;
                 }
-                "quit" => break,
+                "q" => break,
                 _ => println!("Command not recognized."),
             };
         }
