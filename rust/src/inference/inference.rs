@@ -171,6 +171,7 @@ impl Inferencer {
             &proposition_conclusion,
         );
         let statistics = self.model.model.predict(&context)?;
+        print_yellow!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
         Ok(statistics.probability)
     }
 
