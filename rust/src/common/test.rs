@@ -52,6 +52,9 @@ impl ReplState {
                 "reinit" => {
                     self.inferencer.initialize_chart()?;
                 }
+                "print" => {
+                    self.print_table(&tokens);
+                }
                 "pass" => {
                     self.inferencer.do_full_forward_and_backward()?;
                 }
