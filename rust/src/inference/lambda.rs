@@ -69,7 +69,7 @@ impl Inferencer {
             for (_child_index, child_node) in children.iter().enumerate() {
                 let child_lambda = self
                     .data
-                    .get_lambda_value(&child_node, *class_label)
+                    .get_lambda_message(&child_node, from_node,*class_label)
                     .unwrap();
                 product *= child_lambda;
             }
