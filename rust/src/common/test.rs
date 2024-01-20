@@ -58,6 +58,18 @@ impl ReplState {
                 "print" => {
                     self.print_table(&tokens);
                 }
+                "pv" => {
+                    self.inferencer.data.print_table(&function);
+                }
+                "lv" => {
+                    self.inferencer.data.print_table(&function);
+                }
+                "pm" => {
+                    self.inferencer.data.print_table(&function);
+                }
+                "lm" => {
+                    self.inferencer.data.print_table(&function);
+                }
                 "m" => {
                     self.inferencer.update_marginals()?;
                 }
