@@ -40,7 +40,7 @@ impl ReplState {
         loop {
             self.inferencer.data.print_debug();
             self.inferencer.update_marginals()?;
-            self.print_ordering()?;
+            self.print_menu_options()?;
             let tokens = get_input_tokens_from_user();
             println!("tokens {:?}", tokens);
             let function = &tokens[0];
@@ -70,7 +70,7 @@ impl ReplState {
         self.inferencer.do_fan_out_from_node(&node).unwrap();
     }
 
-    fn print_ordering(&mut self) -> Result<(), Box<dyn Error>> {
+    fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
         let bfs = self.inferencer.proposition_graph.get_bfs_order();
         self.question_index.clear();
         for (index, node) in bfs.iter().enumerate() {
