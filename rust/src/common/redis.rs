@@ -72,7 +72,6 @@ pub fn seq_pop(conn: &mut Connection, key: &str) -> Result<Option<String>, Box<d
 }
 
 pub fn seq_get_all(conn: &mut Connection, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
-    println!("seq_get_all {}", key);
     let elements: Vec<String> = conn.lrange(key, 0, -1)?;
     Ok(elements)
 }

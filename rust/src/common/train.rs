@@ -101,7 +101,7 @@ impl TrainingPlan {
         &self,
         seq_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
-        println!(
+        trace!(
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
@@ -111,7 +111,7 @@ impl TrainingPlan {
             let proposition = deserialize_record(record)?;
             result.push(proposition);
         }
-        println!("GraphicalModel::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
+        trace!("GraphicalModel::get_propositions_from_queue - Retrieved and deserialized propositions successfully");
         Ok(result)
     }
 
