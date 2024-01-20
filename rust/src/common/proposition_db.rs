@@ -136,7 +136,7 @@ pub struct HashMapBeliefTable {
 }
 
 impl HashMapBeliefTable {
-    pub fn new() -> Rc<dyn BeliefTable> {
+    pub fn new() -> Rc<HashMapBeliefTable> {
         Rc::new(HashMapBeliefTable {
             evidence: RefCell::new(HashMap::new()),
         })
