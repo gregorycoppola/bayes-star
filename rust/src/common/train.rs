@@ -21,7 +21,7 @@ use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
 use super::model::FactorModel;
 use super::resources::FactoryResources;
-use crate::common::proposition_db::RedisFactDB;
+use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::model::InferenceModel;
 use crate::model::choose::extract_backimplications_from_proposition;
 use std::borrow::BorrowMut;
@@ -166,7 +166,7 @@ fn extract_factor_for_proposition_for_training(
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let graph = InferenceGraph::new_mutable(resources)?;
-    let proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
+    let proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
     info!("do_training - Getting all implications");

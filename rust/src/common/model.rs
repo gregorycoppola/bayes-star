@@ -13,7 +13,7 @@ use redis::{Commands, Connection};
 use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc};
 
 use super::{
-    proposition_db::RedisFactDB,
+    proposition_db::RedisBeliefTable,
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
     redis::RedisManager,

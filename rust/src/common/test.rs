@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error, io, rc::Rc};
 
 use crate::{
     common::{
-        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisFactDB, EmptyBeliefTable, HashMapBeliefTable},
+        graph::InferenceGraph, model::InferenceModel, proposition_db::{RedisBeliefTable, EmptyBeliefTable, HashMapBeliefTable},
         train::TrainingPlan,
     },
     inference::{

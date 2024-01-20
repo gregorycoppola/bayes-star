@@ -19,22 +19,22 @@ use super::{
     redis::RedisManager,
 };
 
-pub struct RedisFactDB {
+pub struct RedisBeliefTable {
     redis_connection: RefCell<redis::Connection>,
 }
 
-impl RedisFactDB {
+impl RedisBeliefTable {
     pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
-        Ok(Box::new(RedisFactDB { redis_connection }))
+        Ok(Box::new(RedisBeliefTable { redis_connection }))
     }
     pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = client.get_connection()?;
-        Ok(Rc::new(RedisFactDB { redis_connection }))
+        Ok(Rc::new(RedisBeliefTable { redis_connection }))
     }
 }
 
-impl BeliefTable for RedisFactDB {
+impl BeliefTable for RedisBeliefTable {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,

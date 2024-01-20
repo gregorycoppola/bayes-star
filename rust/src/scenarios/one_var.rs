@@ -1,4 +1,4 @@
-use crate::common::proposition_db::RedisFactDB;
+use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::graph::InferenceGraph;
 use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
@@ -43,7 +43,7 @@ impl ScenarioMaker for OneVariable {
         resources: &FactoryResources,
     ) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources)?;
-        let mut proposition_db = RedisFactDB::new_mutable(&resources.redis)?;
+        let mut proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
