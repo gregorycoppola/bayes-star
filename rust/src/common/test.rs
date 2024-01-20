@@ -117,13 +117,10 @@ pub fn interactive_inference_example(
 ) -> Result<(), Box<dyn Error>> {
     let plan = TrainingPlan::new(&resources.redis)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
-    // println!("do_training - Getting all implications");
     let plan = TrainingPlan::new(&resources.redis)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
-    // test
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
-    // println!("testing proposition {:?}", &target.hash_string());
     let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
@@ -132,7 +129,6 @@ pub fn interactive_inference_example(
     inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;
-    // println!("done");
     Ok(())
 }
 
