@@ -18,6 +18,21 @@ impl Inferencer {
         Ok(())
     }
 
+    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        if !self.is_root(from_node) {
+            let is_observed = self.is_observed(from_node)?;
+            if is_observed {
+                self.pi_set_from_evidence(from_node)?;
+            } else {
+                self.pi_compute_value(&from_node)?;
+            }
+        } else {
+            self.pi_compute_root(from_node)?;
+        }
+        self.pi_send_messages(from_node)?;
+        Ok(())
+    }
+
     fn pi_compute_root(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let root = node.extract_single();
         assert_eq!(root.predicate.function, EXISTENCE_FUNCTION.to_string());
@@ -37,43 +52,6 @@ impl Inferencer {
             .unwrap();
         self.data.set_pi_value(node, 1, probability);
         self.data.set_pi_value(node, 0, 1f64 - probability);
-        Ok(())
-    }
-
-    pub fn pi_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let forward_groups = self.proposition_graph.get_all_forward(node);
-        for (this_index, to_node) in forward_groups.iter().enumerate() {
-            for class_label in &CLASS_LABELS {
-                let mut lambda_part = 1f64;
-                for (other_index, other_child) in forward_groups.iter().enumerate() {
-                    if other_index != this_index {
-                        let this_lambda = self
-                            .data
-                            .get_lambda_message(&other_child, node, *class_label)
-                            .unwrap();
-                        lambda_part *= this_lambda;
-                    }
-                }
-                let pi_part = self.data.get_pi_value(&node, *class_label).unwrap();
-                let message = pi_part * lambda_part;
-                self.data
-                    .set_pi_message(&node, &to_node, *class_label, message);
-            }
-        }
-        Ok(())
-    }
-    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        if !self.is_root(from_node) {
-            let is_observed = self.is_observed(from_node)?;
-            if is_observed {
-                self.pi_set_from_evidence(from_node)?;
-            } else {
-                self.pi_compute_value(&from_node)?;
-            }
-        } else {
-            self.pi_compute_root(from_node)?;
-        }
-        self.pi_send_messages(from_node)?;
         Ok(())
     }
 
@@ -108,6 +86,29 @@ impl Inferencer {
         }
         self.data.set_pi_value(node, 1, sum_true);
         self.data.set_pi_value(node, 0, sum_false);
+        Ok(())
+    }
+
+    pub fn pi_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let forward_groups = self.proposition_graph.get_all_forward(node);
+        for (this_index, to_node) in forward_groups.iter().enumerate() {
+            for class_label in &CLASS_LABELS {
+                let mut lambda_part = 1f64;
+                for (other_index, other_child) in forward_groups.iter().enumerate() {
+                    if other_index != this_index {
+                        let this_lambda = self
+                            .data
+                            .get_lambda_message(&other_child, node, *class_label)
+                            .unwrap();
+                        lambda_part *= this_lambda;
+                    }
+                }
+                let pi_part = self.data.get_pi_value(&node, *class_label).unwrap();
+                let message = pi_part * lambda_part;
+                self.data
+                    .set_pi_message(&node, &to_node, *class_label, message);
+            }
+        }
         Ok(())
     }
 }
