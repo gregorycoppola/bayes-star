@@ -10,16 +10,6 @@ use crate::{
 use std::error::Error;
 
 impl Inferencer {
-    pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
-        let mut bfs_order = self.bfs_order.clone();
-        bfs_order.reverse();
-        trace!("send_lambda_messages bfs_order: {:?}", &bfs_order);
-        for node in &bfs_order {
-            trace!("send pi bfs selects {:?}", node);
-            self.lambda_visit_node(node)?;
-        }
-        Ok(())
-    }
     pub fn initialize_lambda(&mut self) -> Result<(), Box<dyn Error>> {
         trace!("initialize_lambda: proposition");
         for node in &self.proposition_graph.all_nodes {
@@ -41,6 +31,34 @@ impl Inferencer {
         Ok(())
     }
 
+    pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
+        let mut bfs_order = self.bfs_order.clone();
+        bfs_order.reverse();
+        trace!("send_lambda_messages bfs_order: {:?}", &bfs_order);
+        for node in &bfs_order {
+            trace!("send pi bfs selects {:?}", node);
+            self.lambda_visit_node(node)?;
+        }
+        Ok(())
+    }
+
+    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        self.lambda_send_generic(from_node)?;
+        let is_observed = self.is_observed(from_node)?;
+        trace!(
+            "lambda_visit_node {:?} is_observed {}",
+            from_node,
+            is_observed
+        );
+        if is_observed {
+            self.lambda_set_from_evidence(from_node)?;
+        } else {
+            self.lambda_compute_generic(&from_node)?;
+        }
+        Ok(())
+    }
+
+
     pub fn lambda_set_from_evidence(
         &mut self,
         node: &PropositionNode,
@@ -58,38 +76,22 @@ impl Inferencer {
 
     pub fn lambda_compute_generic(
         &mut self,
-        from_node: &PropositionNode,
+        node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
-        let is_observed = self.is_observed(from_node)?;
+        let is_observed = self.is_observed(node)?;
         assert!(!is_observed);
-        let children = self.proposition_graph.get_all_forward(from_node);
+        let children = self.proposition_graph.get_all_forward(node);
         for class_label in &CLASS_LABELS {
             let mut product = 1f64;
             for (_child_index, child_node) in children.iter().enumerate() {
                 let child_lambda = self
                     .data
-                    .get_lambda_message(&child_node, from_node,*class_label)
+                    .get_lambda_message(&child_node, node,*class_label)
                     .unwrap();
                 product *= child_lambda;
             }
             self.data
-                .set_lambda_value(&from_node, *class_label, product);
-        }
-        Ok(())
-    }
-
-    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        self.lambda_send_generic(from_node)?;
-        let is_observed = self.is_observed(from_node)?;
-        trace!(
-            "lambda_visit_node {:?} is_observed {}",
-            from_node,
-            is_observed
-        );
-        if is_observed {
-            self.lambda_set_from_evidence(from_node)?;
-        } else {
-            self.lambda_compute_generic(&from_node)?;
+                .set_lambda_value(&node, *class_label, product);
         }
         Ok(())
     }
