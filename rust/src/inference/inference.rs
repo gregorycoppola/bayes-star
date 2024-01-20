@@ -146,7 +146,11 @@ impl Inferencer {
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
-        todo!()
+        if conclusion.is_single() {
+            self.score_factor_assignment_disjunction(premises, premise_assignment, conclusion)
+        } else {
+            self.score_factor_assignment_conjunction(premises, premise_assignment, conclusion)
+        }
     }
 
     pub fn score_factor_assignment_disjunction(
