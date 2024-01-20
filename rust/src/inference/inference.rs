@@ -148,6 +148,24 @@ impl Inferencer {
     ) -> Result<f64, Box<dyn Error>> {
         todo!()
     }
+
+    pub fn score_factor_assignment_disjunction(
+        &self,
+        premises: &Vec<PropositionNode>,
+        premise_assignment: &HashMap<PropositionNode, bool>,
+        conclusion: &PropositionNode,
+    ) -> Result<f64, Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn score_factor_assignment_conjunction(
+        &self,
+        premises: &Vec<PropositionNode>,
+        premise_assignment: &HashMap<PropositionNode, bool>,
+        conclusion: &PropositionNode,
+    ) -> Result<f64, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 pub fn build_factor_context_for_assignment(
