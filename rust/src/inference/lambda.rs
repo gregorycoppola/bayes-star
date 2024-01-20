@@ -43,7 +43,7 @@ impl Inferencer {
     }
 
     pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        self.lambda_send(from_node)?;
+        self.lambda_send_messages(from_node)?;
         let is_observed = self.is_observed(from_node)?;
         trace!(
             "lambda_visit_node {:?} is_observed {}",
@@ -96,7 +96,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_send(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         print_green!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
         let all_combinations = compute_each_combination(&parent_nodes);
