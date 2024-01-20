@@ -8,7 +8,7 @@ pub struct TrainStatistics {
     pub loss: f64,
 }
 pub struct PredictStatistics {
-    pub marginal: f64,
+    pub probability: f64,
 }
 
 pub trait PropositionDB {

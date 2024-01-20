@@ -171,7 +171,7 @@ impl Inferencer {
             &proposition_conclusion,
         );
         let statistics = self.model.model.predict(&context)?;
-        Ok(statistics.marginal)
+        Ok(statistics.probability)
     }
 
     pub fn score_factor_assignment_conjunction(

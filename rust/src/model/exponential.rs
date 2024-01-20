@@ -234,8 +234,8 @@ impl FactorModel for ExponentialModel {
             potentials.push(potential);
         }
         let normalization = potentials[0] + potentials[1];
-        let marginal = potentials[1] / normalization;
-        trace!("dot_product: normalization {}, marginal {}", normalization, marginal);
-        Ok(PredictStatistics { marginal })
+        let probability = potentials[1] / normalization;
+        trace!("dot_product: normalization {}, marginal {}", normalization, probability);
+        Ok(PredictStatistics { probability })
     }
 }
