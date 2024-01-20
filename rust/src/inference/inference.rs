@@ -15,6 +15,7 @@ use crate::{
     },
     print_blue, print_green, print_red, print_yellow,
 };
+use colored::*;
 use redis::Connection;
 use std::{
     borrow::Borrow,
@@ -22,7 +23,6 @@ use std::{
     error::Error,
     rc::Rc,
 };
-use colored::*;
 
 pub struct Inferencer {
     pub model: Rc<InferenceModel>,
@@ -95,10 +95,12 @@ impl Inferencer {
 
             let formatted_prob0 = format!("{:.8}", probability0);
             let formatted_prob1 = format!("{:.8}", probability1);
-            println!("{:<12} {:<12} {:?}", 
-                     formatted_prob0.green(), 
-                     formatted_prob1.red(), 
-                     node);
+            println!(
+                "{:<12} {:<12} {:?}",
+                formatted_prob1.green(),
+                formatted_prob0.red(),
+                node
+            );
         }
         Ok(())
     }
