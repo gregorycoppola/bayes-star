@@ -67,7 +67,7 @@ impl PropositionNode {
             GenericNodeType::Single(proposition) => proposition.debug_string(),
             GenericNodeType::Group(group) => group.debug_string(),
         };
-        format!("({} {})", self.underlying_hash, string_part)
+        format!("{}", string_part)
     }
 
     pub fn is_single(&self) -> bool {
