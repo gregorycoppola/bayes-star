@@ -49,7 +49,7 @@ impl ReplState {
                     self.handle_set(&tokens);
                 },
                 "reinit" => {
-                    self.inferencer.reinitialize_chart()?;
+                    self.inferencer.initialize_chart()?;
                 },
                 "pass" => {
                     self.inferencer.do_full_forward_and_backward()?;
@@ -115,7 +115,7 @@ pub fn interactive_inference_example(
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.reinitialize_chart()?;
+    inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;
     info!("done");
