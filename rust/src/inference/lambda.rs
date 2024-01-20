@@ -100,14 +100,20 @@ impl Inferencer {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let all_combinations = compute_each_combination(&parent_nodes);
         for (to_index, to_parent) in parent_nodes.iter().enumerate() {
+            let mut sum_true = 0f64;
+            let mut sum_false = 0f64;
             for combination in &all_combinations {
                 let mut pi_product = 1f64;
                 for (other_index, other_parent) in parent_nodes.iter().enumerate() {
                     if other_index != to_index {
-                        let this_pi = self.data.get_pi_value(&other_parent, *class_label).unwrap();
+                        let class_bool = combination.get(other_parent).unwrap();
+                        let class_label = if *class_bool { 1 } else { 0 };
+                        let this_pi = self.data.get_pi_value(&other_parent, class_label).unwrap();
                         pi_product *= this_pi;
                     }
                 }
+                let true_marginal =
+                    self.score_factor_assignment(&parent_nodes, combination, node)?;
             }
         }
         // let all_combinations = compute_each_combination(&parent_nodes);
