@@ -61,7 +61,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn do_fan_out_from_node(&mut self, node:&PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn do_fan_out_from_node(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let mut backward_order = self.bfs_order.clone();
         backward_order.reverse();
         let mut started = false;
@@ -159,6 +159,17 @@ impl Inferencer {
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
+        let mut proposition_premises = vec![];
+        for node_premise in premises {
+            proposition_premises.push(node_premise.extract_group());
+        }
+        let proposition_conclusion = conclusion.extract_single();
+        let context = build_factor_context_for_assignment(
+            &self.proposition_graph,
+            &proposition_premises,
+            premise_assignment,
+            &proposition_conclusion,
+        );
         todo!()
     }
 
@@ -170,19 +181,15 @@ impl Inferencer {
     ) -> Result<f64, Box<dyn Error>> {
         let mut and_result = true;
         for (_node, value) in premise_assignment {
-            and_result &= *value; 
+            and_result &= *value;
         }
-        let result = if and_result {
-            1f64
-        } else {
-            0f64
-        };
+        let result = if and_result { 1f64 } else { 0f64 };
         Ok(result)
     }
 }
 
 pub fn build_factor_context_for_assignment(
-    proposition_graph:&PropositionGraph,
+    proposition_graph: &PropositionGraph,
     premises: &Vec<PropositionGroup>,
     premise_assignment: &HashMap<PropositionNode, bool>,
     conclusion: &Proposition,
@@ -197,8 +204,7 @@ pub fn build_factor_context_for_assignment(
         } else {
             probabilities.push(0f64);
         }
-        let inference = proposition_graph
-            .get_inference_used(proposition_group, conclusion);
+        let inference = proposition_graph.get_inference_used(proposition_group, conclusion);
         let factor = PropositionFactor {
             premise: proposition_group.clone(),
             conclusion: conclusion.clone(),
