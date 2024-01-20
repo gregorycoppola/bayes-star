@@ -114,25 +114,17 @@ fn print_sorted_map(
     bfs_order: &Vec<PropositionNode>,
 ) {
     for proposition in bfs_order {
-        for label in &CLASS_LABELS {
-            let key = (proposition.clone(), *label);
-            let prob_true = map.get(&key).unwrap();
-
-            // Calculating probability for false
-            let prob_false = 1.0 - prob_true;
-
-            // Formatting the probabilities
-            let formatted_prob_true = format!("{:.8}", prob_true);
-            let formatted_prob_false = format!("{:.8}", prob_false);
-
-            // Color the probabilities and print them along with the key
-            println!(
-                "{:<12} {:<12} {}",
-                formatted_prob_true.green(),
-                formatted_prob_false.red(),
-                proposition.debug_string()
-            );
-        }
+        let key = (proposition.clone(), 1);
+        let prob_true = map.get(&key).unwrap();
+        let prob_false = 1.0 - prob_true;
+        let formatted_prob_true = format!("{:.8}", prob_true);
+        let formatted_prob_false = format!("{:.8}", prob_false);
+        println!(
+            "{:<12} {:<12} {}",
+            formatted_prob_true.green(),
+            formatted_prob_false.red(),
+            proposition.debug_string()
+        );
     }
 }
 
@@ -144,14 +136,9 @@ fn print_sorted_messages(
         for to in bfs_order {
             let key = (from.clone(), to.clone(), 1);
             if let Some(&prob_true) = map.get(&key) {
-                // Calculating probability for false
                 let prob_false = 1.0 - prob_true;
-
-                // Formatting the probabilities
                 let formatted_prob_true = format!("{:.8}", prob_true);
                 let formatted_prob_false = format!("{:.8}", prob_false);
-
-                // Color the probabilities and print them along with the keys
                 println!(
                     "{:<12} {:<12} {:<20} {}",
                     formatted_prob_true.green(),
