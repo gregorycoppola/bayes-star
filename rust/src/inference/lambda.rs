@@ -98,6 +98,8 @@ impl Inferencer {
     pub fn lambda_send_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let all_combinations = compute_each_combination(&parent_nodes);
+        let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
+        let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
         for (to_index, to_parent) in parent_nodes.iter().enumerate() {
             let mut sum_true = 0f64;
             let mut sum_false = 0f64;
@@ -117,8 +119,6 @@ impl Inferencer {
                 sum_true += true_marginal * pi_product;
                 sum_false += false_marginal * pi_product;
             }
-            let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
-            let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
             let final_true = sum_true * lambda_true;
             let final_false = sum_false * lambda_false;
             self.data.set_lambda_message(node, to_parent, 1, final_true);
