@@ -39,6 +39,7 @@ impl ReplState {
     fn do_repl_loop(&mut self)  -> Result<(), Box<dyn Error>> {
         loop {
             self.inferencer.data.print_debug();
+            self.inferencer.update_marginals()?;
             self.print_ordering()?;
             let tokens = get_input_tokens_from_user();
             println!("tokens {:?}", tokens);
