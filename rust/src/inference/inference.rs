@@ -139,6 +139,15 @@ impl Inferencer {
             Ok(false)
         }
     }
+
+    pub fn score_factor_assignment(
+        &self,
+        premises: &Vec<PropositionGroup>,
+        premise_assignment: &HashMap<PropositionNode, bool>,
+        conclusion: &Proposition,
+    ) -> Result<f64, Box<dyn Error>> {
+        todo!()
+    }
 }
 
 pub fn build_factor_context_for_assignment(

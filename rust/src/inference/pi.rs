@@ -1,6 +1,13 @@
+use super::{
+    inference::{compute_each_combination, groups_from_backlinks, Inferencer},
+    table::{GenericNodeType, PropositionNode},
+};
+use crate::{
+    inference::inference::build_factor_context_for_assignment,
+    model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS},
+    print_blue, print_green, print_red,
+};
 use std::error::Error;
-use crate::{print_red, model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS}, print_green, print_blue, inference::inference::build_factor_context_for_assignment};
-use super::{inference::{Inferencer, groups_from_backlinks, compute_each_combination}, table::{PropositionNode, GenericNodeType}};
 
 impl Inferencer {
     pub fn do_pi_traversal(&mut self) -> Result<(), Box<dyn Error>> {
@@ -30,13 +37,10 @@ impl Inferencer {
             .fact_memory
             .get_proposition_probability(&as_single)?
             .unwrap();
-        self.data
-            .set_pi_value(node, 1, probability);
-        self.data
-            .set_pi_value(node, 0, 1f64 - probability);
+        self.data.set_pi_value(node, 1, probability);
+        self.data.set_pi_value(node, 0, 1f64 - probability);
         Ok(())
     }
-
 
     pub fn pi_send_messages(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         // Part 2: For each value of z, compute pi_X(z)
@@ -116,11 +120,7 @@ impl Inferencer {
                 );
                 product *= pi_x_z;
             }
-            let factor =
-                build_factor_context_for_assignment(&self.proposition_graph, &premise_groups, combination, &conclusion);
-            let prediction = self.model.model.predict(&factor)?;
-            trace!("local probability {}  for factor {:?}", &prediction.marginal, &factor);
-            let true_marginal = &prediction.marginal;
+            let true_marginal = self.score_factor_assignment(&premise_groups, combination, &conclusion)?;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
             sum_false += false_marginal * product;
