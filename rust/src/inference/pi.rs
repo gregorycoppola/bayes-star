@@ -73,7 +73,7 @@ impl Inferencer {
             if is_observed {
                 self.pi_set_from_evidence(from_node)?;
             } else {
-                self.pi_compute_generic(&from_node)?;
+                self.pi_compute_value(&from_node)?;
             }
         } else {
             self.pi_compute_root(from_node)?;
@@ -83,7 +83,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_compute_generic(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_compute_value(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;
