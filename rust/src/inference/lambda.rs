@@ -119,6 +119,7 @@ impl Inferencer {
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
                 print_green!("probability {} for {:?} on assignment {:?}", true_probability, node, combination);
                 let false_probability = 1f64 - true_probability;
+                // bug is here.. need to add according to the assignment
                 sum_true += true_probability * pi_product;
                 sum_false += false_probability * pi_product;
             }
