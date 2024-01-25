@@ -1,5 +1,6 @@
 import json
 import matplotlib.pyplot as plt
+import sys
 
 def read_and_process_file(file_path):
     data = {}
@@ -25,7 +26,10 @@ def plot_data(data):
     plt.show()
 
 def main():
-    file_path = 'path_to_your_file.json'  # Replace with your file path
+    if len(sys.argv) < 2:
+        print("Usage: python script.py <file_path>")
+        sys.exit(1)
+    file_path = sys.argv[1]
     data = read_and_process_file(file_path)
     plot_data(data)
 
