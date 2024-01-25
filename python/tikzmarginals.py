@@ -69,8 +69,7 @@ legend_mapping = {
     "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square', 'boy dates girl'],
 }
 
-def read_and_process_file(file_path, out_path):
-    # out_file = open(out_path, 'w')
+def read_and_process_file(file_path):
     data = {}
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
@@ -94,7 +93,7 @@ def main():
         sys.exit(1)
     file_path = sys.argv[1]
     out_path = '' # sys.argv[2]
-    data = read_and_process_file(file_path, out_path)
+    data = read_and_process_file(file_path)
     plot_data(data)
 
 if __name__ == "__main__":
