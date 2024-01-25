@@ -97,14 +97,14 @@ def tikz_render_one_curve(prop, tuple):
     shape = legend_tuple[1]
     legend = legend_tuple[2]
     tikz = f"""
-    \addplot[
+    \\addplot[
         color={color},
         mark={shape},
         ]
-        coordinates {
+        coordinates {{
         (0,0.2)(1,0.5)(2,0.6)(3,0.8)
-        };
-        \addlegendentry{{{legend}}}
+        }};
+        \\addlegendentry{{{legend}}}
 """
     return tikz
 
