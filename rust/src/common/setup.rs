@@ -3,7 +3,7 @@ use crate::scenarios::dating_simple::SimpleDating;
 use clap::{App, Arg};
 use env_logger::{Builder, Env};
 use serde::Deserialize;
-use std::io::Write;
+use std::{io::Write, path::Path};
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ConfigurationOptions {
@@ -11,6 +11,12 @@ pub struct ConfigurationOptions {
     pub print_training_loss: bool,
     pub test_example: Option<u32>,
     pub marginal_output_file: Option<String>,
+}
+
+fn check_file_does_not_exist(file_name: &str) {
+    if Path::new(file_name).exists() {
+        panic!("File '{}' already exists!", file_name);
+    }
 }
 
 pub fn parse_configuration_options() -> ConfigurationOptions {
@@ -72,6 +78,10 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
             .expect("test_example needs to be a positive integer or omitted")
     });
     let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
+
+    if marginal_output_file.is_some() {
+        check_file_does_not_exist(&marginal_output_file.clone().unwrap());
+    }
 
     ConfigurationOptions {
         entities_per_domain,
