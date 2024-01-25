@@ -2,6 +2,55 @@ import json
 import matplotlib.pyplot as plt
 import sys
 
+"""
+\begin{tikzpicture}
+    \begin{axis}[
+        title={Probability over Time},
+        xlabel={Time Points},
+        ylabel={Marginal Probability},
+        xmin=0, xmax=3,
+        ymin=0, ymax=1,
+        xtick={0,1,2,3},
+        ytick={0,0.2,0.4,0.6,0.8,1},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+    ]
+    
+    % Curve 1
+    \addplot[
+        color=blue,
+        mark=square,
+        ]
+        coordinates {
+        (0,0.2)(1,0.5)(2,0.6)(3,0.8)
+        };
+        \addlegendentry{Condition A}
+    
+    % Curve 2
+    \addplot[
+        color=red,
+        mark=triangle,
+        ]
+        coordinates {
+        (0,0.1)(1,0.2)(2,0.3)(3,0.4)
+        };
+        \addlegendentry{Condition B}
+    
+    % Curve 3
+    \addplot[
+        color=green,
+        mark=o,
+        ]
+        coordinates {
+        (0,0.3)(1,0.4)(2,0.5)(3,0.7)
+        };
+        \addlegendentry{Condition C}
+    
+    \end{axis}
+    \end{tikzpicture}
+"""
+
 def read_and_process_file(file_path, out_path):
     # out_file = open(out_path, 'w')
     data = {}
