@@ -17,37 +17,6 @@ tix_begin = """
     ]
 """
     
-"""
-    % Curve 1
-    \addplot[
-        color=blue,
-        mark=square,
-        ]
-        coordinates {
-        (0,0.2)(1,0.5)(2,0.6)(3,0.8)
-        };
-        \addlegendentry{Condition A}
-    
-    % Curve 2
-    \addplot[
-        color=red,
-        mark=triangle,
-        ]
-        coordinates {
-        (0,0.1)(1,0.2)(2,0.3)(3,0.4)
-        };
-        \addlegendentry{Condition B}
-    
-    % Curve 3
-    \addplot[
-        color=green,
-        mark=o,
-        ]
-        coordinates {
-        (0,0.3)(1,0.4)(2,0.5)(3,0.7)
-        };
-        \addlegendentry{Condition C}
-"""
 tikz_end = """
     \end{axis}
 \end{tikzpicture}
