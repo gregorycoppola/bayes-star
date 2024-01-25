@@ -53,6 +53,13 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
                 .help("Sets the test example number (optional)")
                 .takes_value(true), // This argument is optional and takes a value
         )
+        .arg(
+            Arg::with_name("marginal_output_file")
+                .long("marginal_output_file")
+                .value_name("FILE")
+                .help("Sets the file name for marginal output (optional)")
+                .takes_value(true), // This argument is optional and takes a string value
+        )
         .get_matches();
     let entities_per_domain: i32 = matches
         .value_of("entities_per_domain")
@@ -64,10 +71,12 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         v.parse()
             .expect("test_example needs to be a positive integer or omitted")
     });
+    let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
 
     ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
         test_example,
+        marginal_output_file,
     }
 }
