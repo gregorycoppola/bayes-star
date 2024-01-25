@@ -4,9 +4,8 @@ import sys
 tix_begin = """
 \begin{tikzpicture}
     \begin{axis}[
-        title={Probability over Time},
-        xlabel={Time Points},
-        ylabel={Marginal Probability},
+        xlabel={Iteration},
+        ylabel={Marginal},
         xmin=0, xmax=3,
         ymin=0, ymax=1,
         xtick={0,1,2,3},
@@ -101,9 +100,8 @@ def create_tikz_preamble(N):
     tix_preamble = f"""
 \\begin{{tikzpicture}}
     \\begin{{axis}}[
-        title={{Probability over Time}},
-        xlabel={{Time Points}},
-        ylabel={{Marginal Probability}},
+        xlabel={{Iteration}},
+        ylabel={{Marginal}},
         xmin=0, xmax={N-1},
         ymin=0, ymax=1,
         xtick={{{xtick_values}}},
