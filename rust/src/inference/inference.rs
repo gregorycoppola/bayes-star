@@ -119,7 +119,14 @@ impl Inferencer {
             info!("adding entry {} {}", &node_string, probability);
             entries.push((node_string, probability));
         }
+
+        let table = MarginalTable { entries };
+        self.log_table_to_file(&table)?;
         Ok(())
+    }
+
+    fn log_table_to_file(&self, table: &MarginalTable) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 
     pub fn is_root(&self, node: &PropositionNode) -> bool {
