@@ -1,0 +1,63 @@
+
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Iteration},
+        ylabel={Marginal},
+        xmin=0, xmax=4,
+        ymin=0, ymax=1,
+        xtick={0, 1, 2, 3, 4},
+        ytick={0,0.2,0.4,0.6,0.8,1},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+    ]
+
+
+    \addplot[
+        color=red,
+        mark=triangle,
+        ]
+        coordinates {
+        (0,0.2955234723506779)(1,0.2955234723506779)(2,0.2955234723506779)(3,0.2955234723506779)(4,0.4124794732117633)
+        };
+        \addlegendentry{lonely boy}
+
+    \addplot[
+        color=green,
+        mark=square,
+        ]
+        coordinates {
+        (0,0.5656008982487828)(1,0.5656008982487828)(2,0.5656008982487828)(3,0.5656008982487828)(4,0.8037907700908673)
+        };
+        \addlegendentry{exciting girl}
+
+    \addplot[
+        color=blue,
+        mark=o,
+        ]
+        coordinates {
+        (0,0.4298868737210374)(1,0.4298868737210374)(2,0.9848193171659511)(3,0.9848193171659511)(4,0.9848193171659511)
+        };
+        \addlegendentry{girl likes boy}
+
+    \addplot[
+        color=yellow,
+        mark=triangle,
+        ]
+        coordinates {
+        (0,0.6882586333828075)(1,0.6882586333828075)(2,0.9916991091860022)(3,0.9916991091860022)(4,0.9916991091860022)
+        };
+        \addlegendentry{boy likes girl}
+
+    \addplot[
+        color=orange,
+        mark=square,
+        ]
+        coordinates {
+        (0,1.0)(1,1.0)(2,1.0)(3,1.0)(4,1.0)
+        };
+        \addlegendentry{boy dates girl}
+
+
+    \end{axis}
+\end{tikzpicture}
