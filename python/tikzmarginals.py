@@ -48,7 +48,7 @@ tix_begin = """
         };
         \addlegendentry{Condition C}
 """
-tix_end = """
+tikz_end = """
     \end{axis}
 \end{tikzpicture}
 """
@@ -91,22 +91,31 @@ def read_tuple_list_from_file(file_path):
             assert(last_size == len(value))
     return data
 
-def tikz_render_one_curve(prop, tuple):
+def tikz_render_one_curve(prop, row):
     legend_tuple = legend_mapping[prop]
     color = legend_tuple[0]
     shape = legend_tuple[1]
     legend = legend_tuple[2]
+    data_string = format_probability_vector(row)
     tikz = f"""
     \\addplot[
         color={color},
         mark={shape},
         ]
         coordinates {{
-        (0,0.2)(1,0.5)(2,0.6)(3,0.8)
+        {data_string}
         }};
         \\addlegendentry{{{legend}}}
 """
     return tikz
+
+def format_probability_vector(probabilities):
+    # Create a list of formatted strings "(index, probability)" for each probability
+    formatted_pairs = [f"({index},{prob})" for index, prob in enumerate(probabilities)]
+
+    # Join all the formatted strings into a single string
+    result = ''.join(formatted_pairs)
+    return result
 
 def tikz_render_curves(data):
     buffer = ""
@@ -138,17 +147,21 @@ def create_tikz_preamble(N):
     return tix_preamble
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python script.py <file_path>")
+    if len(sys.argv) < 3:
+        print("Usage: python script.py <file_path> <output file>")
         sys.exit(1)
     file_path = sys.argv[1]
-    out_path = '' # sys.argv[2]
+    out_path = sys.argv[2]
     data = read_tuple_list_from_file(file_path)
 
     preamble = create_tikz_preamble(5)
     print(preamble)
     curves = tikz_render_curves(data)
     print(curves)
+
+    total_tikz = '\n'.join([preamble, curves, tikz_end])
+    out_file = open(out_path, 'w')
+    out_file.write(total_tikz)
 
 if __name__ == "__main__":
     main()
