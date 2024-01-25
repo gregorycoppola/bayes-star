@@ -10,6 +10,7 @@ pub struct ConfigurationOptions {
     pub entities_per_domain: i32,
     pub print_training_loss: bool,
     pub test_example: Option<u32>,
+    pub marginal_output_file: Option<String>,
 }
 
 pub fn parse_configuration_options() -> ConfigurationOptions {
