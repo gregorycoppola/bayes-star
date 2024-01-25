@@ -32,8 +32,8 @@ prop_order = [
 legend_mapping = {
     "lonely[sub=test_Jack9]": ['red', 'triangle', 'lonely boy'],
     "exciting[sub=test_Jill9]": ['green', 'square', 'exciting girl'],
-    "like[obj=test_Jack9,sub=test_Jill9]": ['blue', 'o', 'boy likes girl'],
-    "like[obj=test_Jill9,sub=test_Jack9]": ['yellow', 'triangle', 'girl likes boy'],
+    "like[obj=test_Jack9,sub=test_Jill9]": ['blue', 'o', 'girl likes boy'],
+    "like[obj=test_Jill9,sub=test_Jack9]": ['yellow', 'triangle', 'boy likes girl'],
     "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square', 'boy dates girl'],
 }
 
