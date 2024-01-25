@@ -16,7 +16,9 @@ tix_begin = """
         ymajorgrids=true,
         grid style=dashed,
     ]
+"""
     
+"""
     % Curve 1
     \addplot[
         color=blue,
@@ -46,9 +48,10 @@ tix_begin = """
         (0,0.3)(1,0.4)(2,0.5)(3,0.7)
         };
         \addlegendentry{Condition C}
-    
+"""
+tix_end = """
     \end{axis}
-    \end{tikzpicture}
+\end{tikzpicture}
 """
 
 def read_and_process_file(file_path, out_path):
