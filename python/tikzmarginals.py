@@ -70,10 +70,9 @@ legend_mapping = {
 }
 
 def read_tuple_list_from_file(file_path):
-    buffer = []
+    data = {}
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
-            data = {}
             print(f"time point {i}")
             json_line = json.loads(line)
             for entry in json_line['entries']:
@@ -83,9 +82,8 @@ def read_tuple_list_from_file(file_path):
                     print(f"\"{condition}\" {probability}")
                     if condition not in data:
                         data[condition] = []
-                    data[condition] = probability
-            buffer.append(data)
-    return buffer
+                    data[condition].append(probability)
+    return data
 
 def plot_data(data):
     print(f"data: {data}")
