@@ -83,6 +83,12 @@ def read_tuple_list_from_file(file_path):
                     if condition not in data:
                         data[condition] = []
                     data[condition].append(probability)
+    last_size = -1
+    for key, value in data.items():
+        if last_size == -1:
+            last_size = len(value)
+        else:
+            assert(last_size == len(value))
     return data
 
 def plot_data(data):
