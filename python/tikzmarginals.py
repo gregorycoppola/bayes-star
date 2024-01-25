@@ -87,15 +87,7 @@ def read_and_process_file(file_path, out_path):
     return data
 
 def plot_data(data):
-    plt.figure(figsize=(10, 6))
-    for condition, probabilities in data.items():
-        plt.plot(probabilities, label=condition)
-
-    plt.xlabel('Timepoint')
-    plt.ylabel('Probability')
-    plt.title('Probability of Conditions Over Time')
-    plt.legend()
-    # plt.show()
+    pass
 
 def main():
     if len(sys.argv) < 2:
