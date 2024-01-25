@@ -159,7 +159,7 @@ pub fn interactive_inference_example(
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
     let mut inferencer =
-        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+        Inferencer::new_mutable(&config, model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;
