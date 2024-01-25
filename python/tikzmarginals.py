@@ -91,8 +91,31 @@ def read_tuple_list_from_file(file_path):
             assert(last_size == len(value))
     return data
 
-def plot_data(data):
-    print(f"data: {data}")
+def tikz_render_one_curve(prop, tuple):
+    legend_tuple = legend_mapping[prop]
+    color = legend_tuple[0]
+    shape = legend_tuple[1]
+    legend = legend_tuple[2]
+    tikz = f"""
+    \addplot[
+        color={color},
+        mark={shape},
+        ]
+        coordinates {
+        (0,0.2)(1,0.5)(2,0.6)(3,0.8)
+        };
+        \addlegendentry{{{legend}}}
+"""
+    return tikz
+
+def tikz_render_curves(data):
+    buffer = ''
+    for prop in prop_order:
+        row = data[prop]
+        part = tikz_render_one_curve(prop, row)
+        buffer += part
+
+    return part
 
 def create_tikz_preamble(N):
     xtick_values = ', '.join(str(i) for i in range(N))
@@ -120,10 +143,11 @@ def main():
     file_path = sys.argv[1]
     out_path = '' # sys.argv[2]
     data = read_tuple_list_from_file(file_path)
-    plot_data(data)
 
     preamble = create_tikz_preamble(5)
     print(preamble)
+    curves = tikz_render_curves(data)
+    print(curves)
 
 if __name__ == "__main__":
     main()
