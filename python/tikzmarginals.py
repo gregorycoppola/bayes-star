@@ -55,11 +55,11 @@ tix_end = """
 """
 
 legend_mapping = {
-    "lonely[sub=test_Jack9]": ['red', 'triangle'],
-    "exciting[sub=test_Jill9]": ['green', 'square'],
-    "like[obj=test_Jack9,sub=test_Jill9]": ['blue', 'o'],
-    "like[obj=test_Jill9,sub=test_Jack9]": ['yellow', 'triangle'],
-    "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square'],
+    "lonely[sub=test_Jack9]": ['red', 'triangle', 'lonely boy'],
+    "exciting[sub=test_Jill9]": ['green', 'square', 'exciting girl'],
+    "like[obj=test_Jack9,sub=test_Jill9]": ['blue', 'o', 'boy likes girl'],
+    "like[obj=test_Jill9,sub=test_Jack9]": ['yellow', 'triangle', 'girl likes boy'],
+    "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square', 'boy dates girl'],
 }
 
 def read_and_process_file(file_path, out_path):
