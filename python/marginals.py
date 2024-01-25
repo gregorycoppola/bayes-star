@@ -9,9 +9,10 @@ def read_and_process_file(file_path):
             json_line = json.loads(line)
             for entry in json_line['entries']:
                 condition, probability = entry
-                if condition not in data:
-                    data[condition] = []
-                data[condition].append(probability)
+                if not "exist" in condition:
+                    if condition not in data:
+                        data[condition] = []
+                    data[condition].append(probability)
     return data
 
 def plot_data(data):
