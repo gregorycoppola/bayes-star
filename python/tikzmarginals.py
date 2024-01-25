@@ -109,13 +109,14 @@ def tikz_render_one_curve(prop, tuple):
     return tikz
 
 def tikz_render_curves(data):
-    buffer = ''
+    buffer = ""
+    # print(f"prop_order {prop_order}")
     for prop in prop_order:
         row = data[prop]
         part = tikz_render_one_curve(prop, row)
-        buffer += part
-
-    return part
+        # print(f"part: {part}")
+        buffer = buffer + part
+    return buffer
 
 def create_tikz_preamble(N):
     xtick_values = ', '.join(str(i) for i in range(N))
