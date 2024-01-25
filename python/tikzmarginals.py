@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import sys
 
-"""
+tix_begin = """
 \begin{tikzpicture}
     \begin{axis}[
         title={Probability over Time},
