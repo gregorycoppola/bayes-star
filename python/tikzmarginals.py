@@ -69,10 +69,11 @@ legend_mapping = {
     "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square', 'boy dates girl'],
 }
 
-def read_and_process_file(file_path):
-    data = {}
+def read_tuple_list_from_file(file_path):
+    buffer = []
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
+            data = {}
             print(f"time point {i}")
             json_line = json.loads(line)
             for entry in json_line['entries']:
@@ -82,10 +83,11 @@ def read_and_process_file(file_path):
                     if condition not in data:
                         data[condition] = []
                     data[condition].append(probability)
-    return data
+            buffer.append(data)
+    return buffer
 
 def plot_data(data):
-    pass
+    print(f"data: {data}")
 
 def main():
     if len(sys.argv) < 2:
@@ -93,7 +95,7 @@ def main():
         sys.exit(1)
     file_path = sys.argv[1]
     out_path = '' # sys.argv[2]
-    data = read_and_process_file(file_path)
+    data = read_tuple_list_from_file(file_path)
     plot_data(data)
 
 if __name__ == "__main__":
