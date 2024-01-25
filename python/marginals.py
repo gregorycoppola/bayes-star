@@ -12,7 +12,7 @@ def read_and_process_file(file_path, out_path):
             for entry in json_line['entries']:
                 condition, probability = entry
                 if not "exist" in condition:
-                    print(f"{condition} {probability}")
+                    print(f"\"{condition}\" {probability}")
                     if condition not in data:
                         data[condition] = []
                     data[condition].append(probability)
@@ -27,7 +27,7 @@ def plot_data(data):
     plt.ylabel('Probability')
     plt.title('Probability of Conditions Over Time')
     plt.legend()
-    plt.show()
+    # plt.show()
 
 def main():
     if len(sys.argv) < 2:
