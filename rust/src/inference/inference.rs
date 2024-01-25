@@ -20,11 +20,9 @@ use colored::*;
 use redis::Connection;
 use serde::{Deserialize, Serialize};
 use std::{
-    borrow::Borrow,
-    collections::{HashMap, HashSet, VecDeque},
-    error::Error,
-    rc::Rc,
+    borrow::Borrow, collections::{HashMap, HashSet, VecDeque}, error::Error, fs::OpenOptions, rc::Rc
 };
+use std::io::Write;
 
 use std::backtrace::Backtrace;
 
@@ -128,7 +126,13 @@ impl Inferencer {
     }
 
     fn log_table_to_file(&self, table: &MarginalTable) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let json = serde_json::to_string(table)?;
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(file_name)?;
+        writeln!(file, "{}", json)?;
+        Ok(())
     }
 
     pub fn is_root(&self, node: &PropositionNode) -> bool {
