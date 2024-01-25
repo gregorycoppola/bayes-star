@@ -54,6 +54,14 @@ tix_end = """
 \end{tikzpicture}
 """
 
+legend_mapping = {
+    "lonely[sub=test_Jack9]": ['red', 'triangle'],
+    "exciting[sub=test_Jill9]": ['green', 'square'],
+    "like[obj=test_Jack9,sub=test_Jill9]": ['blue', 'o'],
+    "like[obj=test_Jill9,sub=test_Jack9]": ['yellow', 'triangle'],
+    "date[obj=test_Jill9,sub=test_Jack9]": ['orange', 'square'],
+}
+
 def read_and_process_file(file_path, out_path):
     # out_file = open(out_path, 'w')
     data = {}
@@ -63,7 +71,7 @@ def read_and_process_file(file_path, out_path):
             json_line = json.loads(line)
             for entry in json_line['entries']:
                 condition, probability = entry
-                if not "exist" in condition:
+                if not "exist" in condition and not '{' in condition:
                     print(f"\"{condition}\" {probability}")
                     if condition not in data:
                         data[condition] = []
