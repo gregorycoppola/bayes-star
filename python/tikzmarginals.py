@@ -54,6 +54,14 @@ tix_end = """
 \end{tikzpicture}
 """
 
+prop_order = [
+    "lonely[sub=test_Jack9]",
+    "exciting[sub=test_Jill9]",
+    "like[obj=test_Jack9,sub=test_Jill9]",
+    "like[obj=test_Jill9,sub=test_Jack9]",
+    "date[obj=test_Jill9,sub=test_Jack9]",
+]
+
 legend_mapping = {
     "lonely[sub=test_Jack9]": ['red', 'triangle', 'lonely boy'],
     "exciting[sub=test_Jill9]": ['green', 'square', 'exciting girl'],
