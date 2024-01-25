@@ -4,7 +4,10 @@ use super::{
 };
 use crate::{
     common::{
-        interface::BeliefTable, model::{FactorContext, InferenceModel}, proposition_db, setup::ConfigurationOptions
+        interface::BeliefTable,
+        model::{FactorContext, InferenceModel},
+        proposition_db,
+        setup::ConfigurationOptions,
     },
     inference::table::GenericNodeType,
     model::{
@@ -22,6 +25,8 @@ use std::{
     rc::Rc,
 };
 
+use std::backtrace::Backtrace;
+
 pub struct Inferencer {
     pub config: ConfigurationOptions,
     pub model: Rc<InferenceModel>,
@@ -33,7 +38,7 @@ pub struct Inferencer {
 
 impl Inferencer {
     pub fn new_mutable(
-        config:&ConfigurationOptions,
+        config: &ConfigurationOptions,
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
         fact_memory: Rc<dyn BeliefTable>,
@@ -81,6 +86,8 @@ impl Inferencer {
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
+        let backtrace = Backtrace::capture();
+        println!("{:?}", backtrace);
         trace!("update_marginals over {:?}", &self.bfs_order);
         println!("\nMARGINALS");
         for node in &self.bfs_order {
