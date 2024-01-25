@@ -90,6 +90,25 @@ def read_tuple_list_from_file(file_path):
 def plot_data(data):
     print(f"data: {data}")
 
+def create_tikz_preamble(N):
+    xtick_values = ', '.join(str(i) for i in range(N))
+    tix_preamble = f"""
+\\begin{{tikzpicture}}
+    \\begin{{axis}}[
+        title={{Probability over Time}},
+        xlabel={{Time Points}},
+        ylabel={{Marginal Probability}},
+        xmin=0, xmax={N-1},
+        ymin=0, ymax=1,
+        xtick={{{xtick_values}}},
+        ytick={{0,0.2,0.4,0.6,0.8,1}},
+        legend pos=north west,
+        ymajorgrids=true,
+        grid style=dashed,
+    ]
+"""
+    return tix_preamble
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python script.py <file_path>")
@@ -98,6 +117,9 @@ def main():
     out_path = '' # sys.argv[2]
     data = read_tuple_list_from_file(file_path)
     plot_data(data)
+
+    preamble = create_tikz_preamble(5)
+    print(preamble)
 
 if __name__ == "__main__":
     main()
