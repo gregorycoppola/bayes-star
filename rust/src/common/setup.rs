@@ -79,9 +79,9 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
     });
     let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
 
-    if marginal_output_file.is_some() {
-        check_file_does_not_exist(&marginal_output_file.clone().unwrap());
-    }
+    // if marginal_output_file.is_some() {
+    //     check_file_does_not_exist(&marginal_output_file.clone().unwrap());
+    // }
 
     ConfigurationOptions {
         entities_per_domain,

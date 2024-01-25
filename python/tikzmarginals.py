@@ -113,6 +113,12 @@ def create_tikz_preamble(N):
 """
     return tix_preamble
 
+def get_tuple_size(data):
+    for key, value in data.items():
+        return len(value)
+    assert(False)
+
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: python script.py <file_path> <output file>")
@@ -121,7 +127,8 @@ def main():
     out_path = sys.argv[2]
     data = read_tuple_list_from_file(file_path)
 
-    preamble = create_tikz_preamble(5)
+    tuple_size = get_tuple_size(data)
+    preamble = create_tikz_preamble(tuple_size)
     print(preamble)
     curves = tikz_render_curves(data)
     print(curves)
