@@ -36,6 +36,10 @@ pub struct Inferencer {
     pub bfs_order: Vec<PropositionNode>,
 }
 
+struct MarginalTable {
+    entries: Vec<(String, f64)>,
+}
+
 impl Inferencer {
     pub fn new_mutable(
         config: &ConfigurationOptions,
@@ -90,6 +94,7 @@ impl Inferencer {
         println!("{:?}", backtrace);
         trace!("update_marginals over {:?}", &self.bfs_order);
         println!("\nMARGINALS");
+        let mut entries = vec![];
         for node in &self.bfs_order {
             let pi0 = self.data.get_pi_value(node, 0).unwrap();
             let pi1 = self.data.get_pi_value(node, 1).unwrap();
@@ -109,6 +114,10 @@ impl Inferencer {
                 formatted_prob0.red(),
                 node
             );
+            let node_string = format!("{:?}", node);
+            let probability = probability1;
+            info!("adding entry {} {}", &node_string, probability);
+            entries.push((node_string, probability));
         }
         Ok(())
     }
