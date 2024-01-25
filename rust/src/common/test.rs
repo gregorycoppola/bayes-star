@@ -93,6 +93,7 @@ impl ReplState {
             .store_proposition_probability(&prop, new_prob)
             .unwrap();
         self.inferencer.do_fan_out_from_node(&node).unwrap();
+        self.inferencer.update_marginals().unwrap();
     }
 
     fn handle_unset(&mut self, tokens: &Vec<String>) {
