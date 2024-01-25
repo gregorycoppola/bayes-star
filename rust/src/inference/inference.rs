@@ -18,6 +18,7 @@ use crate::{
 };
 use colored::*;
 use redis::Connection;
+use serde::{Deserialize, Serialize};
 use std::{
     borrow::Borrow,
     collections::{HashMap, HashSet, VecDeque},
@@ -36,6 +37,7 @@ pub struct Inferencer {
     pub bfs_order: Vec<PropositionNode>,
 }
 
+#[derive(Serialize, Deserialize)]
 struct MarginalTable {
     entries: Vec<(String, f64)>,
 }
