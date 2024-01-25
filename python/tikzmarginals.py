@@ -77,12 +77,13 @@ def read_tuple_list_from_file(file_path):
             print(f"time point {i}")
             json_line = json.loads(line)
             for entry in json_line['entries']:
+                print(f"entry: {entry}")
                 condition, probability = entry
                 if not "exist" in condition and not '{' in condition:
                     print(f"\"{condition}\" {probability}")
                     if condition not in data:
                         data[condition] = []
-                    data[condition].append(probability)
+                    data[condition] = probability
             buffer.append(data)
     return buffer
 
