@@ -44,6 +44,9 @@ impl ReplState {
         loop {
             self.print_menu_options()?;
             let tokens = get_input_tokens_from_user();
+            if tokens.len() < 1 {
+                continue;
+            }
             let function = &tokens[0];
             match function.as_str() {
                 "s" => {
