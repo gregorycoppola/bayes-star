@@ -33,9 +33,9 @@ fn weighted_cointoss(threshold: f64) -> f64 {
     }
 }
 
-pub struct SimpleDating {}
+pub struct EligibilityTriangle {}
 
-impl ScenarioMaker for SimpleDating {
+impl ScenarioMaker for EligibilityTriangle {
     fn setup_scenario(
         &self,
         resources: &FactoryResources,
@@ -75,26 +75,26 @@ impl ScenarioMaker for SimpleDating {
             let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
             let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
 
-            let p_jack_lonely = weighted_cointoss(0.3f64);
+            let p_jack_charming = weighted_cointoss(0.3f64);
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
             let p_jill_likes_jack: f64 = weighted_cointoss(0.4f64);
             let p_jack_likes_jill =
-                weighted_cointoss(numeric_or(p_jack_lonely, p_jill_exciting));
+                weighted_cointoss(numeric_or(p_jack_charming, p_jill_exciting));
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
             {
                 trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_lonely = proposition("lonely".to_string(), vec![sub(jack)]);
+                let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
 
                 trace!(
-                    "Jack Lonely: {:?}, Probability: {}",
-                    jack_lonely.predicate.hash_string(),
-                    p_jack_lonely
+                    "Jack charming: {:?}, Probability: {}",
+                    jack_charming.predicate.hash_string(),
+                    p_jack_charming
                 );
-                proposition_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
-                plan.maybe_add_to_training(is_training, &jack_lonely)?;
-                graph.ensure_existence_backlinks_for_proposition(&jack_lonely)?;
+                proposition_db.store_proposition_probability(&jack_charming, p_jack_charming)?;
+                plan.maybe_add_to_training(is_training, &jack_charming)?;
+                graph.ensure_existence_backlinks_for_proposition(&jack_charming)?;
             }
 
             {
@@ -181,9 +181,9 @@ impl ScenarioMaker for SimpleDating {
         let xjill = variable(Domain::Jill);
 
         let implications = vec![
-            // if jack is lonely, he will date any jill
+            // if jack is charming, he will date any jill
             implication(
-                conjunction(vec![predicate("lonely".to_string(), vec![
+                conjunction(vec![predicate("charming".to_string(), vec![
                     sub(xjack.clone()),
                 ])]),
                 predicate("like".to_string(), 
