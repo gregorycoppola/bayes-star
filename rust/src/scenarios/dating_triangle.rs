@@ -129,10 +129,7 @@ impl ScenarioMaker for EligibilityTriangle {
             ),
         ];
 
-        for implication in implications.iter() {
-            trace!("Storing implication: {:?}", implication);
-            graph.store_predicate_implication(implication)?;
-        }
+        graph.store_predicate_implications(&implications)?;
 
         // Additional functions
         fn numeric_or(a: f64, b: f64) -> f64 {
