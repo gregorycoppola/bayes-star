@@ -82,162 +82,51 @@ impl ScenarioMaker for EligibilityTriangle {
                 weighted_cointoss(numeric_or(p_jack_charming, p_jill_exciting));
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
-            {
-                trace!("Jack entity part 2: {:?}", jack_entity);
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
+            let jack = constant(jack_entity.domain, jack_entity.name.clone());
+            let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
+            proposition_db.store_proposition_probability(&jack_charming, p_jack_charming)?;
+            plan.maybe_add_to_training(is_training, &jack_charming)?;
+            graph.ensure_existence_backlinks_for_proposition(&jack_charming)?;
 
-                trace!(
-                    "Jack charming: {:?}, Probability: {}",
-                    jack_charming.predicate.hash_string(),
-                    p_jack_charming
-                );
-                proposition_db.store_proposition_probability(&jack_charming, p_jack_charming)?;
-                plan.maybe_add_to_training(is_training, &jack_charming)?;
-                graph.ensure_existence_backlinks_for_proposition(&jack_charming)?;
-            }
-
-            {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jill_exciting = proposition("exciting".to_string(),
-                vec![sub(jill)]);
-
-                trace!(
-                    "Jill Exciting: {:?}, Probability: {}",
-                    jill_exciting.predicate.hash_string(),
-                    p_jill_exciting
-                );
-                proposition_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
-                plan.maybe_add_to_training(is_training, &jill_exciting)?;
-                graph.ensure_existence_backlinks_for_proposition(&jill_exciting)?;
-            }
-
-            {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
-
-                // "likes(jill, jack)"
-                let jill_likes_jack = proposition(
-                    "like".to_string(),
-                    vec![
-                    sub(jill.clone()),
-                    obj(jack.clone()),
-                ]);
-                trace!(
-                    "Jill likes Jack: {:?}, Probability: {}",
-                    jill_likes_jack.predicate.hash_string(),
-                    p_jill_likes_jack
-                ); // Logging
-                proposition_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
-                plan.maybe_add_to_training(is_training, &jill_likes_jack)?;
-                graph.ensure_existence_backlinks_for_proposition(&jill_likes_jack)?;
-            }
-
-            {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_likes_jill = proposition(
-                    "like".to_string(),
-                    vec![
-                    sub(jack.clone()),
-                    obj(jill.clone()),
-                ]);
-                trace!(
-                    "Jack likes Jill: {:?}, Probability: {}",
-                    jack_likes_jill.predicate.hash_string(),
-                    p_jack_likes_jill
-                ); // Logging
-                if is_training {
-                    proposition_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
-                }
-                plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
-                // graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
-            }
-            {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
-
-                // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
-                let jack_dates_jill =
-                    proposition(
-                        "date".to_string(),
-                        vec![sub(jack),  obj(jill)]);
-                trace!(
-                    "Jack dates Jill: {:?}, Probability: {}",
-                    jack_dates_jill.predicate.hash_string(),
-                    p_jack_dates_jill
-                ); // Logging
-
-                if is_training {
-                    proposition_db.store_proposition_probability(&jack_dates_jill, p_jack_dates_jill)?;
-                }
-                plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
-                plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
-                // graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
-            }
         }
 
         let xjack = variable(Domain::Jack);
         let xjill = variable(Domain::Jill);
 
         let implications = vec![
-            // if jack is charming, he will date any jill
             implication(
                 conjunction(vec![predicate("charming".to_string(), vec![
                     sub(xjack.clone()),
                 ])]),
-                predicate("like".to_string(), 
+                predicate("rich".to_string(), 
                 vec![
                     sub(xjack.clone()),
-                    obj(xjill.clone()),
                 ]),
                 vec![RoleMap::new(HashMap::from([(
                     "sub".to_string(),
                     "sub".to_string(),
                 )]))],
             ),
-            // if jill is exciting, any jack will date her
-            implication(
-                conjunction(vec![predicate("exciting".to_string(),
-                vec![
-                    sub(xjill.clone()),
-                ])]),
-                predicate("like".to_string(),
-                vec![
-                    sub(xjack.clone()),
-                    obj(xjill.clone()),
-                ]),
-                vec![RoleMap::new(HashMap::from([(
-                    "obj".to_string(),
-                    "sub".to_string(),
-                )]))],
-            ),
-            // if jill likes jack, then jack dates jill
             implication(
                 conjunction(vec![
-                    predicate("like".to_string(),
+                    predicate("rich".to_string(),
                     vec![
-                        sub(xjill.clone()),
-                        obj(xjack.clone()),
-                    ]),
-                    predicate("like".to_string(), vec![
                         sub(xjack.clone()),
-                        obj(xjill.clone()),
+                    ]),
+                    predicate("charming".to_string(), vec![
+                        sub(xjack.clone()),
                     ]),
                 ]),
-                predicate("date".to_string(),
+                predicate("baller".to_string(),
                 vec![
                     sub(xjack.clone()),
-                    obj(xjill.clone()),
                 ]),
                 vec![
                     RoleMap::new(HashMap::from([
-                        ("sub".to_string(), "obj".to_string()),
-                        ("obj".to_string(), "sub".to_string()),
+                        ("sub".to_string(), "sub".to_string()),
                     ])),
                     RoleMap::new(HashMap::from([
                         ("sub".to_string(), "sub".to_string()),
-                        ("obj".to_string(), "obj".to_string()),
                     ])),
                 ],
             ),
