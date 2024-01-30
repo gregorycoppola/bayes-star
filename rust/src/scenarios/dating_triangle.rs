@@ -45,7 +45,6 @@ impl ScenarioMaker for EligibilityTriangle {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let entity_domains = [Domain::Jack, Domain::Jill];
 
         // Retrieve entities in the Jack domain
         let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
@@ -60,17 +59,17 @@ impl ScenarioMaker for EligibilityTriangle {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
-            for domain in entity_domains.iter() {
-                let prefix = if is_test { "test" } else { "train" };
-                let name = format!("{}_{:?}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
-                let entity = Entity {
-                    domain: domain.clone(),
-                    name: name.clone(),
-                };
-                graph.store_entity(&entity)?;
-                trace!("Stored entity: {:?}", &entity);
-                domain_entity_map.insert(domain.to_string(), entity);
-            }
+
+            let prefix = if is_test { "test" } else { "train" };
+            let name = format!("{}_{:?}{}", &prefix, "Jack", i); // Using Debug formatting for Domain enum
+            let domain = Domain::Jack;
+            let entity = Entity {
+                domain,
+                name: name.clone(),
+            };
+            graph.store_entity(&entity)?;
+            trace!("Stored entity: {:?}", &entity);
+            domain_entity_map.insert(domain.to_string(), entity);
 
             let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
             let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
@@ -91,8 +90,6 @@ impl ScenarioMaker for EligibilityTriangle {
         }
 
         let xjack = variable(Domain::Jack);
-        let xjill = variable(Domain::Jill);
-
         let implications = vec![
             implication(
                 conjunction(vec![predicate("charming".to_string(), vec![
