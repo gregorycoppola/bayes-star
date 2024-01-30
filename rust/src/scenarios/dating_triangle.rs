@@ -15,14 +15,6 @@ use crate::{
 };
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
-fn cointoss() -> f64 {
-    let mut rng = rand::thread_rng(); // Get a random number generator
-    if rng.gen::<f64>() < 0.5 {
-        1.0
-    } else {
-        0.0
-    }
-}
 
 fn weighted_cointoss(threshold: f64) -> f64 {
     let mut rng = rand::thread_rng(); // Get a random number generator
