@@ -109,6 +109,15 @@ impl InferenceGraph {
         self.store_predicate_backward_link(implication)?;
         Ok(())
     }
+    pub fn store_predicate_implications(
+        &mut self,
+        implications: &Vec<PredicateFactor>,
+    ) -> Result<(), Box<dyn Error>> {
+        for implication in implications {
+            self.store_predicate_implication(implication)?;
+        }
+        Ok(())
+    }
     pub fn get_all_implications(&self) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
