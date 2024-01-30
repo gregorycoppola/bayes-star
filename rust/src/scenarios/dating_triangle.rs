@@ -44,7 +44,7 @@ impl ScenarioMaker for EligibilityTriangle {
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             // charming
             let p_jack_charming = weighted_cointoss(0.3f64);
-            let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
+            let jack_charming = proposition("charming".to_string(), vec![sub(jack.clone())]);
             proposition_db.store_proposition_boolean(&jack_charming, p_jack_charming)?;
             plan.maybe_add_to_training(is_training, &jack_charming)?;
             graph.ensure_existence_backlinks_for_proposition(&jack_charming)?;
@@ -54,13 +54,13 @@ impl ScenarioMaker for EligibilityTriangle {
             } else {
                 weighted_cointoss(0.2f64)
             };
-            let jack_rich = proposition("rich".to_string(), vec![sub(jack)]);
+            let jack_rich = proposition("rich".to_string(), vec![sub(jack.clone())]);
             proposition_db.store_proposition_boolean(&jack_rich, p_jack_rich)?;
             plan.maybe_add_to_training(is_training, &jack_rich)?;
             graph.ensure_existence_backlinks_for_proposition(&jack_rich)?;
             // baller
             let p_jack_baller = p_jack_charming && p_jack_rich;
-            let jack_baller = proposition("baller".to_string(), vec![sub(jack)]);
+            let jack_baller = proposition("baller".to_string(), vec![sub(jack.clone())]);
             proposition_db.store_proposition_boolean(&jack_baller, p_jack_baller)?;
             plan.maybe_add_to_training(is_training, &jack_baller)?;
             graph.ensure_existence_backlinks_for_proposition(&jack_baller)?;
