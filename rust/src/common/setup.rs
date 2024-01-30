@@ -7,6 +7,7 @@ use std::io::Write;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ConfigurationOptions {
+    pub scenario_name: String,
     pub entities_per_domain: i32,
     pub print_training_loss: bool,
     pub test_example: Option<u32>,
@@ -52,6 +53,14 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
                 .help("Sets the test example number (optional)")
                 .takes_value(true), // This argument is optional and takes a value
         )
+        .arg(
+            Arg::with_name("scenario_name")
+                .long("scenario_name")
+                .value_name("STRING")
+                .help("Sets the scenario name")
+                .takes_value(true)
+                .required(true), // Mark this argument as required
+        )
         .get_matches();
     let entities_per_domain: i32 = matches
         .value_of("entities_per_domain")
@@ -64,7 +73,13 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
             .expect("test_example needs to be a positive integer or omitted")
     });
 
+    let scenario_name: String = matches
+        .value_of("scenario_name")
+        .expect("scenario_name is required") // As it's required, unwrap directly
+        .to_string();
+
     ConfigurationOptions {
+        scenario_name,
         entities_per_domain,
         print_training_loss,
         test_example,

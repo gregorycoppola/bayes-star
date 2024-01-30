@@ -62,6 +62,7 @@ impl ScenarioMaker for EligibilityTriangle {
             let jack_baller = proposition("baller".to_string(), vec![sub(jack.clone())]);
             proposition_db.store_proposition_boolean(&jack_baller, p_jack_baller)?;
             plan.maybe_add_to_training(is_training, &jack_baller)?;
+            plan.maybe_add_to_test(is_test, &jack_baller)?;
         }
 
         let xjack = variable(Domain::Jack);
