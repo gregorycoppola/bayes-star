@@ -41,11 +41,16 @@ impl ScenarioMaker for EligibilityTriangle {
             };
             graph.store_entity(&jack_entity)?;
             let p_jack_charming = weighted_cointoss(0.3f64);
-            let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
+            let p_jack_rich: bool = if p_jack_charming {
+                weighted_cointoss(0.7f64)
+            } else {
+                weighted_cointoss(0.2f64)
+            };
+            let p_jack_baller = p_jack_charming && p_jack_rich;
 
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
-            proposition_db.store_proposition_probability(&jack_charming, p_jack_charming)?;
+            proposition_db.store_proposition_boolean(&jack_charming, p_jack_charming)?;
             plan.maybe_add_to_training(is_training, &jack_charming)?;
             graph.ensure_existence_backlinks_for_proposition(&jack_charming)?;
 
