@@ -6,6 +6,7 @@ use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
 use crate::model::creators::predicate;
+use crate::scenarios::helpers::weighted_cointoss;
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -13,17 +14,7 @@ use crate::{
         objects::{Domain, Entity, RoleMap},
     },
 };
-use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
-
-fn weighted_cointoss(threshold: f64) -> f64 {
-    let mut rng = rand::thread_rng(); // Get a random number generator
-    if rng.gen::<f64>() < threshold {
-        1.0
-    } else {
-        0.0
-    }
-}
 
 pub struct EligibilityTriangle {}
 
@@ -37,41 +28,20 @@ impl ScenarioMaker for EligibilityTriangle {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-
-        // Retrieve entities in the Jack domain
         let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
-        let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
-        trace!("Initial number of jacks: {}", jacks.len());
-        // Retrieve entities in the Jill domain
-        let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
-        let jills = graph.get_entities_in_domain(&jill_domain)?;
-        trace!("Initial number of jills: {}", jills.len());
-
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
-            let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
-
             let prefix = if is_test { "test" } else { "train" };
             let name = format!("{}_{:?}{}", &prefix, "Jack", i); // Using Debug formatting for Domain enum
             let domain = Domain::Jack;
-            let entity = Entity {
+            let jack_entity = Entity {
                 domain,
                 name: name.clone(),
             };
-            graph.store_entity(&entity)?;
-            trace!("Stored entity: {:?}", &entity);
-            domain_entity_map.insert(domain.to_string(), entity);
-
-            let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
-            let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
-
+            graph.store_entity(&jack_entity)?;
             let p_jack_charming = weighted_cointoss(0.3f64);
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
-            let p_jill_likes_jack: f64 = weighted_cointoss(0.4f64);
-            let p_jack_likes_jill =
-                weighted_cointoss(numeric_or(p_jack_charming, p_jill_exciting));
-            let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
             let jack = constant(jack_entity.domain, jack_entity.name.clone());
             let jack_charming = proposition("charming".to_string(), vec![sub(jack)]);
@@ -120,18 +90,7 @@ impl ScenarioMaker for EligibilityTriangle {
                 ],
             ),
         ];
-
         graph.store_predicate_implications(&implications)?;
-
-        // Additional functions
-        fn numeric_or(a: f64, b: f64) -> f64 {
-            f64::min(a + b, 1.0)
-        }
-
-        fn numeric_and(a: f64, b: f64) -> f64 {
-            a * b
-        }
-
         Ok(())
     }
 }
