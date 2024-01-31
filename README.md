@@ -3,10 +3,8 @@
 **Note** This is experimental software and for education and scientific purposes only.
 The user must accept any liability for any mistakes, damage, loss or other suffering that result from the use of this software.
 
-## Abstract
+## Impact
 This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a "logical inference engine" that can do reasoning.
-
-If you are interested in **AGI** you should be interested in this.
 
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
