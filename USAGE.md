@@ -26,6 +26,8 @@ The dependencies are:
     * But, it is trivial and you can start over in any framework. I'm not that current on the latest data analysis tools.
 
 # Redis for the Data Store
+**NOTE**: Training will *wipe out* your **REDIS** store on *localhost*, so **STOP** right now if you have **REDIS** on *localhost*.
+
 See [REDIS.md](REDIS.md).
 
 # Rust for the Model
@@ -38,57 +40,22 @@ There is right now some analysis code written in [python3](https://www.python.or
 
 See [Rust](https://www.rust-lang.org/) or ask your favorite chat bot.
 
-## Install the BAYES STAR Package
-You have to `cd` into the `rust` directory and do a `cargo build` to install the dependencies:
+## Run
+### Training
 
+**NOTE**: Training will *wipe out* your **REDIS** store on *localhost*, so **STOP** right now if you have **REDIS** on *localhost*.
 
-```
-cd rust
-cargo build
-```
-
-You can find the dependencies in the file [Cargo.toml](rust/Cargo.toml).
-
-# Python for the Analysis
-Note: The analysis currently uses python. But, you can rewrite your own eval. I only putted the simplest eval to make the graph of the training loss.
-
-## Checking Python Installation
-
-Before you begin, you need to ensure that Python 3 is installed on your system. To check if Python is installed and determine its version, open your terminal or command prompt and type:
-
-To see if you have python (before version 3), type:
-```bash
-python --version
-```
-
-To see if you have python3, type
-```
-python3 --version
-```
-
-## Install Python Dependencies
-Right now, the only dependency is `matplotlib`. Run the following command in your terminal or command prompt to install `matplotlib`:
-
-```bash
-pip install matplotlib
-```
-
-or if your system differentiates between Python 2 and Python 3:
-
-```bash
-pip3 install matplotlib
-```
-
-# Running
-
-In order to run training and the eval I used to make the graph in [training loss graph](docs/images/training_loss.png), run:
-
-```
-./trainandanalyze.sh
-```
-
-In order to just run training, run:
+From the `rust` directory:
 
 ```
 ./train.sh
+```
+
+### Quizzing
+Quizzing is a *REPL* mode that lets you compute *marginals* in the network, both *with* and *without* evidence.
+
+From the `rust` directory:
+
+```
+./quiz.sh
 ```
