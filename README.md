@@ -3,8 +3,6 @@
 **Note** This is experimental software and for education and scientific purposes only.
 The user must accept any liability for any mistakes, damage, loss or other suffering that result from the use of this software.
 
-**Do not run this software if you already have a Redis database on 'localhost' because it will get cleared.**
-
 ## Abstract
 This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a "logical inference engine" that can do reasoning.
 
@@ -12,8 +10,6 @@ If you are interested in **AGI** you should be interested in this.
 
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
-
-**Note that running the BAYES STAR package involves clearing out the Redis server on 'localhost'.** Don't run this software as is if you have a *Redis* server on *localhost*.
 
 ## Model Details
 
@@ -24,18 +20,14 @@ Find the answers to FAQ's at [FAQ.md](FAQ.md).
 
 ## Documentation
 
-### Formal Paper (DRAFT)
+### Paper Drafts
 I am putting all the "real" equations in an academic-style Latex-created [pdf document](paper/symbolic-logic-also-needed-DRAFT.pdf).
 This is still in DRAFT STAGE.
 As noted below, there is also a lot of multi-media content on my Twitter at [@coppola_ai](https://twitter.com/coppola_ai).
+
 ### Developing in Public
 I am taking a "developing in public" vibe for this project.
 I will ultimately publish a traditional paper to arXiv, if not elsewhere.
-
-### Too Many Papers
-But, I am agreeing with those who are saying there are "too many papers".
-I have primarily a small core of ideas to communicate (e.g., the QBN).
-I am happy to make any multi-media that helps people understand the idea.
 
 ### Tweet Threads
 I have many tweet threads now discussing various aspects of this problem at [@coppola_ai](https://twitter.com/coppola_ai).
