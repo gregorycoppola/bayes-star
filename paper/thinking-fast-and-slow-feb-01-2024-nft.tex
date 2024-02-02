@@ -1,0 +1,310 @@
+\pdfoutput=1
+\documentclass[11pt]{article}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{bussproofs}
+\usepackage{amsmath}
+\usepackage{amssymb, mathrsfs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+\usepackage{tikz-dependency}
+\usepackage{hyperref}
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{positioning}
+\begin{document}
+\newcommand{\aset}{{\bf A}}
+\newcommand{\cset}{{\bf C}}
+\newcommand{\dset}{{\bf d}}
+\title{\bf A Mathematical Explanation for\\
+{\em Thinking Fast and Slow}
+\thanks{The self-contained source code for this article was published as a {\em Bitcoin Ordinal NFT} to the Bitcoin address {\em bc1pvd4selnseakwz5eljgj4d99mka25mk8pp3k7v7hc6uxw8txy6lgsf7lmtg} on {\em February 1, 2024}.}
+}
+\author{
+    {\Large Greg Coppola}
+    \\
+    {\em coppola.ai} \\
+    Research. Develop. Meme.
+}
+\date{\today}
+
+\maketitle
+
+\section*{Overview}
+\paragraph{Thinking Fast and Slow}
+\cite{Kahneman2011ThinkingFast} introduces an influential distinction between {\em fast} and {\em slow} forms of {\em thinking},
+in which {\em fast} thinking is {\em effortless} and {\em automatic}, and {\em slow} thinking {\em requires effort}, or involves {\em complex calculations}.
+\paragraph{No Current Explanation}
+To our knowledge, there is no {\em explanation} of this distinction based on {\em computer science}.
+We present a possible explanation for the distinction between {\em fast} and {\em slow} thinking based on the formulation of \cite{Gentzen1934}'s {\em natural deduction calculus} given in \cite{PrawitzNaturalDeduction}.
+\paragraph{A Hypothesis Based on Formal Logic}
+\cite{PrawitzNaturalDeduction} distinguishes between {\em proper} and {\em improper} deduction rules, which we, for clarity in the modern context, call instead {\em simple} and {\em complex} deduction rules.
+We propose the following {\em hypothesis}: the {\em fast} thoughts of \cite{Kahneman2011ThinkingFast} correspond to those consisting only of proofs using the {\em simple} deduction rules of \cite{PrawitzNaturalDeduction}, which correspond to those deductions we can implement in a single {\em probability query} through {\em forward pass} (see \cite{koller2009probabilistic}) in the {\em Quantified Boolean Bayesian Network} \cite{Coppola2024}.
+
+\section*{First-Order Theorem-Proving}
+\paragraph{Overview}
+A {\em theorem} is a pair $\dset = \left( \aset, \cset \right)$, where $\aset$ is set of {\em assumptions} and $\cset$ is a set of {\em conclusions}, such that each $\aset$ and $\cset$ is a subset of the possible {\em sentences} in a {\em logical language} $\ell$ of interest.
+A {\em proof} of $\dset$ in the calculus $\Gamma_\ell$ is a {\em sequence} of {\em deduction steps} $\gamma_\dset = [d_1, ..., d_n]$, that {\em derive} $\dset$.
+Given a theorem $\dset$ and a sequence $\gamma_\dset$, we can trivially verify whether $\gamma_\dset$ {\em constitutes a valid proof} of $\dset$.
+In such a case, we say that $\left(\aset, \cset\right)$ is {\em provable} in $\Gamma_\ell$.
+
+\paragraph{Consistency and Completeness}
+We say that a set $\cset$ is {\em true} given $\aset$, if {\em every model satisfying} $\aset$, that honors the meaning of the {\em logical connectives} ($\land$, $\lor$, $\rightarrow$, $\forall$, $\exists$ and $\bot$), must also satisfy $\cset$.
+The {\em first-order} calculus is so useful because it is {\em consistent}, meaning that everything {\em provable} is {\em true} and {\em complete}, meaning that everything {\em true} is {\em provable} \cite{Godel1931, Gentzen1934}.
+
+\paragraph{Undecidability of First-Order Theorem-Proving}
+While the task of {\em verifying} whether $\gamma_\dset$ is a valid proof of $\dset$ is trivial, the task of {\em deciding} whether $\dset$ {\em has} a proof is related to the {\em halting problem}, and is undecidable in general \cite{Turing1936, Church1936}.
+That is, there is no universal program that can take an {\em arbitrary theorem} $\left( \aset, \cset \right)$ and say whether it has a proof.
+
+\paragraph{NP-Hardness of Propositional Theorem-Proving}
+If we remove the quantifiers $\forall$ and $\exists$, we are left with the {\em propositional calculus}.
+Proving a theorem in this calculus corresponds to deciding {\em boolean satisfiability}, and this {\em is decidable}, but is {\em NP-hard} in general \cite{Cook1971}, which is to say $\Omega(2^N)$ where $N$ is the number of boolean variables.
+
+\paragraph{Commentary}
+As some {\em theorem-proving} classes are {\em undecidable}, and others are {\em NP-hard}, we should {\em expect} that some {\em thinking} is {\em slow}.
+However, the existince of {\em fast} thinking is evident {\em empirically} \cite{Kahneman2011ThinkingFast}.
+So, our task is to {\em theoretically} draw a line between the two.
+
+\section*{Prawitz's Natural Deduction}
+\subsection*{Overview}
+\cite{PrawitzNaturalDeduction} examines {\em twelve} inference rules, one {\em Introduction rule} and one {\em Elimination rule} for each of the six {\em logical connectives} ($\land$, $\lor$, $\rightarrow$, $\forall$, $\exists$ and $\bot$).
+An {\em inference rule} $R$ licenses a {\em conclusion} $(\aset_c, \cset_c)$ based on a set of {\em premises} $\left\{(\aset_p, \cset_p)\right\}_{p\in R}$, whose form is determined by $R$.
+\cite{PrawitzNaturalDeduction} introduces a distinction between what he called {\em proper} and {\em improper} deduction rules.
+We will refer to the same distinction, but call them {\em simple} and {\em complex} deduction rules.
+The {\em simple} rules are those for which $\aset_c = \aset_p$ for all $p \in R$.
+That is, the {\em simple} inferences are those in which the assumptions are the same $\aset_c = \aset_p = \aset$ for each of the {\em premises} and the {\em conclusion} of the {\em deduction rule}.
+The deduction rules which are not {\em simple} are called {\em complex}.
+In the {\em complex} inferences, the assumptions {\em change}, and this requires {\em book-keeping} to keep track of.
+We will consider some {\em illustrative examples}.
+
+\subsection*{Examples}
+Overall, there are {\em six} connectives ($\land$, $\lor$, $\rightarrow$, $\forall$, $\exists$ and $\bot$), each with an {\em Introduction} and an {\em Elimination} rule in \cite{PrawitzNaturalDeduction}'s calculus.
+We will review {\em three} of the connectives that highlight the properties of interest, and save a longer discussion for future work.
+\subsubsection*{$\land$ Rules}
+The operator $\land$ is pronounced {\em and}, and the rules of {\em $\land$-Introduction} and {\em $\land$-Elimination} are depicted intuitively as:
+\begin{equation}
+    \begin{tabular}{c c}
+        $\land$-Introduction &  
+    \begin{minipage}{.5\textwidth}
+        \begin{prooftree}
+            \AxiomC{$A$}
+            \AxiomC{$B$}
+            \BinaryInfC{$A \land B$}
+        \end{prooftree}
+    \end{minipage}
+        \\
+        \vspace{10pt}
+        \\
+        $\land$-Elimination &
+    \begin{minipage}{.5\textwidth}
+        \begin{prooftree}
+            \AxiomC{$A \land B$}
+            \UnaryInfC{$A, B$}
+        \end{prooftree}
+    \end{minipage}
+    \end{tabular}
+\end{equation}
+Expressed formally, {\em $\wedge$-Introduction} says:
+\begin{equation}
+    \left\{\left(\aset_0 \cup \left\{A, B\right\}, \cset_0\right)\right\} \rightarrow \left(\aset_0 \cup \left\{A, B\right\}, \cset_0 \cup \left\{A \wedge B\right\}\right)
+\end{equation}
+That is, if we have concluded $A$ and $B$, we can conclude $A \wedge B$.
+This inference rule is {\em simple} because the $\aset$ in both premise and conclusion is the same, i.e. $\aset_0 \cup \left\{A, B\right\}$.
+Conversely, {\em $\wedge$-Elimination} says:
+\begin{equation}
+    \left\{\left(\aset_0 \cup \left\{A \wedge B\right\}, \cset_0\right)\right\} \rightarrow \left(\aset_0 \cup \left\{A \wedge B\right\}, \cset_0 \cup \left\{A, B\right\}\right)
+\end{equation}
+That is, if we have concluded $A \wedge B$, we can conclude both $A$ and $B$.
+This inference rule is {\em simple} because the $\aset$ in both premise and conclusion is the same, i.e. $\aset_0 \cup \left\{A \wedge B\right\}$.
+$\land$ is unique for being the only of the {\em six} rules whose {\em Introduction} and {\em Elimination} rules are both {\em simple}, and in this sense $\land$ may be viewed as the ``simplest'' logical connective.
+
+\subsection*{$\rightarrow$ Rules}
+The symbol $\rightarrow$ is pronounced {\em implies} and the rules for $\rightarrow$ are more typical, in that one is {\em simple} and one is {\em complex}:
+\begin{equation}
+\begin{tabular}{c c}
+    $\rightarrow$-Introduction &  
+\begin{minipage}{.5\textwidth}
+% Implication Introduction
+\begin{prooftree}
+    \AxiomC{[A]}
+    \noLine
+    \UnaryInfC{$\vdots$}
+    \noLine
+    \UnaryInfC{$B$}
+    \UnaryInfC{$A \rightarrow B$}
+\end{prooftree}
+\end{minipage}
+    \\
+    \vspace{10pt} % Adjust the 10pt to the amount of space you need
+    \\
+    $\rightarrow$-Elimination &
+\begin{minipage}{.5\textwidth}
+% Implication Elimination (Modus Ponens)
+\begin{prooftree}
+    \AxiomC{$A$}
+    \AxiomC{$A \rightarrow B$}
+    \BinaryInfC{$B$}
+\end{prooftree}
+\end{minipage}
+\end{tabular}
+\end{equation}
+Starting with the {\em simple} {\em $\rightarrow$-Elimination}, we have:
+\begin{equation}
+    \left\{\left(\aset_0 \cup \left\{A, A \rightarrow B\right\}, \cset_0\right)\right\} \rightarrow \left(\aset_0 \cup \left\{A, A \rightarrow B\right\}, \cset_0 \cup \left\{B\right\}\right)
+\end{equation}
+That is, if we have concluded $A$ and $A \rightarrow B$, we can conclude $B$.
+This is simple because the $\aset$ does not change between premises and conclusion, i.e. $\aset_0 \cup \left\{A, A \rightarrow B\right\}$.
+{\em $\rightarrow$-Introduction} is {\em complex} and says:
+\begin{equation}
+    \left\{\left(\aset_0 \cup \left\{A\right\}, \cset_0 \cup \left\{B\right\}\right)\right\} \rightarrow \left(\aset_0 \cup \left\{\right\}, \cset_0 \cup \left\{A \rightarrow B\right\}\right)
+\end{equation}
+That is, if assuming $A$ lets us prove $B$, then we can {\em discharge} the assumption $A$ and conclude $A \rightarrow B$.
+This is {\em complex} because it involves a change of assumptions between {\em premise} and {\em conclusion}.
+We remark that this rule is used more by {\em professional mathematicians} engaged in thoretical {\em theorem proving}, whereas in {\em everday life} people are usually content to just conlude $B$, without {\em proving} that they {\em necessarily} did so.
+This again corresponds to the difference between {\em simple} inferences, that we make routinely, and {\em complex} inferences, that require {\em specialists} and even expensive {\em research programs} to arrive at.
+
+\subsection*{$\lor$ Rules}
+The operator $\lor$ is pronounced {\em or}, and, like $\rightarrow$, $\lor$ rules include one {\em simple} and one {\em complex} rule.
+While $\lor$ is more complicated than $\wedge$, there is a sense in which it is relatively {\em simple} compared to the other {\em complex} rules.
+$\lor$ rules are depicted intuively as:
+\begin{equation}
+    \begin{tabular}{c c}
+        $\lor$-Introduction &  
+    \begin{minipage}{.5\textwidth}
+        \begin{minipage}{.5\textwidth}
+    \begin{prooftree}
+        \AxiomC{$A$}
+        \UnaryInfC{$A \lor B$}
+    \end{prooftree}
+        \end{minipage}%
+        \begin{minipage}{.5\textwidth}
+    \begin{prooftree}
+        \AxiomC{$B$}
+        \UnaryInfC{$A \lor B$}
+    \end{prooftree}
+        \end{minipage}
+    \end{minipage}
+        \\
+        \vspace{10pt} % Adjust the 10pt to the amount of space you need
+        \\
+        $\lor$-Elimination &
+    \begin{minipage}{.5\textwidth}
+    % Or Elimination
+    \begin{prooftree}
+        \AxiomC{$A \lor B$}
+        \AxiomC{[A]}
+        \noLine
+        \UnaryInfC{$\vdots$}
+        \noLine
+        \UnaryInfC{$C$}
+        \AxiomC{[B]}
+        \noLine
+        \UnaryInfC{$\vdots$}
+        \noLine
+        \UnaryInfC{$C$}
+        \TrinaryInfC{$C$}
+    \end{prooftree}
+    \end{minipage}
+    \end{tabular}
+\end{equation}
+Expressed formally, {\em $\lor$-Introduction} says:
+\begin{equation}
+    \left\{\left(\aset_0 \cup \left\{A\right\}, \cset_0\right)\right\} \rightarrow \left(\aset_0 \cup \left\{A\right\}, \cset_0 \cup \left\{A \lor B\right\}\right)
+\end{equation}
+Intuitively, if we have concluded $A$ (alternatively, $B$), we can conclude $A \lor B$.
+This corresponds to a {\em disjunction} gate in the {\em QBBN}.
+{\em $\lor$-Elimination} says:
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        &\left(\aset_0 \cup \left\{\right\}, \cset_0 \cup \left\{A \lor B\right\}\right) \\
+        &\left(\aset_0 \cup \left\{A\right\}, \cset_0 \cup \left\{C\right\}\right) \\
+        &\left(\aset_0 \cup \left\{B\right\}, \cset_0 \cup \left\{C\right\}\right) 
+    \end{aligned}
+    \right\}
+    \rightarrow \left(\aset_0, \cset_0 \cup \left\{C\right\}\right)
+\end{equation}
+This amounts to a {\em proof by cases}, in which we can {\em discharge} $A \lor B$ in a proof of $C$ if we can prove both $A$ and $B$ hold.
+This step is {\em complex}, because it requires a changing of assumptions.
+However, unlike the even more complex {\em complex} rules, {\em reasoning by cases} does {\em not} require creative application of the rules, because the disjunction $A \lor B$ tells us which proofs we need to look for, i.e. $A\rightarrow C$ and $B \rightarrow C$.
+A proof system comprising only the {\em simple} inferences, along with {\em $\lor$-disjunction} would correspond to \cite{Cook1971}'s {\em NP-hardness} result about the {\em propositional calculus}, in which a proof can always be found, but may require exhaustive search, which would be {\em slow}.
+
+\section*{Commentary}
+\paragraph{Linear-Time Inference in a Bayesian Network}
+In contrast to the {\em undecidability} of {\em general} first-order theorem-proving, and the {\em NP-hardness} of {\em propositional calculus} theorem-proving, we have implemented in the {\em Quantified Boolean Bayesian Network} \cite{Coppola2024} the most empirically useful rules in practice of the {\em simple deduction} rules (and could implement the others if there were a reason to do so).
+In this network, with the theoretically unguaranteed but empirically successful {\em iterative belief propagation} algorithm (called {\em loopy} belief propagation in the literature \cite{koller2009probabilistic}), we can do one pass of {\em forwards} (and even {\em backwards}) inference in time bounded by $O(N2^n)$, where $N$ is the number of variables, and $n$ is the maximum incoming size for any {\em junction node}, whether {\em conjunction} ($\land$) or {\em disjunction} ($\lor$).
+Given that $n$ is much smaller than $N$, this is linear in $N$, which is {\em fast}.
+Thus, we can say that this class of inferences models {\em fast} thinking.
+
+\paragraph{A Hypothesis}
+We propose that the following {\em three} classes of {\em inferences} are equivalent:
+\begin{enumerate}
+    \item Those inferences called {\em simple} by \cite{PrawitzNaturalDeduction}, i.e., those in which the {\em deduction rule} does {\em not} involve {\em changes in assumptions}.
+    \item Those inferences that can be modeled in a single {\em forward} pass in the {\em Quantified Boolean Bayesian Network} \cite{Coppola2024}.
+    \item Those human inferences that \cite{Kahneman2011ThinkingFast} proposed to call {\em fast}.
+\end{enumerate}
+Conversely, the inferences that are not {\em fast}, the same in each case, are {\em slow}.
+% \bibliographystyle{apalike}
+% \bibliography{bibtex}
+\begin{thebibliography}{9}
+
+    \bibitem[Church, 1936]{Church1936}
+    Church, A. (1936).
+    \newblock An unsolvable problem of elementary number theory.
+    \newblock {\em American Journal of Mathematics}, 58(2):345--363.
+    
+    \bibitem[Cook, 1971]{Cook1971}
+    Cook, S. (1971).
+    \newblock The complexity of theorem-proving procedures.
+    \newblock In {\em Proceedings of the Third Annual ACM Symposium on Theory of
+      Computing}, pages 151--158, Shaker Heights, Ohio, USA. Association for
+      Computing Machinery.
+    
+    \bibitem[Coppola, 2024]{Coppola2024}
+    Coppola, G. (2024).
+    \newblock Bayes {S}tar: An implementation of a {Q}uantified {B}oolean
+      {B}ayesian {N}etwork.
+    \newblock \url{https://github.com/gregorycoppola/bayes-star}.
+    \newblock GitHub repository.
+    
+    \bibitem[Gentzen, 1934]{Gentzen1934}
+    Gentzen, G. (1934).
+    \newblock Investigations on logical reasoning.
+    \newblock {\em Mathematische Zeitschrift}, 39:176--210, 405--431.
+    
+    \bibitem[Gödel, 1931]{Godel1931}
+    Gödel, K. (1931).
+    \newblock On formally undecidable propositions of principia mathematica and
+      related systems i.
+    \newblock {\em Monatshefte für Mathematik}, 38(1):173--198.
+    
+    \bibitem[Kahneman, 2011]{Kahneman2011ThinkingFast}
+    Kahneman, D. (2011).
+    \newblock {\em Thinking, Fast and Slow}.
+    \newblock Farrar, Straus and Giroux, New York.
+    
+    \bibitem[Koller and Friedman, 2009]{koller2009probabilistic}
+    Koller, D. and Friedman, N. (2009).
+    \newblock {\em Probabilistic Graphical Models: Principles and Techniques}.
+    \newblock MIT Press.
+    
+    \bibitem[Prawitz, 1965]{PrawitzNaturalDeduction}
+    Prawitz, D. (1965).
+    \newblock {\em Natural Deduction: A Proof-Theoretical Study}.
+    \newblock Stockholm Studies in Philosophy 3. Almqvist \& Wiksell, Stockholm;
+      Göteborg; Uppsala.
+    \newblock Acta Universitatis Stockholmiensis.
+    
+    \bibitem[Turing, 1936]{Turing1936}
+    Turing, A. (1936).
+    \newblock On computable numbers, with an application to the
+      entscheidungsproblem.
+    \newblock {\em Proceedings of the London Mathematical Society}, 42(1):230--265.
+    
+    \end{thebibliography}
+    
+\end{document}
