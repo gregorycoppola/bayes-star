@@ -3,7 +3,7 @@ use crate::scenarios::dating_simple::SimpleDating;
 use clap::{App, Arg};
 use env_logger::{Builder, Env};
 use serde::Deserialize;
-use std::io::Write;
+use std::{io::Write, path::Path};
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ConfigurationOptions {
@@ -11,6 +11,13 @@ pub struct ConfigurationOptions {
     pub entities_per_domain: i32,
     pub print_training_loss: bool,
     pub test_example: Option<u32>,
+    pub marginal_output_file: Option<String>,
+}
+
+fn check_file_does_not_exist(file_name: &str) {
+    if Path::new(file_name).exists() {
+        panic!("File '{}' already exists!", file_name);
+    }
 }
 
 pub fn parse_configuration_options() -> ConfigurationOptions {
@@ -61,6 +68,13 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
                 .takes_value(true)
                 .required(true), // Mark this argument as required
         )
+        .arg(
+            Arg::with_name("marginal_output_file")
+                .long("marginal_output_file")
+                .value_name("FILE")
+                .help("Sets the file name for marginal output (optional)")
+                .takes_value(true), // This argument is optional and takes a string value
+        )
         .get_matches();
     let entities_per_domain: i32 = matches
         .value_of("entities_per_domain")
@@ -72,6 +86,21 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         v.parse()
             .expect("test_example needs to be a positive integer or omitted")
     });
+    let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
+
+    // if marginal_output_file.is_some() {
+    //     check_file_does_not_exist(&marginal_output_file.clone().unwrap());
+    // }
+
+    let scenario_name: String = matches
+        .value_of("scenario_name")
+        .expect("scenario_name is required") // As it's required, unwrap directly
+        .to_string();
+    let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
+
+    // if marginal_output_file.is_some() {
+    //     check_file_does_not_exist(&marginal_output_file.clone().unwrap());
+    // }
 
     let scenario_name: String = matches
         .value_of("scenario_name")
@@ -83,5 +112,6 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         entities_per_domain,
         print_training_loss,
         test_example,
+        marginal_output_file,
     }
 }

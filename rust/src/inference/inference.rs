@@ -7,6 +7,7 @@ use crate::{
         interface::BeliefTable,
         model::{FactorContext, InferenceModel},
         proposition_db,
+        setup::ConfigurationOptions,
     },
     inference::table::GenericNodeType,
     model::{
@@ -17,14 +18,16 @@ use crate::{
 };
 use colored::*;
 use redis::Connection;
+use serde::{Deserialize, Serialize};
 use std::{
-    borrow::Borrow,
-    collections::{HashMap, HashSet, VecDeque},
-    error::Error,
-    rc::Rc,
+    borrow::Borrow, collections::{HashMap, HashSet, VecDeque}, error::Error, fs::OpenOptions, rc::Rc
 };
+use std::io::Write;
+
+use std::backtrace::Backtrace;
 
 pub struct Inferencer {
+    pub config: ConfigurationOptions,
     pub model: Rc<InferenceModel>,
     pub fact_memory: Rc<dyn BeliefTable>,
     pub proposition_graph: Rc<PropositionGraph>,
@@ -32,14 +35,21 @@ pub struct Inferencer {
     pub bfs_order: Vec<PropositionNode>,
 }
 
+#[derive(Serialize, Deserialize)]
+struct MarginalTable {
+    entries: Vec<(String, f64)>,
+}
+
 impl Inferencer {
     pub fn new_mutable(
+        config: &ConfigurationOptions,
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
         fact_memory: Rc<dyn BeliefTable>,
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {
+            config: config.clone(),
             model,
             fact_memory,
             proposition_graph,
@@ -80,8 +90,11 @@ impl Inferencer {
     }
 
     pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
+        let backtrace = Backtrace::capture();
+        println!("{:?}", backtrace);
         trace!("update_marginals over {:?}", &self.bfs_order);
         println!("\nMARGINALS");
+        let mut entries = vec![];
         for node in &self.bfs_order {
             let pi0 = self.data.get_pi_value(node, 0).unwrap();
             let pi1 = self.data.get_pi_value(node, 1).unwrap();
@@ -101,7 +114,25 @@ impl Inferencer {
                 formatted_prob0.red(),
                 node
             );
+            let node_string = format!("{:?}", node);
+            let probability = probability1;
+            info!("adding entry {} {}", &node_string, probability);
+            entries.push((node_string, probability));
         }
+
+        let table = MarginalTable { entries };
+        self.log_table_to_file(&table)?;
+        Ok(())
+    }
+
+    fn log_table_to_file(&self, table: &MarginalTable) -> Result<(), Box<dyn Error>> {
+        let json = serde_json::to_string(table)?;
+        let file_name = self.config.marginal_output_file.clone().unwrap();
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(file_name)?;
+        writeln!(file, "{}", json)?;
         Ok(())
     }
 

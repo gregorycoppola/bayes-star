@@ -96,6 +96,7 @@ impl ReplState {
             .store_proposition_probability(&prop, new_prob)
             .unwrap();
         self.inferencer.do_fan_out_from_node(&node).unwrap();
+        self.inferencer.update_marginals().unwrap();
     }
 
     fn handle_unset(&mut self, tokens: &Vec<String>) {
@@ -162,7 +163,7 @@ pub fn interactive_inference_example(
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
     let mut inferencer =
-        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+        Inferencer::new_mutable(&config, model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     repl.do_repl_loop()?;
