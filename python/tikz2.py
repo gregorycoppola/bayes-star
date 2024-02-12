@@ -8,49 +8,52 @@ tikz_end = """
 """
 
 prop_order = [
-    "lonely[sub=test_Jack0]",
-    "exciting[sub=test_Jill0]",
-    "like[obj=test_Jack9,sub=test_Jill0]",
-    "like[obj=test_Jill9,sub=test_Jack0]",
-    "date[obj=test_Jill9,sub=test_Jack0]",
+    "alpha0[sub=test_Jack0]",
+    "alpha1[sub=test_Jack0]",
+    "alpha2[sub=test_Jack0]",
+    "alpha3[sub=test_Jack0]",
+    "alpha4[sub=test_Jack0]",
+    "alpha5[sub=test_Jack0]",
+    "alpha6[sub=test_Jack0]",
+    "alpha7[sub=test_Jack0]",
+    "alpha8[sub=test_Jack0]",
+    "alpha9[sub=test_Jack0]",
+    "alpha10[sub=test_Jack0]",
 ]
 
 legend_mapping = {
-    "lonely[sub=test_Jack0]": ['red', 'triangle', 'lonely boy'],
-    "exciting[sub=test_Jill0]": ['green', 'square', 'exciting girl'],
-    "like[obj=test_Jack0,sub=test_Jill0]": ['blue', 'o', 'girl likes boy'],
-    "like[obj=test_Jill0,sub=test_Jack0]": ['yellow', 'triangle', 'boy likes girl'],
-    "date[obj=test_Jill0,sub=test_Jack0]": ['orange', 'square', 'boy dates girl'],
+    "alpha0[sub=test_Jack0]": ['red', 'triangle', 'alpha0'],
+    "alpha1[sub=test_Jack0]": ['green', 'triangle', 'alpha1'],
+    "alpha2[sub=test_Jack0]": ['blue', 'triangle', 'alpha2'],
+    "alpha3[sub=test_Jack0]": ['yellow', 'triangle', 'alpha3'],
+    "alpha4[sub=test_Jack0]": ['orange', 'triangle', 'alpha4'],
+    "alpha5[sub=test_Jack0]": ['purple', 'triangle', 'alpha5'],
+    "alpha6[sub=test_Jack0]": ['black', 'triangle', 'alpha6'],
+    "alpha7[sub=test_Jack0]": ['red', 'square', 'alpha7'],
+    "alpha8[sub=test_Jack0]": ['green', 'square', 'alpha8'],
+    "alpha9[sub=test_Jack0]": ['blue', 'square', 'alpha9'],
+    "alpha10[sub=test_Jack0]": ['yellow', 'square', 'alpha10'],
 }
 
-def read_tuple_list_from_file(file_path, max_lines):
+def read_and_process_file(file_path, max_lines):
     data = {}
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
-            print(f"time point {i}")
+            if max_lines is not None and i >= max_lines:
+                break  # Stop reading if max_lines is reached
             json_line = json.loads(line)
             for entry in json_line['entries']:
-                print(f"entry: {entry}")
                 condition, probability = entry
-                if not "exist" in condition and not '{' in condition:
-                    print(f"\"{condition}\" {probability}")
+                if not "exist" in condition:
                     if condition not in data:
                         data[condition] = []
                     data[condition].append(probability)
-    last_size = -1
-    for key, value in data.items():
-        if last_size == -1:
-            last_size = len(value)
-        else:
-            assert(last_size == len(value))
     return data
 
-def tikz_render_one_curve(prop, row):
-    legend_tuple = legend_mapping[prop]
-    color = legend_tuple[0]
-    shape = legend_tuple[1]
-    legend = legend_tuple[2]
-    data_string = format_probability_vector(row)
+def tikz_render_one_curve(prop, probabilities):
+    legend_tuple = legend_mapping[prop]  # Default to black and circle if not found
+    color, shape, legend = legend_tuple
+    data_string = format_probability_vector(probabilities)
     tikz = f"""
     \\addplot[
         color={color},
@@ -59,7 +62,7 @@ def tikz_render_one_curve(prop, row):
         coordinates {{
         {data_string}
         }};
-        \\addlegendentry{{{legend}}}
+    \\addlegendentry{{{legend}}}
 """
     return tikz
 
@@ -92,7 +95,7 @@ def create_tikz_preamble(N):
         ymin=0, ymax=1,
         xtick={{{xtick_values}}},
         ytick={{0,0.2,0.4,0.6,0.8,1}},
-        legend pos=north west,
+        legend pos=south east,
         ymajorgrids=true,
         grid style=dashed,
     ]
@@ -109,12 +112,13 @@ def main():
         print("Usage: python script.py <file_path> [max_lines]")
         sys.exit(1)
     file_path = sys.argv[1]
-    max_lines = int(sys.argv[2]) if len(sys.argv) > 2 else None
+    max_lines = int(sys.argv[2])
     base_name = os.path.basename(file_path)
     name_without_ext = os.path.splitext(base_name)[0]
-    out_path = f"./tikz_output/{name_without_ext}_{max_lines}_plot.tex"  # Modify this line as needed
+    out_path = f"./tikzoutput/{name_without_ext}_max_{max_lines}.tex"  # Modify this line as needed
 
-    data = read_tuple_list_from_file(file_path, max_lines)
+    data = read_and_process_file(file_path, max_lines)
+    # plot_data(data, out_path)
 
     tuple_size = get_tuple_size(data)
     preamble = create_tikz_preamble(tuple_size)

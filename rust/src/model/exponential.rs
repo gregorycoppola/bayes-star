@@ -98,7 +98,7 @@ pub fn compute_expected_features(
     result
 }
 
-const LEARNING_RATE: f64 = 0.025;
+const LEARNING_RATE: f64 = 0.1;
 
 pub fn do_sgd_update(
     weights: &HashMap<String, f64>,
@@ -113,7 +113,7 @@ pub fn do_sgd_update(
         let new_weight = wv + LEARNING_RATE * (gv - ev);
         let loss = (gv - ev).abs();
         if print_training_loss {
-            println!(
+            trace!(
                 "feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}",
                 feature, gv, ev, loss, wv, new_weight
             );

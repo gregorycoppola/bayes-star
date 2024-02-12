@@ -1,13 +1,12 @@
 use crate::{
-    common::{interface::BeliefTable, redis::seq_get_all},
-    model::{
+    common::{interface::BeliefTable, redis::seq_get_all}, model::{
         self,
         exponential::ExponentialModel,
         objects::{
             Domain, Entity, PredicateFactor, Predicate, PredicateGroup,
             Proposition, PropositionGroup,
         },
-    },
+    }, print_yellow
 };
 use redis::{Commands, Connection};
 use serde::Deserialize;
@@ -43,21 +42,21 @@ impl TrainingPlan {
         queue_name: &String,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
-        println!(
+        trace!(
             "GraphicalModel::add_to_training_queue - Start. Input proposition: {:?}",
             proposition
         );
         let serialized_proposition = match serde_json::to_string(proposition) {
             Ok(record) => record,
             Err(e) => {
-                println!(
+                trace!(
                     "GraphicalModel::add_to_training_queue - Error serializing proposition: {}",
                     e
                 );
                 return Err(Box::new(e));
             }
         };
-        println!(
+        trace!(
             "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
@@ -66,10 +65,10 @@ impl TrainingPlan {
             .borrow_mut()
             .rpush::<_, _, bool>(queue_name, &serialized_proposition)
         {
-            println!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
+            trace!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
             return Err(Box::new(e));
         }
-        println!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
+        trace!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
         Ok(())
     }
 
@@ -169,29 +168,29 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
     let plan = TrainingPlan::new(&resources.redis)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
-    println!("do_training - Getting all implications");
+    trace!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
     for implication in implications {
-        println!("do_training - Processing implication: {:?}", implication);
+        print_yellow!("do_training - Processing implication: {:?}", implication);
         factor_model.initialize_connection(&implication)?;
     }
-    println!("do_training - Getting all propositions");
+    trace!("do_training - Getting all propositions");
     let training_questions = plan.get_training_questions()?;
-    println!(
+    trace!(
         "do_training - Processing propositions: {}",
         training_questions.len()
     );
     let mut examples_processed = 0;
     for proposition in &training_questions {
-        println!("do_training - Processing proposition: {:?}", proposition);
+        trace!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_for_proposition_for_training(&proposition_db, &graph, proposition.clone())?;
-        println!("do_training - Backimplications: {:?}", &factor);
+        trace!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
         let _stats = factor_model.train(&factor, probability) ?;
         examples_processed += 1;
     }
-    println!(
+    trace!(
         "do_training - Training complete: examples processed {}",
         examples_processed
     );
@@ -206,8 +205,8 @@ pub fn setup_and_train(
     redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(resources);
-    println!("scenario result: {:?}", result);
+    trace!("scenario result: {:?}", result);
     let train_result = do_training(resources);
-    println!("train result: {:?}", train_result);
+    trace!("train result: {:?}", train_result);
     Ok(())
 }

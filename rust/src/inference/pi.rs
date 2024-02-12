@@ -56,6 +56,8 @@ impl Inferencer {
     }
 
     pub fn pi_compute_value(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        let is_observed = self.is_observed(node)?;
+        assert!(!is_observed);
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let all_combinations = compute_each_combination(&parent_nodes);
         let mut sum_true = 0f64;

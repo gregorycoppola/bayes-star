@@ -47,59 +47,28 @@ impl ScenarioMaker for OneVariable {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-
-        // Retrieve entities in the Jack domain
-        let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
-        let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
-        trace!("Initial number of jacks: {}", jacks.len());
-
-        let mut propositions = vec![];
+        let jack_domain = Domain::Jack;
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
-            let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
-
-            for domain in [Domain::Jack].iter() {
-                let prefix = if is_test { "test" } else { "train" };
-                let name = format!("{}_{:?}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
-                let entity = Entity {
-                    domain: domain.clone(),
-                    name: name.clone(),
-                };
-                graph.store_entity(&entity)?;
-                trace!("Stored entity: {:?}", &entity);
-                domain_entity_map.insert(domain.to_string(), entity);
-            }
-
-            let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
+            let domain = Domain::Jack;
+            let prefix = if is_test { "test" } else { "train" };
+            let name = format!("{}_{:?}{}", &prefix, domain, i);
+            let jack_entity = Entity {
+                domain: domain.clone(),
+                name: name.clone(),
+            };
+            graph.store_entity(&jack_entity)?;
             let p_jack_exciting = weighted_cointoss(0.3f64);
             {
-                trace!("Jack entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
                 let jack_exciting = proposition("exciting".to_string(), vec![sub(jack)]);
-
-                trace!(
-                    "Jack exciting: {:?}, Probability: {}",
-                    jack_exciting.predicate.hash_string(),
-                    p_jack_exciting
-                );
                 graph.ensure_existence_backlinks_for_proposition(&jack_exciting)?;
                 proposition_db.store_proposition_probability(&jack_exciting, p_jack_exciting)?;
                 plan.maybe_add_to_training(is_training, &jack_exciting)?;
-                propositions.push(jack_exciting.clone());
                 plan.maybe_add_to_test(is_test, &jack_exciting)?;
             }
         }
-
-        // Additional functions
-        fn numeric_or(a: f64, b: f64) -> f64 {
-            f64::min(a + b, 1.0)
-        }
-
-        fn numeric_and(a: f64, b: f64) -> f64 {
-            a * b
-        }
-
         Ok(())
     }
 }
