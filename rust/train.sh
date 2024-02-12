@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Assign variable names for better readability
+SCENARIO_NAME=$1
+
+# Check if both variables are provided
+if [ -z "$SCENARIO_NAME" ] ; then
+  echo "usage: ./train <scenario_name>"
+  exit 1
+fi
+
 # Warning message to the user.
 echo "WARNING: This software will clear your Redis database on localhost."
 echo "If you have an existing Redis database that you do not want to clear, please STOP now."
@@ -13,7 +22,7 @@ read -p "Type your response here: " user_confirmation
 # Check user input.
 if [ "$user_confirmation" == "I understand clear redis" ]; then
     # User has typed the confirmation message, proceed with the command.
-    RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin train -- --print_training_loss --entities_per_domain=1096 --scenario_name=SimpleDating
+    RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin train -- --print_training_loss --entities_per_domain=1096 --scenario_name=$SCENARIO_NAME
 else
     # User did not type the confirmation message, exit the script.
     echo "User did not confirm. Exiting the script to prevent potential data loss."

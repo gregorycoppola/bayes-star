@@ -36,7 +36,7 @@ pub struct Inferencer {
 }
 
 #[derive(Serialize, Deserialize)]
-struct MarginalTable {
+pub struct MarginalTable {
     entries: Vec<(String, f64)>,
 }
 
@@ -89,10 +89,7 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn update_marginals(&mut self) -> Result<(), Box<dyn Error>> {
-        let backtrace = Backtrace::capture();
-        println!("{:?}", backtrace);
-        trace!("update_marginals over {:?}", &self.bfs_order);
+    pub fn update_marginals(&mut self) -> Result<MarginalTable, Box<dyn Error>> {
         println!("\nMARGINALS");
         let mut entries = vec![];
         for node in &self.bfs_order {
@@ -116,17 +113,50 @@ impl Inferencer {
             );
             let node_string = format!("{:?}", node);
             let probability = probability1;
-            info!("adding entry {} {}", &node_string, probability);
             entries.push((node_string, probability));
         }
 
+        // self.log_table_to_file(&table)?;
         let table = MarginalTable { entries };
-        self.log_table_to_file(&table)?;
+        Ok(table)
+    }
+
+    pub fn build_marginal_table(&self) -> Result<MarginalTable, Box<dyn Error>> {
+        let mut entries = vec![];
+        for node in &self.bfs_order {
+            let pi0 = self.data.get_pi_value(node, 0).unwrap();
+            let pi1 = self.data.get_pi_value(node, 1).unwrap();
+            let lambda0 = self.data.get_lambda_value(node, 0).unwrap();
+            let lambda1 = self.data.get_lambda_value(node, 1).unwrap();
+            let potential0 = pi0 * lambda0;
+            let potential1 = pi1 * lambda1;
+            let norm = potential0 + potential1;
+            let probability0 = potential0 / norm;
+            let probability1 = potential1 / norm;
+
+            let formatted_prob0 = format!("{:.8}", probability0);
+            let formatted_prob1 = format!("{:.8}", probability1);
+            let node_string = format!("{:?}", node);
+            let probability = probability1;
+            entries.push((node_string, probability));
+        }
+        let table = MarginalTable { entries };
+        Ok(table)
+    }
+
+    pub fn clear_marginal_output_file(&self) -> Result<(), Box<dyn Error>> {
+        let file_name = self.config.marginal_output_file.clone().unwrap();
+        let _file = OpenOptions::new()
+            .write(true) // Enable write access.
+            .truncate(true) // Truncate the file's contents.
+            .create(true) // Create the file if it does not exist.
+            .open(file_name)?;
         Ok(())
     }
 
-    fn log_table_to_file(&self, table: &MarginalTable) -> Result<(), Box<dyn Error>> {
-        let json = serde_json::to_string(table)?;
+    pub fn log_table_to_file(&self) -> Result<(), Box<dyn Error>> {
+        let table = self.build_marginal_table()?;
+        let json = serde_json::to_string(&table)?;
         let file_name = self.config.marginal_output_file.clone().unwrap();
         let mut file = OpenOptions::new()
             .append(true)
@@ -209,7 +239,7 @@ impl Inferencer {
             &proposition_conclusion,
         );
         let statistics = self.model.model.predict(&context)?;
-        trace!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
+        info!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
         Ok(statistics.probability)
     }
 

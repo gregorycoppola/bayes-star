@@ -48,16 +48,16 @@ impl ScenarioMaker for SimpleDating {
         let entity_domains = [Domain::Jack, Domain::Jill];
 
         // Retrieve entities in the Jack domain
-        let jack_domain = Domain::Jack.to_string(); // Convert enum to string and make lowercase
+        let jack_domain = Domain::Jack; // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
         // Retrieve entities in the Jill domain
-        let jill_domain = Domain::Jill.to_string(); // Convert enum to string and make lowercase
+        let jill_domain = Domain::Jill; // Convert enum to string and make lowercase
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 
         for i in 0..total_members_each_class {
-            let is_test = i % 10 == 9;
+            let is_test = i  == 0;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
             for domain in entity_domains.iter() {

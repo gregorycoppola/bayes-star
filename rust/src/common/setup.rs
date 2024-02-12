@@ -8,6 +8,7 @@ use std::{io::Write, path::Path};
 #[derive(Deserialize, Clone, Debug)]
 pub struct ConfigurationOptions {
     pub scenario_name: String,
+    pub test_scenario: Option<String>,
     pub entities_per_domain: i32,
     pub print_training_loss: bool,
     pub test_example: Option<u32>,
@@ -69,6 +70,14 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
                 .required(true), // Mark this argument as required
         )
         .arg(
+            Arg::with_name("test_scenario")
+                .long("test_scenario")
+                .value_name("STRING")
+                .help("Test Scenario name")
+                .takes_value(true)
+                .required(false), // Mark this argument as required
+        )
+        .arg(
             Arg::with_name("marginal_output_file")
                 .long("marginal_output_file")
                 .value_name("FILE")
@@ -87,28 +96,15 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
             .expect("test_example needs to be a positive integer or omitted")
     });
     let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
-
-    // if marginal_output_file.is_some() {
-    //     check_file_does_not_exist(&marginal_output_file.clone().unwrap());
-    // }
-
     let scenario_name: String = matches
         .value_of("scenario_name")
         .expect("scenario_name is required") // As it's required, unwrap directly
         .to_string();
-    let marginal_output_file = matches.value_of("marginal_output_file").map(String::from);
-
-    // if marginal_output_file.is_some() {
-    //     check_file_does_not_exist(&marginal_output_file.clone().unwrap());
-    // }
-
-    let scenario_name: String = matches
-        .value_of("scenario_name")
-        .expect("scenario_name is required") // As it's required, unwrap directly
-        .to_string();
+    let test_scenario = matches.value_of("test_scenario").map(String::from);
 
     ConfigurationOptions {
         scenario_name,
+        test_scenario,
         entities_per_domain,
         print_training_loss,
         test_example,
