@@ -5,7 +5,7 @@ SCENARIO_NAME=$1
 
 # Check if the scenario name is provided
 if [ -z "$SCENARIO_NAME" ] ; then
-  echo "usage: ./train <scenario_name>"
+  echo "usage: ./train.sh <SCENARIO_NAME>"
   exit 1
 fi
 
