@@ -24,7 +24,6 @@ def plot_data(data, out_file_path):
     plt.figure(figsize=(10, 6))
     for condition, probabilities in data.items():
         plt.plot(probabilities, label=condition)
-
     plt.xlabel('Timepoint')
     plt.ylabel('Probability')
     plt.title('Probability of Conditions Over Time')
@@ -35,18 +34,11 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: python script.py <file_path> [max_lines]")
         sys.exit(1)
-    file_path = sys.argv[1]
-    round_number = sys.argv[2]
-    max_lines = int(sys.argv[3])
-    
-    # Generate a dynamic output file path based on the input file name
-    base_name = os.path.basename(file_path)
-    name_without_ext = os.path.splitext(base_name)[0]
-    out_path = f"./output/{name_without_ext}_plot_{max_lines}_round_{round_number}.png"  # Modify this line as needed
-
-    data = read_and_process_file(file_path, max_lines)
+    input_path = sys.argv[1]
+    max_lines = int(sys.argv[2])
+    out_path = f"{input_path}_plot_{max_lines}.png"
+    data = read_and_process_file(input_path, max_lines)
     plot_data(data, out_path)
-
     print(f"Plot saved to {out_path}")
 
 if __name__ == "__main__":
