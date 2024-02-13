@@ -15,6 +15,6 @@ fi
 MARGINAL_OUTPUT_FILE="${ROOT_DATA}/${SCENARIO_NAME}_${TEST_SCENARIO}"
 
 # Proceed with the original command using the variables and add the --marginal_output_file argument
-# RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin plot -- --print_training_loss --entities_per_domain=1024 --test_example=0 --scenario_name=$SCENARIO_NAME --test_scenario=$TEST_SCENARIO --marginal_output_file=$MARGINAL_OUTPUT_FILE
+RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin plot -- --print_training_loss --entities_per_domain=1024 --test_example=0 --scenario_name=$SCENARIO_NAME --test_scenario=$TEST_SCENARIO --marginal_output_file=$MARGINAL_OUTPUT_FILE
 
 python3 ../python/plotmarginals.py $MARGINAL_OUTPUT_FILE $NUM_ITERATIONS_TO_PLOT
