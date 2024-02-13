@@ -57,5 +57,5 @@ Plot convergence for an observation of a variable using the string-valued test s
 From the `rust` directory:
 
 ```
-./plot.sh ../../bayes-data/feb11 dating_simple they_date 10
+./plot.sh $OUTPUT_DIRECTORY dating_simple they_date 10
 ```
