@@ -48,14 +48,14 @@ See [Rust](https://www.rust-lang.org/) or ask your favorite chat bot.
 From the `rust` directory:
 
 ```
-./train.sh
+./train.sh dating_simple
 ```
 
-### Quizzing
-Quizzing is a *REPL* mode that lets you compute *marginals* in the network, both *with* and *without* evidence.
+### Plotting Convergence
+Plot convergence for an observation of a variable using the string-valued test scenario key defined in `rust/src/bin/plot.rs`.
 
 From the `rust` directory:
 
 ```
-./quiz.sh
+./plot.sh ../../bayes-data/feb11 dating_simple they_date 10
 ```
