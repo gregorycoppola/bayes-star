@@ -32,4 +32,4 @@ if [ "$BAYES_STAR_CAN_CLEAR_REDIS" != "1" ]; then
 fi
 
 # User has typed the confirmation message or BAYES_STAR_CAN_CLEAR_REDIS is set to 1, proceed with the command.
-RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin train -- --print_training_loss --entities_per_domain=2048 --scenario_name=$SCENARIO_NAME
+RUST_BACKTRACE=1 RUST_LOG=info cargo run --bin train -- --print_training_loss --entities_per_domain=4096 --scenario_name=$SCENARIO_NAME
