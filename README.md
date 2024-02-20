@@ -9,13 +9,6 @@ This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a 
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
 
-## Model Details
-
-For technical details on the **Quantified Boolean Bayesian Network**, the best first reference is the [arXiv paper](https://arxiv.org/abs/2402.06557).
-
-## Frequently Asked Questions (FAQ)
-Find the answers to FAQ's at [FAQ.md](FAQ.md).
-
 ## Documentation
 
 ### arXiv Paper
