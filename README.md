@@ -4,7 +4,7 @@
 The user must accept any liability for any mistakes, damage, loss or other suffering that result from the use of this software.
 
 ## Impact
-This **BAYES STAR** software package, I claim, unblocks **AGI**, by providing a "logical inference engine" that can do reasoning.
+This **BAYES STAR** software package implements this [arXiv paper](https://arxiv.org/abs/2402.06557), and provides a *unified model* of *probabilistic* and *logical* reasoning.
 
 ## Usage
 For instructions on how to use the software see [USAGE.md](USAGE.md).
@@ -12,7 +12,7 @@ For instructions on how to use the software see [USAGE.md](USAGE.md).
 ## Documentation
 
 ### arXiv Paper
-There is an [arXiv paper](https://arxiv.org/abs/2402.06557) paper now and I will add more links to the stuff "published to Bitcoin".
+There is an [arXiv paper](https://arxiv.org/abs/2402.06557) now and I will add more links to the stuff "published to Bitcoin".
 As noted below, there is also a lot of multi-media content on my Twitter at [@coppola_ai](https://twitter.com/coppola_ai).
 
 ## References
