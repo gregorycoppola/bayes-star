@@ -1,8 +1,5 @@
 # BAYES STAR
 
-**Note** This is experimental software and for education and scientific purposes only.
-The user must accept any liability for any mistakes, damage, loss or other suffering that result from the use of this software.
-
 ## Impact
 This **BAYES STAR** software package implements this [arXiv paper](https://arxiv.org/abs/2402.06557), and provides a *unified model* of *probabilistic* and *logical* reasoning.
 
