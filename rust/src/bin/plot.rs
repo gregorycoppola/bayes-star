@@ -18,6 +18,7 @@ fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut R
         ("dating_simple", "they_date") => vec![("date[obj=test_Jill0,sub=test_Jack0]", 1f64)],
         ("dating_simple", "jack_likes") => vec![("like[obj=test_Jill0,sub=test_Jack0]", 1f64)],
         ("dating_simple", "jill_likes") => vec![("like[obj=test_Jack0,sub=test_Jill0]", 1f64)],
+        ("dating_triangle", "prior") => vec![("charming[sub=test_Jack0]", 1f64)],
         ("dating_triangle", "charming") => vec![("charming[sub=test_Jack0]", 1f64)],
         ("dating_triangle", "baller") => vec![("baller[sub=test_Jack0]", 1f64)],
         ("long_chain", "prior") => vec![],
