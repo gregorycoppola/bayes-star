@@ -13,7 +13,7 @@ There is an [arXiv paper](https://arxiv.org/abs/2402.06557) now and I will add m
 As noted below, there is also a lot of multi-media content on my Twitter at [@coppola_ai](https://twitter.com/coppola_ai).
 
 ## References
-Here are some references that inspired this paper [BibTeX File](paper/bibtex.bib), but I have to unify over a few different bibtex files.
+Here are some references that inspired this paper [BibTeX File](paper/bibtex.bib).
 
 ### Time-Stamping of Ideas on Bitcoin Chain
 For time-stamping, I have put all of my work on the Bitcoin Blockchain ([address1](https://ordinals.hiro.so/inscriptions?a=bc1pjlpr5nzl6cmljtyz0a3gng98y3r5hs8z68gw55vg4ccjptvj9msq5gqrc5), [address2](https://ordinals.hiro.so/inscriptions?a=bc1pvd4selnseakwz5eljgj4d99mka25mk8pp3k7v7hc6uxw8txy6lgsf7lmtg)).
