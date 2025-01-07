@@ -40,12 +40,12 @@ pub fn role(role_name: String, argument: Argument) -> LabeledArgument {
 }
 
 // Function to create a VariableArgument
-pub fn variable(domain: Domain) -> Argument {
+pub fn variable(domain: String) -> Argument {
     Argument::Variable(VariableArgument { domain })
 }
 
 // Function to create a ConstantArgument
-pub fn constant(domain: Domain, entity_id: String) -> Argument {
+pub fn constant(domain: String, entity_id: String) -> Argument {
     Argument::Constant(ConstantArgument { domain, entity_id })
 }
 

@@ -62,7 +62,7 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_entities_in_domain(&self, domain: &Domain) -> Result<Vec<Entity>, Box<dyn Error>> {
+    pub fn get_entities_in_domain(&self, domain: &String) -> Result<Vec<Entity>, Box<dyn Error>> {
         let domain_string = domain.to_string();
         let names: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
@@ -72,7 +72,7 @@ impl InferenceGraph {
         Ok(names
             .into_iter()
             .map(|name| Entity {
-                domain: Domain::from_str(&domain_string).expect("Domain not recognized."), // Use the provided domain
+                domain: domain.clone(),
                 name,
             })
             .collect())

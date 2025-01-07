@@ -10,30 +10,11 @@ pub enum ArgumentType {
     Variable,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Domain {
-    Man,
-    Woman,
-}
 
+pub struct Domain {}
 impl Domain {
-    pub fn from_str(s: &str) -> Option<Domain> {
-        match s {
-            "Man" => Some(Domain::Man),
-            "Woman" => Some(Domain::Woman),
-            _ => None,
-        }
-    }
-}
-
-impl fmt::Display for Domain {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let domain_str = match self {
-            Domain::Man => "Man",
-            Domain::Woman => "Woman",
-        };
-        write!(f, "{}", domain_str)
-    }
+    pub const Man: &'static str = "Man";
+    pub const Woman: &'static str = "Woman";
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
@@ -44,17 +25,17 @@ pub enum Argument {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ConstantArgument {
-    pub domain: Domain,
+    pub domain: String,
     pub entity_id: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct VariableArgument {
-    pub domain: Domain,
+    pub domain: String,
 }
 
 impl ConstantArgument {
-    pub fn new(domain: Domain, entity_id: String) -> Self {
+    pub fn new(domain: String, entity_id: String) -> Self {
         ConstantArgument { domain, entity_id }
     }
 
@@ -64,7 +45,7 @@ impl ConstantArgument {
 }
 
 impl VariableArgument {
-    pub fn new(domain: Domain) -> Self {
+    pub fn new(domain: String) -> Self {
         VariableArgument { domain }
     }
 
@@ -331,7 +312,7 @@ impl PredicateFactor {
 
 #[derive(Debug, Clone)]
 pub struct Entity {
-    pub domain: Domain,
+    pub domain: String,
     pub name: String,
 }
 
