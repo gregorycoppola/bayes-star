@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## itdomain0107
+Figure out how to:
+* print out all of the information for each "entity" in a domain
+
+This involves:
+* make sure we register a domain
+* figure out how to keep a list of all entities per domain
+* actually make a binary to iterate through all the entities
+* run each of the tests like this
+
 ## namespaceit0107
 This PR is about seting up all of the objects in the ontology or universe to live in:
 * consistent namespaces -- so that all of the namespaces can run together
