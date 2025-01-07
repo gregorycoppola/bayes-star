@@ -1,5 +1,5 @@
 use crate::{
-    common::redis::{map_get, map_insert},
+    common::{redis::{map_get, map_insert}, resources::FactoryResources},
     model::objects::PredicateFactor,
 };
 use rand::Rng;
@@ -36,12 +36,13 @@ pub struct ExponentialWeights {
 }
 
 impl ExponentialWeights {
-    pub fn new(connection: RefCell<Connection>) -> ExponentialWeights {
-        let standard_weightspace = "weights".to_string();
-        ExponentialWeights {
-            connection,
-            weightspace: standard_weightspace,
-        }
+    pub fn new(resources: &FactoryResources) -> ExponentialWeights {
+        todo!()
+        // let standard_weightspace = "weights".to_string();
+        // ExponentialWeights {
+        //     connection,
+        //     weightspace: standard_weightspace,
+        // }
     }
 }
 
