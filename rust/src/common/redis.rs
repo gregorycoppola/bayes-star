@@ -41,14 +41,16 @@ pub fn map_insert(
     Ok(())
 }
 
-// pub fn map_get(
-//     conn: &mut Connection,
-//     key: &str,
-//     field: &str,
-// ) -> Result<Option<String>, Box<dyn Error>> {
-//     let value: Option<String> = conn.hget(key, field)?;
-//     Ok(value)
-// }
+pub fn map_get(
+    conn: &mut Connection,
+    namespace: &str,
+    key: &str,
+    field: &str,
+) -> Result<Option<String>, Box<dyn Error>> {
+    let nskey = &namespace_qualified_key(namespace, key);
+    let value: Option<String> = conn.hget(nskey, field)?;
+    Ok(value)
+}
 
 pub fn set_add(conn: &mut Connection, namespace: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
     let nskey = &namespace_qualified_key(namespace, key);
