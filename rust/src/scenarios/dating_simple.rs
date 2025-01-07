@@ -45,14 +45,14 @@ impl ScenarioMaker for SimpleDating {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let entity_domains = [Domain::Man, Domain::Jill];
+        let entity_domains = [Domain::Man, Domain::Woman];
 
         // Retrieve entities in the Man domain
         let jack_domain = Domain::Man; // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
-        // Retrieve entities in the Jill domain
-        let jill_domain = Domain::Jill; // Convert enum to string and make lowercase
+        // Retrieve entities in the Woman domain
+        let jill_domain = Domain::Woman; // Convert enum to string and make lowercase
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 
@@ -73,7 +73,7 @@ impl ScenarioMaker for SimpleDating {
             }
 
             let jack_entity = &domain_entity_map[&Domain::Man.to_string()];
-            let jill_entity = &domain_entity_map[&Domain::Jill.to_string()];
+            let jill_entity = &domain_entity_map[&Domain::Woman.to_string()];
 
             let p_jack_lonely = weighted_cointoss(0.3f64);
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
@@ -103,7 +103,7 @@ impl ScenarioMaker for SimpleDating {
                 vec![sub(jill)]);
 
                 trace!(
-                    "Jill Exciting: {:?}, Probability: {}",
+                    "Woman Exciting: {:?}, Probability: {}",
                     jill_exciting.predicate.hash_string(),
                     p_jill_exciting
                 );
@@ -124,7 +124,7 @@ impl ScenarioMaker for SimpleDating {
                     obj(jack.clone()),
                 ]);
                 trace!(
-                    "Jill likes Man: {:?}, Probability: {}",
+                    "Woman likes Man: {:?}, Probability: {}",
                     jill_likes_jack.predicate.hash_string(),
                     p_jill_likes_jack
                 ); // Logging
@@ -143,7 +143,7 @@ impl ScenarioMaker for SimpleDating {
                     obj(jill.clone()),
                 ]);
                 trace!(
-                    "Man likes Jill: {:?}, Probability: {}",
+                    "Man likes Woman: {:?}, Probability: {}",
                     jack_likes_jill.predicate.hash_string(),
                     p_jack_likes_jill
                 ); // Logging
@@ -163,7 +163,7 @@ impl ScenarioMaker for SimpleDating {
                         "date".to_string(),
                         vec![sub(jack),  obj(jill)]);
                 trace!(
-                    "Man dates Jill: {:?}, Probability: {}",
+                    "Man dates Woman: {:?}, Probability: {}",
                     jack_dates_jill.predicate.hash_string(),
                     p_jack_dates_jill
                 ); // Logging
@@ -178,7 +178,7 @@ impl ScenarioMaker for SimpleDating {
         }
 
         let xjack = variable(Domain::Man);
-        let xjill = variable(Domain::Jill);
+        let xjill = variable(Domain::Woman);
 
         let implications = vec![
             // if jack is lonely, he will date any jill
