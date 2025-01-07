@@ -1,6 +1,6 @@
 use redis::{Commands, Connection};
 use std::{error::Error, cell::RefCell};
-use crate::model::objects::PredicateFactor;
+use crate::{common::redis::map_insert, model::objects::PredicateFactor};
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -40,6 +40,8 @@ impl ExponentialWeights {
 }
 
 impl ExponentialWeights {
+    pub const WEIGHTS_KEY: &'static str = "weights";
+
     pub fn initialize_weights(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();
@@ -52,6 +54,7 @@ impl ExponentialWeights {
             let weight2 = random_weight();
             trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
             trace!("initialize_weights - Setting positive feature weight");
+            map_insert(&mut self.connection.borrow_mut(), &self.weightspace, Self::WEIGHTS_KEY, &posf, &weight1.to_string())?;
             self.connection.borrow_mut().hset("weights", &posf, weight1)
                 .map_err(|e| {
                     trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
