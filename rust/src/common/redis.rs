@@ -45,7 +45,7 @@ impl RedisManager {
 // }
 
 fn namespace_qualified_key(namespace: &str, key: &str) -> String {
-    format!("{namespace}:{key}")
+    format!("bayes-star:{namespace}:{key}")
 }
 
 pub fn set_add(conn: &mut Connection, namespace: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {

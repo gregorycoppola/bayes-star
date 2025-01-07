@@ -65,6 +65,7 @@ impl TrainingPlan {
             "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
+        // TODO: This should be using a "helper" method, and not calling redis raw.
         if let Err(e) = self
             .redis_connection
             .borrow_mut()
