@@ -1,6 +1,7 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, resources::FactoryResources,
+    redis::RedisManager,
+    resources::FactoryResources,
 };
 use crate::{
     common::{
@@ -9,18 +10,23 @@ use crate::{
     },
     model::{
         self,
+        choose::{
+            extract_existence_factor_for_predicate, extract_existence_factor_for_proposition,
+        },
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, Predicate, PredicateGroup,
-            PredicateFactor, Proposition, PropositionGroup,
-        }, choose::{extract_existence_factor_for_predicate, extract_existence_factor_for_proposition},
-    }, print_blue,
+            Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
+            PropositionGroup,
+        },
+    },
+    print_blue,
 };
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error, rc::Rc};
 pub struct InferenceGraph {
     redis_connection: RefCell<redis::Connection>,
+    namespace: String,
 }
 
 impl InferenceGraph {
@@ -33,7 +39,7 @@ impl InferenceGraph {
         let redis_connection = resources.redis.get_connection()?;
         Ok(Rc::new(InferenceGraph { redis_connection }))
     }
-    
+
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
@@ -42,6 +48,7 @@ impl InferenceGraph {
         ); // Logging
         set_add(
             &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
             &entity.domain.to_string(),
             &entity.name,
         )?;
@@ -50,7 +57,11 @@ impl InferenceGraph {
 
     pub fn get_entities_in_domain(&self, domain: &Domain) -> Result<Vec<Entity>, Box<dyn Error>> {
         let domain_string = domain.to_string();
-        let names: Vec<String> = set_members(&mut *self.redis_connection.borrow_mut(), &domain_string)?;
+        let names: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &domain_string,
+        )?;
         Ok(names
             .into_iter()
             .map(|name| Entity {
@@ -65,13 +76,11 @@ impl InferenceGraph {
     fn implication_seq_name() -> String {
         "implications".to_string()
     }
-    fn store_implication(
-        &mut self,
-        implication: &PredicateFactor,
-    ) -> Result<(), Box<dyn Error>> {
+    fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
             &Self::implication_seq_name(),
             &record,
         )?;
@@ -95,6 +104,7 @@ impl InferenceGraph {
         let record = serialize_record(inference)?;
         set_add(
             &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
             &record,
         )?;
@@ -121,6 +131,7 @@ impl InferenceGraph {
     pub fn get_all_implications(&self) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
             &Self::implication_seq_name(),
         )?;
         set_members
@@ -135,6 +146,7 @@ impl InferenceGraph {
     ) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
             &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
         )?;
         set_members
