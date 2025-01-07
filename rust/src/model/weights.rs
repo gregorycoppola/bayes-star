@@ -36,12 +36,12 @@ pub struct ExponentialWeights {
 }
 
 impl ExponentialWeights {
-    pub fn new(resources: &FactoryResources) -> ExponentialWeights {
+    pub fn new(resources: &FactoryResources) -> Result<ExponentialWeights, Box<dyn Error>> {
         let connection = resources.redis.get_connection()?;
-        ExponentialWeights {
+        Ok(ExponentialWeights {
             connection,
             namespace: resources.config.scenario_name,
-        }
+        })
     }
 }
 
