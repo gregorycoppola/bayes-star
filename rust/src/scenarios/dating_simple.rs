@@ -84,7 +84,7 @@ impl ScenarioMaker for SimpleDating {
 
             {
                 trace!("Man entity part 2: {:?}", jack_entity);
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let jack_lonely = proposition("lonely".to_string(), vec![sub(jack)]);
 
                 trace!(
@@ -98,7 +98,7 @@ impl ScenarioMaker for SimpleDating {
             }
 
             {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
+                let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
                 let jill_exciting = proposition("exciting".to_string(),
                 vec![sub(jill)]);
 
@@ -113,8 +113,8 @@ impl ScenarioMaker for SimpleDating {
             }
 
             {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
 
                 // "likes(jill, jack)"
                 let jill_likes_jack = proposition(
@@ -134,8 +134,8 @@ impl ScenarioMaker for SimpleDating {
             }
 
             {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let jack_likes_jill = proposition(
                     "like".to_string(),
                     vec![
@@ -154,8 +154,8 @@ impl ScenarioMaker for SimpleDating {
                 // graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
             }
             {
-                let jill = constant(jill_entity.domain, jill_entity.name.clone());
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
 
                 // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
                 let jack_dates_jill =

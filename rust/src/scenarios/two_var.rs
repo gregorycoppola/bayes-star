@@ -52,7 +52,7 @@ impl ScenarioMaker for TwoVariable {
             let jack_entity = &domain_entity_map[&Domain::Man.to_string()];
             let p_jack_exciting = weighted_cointoss(0.3f64);
             {
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let jack_exciting = proposition("exciting".to_string(), vec![sub(jack)]);
                 graph.ensure_existence_backlinks_for_proposition(&jack_exciting)?;
                 proposition_db.store_proposition_boolean(&jack_exciting, p_jack_exciting)?;
@@ -60,7 +60,7 @@ impl ScenarioMaker for TwoVariable {
                 propositions.push(jack_exciting.clone());
             }
             {
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let jack_rich = proposition("rich".to_string(), vec![sub(jack)]);
                 graph.ensure_existence_backlinks_for_proposition(&jack_rich)?;
                 proposition_db.store_proposition_boolean(&jack_rich, p_jack_exciting)?;

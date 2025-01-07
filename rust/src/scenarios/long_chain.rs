@@ -45,7 +45,7 @@ impl ScenarioMaker for Scenario {
 
             let p_jack_alpha = weighted_cointoss(0.5f64);
             for level in 0..LINK_HEIGHT {
-                let jack = constant(jack_entity.domain, jack_entity.name.clone());
+                let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let function = format!("alpha{}", level);
                 let jack_alpha = proposition(function, vec![sub(jack)]);
                 if level == 0 {
