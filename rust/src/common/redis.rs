@@ -60,10 +60,11 @@ pub fn set_members(conn: &mut Connection, namespace: &str, key: &str) -> Result<
     Ok(members)
 }
 
-// pub fn seq_push(conn: &mut Connection, key: &str, value: &str) -> Result<i64, Box<dyn Error>> {
-//     let length: i64 = conn.rpush(key, value)?;
-//     Ok(length)
-// }
+pub fn seq_push(conn: &mut Connection, namespace: &str, key: &str, value: &str) -> Result<i64, Box<dyn Error>> {
+    let nskey = &namespace_qualified_key(namespace, key);
+    let length: i64 = conn.rpush(nskey, value)?;
+    Ok(length)
+}
 
 // pub fn seq_pop(conn: &mut Connection, key: &str) -> Result<Option<String>, Box<dyn Error>> {
 //     let value: Option<String> = conn.lpop(key, None)?;
