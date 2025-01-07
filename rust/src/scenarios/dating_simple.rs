@@ -177,8 +177,8 @@ impl ScenarioMaker for SimpleDating {
             }
         }
 
-        let xjack = variable(Domain::Man);
-        let xjill = variable(Domain::Woman);
+        let xjack = variable(Domain::Man.to_string());
+        let xjill = variable(Domain::Woman.to_string());
 
         let implications = vec![
             // if jack is lonely, he will date any jill
