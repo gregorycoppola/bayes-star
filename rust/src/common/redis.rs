@@ -44,12 +44,12 @@ impl RedisManager {
 //     Ok(value)
 // }
 
-pub fn set_add(conn: &mut Connection, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
+pub fn set_add(conn: &mut Connection, domain: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
     let added: bool = conn.sadd(key, member)?;
     Ok(added)
 }
 
-pub fn set_members(conn: &mut Connection, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn set_members(conn: &mut Connection, domain: &str, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
     let members: Vec<String> = conn.smembers(key)?;
     Ok(members)
 }
@@ -64,7 +64,7 @@ pub fn set_members(conn: &mut Connection, key: &str) -> Result<Vec<String>, Box<
 //     Ok(value)
 // }
 
-pub fn seq_get_all(conn: &mut Connection, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn seq_get_all(conn: &mut Connection, domain: &str, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
     let elements: Vec<String> = conn.lrange(key, 0, -1)?;
     Ok(elements)
 }
