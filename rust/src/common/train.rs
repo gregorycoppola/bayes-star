@@ -79,9 +79,9 @@ impl TrainingPlan {
         // }
         seq_push(
             &mut self.redis_connection.borrow_mut(),
-            "namespace",
+            &self.namespace,
             "key",
-            "value",
+            &serialized_proposition,
         )?;
         trace!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
         Ok(())
