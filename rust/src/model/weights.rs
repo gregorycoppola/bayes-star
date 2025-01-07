@@ -37,12 +37,11 @@ pub struct ExponentialWeights {
 
 impl ExponentialWeights {
     pub fn new(resources: &FactoryResources) -> ExponentialWeights {
-        todo!()
-        // let standard_weightspace = "weights".to_string();
-        // ExponentialWeights {
-        //     connection,
-        //     weightspace: standard_weightspace,
-        // }
+        let connection = resources.redis.get_connection()?;
+        ExponentialWeights {
+            connection,
+            namespace: resources.config.scenario_name,
+        }
     }
 }
 
