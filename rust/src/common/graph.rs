@@ -32,12 +32,18 @@ pub struct InferenceGraph {
 impl InferenceGraph {
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
-        Ok(Box::new(InferenceGraph { redis_connection }))
+        Ok(Box::new(InferenceGraph {
+            redis_connection,
+            namespace: resources.config.scenario_name.clone(),
+        }))
     }
 
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
-        Ok(Rc::new(InferenceGraph { redis_connection }))
+        Ok(Rc::new(InferenceGraph {
+            redis_connection,
+            namespace: resources.config.scenario_name.clone(),
+        }))
     }
 
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
