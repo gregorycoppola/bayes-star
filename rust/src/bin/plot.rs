@@ -15,7 +15,7 @@ fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut R
     let pairs = match (scenario_name, test_scenario) {
         ("dating_simple", "prior") => vec![],
         ("dating_simple", "jack_lonely") => vec![("lonely[sub=test_Jack0]", 1f64)],
-        ("dating_simple", "they_date") => vec![("date[obj=test_Jill0,sub=test_Jack0]", 1f64)],
+        ("dating_simple", "they_date") => vec![("date[obj=test_Woman0,sub=test_Man0]", 1f64)],
         ("dating_simple", "jack_likes") => vec![("like[obj=test_Jill0,sub=test_Jack0]", 1f64)],
         ("dating_simple", "jill_likes") => vec![("like[obj=test_Jack0,sub=test_Jill0]", 1f64)],
         ("dating_triangle", "prior") => vec![("charming[sub=test_Jack0]", 1f64)],
