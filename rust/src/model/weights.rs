@@ -53,19 +53,20 @@ impl ExponentialWeights {
             let weight1 = random_weight();
             let weight2 = random_weight();
             trace!("initialize_weights - Generated weights: {}, {}", weight1, weight2);
-            trace!("initialize_weights - Setting positive feature weight");
+            // trace!("initialize_weights - Setting positive feature weight");
             map_insert(&mut self.connection.borrow_mut(), &self.weightspace, Self::WEIGHTS_KEY, &posf, &weight1.to_string())?;
-            self.connection.borrow_mut().hset("weights", &posf, weight1)
-                .map_err(|e| {
-                    trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
-                    Box::new(e) as Box<dyn Error>
-                })?;
-            trace!("initialize_weights - Setting negative feature weight");
-            self.connection.borrow_mut().hset("weights", &negf, weight2)
-                .map_err(|e| {
-                    trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
-                    Box::new(e) as Box<dyn Error>
-                })?;
+            map_insert(&mut self.connection.borrow_mut(), &self.weightspace, Self::WEIGHTS_KEY, &negf, &weight2.to_string())?;
+            // self.connection.borrow_mut().hset("weights", &posf, weight1)
+            //     .map_err(|e| {
+            //         trace!("initialize_weights - Error setting positive feature weight: {:?}", e);
+            //         Box::new(e) as Box<dyn Error>
+            //     })?;
+            // trace!("initialize_weights - Setting negative feature weight");
+            // self.connection.borrow_mut().hset("weights", &negf, weight2)
+            //     .map_err(|e| {
+            //         trace!("initialize_weights - Error setting negative feature weight: {:?}", e);
+            //         Box::new(e) as Box<dyn Error>
+            //     })?;
         }
         trace!("initialize_weights - End");
         Ok(())
@@ -101,11 +102,12 @@ impl ExponentialWeights {
         trace!("save_weights - Start");
         for (feature, &value) in weights {
             trace!("save_weights - Saving weight for feature {}: {}", feature, value);
-            self.connection.borrow_mut().hset("weights", feature, value)
-                .map_err(|e| {
-                    trace!("save_weights - Error saving weight for feature {}: {:?}", feature, e);
-                    Box::new(e) as Box<dyn Error>
-                })?;
+            map_insert(&mut self.connection.borrow_mut(), &self.weightspace, Self::WEIGHTS_KEY, &feature, &value.to_string())?;
+            // self.connection.borrow_mut().hset("weights", feature, value)
+            //     .map_err(|e| {
+            //         trace!("save_weights - Error saving weight for feature {}: {:?}", feature, e);
+            //         Box::new(e) as Box<dyn Error>
+            //     })?;
         }
         trace!("save_weights - End");
         Ok(())
