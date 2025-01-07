@@ -51,7 +51,8 @@ impl InferenceGraph {
             "Storing entity in domain '{}': {}",
             entity.domain,
             entity.name
-        ); // Logging
+        );
+        // NOTE: this is a "set" named after the "domain", with each "entity.name" inside of it.
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             &self.namespace,
