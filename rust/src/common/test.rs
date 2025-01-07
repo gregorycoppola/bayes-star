@@ -173,9 +173,9 @@ pub fn interactive_inference_example(
     config: &ConfigurationOptions,
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
-    let plan = TrainingPlan::new(&resources.redis)?;
+    let plan = TrainingPlan::new(&resources)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
-    let plan = TrainingPlan::new(&resources.redis)?;
+    let plan = TrainingPlan::new(&resources)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
@@ -194,7 +194,7 @@ pub fn summarize_examples(
     config: &ConfigurationOptions,
     resources: &FactoryResources,
 ) -> Result<(), Box<dyn Error>> {
-    let plan = TrainingPlan::new(&resources.redis)?;
+    let plan = TrainingPlan::new(&resources)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
     // test
