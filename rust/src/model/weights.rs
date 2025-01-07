@@ -32,7 +32,7 @@ pub fn negative_feature(feature: &str, class_label: usize) -> String {
 
 pub struct ExponentialWeights {
     connection: RefCell<Connection>,
-    weightspace: String,
+    namespace: String,
 }
 
 impl ExponentialWeights {
@@ -74,14 +74,14 @@ impl ExponentialWeights {
             // trace!("initialize_weights - Setting positive feature weight");
             map_insert(
                 &mut self.connection.borrow_mut(),
-                &self.weightspace,
+                &self.namespace,
                 Self::WEIGHTS_KEY,
                 &posf,
                 &weight1.to_string(),
             )?;
             map_insert(
                 &mut self.connection.borrow_mut(),
-                &self.weightspace,
+                &self.namespace,
                 Self::WEIGHTS_KEY,
                 &negf,
                 &weight2.to_string(),
@@ -112,7 +112,7 @@ impl ExponentialWeights {
             trace!("read_weights - Reading weight for feature: {}", feature);
             let weight_record = map_get(
                 &mut self.connection.borrow_mut(),
-                &self.weightspace,
+                &self.namespace,
                 Self::WEIGHTS_KEY,
                 &feature,
             )?.expect("should be there");
@@ -136,7 +136,7 @@ impl ExponentialWeights {
             );
             map_insert(
                 &mut self.connection.borrow_mut(),
-                &self.weightspace,
+                &self.namespace,
                 Self::WEIGHTS_KEY,
                 &feature,
                 &value.to_string(),
