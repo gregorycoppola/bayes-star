@@ -16,22 +16,26 @@ use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc};
 use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager,
+    redis::{map_get, RedisManager},
 };
 
 pub struct RedisBeliefTable {
     redis_connection: RefCell<redis::Connection>,
+    namespace: String,
 }
 
 impl RedisBeliefTable {
     pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = client.get_connection()?;
-        Ok(Box::new(RedisBeliefTable { redis_connection }))
+        todo!()
+        // let redis_connection = client.get_connection()?;
+        // Ok(Box::new(RedisBeliefTable { redis_connection }))
     }
     pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = client.get_connection()?;
-        Ok(Rc::new(RedisBeliefTable { redis_connection }))
+        todo!()
+        // let redis_connection = client.get_connection()?;
+        // Ok(Rc::new(RedisBeliefTable { redis_connection }))
     }
+    pub const PROBABILITIES_KEY: &'static str = "probabilities";
 }
 
 impl BeliefTable for RedisBeliefTable {
@@ -45,30 +49,42 @@ impl BeliefTable for RedisBeliefTable {
         }
         let hash_string = proposition.predicate.hash_string();
 
-        // Use a match statement to handle the different outcomes
-        match self
-            .redis_connection
-            .borrow_mut()
-            .hget::<_, _, String>("probs", &hash_string)
-        {
-            Ok(probability_str) => {
-                // Found the entry, parse it
-                let probability = probability_str
-                    .parse::<f64>()
-                    .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-                Ok(Some(probability))
-            }
-            Err(e) => {
-                // Handle specific "not found" error
-                if e.kind() == redis::ErrorKind::TypeError {
-                    // Entry not found in Redis
-                    Ok(None)
-                } else {
-                    // Other Redis errors
-                    Err(Box::new(e) as Box<dyn Error>)
-                }
-            }
-        }
+        let probability_record = map_get(
+            &mut self.redis_connection.borrow_mut(),
+            &self.namespace,
+            Self::PROBABILITIES_KEY,
+            &hash_string,
+        )?
+        .expect("should be there");
+        let probability = probability_record
+            .parse::<f64>()
+            .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        Ok(Some(probability))
+
+        // // Use a match statement to handle the different outcomes
+        // match self
+        //     .redis_connection
+        //     .borrow_mut()
+        //     .hget::<_, _, String>("probs", &hash_string)
+        // {
+        //     Ok(probability_str) => {
+        //         // Found the entry, parse it
+        //         let probability = probability_str
+        //             .parse::<f64>()
+        //             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
+        //         Ok(Some(probability))
+        //     }
+        //     Err(e) => {
+        //         // Handle specific "not found" error
+        //         if e.kind() == redis::ErrorKind::TypeError {
+        //             // Entry not found in Redis
+        //             Ok(None)
+        //         } else {
+        //             // Other Redis errors
+        //             Err(Box::new(e) as Box<dyn Error>)
+        //         }
+        //     }
+        // }
     }
 
     fn store_proposition_probability(
@@ -142,7 +158,7 @@ impl HashMapBeliefTable {
         })
     }
 
-    pub fn clear(&self, node:&PropositionNode) -> () {
+    pub fn clear(&self, node: &PropositionNode) -> () {
         self.evidence.borrow_mut().remove(node);
     }
 }
