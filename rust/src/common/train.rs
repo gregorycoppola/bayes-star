@@ -175,7 +175,7 @@ fn extract_factor_for_proposition_for_training(
 
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let graph = InferenceGraph::new_mutable(resources)?;
-    let proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
+    let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
     let plan = TrainingPlan::new(&resources)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
     trace!("do_training - Getting all implications");
