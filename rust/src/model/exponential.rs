@@ -23,7 +23,7 @@ pub struct ExponentialModel {
 impl ExponentialModel {
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.redis.get_connection()?;
-        let weights = ExponentialWeights::new(resources);
+        let weights = ExponentialWeights::new(resources)?;
         Ok(Box::new(ExponentialModel {
             config: resources.config.clone(),
             weights,
@@ -31,7 +31,7 @@ impl ExponentialModel {
     }
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.redis.get_connection()?;
-        let weights = ExponentialWeights::new(resources);
+        let weights = ExponentialWeights::new(resources)?;
         Ok(Rc::new(ExponentialModel {
             config: resources.config.clone(),
             weights,

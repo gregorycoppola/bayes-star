@@ -40,7 +40,7 @@ impl ExponentialWeights {
         let connection = resources.redis.get_connection()?;
         Ok(ExponentialWeights {
             connection,
-            namespace: resources.config.scenario_name,
+            namespace: resources.config.scenario_name.clone(),
         })
     }
 }
