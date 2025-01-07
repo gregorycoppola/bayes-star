@@ -13,8 +13,8 @@ pub enum ArgumentType {
 
 pub struct Domain {}
 impl Domain {
-    pub const Man: &'static str = "Man";
-    pub const Woman: &'static str = "Woman";
+    pub const MAN: &'static str = "Man";
+    pub const WOMAN: &'static str = "Woman";
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]

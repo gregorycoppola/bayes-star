@@ -45,14 +45,14 @@ impl ScenarioMaker for SimpleDating {
         let mut plan = TrainingPlan::new(&resources)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let entity_domains = [Domain::Man.to_string(), Domain::Woman.to_string()];
+        let entity_domains = [Domain::MAN.to_string(), Domain::WOMAN.to_string()];
 
         // Retrieve entities in the Man domain
-        let jack_domain = Domain::Man.to_string(); // Convert enum to string and make lowercase
+        let jack_domain = Domain::MAN.to_string(); // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
         // Retrieve entities in the Woman domain
-        let jill_domain = Domain::Woman.to_string(); // Convert enum to string and make lowercase
+        let jill_domain = Domain::WOMAN.to_string(); // Convert enum to string and make lowercase
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 
@@ -72,8 +72,8 @@ impl ScenarioMaker for SimpleDating {
                 domain_entity_map.insert(domain.to_string(), entity);
             }
 
-            let jack_entity = &domain_entity_map[&Domain::Man.to_string()];
-            let jill_entity = &domain_entity_map[&Domain::Woman.to_string()];
+            let jack_entity = &domain_entity_map[&Domain::MAN.to_string()];
+            let jill_entity = &domain_entity_map[&Domain::WOMAN.to_string()];
 
             let p_jack_lonely = weighted_cointoss(0.3f64);
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
@@ -177,8 +177,8 @@ impl ScenarioMaker for SimpleDating {
             }
         }
 
-        let xjack = variable(Domain::Man.to_string());
-        let xjill = variable(Domain::Woman.to_string());
+        let xjack = variable(Domain::MAN.to_string());
+        let xjill = variable(Domain::WOMAN.to_string());
 
         let implications = vec![
             // if jack is lonely, he will date any jill
