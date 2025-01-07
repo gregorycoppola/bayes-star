@@ -47,11 +47,11 @@ impl ScenarioMaker for OneVariable {
         let mut plan = TrainingPlan::new(&resources)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let jack_domain = Domain::Man;
+        let jack_domain = Domain::Man.to_string();
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
-            let domain = Domain::Man;
+            let domain = Domain::Man.to_string();
             let prefix = if is_test { "test" } else { "train" };
             let name = format!("{}_{:?}{}", &prefix, domain, i);
             let jack_entity = Entity {

@@ -45,14 +45,14 @@ impl ScenarioMaker for SimpleDating {
         let mut plan = TrainingPlan::new(&resources)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let entity_domains = [Domain::Man, Domain::Woman];
+        let entity_domains = [Domain::Man.to_string(), Domain::Woman.to_string()];
 
         // Retrieve entities in the Man domain
-        let jack_domain = Domain::Man; // Convert enum to string and make lowercase
+        let jack_domain = Domain::Man.to_string(); // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
         // Retrieve entities in the Woman domain
-        let jill_domain = Domain::Woman; // Convert enum to string and make lowercase
+        let jill_domain = Domain::Woman.to_string(); // Convert enum to string and make lowercase
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
 

@@ -32,14 +32,14 @@ impl ScenarioMaker for TwoVariable {
         let mut plan = TrainingPlan::new(&resources)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let jack_domain = Domain::Man;
+        let jack_domain = Domain::Man.to_string();
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         let mut propositions = vec![];
         for i in 0..total_members_each_class {
             let is_test = i == 0;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
-            for domain in [Domain::Man].iter() {
+            for domain in [Domain::Man.to_string()].iter() {
                 let prefix = if is_test { "test" } else { "train" };
                 let name = format!("{}_{:?}{}", &prefix, domain, i);
                 let entity = Entity {
@@ -69,7 +69,7 @@ impl ScenarioMaker for TwoVariable {
                 plan.maybe_add_to_test(is_test, &jack_rich)?;
             }
         }
-        let xjack = variable(Domain::Man);
+        let xjack = variable(Domain::Man.to_string());
         let implications = vec![
             implication(
                 conjunction(vec![predicate("exciting".to_string(), vec![
