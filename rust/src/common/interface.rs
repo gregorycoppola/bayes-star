@@ -11,18 +11,20 @@ pub struct PredictStatistics {
     pub probability: f64,
 }
 
+/// MUTABILITY: These methods use const self reference, but can still "store" to the DB
+/// using a "const" DB connection.
 pub trait BeliefTable {
     fn get_proposition_probability(
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 
-    // Note: These methods use immutable self reference, but a `store`. Idea is it handles its own sync to write db.
     fn store_proposition_probability(
         &self,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>>;
+
     fn store_proposition_boolean(
         &self,
         proposition: &Proposition,
