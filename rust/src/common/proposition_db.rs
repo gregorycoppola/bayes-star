@@ -16,7 +16,7 @@ use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc};
 use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::{map_get, RedisManager},
+    redis::{map_get, RedisManager}, resources::FactoryResources,
 };
 
 pub struct RedisBeliefTable {
@@ -25,12 +25,12 @@ pub struct RedisBeliefTable {
 }
 
 impl RedisBeliefTable {
-    pub fn new_mutable(client: &RedisManager) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
         todo!()
         // let redis_connection = client.get_connection()?;
         // Ok(Box::new(RedisBeliefTable { redis_connection }))
     }
-    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_shared(resources: &FactoryResources) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         todo!()
         // let redis_connection = client.get_connection()?;
         // Ok(Rc::new(RedisBeliefTable { redis_connection }))
