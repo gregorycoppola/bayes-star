@@ -1,5 +1,9 @@
 # BAYES STAR
 
+This software package provides a reference implementation of a:
+* Logical Bayesian Network
+
+
 ## Impact
 This **BAYES STAR** software package implements this [arXiv paper](https://arxiv.org/abs/2402.06557), and provides a *unified model* of *probabilistic* and *logical* reasoning.
 
