@@ -29,11 +29,13 @@ pub fn negative_feature(feature: &str, class_label : usize) -> String {
 
 pub struct ExponentialWeights {
     connection:RefCell<Connection>,
+    weightspace: String,
 }
 
 impl ExponentialWeights {
     pub fn new(connection: RefCell<Connection>) -> ExponentialWeights {
-        ExponentialWeights { connection }
+        let standard_weightspace = "weights".to_string();
+        ExponentialWeights { connection, weightspace: standard_weightspace }
     }
 }
 
