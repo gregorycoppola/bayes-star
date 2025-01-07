@@ -1,5 +1,8 @@
 use crate::{
-    common::{interface::BeliefTable, redis::seq_get_all},
+    common::{
+        interface::BeliefTable,
+        redis::{seq_get_all, seq_push},
+    },
     model::{
         self,
         exponential::ExponentialModel,
@@ -66,14 +69,20 @@ impl TrainingPlan {
             &serialized_proposition
         );
         // TODO: This should be using a "helper" method, and not calling redis raw.
-        if let Err(e) = self
-            .redis_connection
-            .borrow_mut()
-            .rpush::<_, _, bool>(queue_name, &serialized_proposition)
-        {
-            trace!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
-            return Err(Box::new(e));
-        }
+        // if let Err(e) = self
+        //     .redis_connection
+        //     .borrow_mut()
+        //     .rpush::<_, _, bool>(queue_name, &serialized_proposition)
+        // {
+        //     trace!("GraphicalModel::add_to_training_queue - Error adding proposition to training queue in Redis: {}", e);
+        //     return Err(Box::new(e));
+        // }
+        seq_push(
+            &mut self.redis_connection.borrow_mut(),
+            "namespace",
+            "key",
+            "value",
+        )?;
         trace!("GraphicalModel::add_to_training_queue - Proposition added to training queue successfully");
         Ok(())
     }
