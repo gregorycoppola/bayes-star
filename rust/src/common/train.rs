@@ -201,8 +201,6 @@ pub fn setup_and_train(
     resources: &FactoryResources,
     scenario_maker: &dyn ScenarioMaker,
 ) -> Result<(), Box<dyn Error>> {
-    let mut redis_client = RedisManager::new()?;
-    redis_client.drop_all_dbs()?;
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(resources);
     trace!("scenario result: {:?}", result);
