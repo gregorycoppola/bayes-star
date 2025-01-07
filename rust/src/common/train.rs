@@ -1,40 +1,45 @@
 use crate::{
-    common::{interface::BeliefTable, redis::seq_get_all}, model::{
+    common::{interface::BeliefTable, redis::seq_get_all},
+    model::{
         self,
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, PredicateFactor, Predicate, PredicateGroup,
-            Proposition, PropositionGroup,
+            Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
+            PropositionGroup,
         },
-    }, print_yellow
+    },
+    print_yellow,
 };
 use redis::{Commands, Connection};
 use serde::Deserialize;
 use std::{cell::RefCell, error::Error};
 
-use super::{
-    interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager, model::FactorContext,
-};
 use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
 use super::model::FactorModel;
 use super::resources::FactoryResources;
-use crate::common::proposition_db::RedisBeliefTable;
+use super::{
+    interface::{PredictStatistics, TrainStatistics},
+    model::FactorContext,
+    redis::RedisManager,
+};
 use crate::common::model::InferenceModel;
+use crate::common::proposition_db::RedisBeliefTable;
 use crate::model::choose::extract_backimplications_from_proposition;
 use std::borrow::BorrowMut;
 
-
-
 pub struct TrainingPlan {
     redis_connection: RefCell<redis::Connection>,
+    namespace: String,
 }
 
 impl TrainingPlan {
-    pub fn new(redis: &RedisManager) -> Result<Self, Box<dyn Error>> {
-        let redis_connection = redis.get_connection()?;
-        Ok(TrainingPlan { redis_connection })
+    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+        let redis_connection = resources.redis.get_connection()?;
+        Ok(TrainingPlan {
+            redis_connection,
+            namespace: resources.config.scenario_name.clone(),
+        })
     }
 
     pub fn add_proposition_to_queue(
@@ -104,7 +109,11 @@ impl TrainingPlan {
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
-        let records = seq_get_all(&mut self.redis_connection.borrow_mut(), &seq_name)?;
+        let records = seq_get_all(
+            &mut self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &seq_name,
+        )?;
         let mut result = vec![];
         for record in &records {
             let proposition = deserialize_record(record)?;
@@ -135,7 +144,7 @@ where
 // Probabilities are either 0 or 1, so assume independent, i.e., just boolean combine them as AND.
 fn extract_group_probability_for_training(
     proposition_db: &Box<dyn BeliefTable>,
-    premise:&PropositionGroup,
+    premise: &PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     let mut product = 1f64;
     for term in &premise.terms {
@@ -166,7 +175,7 @@ fn extract_factor_for_proposition_for_training(
 pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let graph = InferenceGraph::new_mutable(resources)?;
     let proposition_db = RedisBeliefTable::new_mutable(&resources.redis)?;
-    let plan = TrainingPlan::new(&resources.redis)?;
+    let plan = TrainingPlan::new(&resources)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;
     trace!("do_training - Getting all implications");
     let implications = graph.get_all_implications()?;
@@ -183,11 +192,15 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
     let mut examples_processed = 0;
     for proposition in &training_questions {
         trace!("do_training - Processing proposition: {:?}", proposition);
-        let factor = extract_factor_for_proposition_for_training(&proposition_db, &graph, proposition.clone())?;
+        let factor = extract_factor_for_proposition_for_training(
+            &proposition_db,
+            &graph,
+            proposition.clone(),
+        )?;
         trace!("do_training - Backimplications: {:?}", &factor);
         let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
-        let _stats = factor_model.train(&factor, probability) ?;
+        let _stats = factor_model.train(&factor, probability)?;
         examples_processed += 1;
     }
     trace!(
