@@ -25,15 +25,21 @@ impl RedisManager {
     }
 }
 
-// pub fn map_insert(
-//     conn: &mut Connection,
-//     key: &str,
-//     field: &str,
-//     value: &str,
-// ) -> Result<(), Box<dyn Error>> {
-//     conn.hset(key, field, value)?;
-//     Ok(())
-// }
+fn namespace_qualified_key(namespace: &str, key: &str) -> String {
+    format!("bayes-star:{namespace}:{key}")
+}
+
+pub fn map_insert(
+    conn: &mut Connection,
+    namespace: &str,
+    key: &str,
+    field: &str,
+    value: &str,
+) -> Result<(), Box<dyn Error>> {
+    let nskey = &namespace_qualified_key(namespace, key);
+    conn.hset(nskey, field, value)?;
+    Ok(())
+}
 
 // pub fn map_get(
 //     conn: &mut Connection,
@@ -43,10 +49,6 @@ impl RedisManager {
 //     let value: Option<String> = conn.hget(key, field)?;
 //     Ok(value)
 // }
-
-fn namespace_qualified_key(namespace: &str, key: &str) -> String {
-    format!("bayes-star:{namespace}:{key}")
-}
 
 pub fn set_add(conn: &mut Connection, namespace: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
     let nskey = &namespace_qualified_key(namespace, key);
