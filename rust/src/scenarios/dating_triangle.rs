@@ -28,13 +28,13 @@ impl ScenarioMaker for EligibilityTriangle {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let jack_domain = Domain::Jack.to_string();
+        let jack_domain = Domain::Man.to_string();
         for i in 0..total_members_each_class {
             let is_test = i == 0;
             let is_training = !is_test;
             let prefix = if is_test { "test" } else { "train" };
-            let name = format!("{}_{:?}{}", &prefix, Domain::Jack, i);
-            let domain = Domain::Jack;
+            let name = format!("{}_{:?}{}", &prefix, Domain::Man, i);
+            let domain = Domain::Man;
             let jack_entity = Entity {
                 domain,
                 name: name.clone(),
@@ -61,7 +61,7 @@ impl ScenarioMaker for EligibilityTriangle {
             plan.maybe_add_to_test(is_test, &jack_baller)?;
         }
 
-        let xjack = variable(Domain::Jack);
+        let xjack = variable(Domain::Man);
         let implications = vec![
             implication(
                 conjunction(vec![predicate("charming".to_string(), vec![

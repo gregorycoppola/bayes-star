@@ -32,14 +32,14 @@ impl ScenarioMaker for TwoVariable {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let jack_domain = Domain::Jack;
+        let jack_domain = Domain::Man;
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         let mut propositions = vec![];
         for i in 0..total_members_each_class {
             let is_test = i == 0;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
-            for domain in [Domain::Jack].iter() {
+            for domain in [Domain::Man].iter() {
                 let prefix = if is_test { "test" } else { "train" };
                 let name = format!("{}_{:?}{}", &prefix, domain, i);
                 let entity = Entity {
@@ -49,7 +49,7 @@ impl ScenarioMaker for TwoVariable {
                 graph.store_entity(&entity)?;
                 domain_entity_map.insert(domain.to_string(), entity);
             }
-            let jack_entity = &domain_entity_map[&Domain::Jack.to_string()];
+            let jack_entity = &domain_entity_map[&Domain::Man.to_string()];
             let p_jack_exciting = weighted_cointoss(0.3f64);
             {
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
@@ -69,7 +69,7 @@ impl ScenarioMaker for TwoVariable {
                 plan.maybe_add_to_test(is_test, &jack_rich)?;
             }
         }
-        let xjack = variable(Domain::Jack);
+        let xjack = variable(Domain::Man);
         let implications = vec![
             implication(
                 conjunction(vec![predicate("exciting".to_string(), vec![

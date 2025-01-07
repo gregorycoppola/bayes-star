@@ -12,14 +12,14 @@ pub enum ArgumentType {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Domain {
-    Jack,
+    Man,
     Jill,
 }
 
 impl Domain {
     pub fn from_str(s: &str) -> Option<Domain> {
         match s {
-            "Jack" => Some(Domain::Jack),
+            "Man" => Some(Domain::Man),
             "Jill" => Some(Domain::Jill),
             _ => None,
         }
@@ -29,7 +29,7 @@ impl Domain {
 impl fmt::Display for Domain {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let domain_str = match self {
-            Domain::Jack => "Jack",
+            Domain::Man => "Man",
             Domain::Jill => "Jill",
         };
         write!(f, "{}", domain_str)

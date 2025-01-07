@@ -31,7 +31,7 @@ impl ScenarioMaker for Scenario {
         let mut plan = TrainingPlan::new(&resources.redis)?;
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
-        let domain = Domain::Jack;
+        let domain = Domain::Man;
         for i in 0..total_members_each_class {
             let is_test = i == 0;
             let is_training = !is_test;
@@ -59,7 +59,7 @@ impl ScenarioMaker for Scenario {
                 }
             }
         }
-        let xjack = variable(Domain::Jack);
+        let xjack = variable(Domain::Man);
         let mut implications = vec![];
         for level in 0..(LINK_HEIGHT-1) {
             let fn1 = format!("alpha{}", level);
