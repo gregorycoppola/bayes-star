@@ -1,6 +1,6 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::{seq_get_all, seq_push, RedisManager}, resources::FactoryResources,
+    redis::RedisManager, resources::FactoryResources,
 };
 use crate::{
     common::{
