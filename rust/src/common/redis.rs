@@ -23,13 +23,6 @@ impl RedisManager {
         let refcell = RefCell::new(connection);
         Ok(refcell)
     }
-
-    pub fn drop_all_dbs(&mut self) -> Result<(), Box<dyn Error>> {
-        let connection = self.get_connection()?;
-        redis::cmd("FLUSHDB").query(&mut connection.borrow_mut())?;
-        trace!("Database flushed successfully");
-        Ok(())
-    }
 }
 
 pub fn map_insert(
