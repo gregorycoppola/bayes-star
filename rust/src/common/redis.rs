@@ -55,7 +55,8 @@ pub fn set_add(conn: &mut Connection, namespace: &str, key: &str, member: &str) 
 }
 
 pub fn set_members(conn: &mut Connection, namespace: &str, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
-    let members: Vec<String> = conn.smembers(key)?;
+    let nskey = &namespace_qualified_key(namespace, key);
+    let members: Vec<String> = conn.smembers(nskey)?;
     Ok(members)
 }
 
@@ -70,6 +71,7 @@ pub fn set_members(conn: &mut Connection, namespace: &str, key: &str) -> Result<
 // }
 
 pub fn seq_get_all(conn: &mut Connection, namespace: &str, key: &str) -> Result<Vec<String>, Box<dyn Error>> {
-    let elements: Vec<String> = conn.lrange(key, 0, -1)?;
+    let nskey = &namespace_qualified_key(namespace, key);
+    let elements: Vec<String> = conn.lrange(nskey, 0, -1)?;
     Ok(elements)
 }
