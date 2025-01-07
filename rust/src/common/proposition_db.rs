@@ -1,5 +1,5 @@
 use crate::{
-    common::interface::BeliefTable,
+    common::{interface::BeliefTable, redis::map_insert},
     inference::table::PropositionNode,
     model::{
         self,
@@ -100,19 +100,27 @@ impl BeliefTable for RedisBeliefTable {
             hash_string
         );
 
-        if let Err(e) = self
-            .redis_connection
-            .borrow_mut()
-            .hset::<&str, &str, String, bool>("probs", &hash_string, probability.to_string())
-        {
-            trace!(
-                "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
-                e
-            );
-            return Err(Box::new(e));
-        }
+        map_insert(
+            &mut self.redis_connection.borrow_mut(),
+            &self.namespace,
+            Self::PROBABILITIES_KEY,
+            &hash_string,
+            &probability.to_string(),
+        )?;
 
-        trace!("GraphicalModel::store_proposition_probability - Completed successfully");
+        // if let Err(e) = self
+        //     .redis_connection
+        //     .borrow_mut()
+        //     .hset::<&str, &str, String, bool>("probs", &hash_string, probability.to_string())
+        // {
+        //     trace!(
+        //         "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
+        //         e
+        //     );
+        //     return Err(Box::new(e));
+        // }
+
+        // trace!("GraphicalModel::store_proposition_probability - Completed successfully");
         Ok(())
     }
 }
