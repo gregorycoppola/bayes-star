@@ -49,7 +49,8 @@ fn namespace_qualified_key(namespace: &str, key: &str) -> String {
 }
 
 pub fn set_add(conn: &mut Connection, namespace: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
-    let added: bool = conn.sadd(key, member)?;
+    let nskey = &namespace_qualified_key(namespace, key);
+    let added: bool = conn.sadd(nskey, member)?;
     Ok(added)
 }
 
