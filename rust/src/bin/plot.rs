@@ -14,18 +14,18 @@ extern crate log;
 fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut ReplState) -> Result<Option<PropositionNode>, Box<dyn Error>> {
     let pairs = match (scenario_name, test_scenario) {
         ("dating_simple", "prior") => vec![],
-        ("dating_simple", "jack_lonely") => vec![("lonely[sub=test_Jack0]", 1f64)],
+        ("dating_simple", "jack_lonely") => vec![("lonely[sub=test_Man0]", 1f64)],
         ("dating_simple", "they_date") => vec![("date[obj=test_Woman0,sub=test_Man0]", 1f64)],
-        ("dating_simple", "jack_likes") => vec![("like[obj=test_Jill0,sub=test_Jack0]", 1f64)],
-        ("dating_simple", "jill_likes") => vec![("like[obj=test_Jack0,sub=test_Jill0]", 1f64)],
-        ("dating_triangle", "prior") => vec![("charming[sub=test_Jack0]", 1f64)],
-        ("dating_triangle", "charming") => vec![("charming[sub=test_Jack0]", 1f64)],
-        ("dating_triangle", "baller") => vec![("baller[sub=test_Jack0]", 1f64)],
+        ("dating_simple", "jack_likes") => vec![("like[obj=test_Jill0,sub=test_Man0]", 1f64)],
+        ("dating_simple", "jill_likes") => vec![("like[obj=test_Man0,sub=test_Jill0]", 1f64)],
+        ("dating_triangle", "prior") => vec![("charming[sub=test_Man0]", 1f64)],
+        ("dating_triangle", "charming") => vec![("charming[sub=test_Man0]", 1f64)],
+        ("dating_triangle", "baller") => vec![("baller[sub=test_Man0]", 1f64)],
         ("long_chain", "prior") => vec![],
-        ("long_chain", "set_0_1") => vec![("alpha0[sub=test_Jack0]", 1f64)],
-        ("long_chain", "set_n_1") => vec![("alpha10[sub=test_Jack0]", 1f64)],
-        ("mid_chain", "set_0_1") => vec![("alpha0[sub=test_Jack0]", 1f64)],
-        ("mid_chain", "set_n_1") => vec![("alpha4[sub=test_Jack0]", 1f64)],
+        ("long_chain", "set_0_1") => vec![("alpha0[sub=test_Man0]", 1f64)],
+        ("long_chain", "set_n_1") => vec![("alpha10[sub=test_Man0]", 1f64)],
+        ("mid_chain", "set_0_1") => vec![("alpha0[sub=test_Man0]", 1f64)],
+        ("mid_chain", "set_n_1") => vec![("alpha4[sub=test_Man0]", 1f64)],
         _ => panic!("Case name not recognized"),
     };
     let r = repl_state.set_pairs_by_name(&pairs);
