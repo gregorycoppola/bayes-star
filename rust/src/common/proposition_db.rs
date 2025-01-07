@@ -26,14 +26,14 @@ pub struct RedisBeliefTable {
 
 impl RedisBeliefTable {
     pub fn new_mutable(resources: &FactoryResources) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
-        todo!()
-        // let redis_connection = client.get_connection()?;
-        // Ok(Box::new(RedisBeliefTable { redis_connection }))
+        let redis_connection = resources.redis.get_connection()?;
+        let namespace = resources.config.scenario_name.clone();
+        Ok(Box::new(RedisBeliefTable { redis_connection, namespace }))
     }
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        todo!()
-        // let redis_connection = client.get_connection()?;
-        // Ok(Rc::new(RedisBeliefTable { redis_connection }))
+        let redis_connection = resources.redis.get_connection()?;
+        let namespace = resources.config.scenario_name.clone();
+        Ok(Rc::new(RedisBeliefTable { redis_connection, namespace }))
     }
     pub const PROBABILITIES_KEY: &'static str = "probabilities";
 }
