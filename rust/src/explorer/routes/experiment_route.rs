@@ -60,8 +60,10 @@ pub fn internal_experiment(experiment_name: &str) -> Html<String> {
     let body_html = format!(
         r#"
         {name_part}
+        {main_part}
     "#,
         name_part = render_experiment_name(experiment_name),
+        main_part = render_experiment_parts(graph),
     );
     let result = render_app_body(&body_html);
     Html(result.unwrap())
