@@ -1,4 +1,4 @@
 #!/bin/bash
 export ROCKET_ENV=development
 
-RUST_BACKTRACE=1 cargo run --bin explorer_server
+RUST_BACKTRACE=1 cargo run --bin explorer_server -- --scenario_name dating_simple
