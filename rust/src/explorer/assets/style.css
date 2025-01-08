@@ -49,3 +49,7 @@ main {
 .domain_icon {
     width: 200px;
 }
+
+.domain_label {
+    font-size: 48px;
+}

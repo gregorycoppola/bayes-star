@@ -18,7 +18,7 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
         buffer += &format!(
             r#"
                 <div class='row_element'>
-                    <span>{domain}</span>
+                    <span class='domain_label'>{domain}</span>
                     <span><img src='/static/images/domains/{domain}.png' class='domain_icon'></img></span>
                 </div>
             "#,
@@ -39,12 +39,21 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
     println!("all_relations {:?}", &all_relations);
     for relation in &all_relations {
         println!("relation {:?}", relation);
-        buffer += &format!( r#" <div class='row_element'>"#);
-        buffer += &format!( r#" <span>{relation_name}</span>"#, relation_name = &relation.relation_name);
+        buffer += &format!(r#" <div class='row_element'>"#);
+        buffer += &format!(
+            r#" <span>{relation_name}</span>"#,
+            relation_name = &relation.relation_name
+        );
         for argument_type in &relation.types {
-            buffer += &format!( r#" <span>{domain_name}</span>"#, domain_name = argument_type.domain);
+            buffer += &format!(
+                r#"
+                        <span class='domain_label'>{domain_name}</span>
+                        <span><img src='/static/images/domains/{domain_name}.png' class='domain_icon'></img></span>
+                "#,
+                domain_name = argument_type.domain
+            );
         }
-        buffer += &format!( r#" </div>"#)
+        buffer += &format!(r#"</div>"#)
     }
     buffer
 }
