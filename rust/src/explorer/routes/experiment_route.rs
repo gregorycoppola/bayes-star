@@ -58,6 +58,12 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
     buffer
 }
 
+fn render_implication_part(graph: &InferenceGraph) -> String {
+    let all_relations = graph.get_all_implications().unwrap();
+    println!("all_relations {:?}", &all_relations);
+    "".to_string()
+}
+
 fn render_experiment_parts(graph: &InferenceGraph) -> String {
     format!(
         r#"
