@@ -23,8 +23,8 @@ fn main() {
     // Implications.
     let all_implications = graph.get_all_implications().unwrap();
     println!("all_implications {:?}", &all_implications);
-    for relation in &all_relations {
-        println!("relation {:?}", relation);
+    for implication in &all_implications {
+        println!("implication {:?}", implication);
     }
 
     println!("main finishes");
