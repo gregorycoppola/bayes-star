@@ -2,15 +2,14 @@
 extern crate rocket;
 
 use rocket::State;
-use bayes_star::common::{graph::InferenceGraph, resources::FactoryResources, setup::parse_configuration_options};
+use bayes_star::common::{graph::InferenceGraph, resources::FactoryResources, setup::{parse_configuration_options, ConfigurationOptions}};
 
 struct AppContext {
     graph: InferenceGraph,
 }
 
 impl AppContext {
-    pub fn new() -> Self {
-        let config = parse_configuration_options();
+    pub fn new(config: ConfigurationOptions) -> Self {
         let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
         let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
         AppContext { graph }
@@ -37,7 +36,8 @@ fn implications(context: &State<AppContext>) -> String {
 
 #[launch]
 fn rocket() -> _ {
+    let config = parse_configuration_options();
     rocket::build()
-        .manage(AppContext::new())
+        .manage(AppContext::new(config))
         .mount("/", routes![domains, relations, implications])
 }
