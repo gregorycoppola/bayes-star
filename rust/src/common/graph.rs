@@ -47,7 +47,13 @@ impl InferenceGraph {
     }
 
     pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
-        todo!()
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            "domains",
+            domain,
+        )?;
+        Ok(())
     }
 
     /// Return a "substantive" iff it's ok, else panic.
