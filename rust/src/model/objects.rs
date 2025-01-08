@@ -153,6 +153,10 @@ impl LabeledArgument {
 
 pub const EXISTENCE_FUNCTION: &str = "exist";
 
+fn unary_existence_function() -> Relation {
+    todo!()
+}
+
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
     pub relation: Relation,
