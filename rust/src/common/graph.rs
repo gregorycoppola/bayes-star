@@ -69,7 +69,12 @@ impl InferenceGraph {
     }
 
     pub fn get_all_domains(&self) -> Result<Vec<String>, Box<dyn Error>> {
-        todo!()
+        let result = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            "domains",
+        )?;
+        Ok(result)
     }
 
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
