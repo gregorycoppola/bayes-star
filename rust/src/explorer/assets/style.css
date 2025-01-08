@@ -1,0 +1,29 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+header {
+    background-color: black;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+}
+
+#product-name {
+    color: white;
+    font-size: 48px; /* You can adjust the size as needed */
+    margin: 0;
+}
+
+#sub-title {
+    color: yellow;
+    font-size: 24px; /* You can adjust the size as needed */
+}
+
+main {
+    background-color: white;
+    padding: 20px;
+    height: calc(100% - 60px); /* Adjust the height based on the header padding */
+}

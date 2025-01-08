@@ -2,7 +2,50 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::{self, Read};
-use std::path::Path;
+use std::fs;
+use std::path::{Path, PathBuf};
+use walkdir::WalkDir;
+
+fn collect_files_with_extension(dir: &Path, extension: &str) -> Vec<PathBuf> {
+    WalkDir::new(dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter_map(|entry| {
+            let path = entry.path().to_path_buf();
+            if path.is_file() && path.extension().and_then(|ext| ext.to_str()) == Some(extension) {
+                Some(path)
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn concatenate_file_contents(files: Vec<PathBuf>) -> Result<String, std::io::Error> {
+    let mut contents = String::new();
+    for file in files {
+        trace!("reading file: {:?}", &file);
+        let file_contents = fs::read_to_string(file)?;
+        contents.push_str(&file_contents);
+        contents.push_str("\n\n");
+    }
+    Ok(contents)
+}
+
+pub fn read_all_css(dir_path: &Path) -> String {
+    collate_files_generic(dir_path,"css").unwrap()
+}
+
+pub fn read_all_js(dir_path: &Path) -> String {
+    collate_files_generic(dir_path, "js").unwrap()
+}
+
+fn collate_files_generic(dir_path: &Path, extension: &str) -> Result<String, std::io::Error> {
+    let files = collect_files_with_extension(dir_path, extension);
+    let contents = concatenate_file_contents(files)?;
+    Ok(contents)
+}
+
 
 pub fn read_file_contents<P: AsRef<Path>>(path: P) -> io::Result<String> {
     let mut file = File::open(path)?;
@@ -26,18 +69,10 @@ pub fn render_component(body_path: &str, subs: &HashMap<String, String>) -> Stri
     new_body
 }
 
-pub fn render_app_body_unsafe(
-    body_html: &str,
-    window_title: &str,
-) -> String {
-    render_app_body(body_html, window_title).expect("render app failed")
-}
-
 pub fn render_app_body(
     body_html: &str,
-    window_title: &str,
 ) -> Result<String, Box<dyn Error>> {
-    let body_path = "src/explorer/render/head/app.html";
+    let body_path = "src/explorer/assets/app.html";
     let raw_body = read_file_contents(body_path).unwrap();
     let mut subs = HashMap::new();
     subs.insert("{body}".to_string(), body_html.to_string());
