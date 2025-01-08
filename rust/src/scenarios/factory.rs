@@ -2,16 +2,14 @@ use std::{error::Error, rc::Rc};
 
 use crate::common::{interface::ScenarioMaker, resources::FactoryResources};
 
-use super::one_var::OneVariable;
-
-// use super::{dating_simple::SimpleDating, dating_triangle::EligibilityTriangle, long_and, long_chain, mid_chain, one_var::OneVariable, two_var::TwoVariable};
+use super::{dating_simple::SimpleDating, one_var::OneVariable};
 
 pub struct ScenarioMakerFactory;
 
 impl ScenarioMakerFactory {
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<dyn ScenarioMaker>, Box<dyn Error>> {
         match resources.config.scenario_name.as_str() {
-            // "dating_simple" => Ok(Rc::new(SimpleDating {})),
+            "dating_simple" => Ok(Rc::new(SimpleDating {})),
             // "dating_triangle" => Ok(Rc::new(EligibilityTriangle {})),
             "one_var" => Ok(Rc::new(OneVariable {})),
             // "long_chain" => Ok(Rc::new(long_chain::Scenario {})),
