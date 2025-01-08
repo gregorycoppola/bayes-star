@@ -8,7 +8,7 @@ use bayes_star::{
         resources::FactoryResources,
         setup::{parse_configuration_options, ConfigurationOptions},
     },
-    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index}},
+    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
 };
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};
@@ -40,7 +40,7 @@ fn experiment(experiment_name: String, context: State<AppContext>) -> Html<Strin
 
 #[get("/network/<experiment_name>")]
 fn network(experiment_name: String, context: State<AppContext>) -> Html<String> {
-    internal_network(&experiment_name, &context.graph)
+    internal_network(&experiment_name, &context.graph, &context.config)
 }
 
 fn main() {

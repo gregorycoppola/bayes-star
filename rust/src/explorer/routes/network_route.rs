@@ -2,13 +2,13 @@ use std::error::Error;
 
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::FactoryResources, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer}};
+use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::FactoryResources, setup::ConfigurationOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer}};
 
 fn get_resources() -> FactoryResources {
     todo!()
 }
 
-fn render_network(graph: &InferenceGraph) -> Result<String, Box<dyn Error>> {
+fn render_network(graph: &InferenceGraph, config: &ConfigurationOptions) -> Result<String, Box<dyn Error>> {
     let resources = get_resources();
     let plan = TrainingPlan::new(&resources)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
@@ -18,13 +18,13 @@ fn render_network(graph: &InferenceGraph) -> Result<String, Box<dyn Error>> {
     let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
     proposition_graph.visualize();
     let mut inferencer =
-        Inferencer::new_mutable(&config, model.clone(), proposition_graph.clone(), fact_memory)?;
+        Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
     Ok("todo".to_string())
 }
 
-pub fn internal_network(graph: &InferenceGraph) -> Html<String> {
-    let network = render_network(graph).unwrap();
+pub fn internal_network(_experiment_name: &str, graph: &InferenceGraph, config: &ConfigurationOptions) -> Html<String> {
+    let network = render_network(graph, config).unwrap();
     let body_html = format!(
         r#"
         {network}
