@@ -48,6 +48,7 @@ impl ScenarioMaker for OneVariable {
         let config = &resources.config;
         let total_members_each_class = config.entities_per_domain;
         let jack_domain = Domain::MAN.to_string();
+        graph.register_domain(&jack_domain)?;
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
