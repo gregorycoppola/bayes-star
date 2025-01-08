@@ -12,7 +12,7 @@ impl AppContext {
     pub fn new() -> Self {
         let config = parse_configuration_options();
         let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
-        let graph = InferenceGraph::new_shared(&resources).expect("Failed to create inference graph");
+        let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
         AppContext { graph }
     }
 }

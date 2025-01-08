@@ -47,9 +47,18 @@ impl InferenceGraph {
         }))
     }
 
+    pub fn new_literal(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+        let redis_connection = resources.redis.get_mutex_guarded_connection()?;
+        Ok(InferenceGraph {
+            redis_connection,
+            namespace: resources.config.scenario_name.clone(),
+        })
+    }
+
     pub fn register_experiment(&mut self, experiment_name: &str) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::experiment_set_name(),
             experiment_name,
@@ -58,8 +67,9 @@ impl InferenceGraph {
     }
 
     pub fn get_all_experiments(&self) -> Result<Vec<String>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::experiment_set_name(),
         )?;
@@ -67,9 +77,10 @@ impl InferenceGraph {
     }
 
     pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let record = serialize_record(relation)?;
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::relation_set_name(),
             &record,
@@ -83,8 +94,9 @@ impl InferenceGraph {
     }
 
     pub fn get_all_relations(&self) -> Result<Vec<Relation>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::relation_set_name(),
         )?;
@@ -95,8 +107,9 @@ impl InferenceGraph {
     }
 
     pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             "domains",
             domain,
@@ -106,8 +119,9 @@ impl InferenceGraph {
 
     /// Return a "substantive" iff it's ok, else panic.
     pub fn check_domain(&self, domain: &String) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let result = is_member(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             "domains",
             domain,
@@ -117,8 +131,9 @@ impl InferenceGraph {
     }
 
     pub fn get_all_domains(&self) -> Result<Vec<String>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let result = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             "domains",
         )?;
@@ -126,6 +141,7 @@ impl InferenceGraph {
     }
 
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         trace!(
             "Storing entity in domain '{}': {}",
             entity.domain,
@@ -134,7 +150,7 @@ impl InferenceGraph {
         self.check_domain(&entity.domain)?;
         // NOTE: this is a "set" named after the "domain", with each "entity.name" inside of it.
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &entity.domain.to_string(),
             &entity.name,
@@ -143,9 +159,10 @@ impl InferenceGraph {
     }
 
     pub fn get_entities_in_domain(&self, domain: &String) -> Result<Vec<Entity>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let domain_string = domain.to_string();
         let names: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &domain_string,
         )?;
@@ -175,9 +192,10 @@ impl InferenceGraph {
     }
 
     fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let record = serialize_record(implication)?;
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::implication_seq_name(),
             &record,
@@ -231,8 +249,9 @@ impl InferenceGraph {
     }
 
     pub fn get_all_implications(&self) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::implication_seq_name(),
         )?;
@@ -246,8 +265,9 @@ impl InferenceGraph {
         &self,
         conclusion: &Predicate,
     ) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
         )?;
