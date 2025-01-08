@@ -8,7 +8,7 @@ use bayes_star::{
         resources::FactoryResources,
         setup::{parse_configuration_options, ConfigurationOptions},
     },
-    explorer::{render::{read_all_css, render_app_body}, routes::index_route::internal_index},
+    explorer::{render::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index}},
 };
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};
@@ -31,11 +31,15 @@ fn home() -> Html<String> {
     internal_index()
 }
 
+#[get("/experiment/<experiment_name>")]
+fn experiment(experiment_name: String) -> Html<String> {
+    internal_experiment(&experiment_name)
+}
+
 fn main() {
     let config = parse_configuration_options();
     rocket::ignite()
         .manage(AppContext::new(config))
-        .mount("/", routes![home])
+        .mount("/", routes![home, experiment])
         .launch();
-    // .mount("/", routes![home, domains, relations, implications])
 }
