@@ -12,12 +12,17 @@ fn diagram_domain(domain: &String) -> String {
 }
 
 fn diagram_relation(relation: &Relation) -> String {
+    let mut argument_part = "".to_string();
+    for argument in &relation.types {
+        argument_part += &format!("<span class='argument_part'>{domain}</span>", domain = &argument.domain);
+    }
     format!(
         r#"
         <span class='relation'>
             <span class='relation_name'>
                 {relation_name}
             </span>
+            {argument_part}
         </span>
     "#,
         relation_name = &relation.relation_name
