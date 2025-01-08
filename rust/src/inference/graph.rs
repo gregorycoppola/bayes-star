@@ -49,7 +49,6 @@ fn initialize_visit_single(
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
-    // Green for starting a new operation
     trace!(
         "\x1b[32mInitializing visit for proposition: {:?}\x1b[0m",
         single.hash_string()
@@ -59,24 +58,20 @@ fn initialize_visit_single(
         .insert(PropositionNode::from_single(single));
     let inference_factors =
         extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
-    // Yellow for showing counts or lengths
     trace!(
         "\x1b[33mInference factors count: {}\x1b[0m",
         inference_factors.len()
     );
 
     if inference_factors.is_empty() {
-        // Blue for specific condition-related messages
         trace!("\x1b[34mNo inference factors. Adding to roots.\x1b[0m");
         graph.roots.insert(single.clone());
     } else {
         for inference_factor in &inference_factors {
-            // Cyan for loop iteration
             trace!(
                 "\x1b[36mProcessing inference factor: {:?}\x1b[0m",
                 inference_factor.debug_string()
             );
-
             let inference_used_key = (inference_factor.premise.clone(), inference_factor.conclusion.clone());
             graph.inference_used.insert(inference_used_key, inference_factor.inference.clone());
 
@@ -119,8 +114,6 @@ fn initialize_visit_single(
             }
         }
     }
-
-    // Green for completion messages
     trace!(
         "\x1b[32mFinished initializing visit for proposition: {:?}\x1b[0m",
         single.hash_string()
