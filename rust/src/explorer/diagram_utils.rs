@@ -1,4 +1,4 @@
-use crate::model::objects::{ImplicationFactor, Predicate, PredicateGroup, Relation};
+use crate::model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Relation};
 
 fn diagram_domain(domain: &String) -> String {
     format!(
@@ -9,6 +9,10 @@ fn diagram_domain(domain: &String) -> String {
                 </span>
     "#
     )
+}
+
+fn diagram_argument(argument: &Argument) -> String {
+    "".to_string()
 }
 
 fn diagram_relation(relation: &Relation) -> String {
@@ -32,7 +36,7 @@ fn diagram_relation(relation: &Relation) -> String {
 fn diagram_predicate(predicate: &Predicate) -> String {
     let mut argument_buffer = "".to_string();
     for argument in &predicate.roles {
-        let argument_part = "".to_string();
+        let argument_part = diagram_argument(&argument.argument);
         argument_buffer += &format!("<span class='role_name'>{role_name}</span>{argument_part}", role_name = &argument.role_name);
     }
     format!(
