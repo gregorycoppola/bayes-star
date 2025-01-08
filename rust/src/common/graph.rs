@@ -50,12 +50,18 @@ impl InferenceGraph {
         todo!()
     }
 
+    /// Return a "substantive" iff it's ok, else panic.
+    pub fn check_domain(&self, domain: &String) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
             entity.domain,
             entity.name
         );
+        self.check_domain(&entity.domain)?;
         // NOTE: this is a "set" named after the "domain", with each "entity.name" inside of it.
         set_add(
             &mut *self.redis_connection.borrow_mut(),
