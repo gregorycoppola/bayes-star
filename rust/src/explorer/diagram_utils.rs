@@ -80,6 +80,7 @@ pub fn diagram_implication(relation: &ImplicationFactor) -> String {
                 {predicate_group_part}
             </div>
             <div class='implication_divider'>
+                &or;
             </div>
             <div class='implication_row'>
                 {conclusion_part}

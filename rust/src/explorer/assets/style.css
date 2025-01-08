@@ -75,3 +75,9 @@ main {
 .implication_box {
     border: 10px solid black;
 }
+
+.implication_divider {
+    background-color: red;
+    font-size: 80px;
+    color: white;
+}
