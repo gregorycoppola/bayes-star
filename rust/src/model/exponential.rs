@@ -1,5 +1,5 @@
 use super::choose::extract_backimplications_from_proposition;
-use super::objects::PredicateFactor;
+use super::objects::ImplicationFactor;
 use super::weights::{negative_feature, positive_feature, ExponentialWeights};
 use crate::common::interface::{BeliefTable, PredictStatistics, TrainStatistics};
 use crate::common::model::InferenceModel;
@@ -126,7 +126,7 @@ pub fn do_sgd_update(
 impl FactorModel for ExponentialModel {
     fn initialize_connection(
         &mut self,
-        implication: &PredicateFactor,
+        implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.weights.initialize_weights(implication)?;
         Ok(())

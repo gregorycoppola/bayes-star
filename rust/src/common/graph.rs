@@ -15,7 +15,7 @@ use crate::{
         },
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
+            Domain, Entity, Predicate, ImplicationFactor, PredicateGroup, Proposition,
             PropositionGroup, Relation,
         },
     },
@@ -190,7 +190,7 @@ impl InferenceGraph {
         "experiments".to_string()
     }
 
-    fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
+    fn store_implication(&mut self, implication: &ImplicationFactor) -> Result<(), Box<dyn Error>> {
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let record = serialize_record(implication)?;
         set_add(
@@ -214,7 +214,7 @@ impl InferenceGraph {
 
     fn store_predicate_backward_link(
         &mut self,
-        inference: &PredicateFactor,
+        inference: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         let conclusion = &inference.conclusion;
         let record = serialize_record(inference)?;
@@ -230,7 +230,7 @@ impl InferenceGraph {
 
     pub fn store_predicate_implication(
         &mut self,
-        implication: &PredicateFactor,
+        implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(implication)?;
         self.store_predicate_backward_link(implication)?;
@@ -239,7 +239,7 @@ impl InferenceGraph {
 
     pub fn store_predicate_implications(
         &mut self,
-        implications: &Vec<PredicateFactor>,
+        implications: &Vec<ImplicationFactor>,
     ) -> Result<(), Box<dyn Error>> {
         for implication in implications {
             self.store_predicate_implication(implication)?;
@@ -247,7 +247,7 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_all_implications(&self) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
+    pub fn get_all_implications(&self) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
             &mut connection,
@@ -263,7 +263,7 @@ impl InferenceGraph {
     pub fn predicate_backward_links(
         &self,
         conclusion: &Predicate,
-    ) -> Result<Vec<PredicateFactor>, Box<dyn Error>> {
+    ) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
             &mut connection,

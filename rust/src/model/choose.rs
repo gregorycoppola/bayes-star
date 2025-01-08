@@ -1,4 +1,4 @@
-use super::objects::{PredicateFactor, Proposition};
+use super::objects::{ImplicationFactor, Proposition};
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 use crate::common::graph::InferenceGraph;
 use crate::common::model::{FactorContext, InferenceModel};
@@ -124,7 +124,7 @@ pub fn extract_backimplications_from_proposition(
 
 pub fn extract_existence_factor_for_predicate(
     conclusion: &Predicate,
-) -> Result<PredicateFactor, Box<dyn Error>> {
+) -> Result<ImplicationFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
     for old_role in &conclusion.roles() {
@@ -135,7 +135,7 @@ pub fn extract_existence_factor_for_predicate(
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
-    let factor = PredicateFactor {
+    let factor = ImplicationFactor {
         premise: premise_group,
         role_maps: mapping_group,
         conclusion: conclusion.clone(),
@@ -146,7 +146,7 @@ pub fn extract_existence_factor_for_predicate(
 
 pub fn extract_existence_factor_for_proposition(
     basis: &Proposition,
-) -> Result<PredicateFactor, Box<dyn Error>> {
+) -> Result<ImplicationFactor, Box<dyn Error>> {
     let mut new_roles = vec![];
     let mut mapping = HashMap::new();
     for old_role in &basis.predicate.roles() {
@@ -158,7 +158,7 @@ pub fn extract_existence_factor_for_proposition(
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
     let conclusion = Predicate::new(basis.predicate.relation.clone(), new_roles.clone());
-    let factor = PredicateFactor {
+    let factor = ImplicationFactor {
         premise: premise_group,
         role_maps: mapping_group,
         conclusion,

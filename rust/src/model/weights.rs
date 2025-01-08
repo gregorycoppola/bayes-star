@@ -1,6 +1,6 @@
 use crate::{
     common::{redis::{map_get, map_insert}, resources::FactoryResources},
-    model::objects::PredicateFactor,
+    model::objects::ImplicationFactor,
 };
 use rand::Rng;
 use redis::{Commands, Connection};
@@ -50,7 +50,7 @@ impl ExponentialWeights {
 
     pub fn initialize_weights(
         &mut self,
-        implication: &PredicateFactor,
+        implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();

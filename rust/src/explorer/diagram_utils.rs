@@ -1,4 +1,4 @@
-use crate::model::objects::{Predicate, PredicateFactor, PredicateGroup, Relation};
+use crate::model::objects::{Predicate, ImplicationFactor, PredicateGroup, Relation};
 
 fn diagram_domain(domain: &String) -> String {
     // let mut buffer = format!(
@@ -38,6 +38,6 @@ fn diagram_predicate_group(relation: &PredicateGroup) -> String {
     "".to_string()
 }
 
-fn diagram_implication(relation: &PredicateFactor) -> String {
+fn diagram_implication(relation: &ImplicationFactor) -> String {
     "".to_string()
 }

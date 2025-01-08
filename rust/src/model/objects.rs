@@ -305,13 +305,13 @@ impl PropositionGroup {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PredicateFactor {
+pub struct ImplicationFactor {
     pub premise: PredicateGroup,
     pub role_maps: GroupRoleMap,
     pub conclusion: Predicate,
 }
 
-impl PredicateFactor {
+impl ImplicationFactor {
     // Generate a unique key for the implication
     pub fn unique_key(&self) -> String {
         format!(
