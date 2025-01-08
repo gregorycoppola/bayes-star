@@ -53,3 +53,9 @@ main {
 .domain_label {
     font-size: 48px;
 }
+
+.relation_name {
+    font-size: 54px;
+    background-color: blue;
+    color: white;
+}

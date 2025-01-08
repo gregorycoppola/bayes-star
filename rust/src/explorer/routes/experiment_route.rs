@@ -41,7 +41,7 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
         println!("relation {:?}", relation);
         buffer += &format!(r#" <div class='row_element'>"#);
         buffer += &format!(
-            r#" <span>{relation_name}</span>"#,
+            r#" <span class='relation_name'>{relation_name}</span>"#,
             relation_name = &relation.relation_name
         );
         for argument_type in &relation.types {
