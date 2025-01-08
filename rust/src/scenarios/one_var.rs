@@ -6,7 +6,7 @@ use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
 use crate::model::choose::extract_existence_factor_for_proposition;
-use crate::model::creators::predicate;
+use crate::model::creators::{predicate, relation};
 use crate::{print_red, print_yellow};
 use crate::{
     common::interface::ScenarioMaker,
@@ -62,7 +62,8 @@ impl ScenarioMaker for OneVariable {
             let p_jack_exciting = weighted_cointoss(0.3f64);
             {
                 let jack = constant(jack_entity.domain, jack_entity.name.clone());
-                let jack_exciting = proposition("exciting".to_string(), vec![sub(jack)]);
+                let jack_relation = relation("exciting".to_string(), vec![]);
+                let jack_exciting = proposition(jack_relation, vec![sub(jack)]);
                 graph.ensure_existence_backlinks_for_proposition(&jack_exciting)?;
                 proposition_db.store_proposition_probability(&jack_exciting, p_jack_exciting)?;
                 plan.maybe_add_to_training(is_training, &jack_exciting)?;

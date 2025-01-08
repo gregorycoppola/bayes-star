@@ -22,7 +22,7 @@ pub fn implication(
     }
 }
 
-pub fn relation(relation_name: String, roles: Vec<VariableArgument>) -> Predicate {
+pub fn relation(relation_name: String, roles: Vec<VariableArgument>) -> Relation {
     Relation::new(relation_name, roles)
 }
 
