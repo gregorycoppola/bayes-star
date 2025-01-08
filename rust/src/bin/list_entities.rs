@@ -19,6 +19,13 @@ fn main() {
     for relation in &all_relations {
         println!("relation {:?}", relation);
     }
+    //
+    // Implications.
+    let all_implications = graph.get_all_implications().unwrap();
+    println!("all_implications {:?}", &all_implications);
+    for relation in &all_relations {
+        println!("relation {:?}", relation);
+    }
 
     println!("main finishes");
 }
