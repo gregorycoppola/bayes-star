@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::error::Error;
+use std::fs;
 use std::fs::File;
 use std::io::{self, Read};
-use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
@@ -33,7 +33,7 @@ fn concatenate_file_contents(files: Vec<PathBuf>) -> Result<String, std::io::Err
 }
 
 pub fn read_all_css(dir_path: &Path) -> String {
-    collate_files_generic(dir_path,"css").unwrap()
+    collate_files_generic(dir_path, "css").unwrap()
 }
 
 pub fn read_all_js(dir_path: &Path) -> String {
@@ -45,7 +45,6 @@ fn collate_files_generic(dir_path: &Path, extension: &str) -> Result<String, std
     let contents = concatenate_file_contents(files)?;
     Ok(contents)
 }
-
 
 pub fn read_file_contents<P: AsRef<Path>>(path: P) -> io::Result<String> {
     let mut file = File::open(path)?;
@@ -69,13 +68,13 @@ pub fn render_component(body_path: &str, subs: &HashMap<String, String>) -> Stri
     new_body
 }
 
-pub fn render_app_body(
-    body_html: &str,
-) -> Result<String, Box<dyn Error>> {
+pub fn render_app_body(body_html: &str) -> Result<String, Box<dyn Error>> {
     let body_path = "src/explorer/assets/app.html";
     let raw_body = read_file_contents(body_path).unwrap();
     let mut subs = HashMap::new();
     subs.insert("{body}".to_string(), body_html.to_string());
+    let html_root = Path::new(".");
+    subs.insert("/* css here */".to_string(), read_all_css(html_root));
     let new_body = do_replaces(&raw_body, &subs);
     Ok(new_body)
 }

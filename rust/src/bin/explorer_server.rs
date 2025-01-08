@@ -16,6 +16,11 @@ impl AppContext {
     }
 }
 
+#[get("/")]
+fn home(context: &State<AppContext>) -> String {
+    todo!()
+}
+
 #[get("/domains")]
 fn domains(context: &State<AppContext>) -> String {
     let all_domains = context.graph.get_all_domains().expect("Failed to get domains");
@@ -39,5 +44,5 @@ fn rocket() -> _ {
     let config = parse_configuration_options();
     rocket::build()
         .manage(AppContext::new(config))
-        .mount("/", routes![domains, relations, implications])
+        .mount("/", routes![home, domains, relations, implications])
 }
