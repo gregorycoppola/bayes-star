@@ -79,6 +79,11 @@ impl ScenarioMaker for SimpleDating {
             vec![variable_argument(jack_domain.clone()), variable_argument(jill_domain.clone())],
         );
         graph.register_relation(&jack_like_jill_relation)?;
+        let jack_date_jill_relation = relation(
+            "date".to_string(),
+            vec![variable_argument(jack_domain.clone()), variable_argument(jill_domain.clone())],
+        );
+        graph.register_relation(&jack_date_jill_relation)?;
 
         for i in 0..total_members_each_class {
             let is_test = i  == 0;
