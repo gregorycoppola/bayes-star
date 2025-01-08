@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## implications0108
+Render the "implications".
+
+Make there "libraries" so that each part can be made from smaller parts (compositionality).
+
+
 ## itdomain0107
 Figure out how to:
 * print out all of the information for each "entity" in a domain
