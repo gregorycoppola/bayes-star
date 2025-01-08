@@ -46,6 +46,16 @@ impl InferenceGraph {
         }))
     }
 
+    pub fn register_experiment(&mut self, experiment_name: &str) -> Result<(), Box<dyn Error>> {
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &Self::experiment_set_name(),
+            experiment_name,
+        )?;
+        Ok(())
+    }
+
     pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(relation)?;
         set_add(
@@ -148,6 +158,10 @@ impl InferenceGraph {
 
     fn relation_set_name() -> String {
         "relations".to_string()
+    }
+
+    fn experiment_set_name() -> String {
+        "experiments".to_string()
     }
 
     fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
