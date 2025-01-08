@@ -44,17 +44,25 @@ fn render_experiment_parts(graph: &InferenceGraph) -> String {
 }
 
 fn render_experiment_name(experiment_name: &str) -> String {
-    format!(r#"
+    format!(
+        r#"
         <div class='section_header'>
             experiment:
         </div>
         <div class='experiment_name'>
             {experiment_name}
         </div>
-    "#)
+    "#
+    )
 }
 
 pub fn internal_experiment(experiment_name: &str) -> Html<String> {
-    let result = render_app_body(experiment_name);
+    let body_html = format!(
+        r#"
+        {name_part}
+    "#,
+        name_part = render_experiment_name(experiment_name),
+    );
+    let result = render_app_body(&body_html);
     Html(result.unwrap())
 }
