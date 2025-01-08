@@ -59,11 +59,11 @@ impl ScenarioMaker for SimpleDating {
         graph.register_domain(&jill_domain)?;
 
 
-        let exciting_relation = relation(
+        let exciting_jill_relation = relation(
             "exciting".to_string(),
             vec![variable_argument(jill_domain.clone())],
         );
-        graph.register_relation(&exciting_relation)?;
+        graph.register_relation(&exciting_jill_relation)?;
         let lonely_jack_relation = relation(
             "lonely".to_string(),
             vec![variable_argument(jack_domain.clone())],
@@ -104,7 +104,7 @@ impl ScenarioMaker for SimpleDating {
             {
                 trace!("Man entity part 2: {:?}", jack_entity);
                 let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
-                let jack_lonely = proposition("lonely".to_string(), vec![sub(jack)]);
+                let jack_lonely = proposition(lonely_jack_relation.clone(), vec![sub(jack)]);
 
                 trace!(
                     "Man Lonely: {:?}, Probability: {}",
@@ -118,7 +118,7 @@ impl ScenarioMaker for SimpleDating {
 
             {
                 let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
-                let jill_exciting = proposition("exciting".to_string(),
+                let jill_exciting = proposition(exciting_jill_relation.clone(),
                 vec![sub(jill)]);
 
                 trace!(
