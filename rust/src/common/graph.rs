@@ -254,11 +254,20 @@ impl InferenceGraph {
             &self.namespace,
             &Self::implication_seq_name(),
         )?;
+    
         set_members
             .into_iter()
-            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .map(|record| {
+                warn!("Deserializing record: {}", record);  // Log each record before deserialization
+                serde_json::from_str::<ImplicationFactor>(&record)
+                    .map_err(|e| {
+                        warn!("Failed to deserialize record: {}, Error: {}", record, e);  // Log if deserialization fails
+                        Box::new(e) as Box<dyn Error>
+                    })
+            })
             .collect()
     }
+    
 
     pub fn predicate_backward_links(
         &self,
