@@ -27,7 +27,7 @@ impl AppContext {
 }
 
 #[get("/")]
-fn home() -> Html<String> {
+fn home(_context: State<AppContext>) -> Html<String> {
     internal_index()
 }
 
