@@ -39,8 +39,9 @@ fn diagram_predicate_group(group: &PredicateGroup) -> String {
     for predicate in &group.terms {
         parts.push(diagram_predicate(predicate));
     }
-
-    "".to_string()
+    let separator = "<span class='separator'>, </span>"; // Customize as needed
+    let joined_parts = parts.join(separator);
+    format!("<div class='predicate_group'>{}</div>", joined_parts)
 }
 
 fn diagram_implication(relation: &ImplicationFactor) -> String {
