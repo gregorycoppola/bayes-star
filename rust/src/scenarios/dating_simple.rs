@@ -1,7 +1,7 @@
-use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::graph::InferenceGraph;
 use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
+use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
@@ -36,10 +36,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct SimpleDating {}
 
 impl ScenarioMaker for SimpleDating {
-    fn setup_scenario(
-        &self,
-        resources: &FactoryResources,
-    ) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources)?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;
@@ -58,7 +55,6 @@ impl ScenarioMaker for SimpleDating {
         trace!("Initial number of jills: {}", jills.len());
         graph.register_domain(&jill_domain)?;
 
-
         let exciting_jill_relation = relation(
             "exciting".to_string(),
             vec![variable_argument(jill_domain.clone())],
@@ -76,22 +72,31 @@ impl ScenarioMaker for SimpleDating {
         graph.register_relation(&lonely_jill_relation)?;
         let jack_like_jill_relation = relation(
             "like".to_string(),
-            vec![variable_argument(jack_domain.clone()), variable_argument(jill_domain.clone())],
+            vec![
+                variable_argument(jack_domain.clone()),
+                variable_argument(jill_domain.clone()),
+            ],
         );
         graph.register_relation(&jack_like_jill_relation)?;
         let jill_like_jack_relation = relation(
             "like".to_string(),
-            vec![variable_argument(jill_domain.clone()), variable_argument(jack_domain.clone()), ],
+            vec![
+                variable_argument(jill_domain.clone()),
+                variable_argument(jack_domain.clone()),
+            ],
         );
         graph.register_relation(&jill_like_jack_relation)?;
         let jack_date_jill_relation = relation(
             "date".to_string(),
-            vec![variable_argument(jack_domain.clone()), variable_argument(jill_domain.clone())],
+            vec![
+                variable_argument(jack_domain.clone()),
+                variable_argument(jill_domain.clone()),
+            ],
         );
         graph.register_relation(&jack_date_jill_relation)?;
 
         for i in 0..total_members_each_class {
-            let is_test = i  == 0;
+            let is_test = i == 0;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
             for domain in entity_domains.iter() {
@@ -112,8 +117,7 @@ impl ScenarioMaker for SimpleDating {
             let p_jack_lonely = weighted_cointoss(0.3f64);
             let p_jill_exciting: f64 = weighted_cointoss(0.6f64);
             let p_jill_likes_jack: f64 = weighted_cointoss(0.4f64);
-            let p_jack_likes_jill =
-                weighted_cointoss(numeric_or(p_jack_lonely, p_jill_exciting));
+            let p_jack_likes_jill = weighted_cointoss(numeric_or(p_jack_lonely, p_jill_exciting));
             let p_jack_dates_jill = numeric_and(p_jack_likes_jill, p_jill_likes_jack);
 
             {
@@ -133,8 +137,7 @@ impl ScenarioMaker for SimpleDating {
 
             {
                 let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
-                let jill_exciting = proposition(exciting_jill_relation.clone(),
-                vec![sub(jill)]);
+                let jill_exciting = proposition(exciting_jill_relation.clone(), vec![sub(jill)]);
 
                 trace!(
                     "Woman Exciting: {:?}, Probability: {}",
@@ -152,17 +155,16 @@ impl ScenarioMaker for SimpleDating {
 
                 // "likes(jill, jack)"
                 let jill_likes_jack = proposition(
-                    "like".to_string(),
-                    vec![
-                    sub(jill.clone()),
-                    obj(jack.clone()),
-                ]);
+                    jill_like_jack_relation.clone(),
+                    vec![sub(jill.clone()), obj(jack.clone())],
+                );
                 trace!(
                     "Woman likes Man: {:?}, Probability: {}",
                     jill_likes_jack.predicate.hash_string(),
                     p_jill_likes_jack
                 ); // Logging
-                proposition_db.store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
+                proposition_db
+                    .store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
                 plan.maybe_add_to_training(is_training, &jill_likes_jack)?;
                 graph.ensure_existence_backlinks_for_proposition(&jill_likes_jack)?;
             }
@@ -171,18 +173,17 @@ impl ScenarioMaker for SimpleDating {
                 let jill = constant(jill_entity.domain.clone(), jill_entity.name.clone());
                 let jack = constant(jack_entity.domain.clone(), jack_entity.name.clone());
                 let jack_likes_jill = proposition(
-                    "like".to_string(),
-                    vec![
-                    sub(jack.clone()),
-                    obj(jill.clone()),
-                ]);
+                    jack_like_jill_relation.clone(),
+                    vec![sub(jack.clone()), obj(jill.clone())],
+                );
                 trace!(
                     "Man likes Woman: {:?}, Probability: {}",
                     jack_likes_jill.predicate.hash_string(),
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
-                    proposition_db.store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
+                    proposition_db
+                        .store_proposition_probability(&jack_likes_jill, p_jack_likes_jill)?;
                 }
                 plan.maybe_add_to_training(is_training, &jack_likes_jill)?;
                 // graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
@@ -193,9 +194,7 @@ impl ScenarioMaker for SimpleDating {
 
                 // "dates(jack, jill)" based on "likes(jack, jill) and likes(jill, jack)"
                 let jack_dates_jill =
-                    proposition(
-                        "date".to_string(),
-                        vec![sub(jack),  obj(jill)]);
+                    proposition(jack_date_jill_relation.clone(), vec![sub(jack), obj(jill)]);
                 trace!(
                     "Man dates Woman: {:?}, Probability: {}",
                     jack_dates_jill.predicate.hash_string(),
@@ -203,7 +202,8 @@ impl ScenarioMaker for SimpleDating {
                 ); // Logging
 
                 if is_training {
-                    proposition_db.store_proposition_probability(&jack_dates_jill, p_jack_dates_jill)?;
+                    proposition_db
+                        .store_proposition_probability(&jack_dates_jill, p_jack_dates_jill)?;
                 }
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
@@ -217,14 +217,14 @@ impl ScenarioMaker for SimpleDating {
         let implications = vec![
             // if jack is lonely, he will date any jill
             implication(
-                conjunction(vec![predicate("lonely".to_string(), vec![
-                    sub(xjack.clone()),
-                ])]),
-                predicate("like".to_string(), 
-                vec![
-                    sub(xjack.clone()),
-                    obj(xjill.clone()),
-                ]),
+                conjunction(vec![predicate(
+                    lonely_jack_relation,
+                    vec![sub(xjack.clone())],
+                )]),
+                predicate(
+                    jack_like_jill_relation,
+                    vec![sub(xjack.clone()), obj(xjill.clone())],
+                ),
                 vec![RoleMap::new(HashMap::from([(
                     "sub".to_string(),
                     "sub".to_string(),
@@ -232,15 +232,14 @@ impl ScenarioMaker for SimpleDating {
             ),
             // if jill is exciting, any jack will date her
             implication(
-                conjunction(vec![predicate("exciting".to_string(),
-                vec![
-                    sub(xjill.clone()),
-                ])]),
-                predicate("like".to_string(),
-                vec![
-                    sub(xjack.clone()),
-                    obj(xjill.clone()),
-                ]),
+                conjunction(vec![predicate(
+                    "exciting".to_string(),
+                    vec![sub(xjill.clone())],
+                )]),
+                predicate(
+                    "like".to_string(),
+                    vec![sub(xjack.clone()), obj(xjill.clone())],
+                ),
                 vec![RoleMap::new(HashMap::from([(
                     "obj".to_string(),
                     "sub".to_string(),
@@ -249,21 +248,19 @@ impl ScenarioMaker for SimpleDating {
             // if jill likes jack, then jack dates jill
             implication(
                 conjunction(vec![
-                    predicate("like".to_string(),
-                    vec![
-                        sub(xjill.clone()),
-                        obj(xjack.clone()),
-                    ]),
-                    predicate("like".to_string(), vec![
-                        sub(xjack.clone()),
-                        obj(xjill.clone()),
-                    ]),
+                    predicate(
+                        "like".to_string(),
+                        vec![sub(xjill.clone()), obj(xjack.clone())],
+                    ),
+                    predicate(
+                        "like".to_string(),
+                        vec![sub(xjack.clone()), obj(xjill.clone())],
+                    ),
                 ]),
-                predicate("date".to_string(),
-                vec![
-                    sub(xjack.clone()),
-                    obj(xjill.clone()),
-                ]),
+                predicate(
+                    "date".to_string(),
+                    vec![sub(xjack.clone()), obj(xjill.clone())],
+                ),
                 vec![
                     RoleMap::new(HashMap::from([
                         ("sub".to_string(), "obj".to_string()),
