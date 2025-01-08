@@ -5,7 +5,7 @@ use crate::common::model::InferenceModel;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
-use crate::model::creators::predicate;
+use crate::model::creators::{predicate, relation, variable_argument};
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -57,6 +57,23 @@ impl ScenarioMaker for SimpleDating {
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
         graph.register_domain(&jill_domain)?;
+
+
+        let exciting_relation = relation(
+            "exciting".to_string(),
+            vec![variable_argument(jill_domain.clone())],
+        );
+        graph.register_relation(&exciting_relation)?;
+        let lonely_jack_relation = relation(
+            "lonely".to_string(),
+            vec![variable_argument(jack_domain.clone())],
+        );
+        graph.register_relation(&lonely_jack_relation)?;
+        let lonely_jill_relation = relation(
+            "lonely".to_string(),
+            vec![variable_argument(jill_domain.clone())],
+        );
+        graph.register_relation(&lonely_jill_relation)?;
 
         for i in 0..total_members_each_class {
             let is_test = i  == 0;
