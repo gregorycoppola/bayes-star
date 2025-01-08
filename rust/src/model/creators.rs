@@ -2,7 +2,7 @@ use crate::model::objects::*;
 
 // Import the necessary structs and enums
 use crate::model::objects::{
-    ConstantArgument, LabeledArgument, PredicateFactor, Predicate, VariableArgument,
+    ConstantArgument, LabeledArgument, Predicate, PredicateFactor, VariableArgument,
 };
 
 pub fn conjunction(terms: Vec<Predicate>) -> PredicateGroup {
@@ -22,11 +22,16 @@ pub fn implication(
     }
 }
 
-pub fn proposition(function:String, roles: Vec<LabeledArgument>) -> Proposition {
-    Proposition::from(Predicate::new(function, roles))
+pub fn relation(relation_name: String, roles: Vec<LabeledArgument>) -> Predicate {
+    Relation::new(relation_name, roles)
 }
-pub fn predicate(function:String, roles: Vec<LabeledArgument>) -> Predicate {
-    Predicate::new(function, roles)
+
+pub fn proposition(relation: Relation, roles: Vec<LabeledArgument>) -> Proposition {
+    Proposition::from(Predicate::new(relation, roles))
+}
+
+pub fn predicate(relation: Relation, roles: Vec<LabeledArgument>) -> Predicate {
+    Predicate::new(relation, roles)
 }
 
 // Function to create a FilledRole

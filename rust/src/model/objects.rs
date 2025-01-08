@@ -110,7 +110,16 @@ impl fmt::Display for Argument {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Relation {
     pub relation_name: String,
-    pub argument_type: VariableArgument,
+    pub types: Vec<VariableArgument>,
+}
+
+impl Relation {
+    pub fn new(relation_name: String, types: Vec<VariableArgument>) -> Self {
+        Relation {
+            relation_name,
+            types,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
