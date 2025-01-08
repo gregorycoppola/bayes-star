@@ -129,6 +129,7 @@ impl InferenceGraph {
         Ok(())
     }
 
+    // TODO: I feel like this should not be public.
     pub fn ensure_existence_backlinks_for_proposition(
         &mut self,
         proposition: &Proposition,
