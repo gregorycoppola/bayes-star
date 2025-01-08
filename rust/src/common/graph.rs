@@ -50,6 +50,14 @@ impl InferenceGraph {
         todo!()
     }
 
+    pub fn check_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn get_all_relations(&self) -> Result<Vec<Relation>, Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
         set_add(
             &mut *self.redis_connection.borrow_mut(),
