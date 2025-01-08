@@ -16,7 +16,7 @@ use crate::{
         exponential::ExponentialModel,
         objects::{
             Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
-            PropositionGroup,
+            PropositionGroup, Relation,
         },
     },
     print_blue,
@@ -44,6 +44,10 @@ impl InferenceGraph {
             redis_connection,
             namespace: resources.config.scenario_name.clone(),
         }))
+    }
+
+    pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
+        todo!()
     }
 
     pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {

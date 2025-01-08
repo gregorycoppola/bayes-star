@@ -50,6 +50,7 @@ impl ScenarioMaker for OneVariable {
             "exciting".to_string(),
             vec![variable_argument(jack_domain.clone())],
         );
+        graph.register_relation(&jack_relation)?;
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
