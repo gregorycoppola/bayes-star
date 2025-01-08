@@ -30,9 +30,10 @@ fn diagram_relation(relation: &Relation) -> String {
 }
 
 fn diagram_predicate(predicate: &Predicate) -> String {
-    let mut argument_part = "".to_string();
+    let mut argument_buffer = "".to_string();
     for argument in &predicate.roles {
-        argument_part += &format!("<span class='argument_part'>{domain}</span>", domain = &argument.role_name);
+        let argument_part = "".to_string();
+        argument_buffer += &format!("<span class='role_name'>{role_name}</span>{argument_part}", role_name = &argument.role_name);
     }
     format!(
         r#"
@@ -40,7 +41,7 @@ fn diagram_predicate(predicate: &Predicate) -> String {
             <span class='relation_name'>
                 {relation_name}
             </span>
-            {argument_part}
+            {argument_buffer}
         </span>
     "#,
         relation_name = &predicate.relation.relation_name
