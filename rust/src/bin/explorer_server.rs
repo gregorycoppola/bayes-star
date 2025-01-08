@@ -32,7 +32,7 @@ fn home(_context: State<AppContext>) -> Html<String> {
 }
 
 #[get("/experiment/<experiment_name>")]
-fn experiment(experiment_name: String) -> Html<String> {
+fn experiment(experiment_name: String, _context: State<AppContext>) -> Html<String> {
     internal_experiment(&experiment_name)
 }
 
