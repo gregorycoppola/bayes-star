@@ -3,13 +3,30 @@ use rocket::response::content::Html;
 use crate::{common::graph::InferenceGraph, explorer::render::render_app_body};
 
 fn render_domain_part(graph: &InferenceGraph) -> String {
+    let mut buffer = format!(
+        r#"
+        <div class='section_header'>
+            Domains
+        </div>
+    "#
+    );
     let all_domains = graph.get_all_domains().unwrap();
     println!("all_domains {:?}", &all_domains);
     for domain in &all_domains {
         let elements = graph.get_entities_in_domain(domain).unwrap();
         println!("elements: {:?}", &elements);
+        for element in &elements {
+            buffer += &format!(
+                r#"
+                <div class='row_element'>
+                    {element_name}
+                </div>
+            "#,
+                element_name = element.domain,
+            )
+        }
     }
-    "".to_string()
+    buffer
 }
 
 fn render_relation_part(graph: &InferenceGraph) -> String {
