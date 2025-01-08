@@ -1,4 +1,4 @@
-use crate::model::objects::{Predicate, ImplicationFactor, PredicateGroup, Relation};
+use crate::model::objects::{ImplicationFactor, Predicate, PredicateGroup, Relation};
 
 fn diagram_domain(domain: &String) -> String {
     // let mut buffer = format!(
@@ -39,5 +39,14 @@ fn diagram_predicate_group(relation: &PredicateGroup) -> String {
 }
 
 fn diagram_implication(relation: &ImplicationFactor) -> String {
-    "".to_string()
+    format!(
+        r#"
+        <div class='implication_box'>
+            <div class='implication_row'>
+                {predicate_group_part}
+            </div>
+        </div>
+    "#,
+        predicate_group_part = diagram_predicate_group(&relation.premise),
+    )
 }
