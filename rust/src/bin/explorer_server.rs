@@ -8,7 +8,7 @@ use bayes_star::{
         resources::FactoryResources,
         setup::{parse_configuration_options, ConfigurationOptions},
     },
-    explorer::{render::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index}},
+    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index}},
 };
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};

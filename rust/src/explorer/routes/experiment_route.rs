@@ -1,6 +1,6 @@
 use rocket::response::content::Html;
 
-use crate::{common::graph::InferenceGraph, explorer::render::render_app_body};
+use crate::{common::graph::InferenceGraph, explorer::render_utils::render_app_body};
 
 fn render_domain_part(graph: &InferenceGraph) -> String {
     let mut buffer = format!(
