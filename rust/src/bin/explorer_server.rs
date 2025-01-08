@@ -23,8 +23,7 @@ impl AppContext {
 //     Content(ContentType::HTML, result.unwrap())
 // }
 
-#[launch]
-fn rocket() -> _ {
+fn main() {
     let config = parse_configuration_options();
     rocket::build()
         .manage(AppContext::new(config))
