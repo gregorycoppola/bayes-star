@@ -51,10 +51,12 @@ impl ScenarioMaker for SimpleDating {
         let jack_domain = Domain::MAN.to_string(); // Convert enum to string and make lowercase
         let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
         trace!("Initial number of jacks: {}", jacks.len());
+        graph.register_domain(&jack_domain)?;
         // Retrieve entities in the Woman domain
         let jill_domain = Domain::WOMAN.to_string(); // Convert enum to string and make lowercase
         let jills = graph.get_entities_in_domain(&jill_domain)?;
         trace!("Initial number of jills: {}", jills.len());
+        graph.register_domain(&jill_domain)?;
 
         for i in 0..total_members_each_class {
             let is_test = i  == 0;
