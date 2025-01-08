@@ -16,7 +16,7 @@ impl RedisManager {
 }
 
 #[get("/")]
-fn index() -> &'static str {
+fn index(redis: &State<RedisManager>) -> &'static str {
     "Hello, world!"
 }
 
