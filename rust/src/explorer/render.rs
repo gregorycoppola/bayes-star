@@ -72,7 +72,7 @@ pub fn render_app_body(body_html: &str) -> Result<String, Box<dyn Error>> {
     let body_path = "src/explorer/assets/app.html";
     let raw_body = read_file_contents(body_path).unwrap();
     let mut subs = HashMap::new();
-    subs.insert("{body}".to_string(), body_html.to_string());
+    subs.insert("{body_html}".to_string(), body_html.to_string());
     let html_root = Path::new(".");
     subs.insert("/* css here */".to_string(), read_all_css(html_root));
     let new_body = do_replaces(&raw_body, &subs);
