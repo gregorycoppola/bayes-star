@@ -68,6 +68,10 @@ impl InferenceGraph {
         Ok(())
     }
 
+    pub fn get_all_domains(&self) -> Result<Vec<String>, Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
