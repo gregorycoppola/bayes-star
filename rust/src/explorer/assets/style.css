@@ -45,3 +45,7 @@ main {
 .row_element {
     font-size: 24px;
 }
+
+.domain_icon {
+    width: 200px;
+}

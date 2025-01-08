@@ -18,7 +18,8 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
         buffer += &format!(
             r#"
                 <div class='row_element'>
-                    {domain}
+                    <span>{domain}</span>
+                    <span><img src='/static/images/domains/{domain}.png' class='domain_icon'></img></span>
                 </div>
             "#,
         )
