@@ -22,6 +22,12 @@ pub fn implication(
     }
 }
 
+pub fn variable_argument(domain: String) -> VariableArgument {
+    VariableArgument {
+        domain
+    }
+}
+
 pub fn relation(relation_name: String, roles: Vec<VariableArgument>) -> Relation {
     Relation::new(relation_name, roles)
 }

@@ -1,13 +1,12 @@
-use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::graph::InferenceGraph;
 use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
+use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::redis::RedisManager;
 use crate::common::resources::{self, FactoryResources};
 use crate::common::train::TrainingPlan;
 use crate::model::choose::extract_existence_factor_for_proposition;
-use crate::model::creators::{predicate, relation};
-use crate::{print_red, print_yellow};
+use crate::model::creators::{predicate, relation, variable_argument};
 use crate::{
     common::interface::ScenarioMaker,
     model::{
@@ -15,6 +14,7 @@ use crate::{
         objects::{Domain, Entity, RoleMap},
     },
 };
+use crate::{print_red, print_yellow};
 use rand::Rng; // Import Rng trait
 use std::{collections::HashMap, error::Error};
 fn cointoss() -> f64 {
@@ -38,10 +38,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct OneVariable {}
 
 impl ScenarioMaker for OneVariable {
-    fn setup_scenario(
-        &self,
-        resources: &FactoryResources,
-    ) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources)?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;
@@ -49,7 +46,10 @@ impl ScenarioMaker for OneVariable {
         let total_members_each_class = config.entities_per_domain;
         let jack_domain = Domain::MAN.to_string();
         graph.register_domain(&jack_domain)?;
-        let jack_relation = relation("exciting".to_string(), vec![]);
+        let jack_relation = relation(
+            "exciting".to_string(),
+            vec![variable_argument(jack_domain.clone())],
+        );
         for i in 0..total_members_each_class {
             let is_test = i % 10 == 9;
             let is_training = !is_test;
