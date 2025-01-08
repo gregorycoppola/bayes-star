@@ -22,6 +22,7 @@ use crate::{
     print_blue,
 };
 use redis::{Commands, Connection};
+use rocket::http::hyper::server::conn;
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error, rc::Rc, sync::Mutex};
 pub struct InferenceGraph {
@@ -200,8 +201,9 @@ impl InferenceGraph {
     ) -> Result<(), Box<dyn Error>> {
         let conclusion = &inference.conclusion;
         let record = serialize_record(inference)?;
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         set_add(
-            &mut *self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
             &record,
