@@ -71,3 +71,7 @@ main {
     color: white;
     font-size: 80px;
 }
+
+.implication_box {
+    border: 10px solid black;
+}
