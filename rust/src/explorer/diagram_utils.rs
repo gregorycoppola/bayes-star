@@ -45,6 +45,8 @@ fn diagram_implication(relation: &ImplicationFactor) -> String {
             <div class='implication_row'>
                 {predicate_group_part}
             </div>
+            <div class='implication_divider'>
+            </div>
             <div class='implication_row'>
                 {conclusion_part}
             </div>
