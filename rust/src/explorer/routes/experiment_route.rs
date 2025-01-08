@@ -1,6 +1,6 @@
 use rocket::response::content::Html;
 
-use crate::{common::graph::InferenceGraph, explorer::render_utils::render_app_body};
+use crate::{common::graph::InferenceGraph, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
 
 fn render_domain_part(graph: &InferenceGraph) -> String {
     let mut buffer = format!(
@@ -59,9 +59,19 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
 }
 
 fn render_implication_part(graph: &InferenceGraph) -> String {
+    let mut buffer = format!(
+        r#"
+        <div class='section_header'>
+            Implication Factors
+        </div>
+    "#
+    );
     let all_relations = graph.get_all_implications().unwrap();
     println!("all_relations {:?}", &all_relations);
-    "".to_string()
+    for relation in &all_relations {
+        buffer += &diagram_implication(relation);
+    }
+    buffer
 }
 
 fn render_experiment_parts(graph: &InferenceGraph) -> String {
@@ -69,9 +79,11 @@ fn render_experiment_parts(graph: &InferenceGraph) -> String {
         r#"
         {domain_part}
         {relation_part}
+        {implication_part}
     "#,
         domain_part = render_domain_part(graph),
         relation_part = render_relation_part(graph),
+        implication_part = render_implication_part(graph),
     )
 }
 

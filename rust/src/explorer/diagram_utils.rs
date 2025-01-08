@@ -38,7 +38,7 @@ fn diagram_predicate_group(group: &PredicateGroup) -> String {
     format!("<div class='predicate_group'>{}</div>", joined_parts)
 }
 
-fn diagram_implication(relation: &ImplicationFactor) -> String {
+pub fn diagram_implication(relation: &ImplicationFactor) -> String {
     format!(
         r#"
         <div class='implication_box'>
