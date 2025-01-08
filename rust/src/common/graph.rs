@@ -46,6 +46,10 @@ impl InferenceGraph {
         }))
     }
 
+    pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
