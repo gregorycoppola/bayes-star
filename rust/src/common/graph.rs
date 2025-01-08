@@ -109,12 +109,15 @@ impl InferenceGraph {
             })
             .collect())
     }
+
     fn predicate_backward_set_name(predicate: &Predicate) -> String {
         format!("predicate_backward:{}", predicate.hash_string())
     }
+
     fn implication_seq_name() -> String {
         "implications".to_string()
     }
+
     fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         set_add(
