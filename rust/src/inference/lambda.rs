@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     inference::inference::build_factor_context_for_assignment,
-    model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS},
+    model::{objects::unary_existence_function, weights::CLASS_LABELS},
     print_blue, print_green, print_red, print_yellow,
 };
 use std::error::Error;

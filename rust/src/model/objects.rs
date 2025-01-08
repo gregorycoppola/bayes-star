@@ -151,9 +151,7 @@ impl LabeledArgument {
     }
 }
 
-pub const EXISTENCE_FUNCTION: &str = "exist";
-
-fn unary_existence_function() -> Relation {
+pub fn unary_existence_function() -> Relation {
     todo!()
 }
 

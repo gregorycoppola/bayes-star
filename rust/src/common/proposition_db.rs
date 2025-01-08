@@ -6,7 +6,7 @@ use crate::{
         exponential::ExponentialModel,
         objects::{
             Domain, Entity, Predicate, PredicateFactor, PredicateGroup, Proposition,
-            EXISTENCE_FUNCTION,
+            unary_existence_function,
         },
     },
 };
@@ -44,7 +44,7 @@ impl BeliefTable for RedisBeliefTable {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == EXISTENCE_FUNCTION.to_string() {
+        if proposition.predicate.relation == unary_existence_function.to_string() {
             return Ok(Some(1f64));
         }
         let hash_string = proposition.predicate.hash_string();
@@ -140,7 +140,7 @@ impl BeliefTable for EmptyBeliefTable {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == EXISTENCE_FUNCTION.to_string() {
+        if proposition.predicate.relation == unary_existence_function.to_string() {
             return Ok(Some(1f64));
         }
         Ok(None)
@@ -176,7 +176,7 @@ impl BeliefTable for HashMapBeliefTable {
         &self,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == EXISTENCE_FUNCTION.to_string() {
+        if proposition.predicate.relation == unary_existence_function.to_string() {
             return Ok(Some(1f64));
         }
         let node = PropositionNode::from_single(proposition);

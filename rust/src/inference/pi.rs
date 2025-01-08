@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     inference::inference::build_factor_context_for_assignment,
-    model::{objects::EXISTENCE_FUNCTION, weights::CLASS_LABELS},
+    model::{objects::unary_existence_function, weights::CLASS_LABELS},
     print_blue, print_green, print_red,
 };
 use std::error::Error;
@@ -35,7 +35,7 @@ impl Inferencer {
 
     fn pi_compute_root(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let root = node.extract_single();
-        assert_eq!(root.predicate.relation, EXISTENCE_FUNCTION.to_string());
+        assert_eq!(root.predicate.relation, unary_existence_function.to_string());
         self.data
             .set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
         self.data
