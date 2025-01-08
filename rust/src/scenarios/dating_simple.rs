@@ -222,7 +222,7 @@ impl ScenarioMaker for SimpleDating {
                     vec![sub(xjack.clone())],
                 )]),
                 predicate(
-                    jack_like_jill_relation,
+                    jack_like_jill_relation.clone(),
                     vec![sub(xjack.clone()), obj(xjill.clone())],
                 ),
                 vec![RoleMap::new(HashMap::from([(
@@ -233,11 +233,11 @@ impl ScenarioMaker for SimpleDating {
             // if jill is exciting, any jack will date her
             implication(
                 conjunction(vec![predicate(
-                    "exciting".to_string(),
+                    exciting_jill_relation,
                     vec![sub(xjill.clone())],
                 )]),
                 predicate(
-                    "like".to_string(),
+                    jack_like_jill_relation.clone(),
                     vec![sub(xjack.clone()), obj(xjill.clone())],
                 ),
                 vec![RoleMap::new(HashMap::from([(
@@ -249,16 +249,16 @@ impl ScenarioMaker for SimpleDating {
             implication(
                 conjunction(vec![
                     predicate(
-                        "like".to_string(),
+                        jill_like_jack_relation.clone(),
                         vec![sub(xjill.clone()), obj(xjack.clone())],
                     ),
                     predicate(
-                        "like".to_string(),
+                        jack_like_jill_relation.clone(),
                         vec![sub(xjack.clone()), obj(xjill.clone())],
                     ),
                 ]),
                 predicate(
-                    "date".to_string(),
+                    jack_date_jill_relation.clone(),
                     vec![sub(xjack.clone()), obj(xjill.clone())],
                 ),
                 vec![
