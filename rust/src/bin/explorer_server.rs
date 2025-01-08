@@ -12,6 +12,7 @@ use bayes_star::{
 };
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};
+use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
     graph: InferenceGraph,
@@ -41,5 +42,6 @@ fn main() {
     rocket::ignite()
         .manage(AppContext::new(config))
         .mount("/", routes![home, experiment])
+        .mount("/static", StaticFiles::from("static"))
         .launch();
 }
