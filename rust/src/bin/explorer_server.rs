@@ -16,6 +16,7 @@ use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
     graph: InferenceGraph,
+    config: ConfigurationOptions,
 }
 
 impl AppContext {
@@ -23,7 +24,7 @@ impl AppContext {
         let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
         let graph =
             InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
-        AppContext { graph }
+        AppContext { graph, config }
     }
 }
 
