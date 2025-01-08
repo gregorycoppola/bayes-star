@@ -10,7 +10,11 @@ fn diagram_domain(domain: &String) -> String {
 }
 
 fn diagram_relation(relation: &Relation) -> String {
-    "".to_string()
+    let types_html = relation.types.iter()
+        .map(|var_arg| format!("<span class='type'>{}</span>", var_arg)) // Assuming var_arg can be displayed
+        .collect::<Vec<_>>()
+        .join(", ");
+    format!("<div class='relation'><strong>{}</strong>: [{}]</div>", relation.relation_name, types_html)
 }
 
 fn diagram_predicate(predicate: &Predicate) -> String {
