@@ -1,4 +1,6 @@
-fn render_domain_part(domain: &String) -> String {
+use crate::model::objects::Relation;
+
+fn diagram_domain(domain: &String) -> String {
     // let mut buffer = format!(
     //     r#"
     //     <div class='section_header'>
@@ -21,5 +23,9 @@ fn render_domain_part(domain: &String) -> String {
     //     )
     // }
     // buffer
+    "".to_string()
+}
+
+fn diagram_relation(relation: &Relation) -> String {
     "".to_string()
 }
