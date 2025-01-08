@@ -34,8 +34,12 @@ fn render_experiment_parts(graph: &InferenceGraph) -> String {
     format!(
         r#"
         {domain_part}
+        {relation_part}
+        {implication_part}
     "#,
         domain_part = render_domain_part(graph),
+        relation_part = render_relation_part(graph),
+        implication_part = render_implication_part(graph),
     )
 }
 
