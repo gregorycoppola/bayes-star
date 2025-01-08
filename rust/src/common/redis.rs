@@ -64,6 +64,12 @@ pub fn set_members(conn: &mut Connection, namespace: &str, key: &str) -> Result<
     Ok(members)
 }
 
+pub fn is_member(conn: &mut Connection, namespace: &str, key: &str, member: &str) -> Result<bool, Box<dyn Error>> {
+    let nskey = &namespace_qualified_key(namespace, key);
+    let is_member: bool = conn.sismember(nskey, member)?;
+    Ok(is_member)
+}
+
 pub fn seq_push(conn: &mut Connection, namespace: &str, key: &str, value: &str) -> Result<i64, Box<dyn Error>> {
     let nskey = &namespace_qualified_key(namespace, key);
     let length: i64 = conn.rpush(nskey, value)?;
