@@ -11,8 +11,18 @@ fn diagram_domain(domain: &String) -> String {
     )
 }
 
-fn diagram_argument(argument: &Argument) -> String {
-    "".to_string()
+fn diagram_argument(arg: &Argument) -> String {
+    match arg {
+        Argument::Constant(const_arg) => {
+            format!(
+                "<div>Constant Argument: <br>Domain: {}<br>Entity ID: {}</div>",
+                const_arg.domain, const_arg.entity_id
+            )
+        }
+        Argument::Variable(var_arg) => {
+            format!("<div>Variable Argument: <br>Domain: {}</div>", var_arg.domain)
+        }
+    }
 }
 
 fn diagram_relation(relation: &Relation) -> String {
