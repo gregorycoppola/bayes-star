@@ -22,7 +22,6 @@ use crate::{
     print_blue,
 };
 use redis::{Commands, Connection};
-use rocket::http::hyper::server::conn;
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error, rc::Rc, sync::Mutex};
 pub struct InferenceGraph {

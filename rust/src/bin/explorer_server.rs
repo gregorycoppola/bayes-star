@@ -1,8 +1,9 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::State;
+use rocket::{http::ContentType, State};
 use bayes_star::{common::{graph::InferenceGraph, resources::FactoryResources, setup::{parse_configuration_options, ConfigurationOptions}}, explorer::render::render_app_body};
+use rocket::response::content::{Content, Html};
 
 struct AppContext {
     graph: InferenceGraph,
@@ -17,9 +18,9 @@ impl AppContext {
 }
 
 #[get("/")]
-fn home(_context: &State<AppContext>) -> String {
+fn home(_context: &State<AppContext>) -> Content<String> {
     let result = render_app_body("");
-    result.unwrap()
+    Content(ContentType::HTML, result.unwrap())
 }
 
 #[get("/domains")]
