@@ -38,11 +38,16 @@ fn experiment(experiment_name: String, context: State<AppContext>) -> Html<Strin
     internal_experiment(&experiment_name, &context.graph)
 }
 
+#[get("/network/<experiment_name>")]
+fn network(experiment_name: String, context: State<AppContext>) -> Html<String> {
+    internal_network(&experiment_name, &context.graph)
+}
+
 fn main() {
     let config = parse_configuration_options();
     rocket::ignite()
         .manage(AppContext::new(config))
-        .mount("/", routes![home, experiment])
+        .mount("/", routes![home, experiment, network])
         .mount("/static", StaticFiles::from("static"))
         .launch();
 }
