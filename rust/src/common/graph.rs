@@ -56,6 +56,15 @@ impl InferenceGraph {
         Ok(())
     }
 
+    pub fn get_all_experiments(&self) -> Result<Vec<String>, Box<dyn Error>> {
+        let set_members: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &Self::experiment_set_name(),
+        )?;
+        Ok(set_members)
+    }
+
     pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(relation)?;
         set_add(
