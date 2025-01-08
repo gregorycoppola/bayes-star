@@ -224,6 +224,7 @@ impl Proposition {
     pub fn hash_string(&self) -> String {
         self.predicate.hash_string()
     }
+
     pub fn debug_string(&self) -> String {
         self.predicate.hash_string()
     }
@@ -273,9 +274,10 @@ impl fmt::Debug for PropositionGroup {
 impl PropositionGroup {
     pub fn new(terms: Vec<Proposition>) -> Self {
         let mut buffer = terms.clone();
-        buffer.sort_by(|a, b| a.predicate.relation.cmp(&b.predicate.relation));
+        buffer.sort_by(|a, b| a.predicate.relation.relation_name.cmp(&b.predicate.relation.relation_name));
         PropositionGroup { terms }
     }
+
     pub fn hash_string(&self) -> String {
         let hash_strings: Vec<String> = self
             .terms
@@ -285,6 +287,7 @@ impl PropositionGroup {
         let join = hash_strings.join("&"); // Join the sorted strings, separated by a comma and a space
         format!("{{{}}}", &join)
     }
+
     pub fn debug_string(&self) -> String {
         self.hash_string()
     }
