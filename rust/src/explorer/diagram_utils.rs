@@ -18,8 +18,15 @@ fn diagram_relation(relation: &Relation) -> String {
 }
 
 fn diagram_predicate(predicate: &Predicate) -> String {
-    "".to_string()
+    let relation_html = diagram_relation(&predicate.relation);
+    let roles_html = predicate.roles.iter()
+        .map(|role| format!("<span class='labeled_argument'><strong>{}</strong>: {}</span>", role.role_name, role.argument.hash_string())) // Assuming argument can display hash_string
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    format!("<div class='predicate'>{}<div class='roles'>[{}]</div></div>", relation_html, roles_html)
 }
+
 
 fn diagram_predicate_group(group: &PredicateGroup) -> String {
     let mut parts = vec![];

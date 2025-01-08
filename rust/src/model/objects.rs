@@ -158,7 +158,7 @@ pub fn unary_existence_function() -> Relation {
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
     pub relation: Relation,
-    roles: Vec<LabeledArgument>,
+    pub roles: Vec<LabeledArgument>,
 }
 
 impl fmt::Debug for Predicate {
