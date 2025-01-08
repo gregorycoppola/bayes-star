@@ -17,34 +17,17 @@ impl AppContext {
     }
 }
 
-#[get("/")]
-fn home(_context: &State<AppContext>) -> Content<String> {
-    let result = render_app_body("");
-    Content(ContentType::HTML, result.unwrap())
-}
-
-#[get("/domains")]
-fn domains(context: &State<AppContext>) -> String {
-    let all_domains = context.graph.get_all_domains().expect("Failed to get domains");
-    format!("{:?}", all_domains)
-}
-
-#[get("/relations")]
-fn relations(context: &State<AppContext>) -> String {
-    let all_relations = context.graph.get_all_relations().expect("Failed to get relations");
-    format!("{:?}", all_relations)
-}
-
-#[get("/implications")]
-fn implications(context: &State<AppContext>) -> String {
-    let all_implications = context.graph.get_all_implications().expect("Failed to get implications");
-    format!("{:?}", all_implications)
-}
+// #[get("/")]
+// fn home(_context: &State<AppContext>) -> Content<String> {
+//     let result = render_app_body("");
+//     Content(ContentType::HTML, result.unwrap())
+// }
 
 #[launch]
 fn rocket() -> _ {
     let config = parse_configuration_options();
     rocket::build()
         .manage(AppContext::new(config))
-        .mount("/", routes![home, domains, relations, implications])
+        .mount("/", routes![])
+        // .mount("/", routes![home, domains, relations, implications])
 }
