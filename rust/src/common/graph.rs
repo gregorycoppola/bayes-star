@@ -47,11 +47,19 @@ impl InferenceGraph {
     }
 
     pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let record = serialize_record(relation)?;
+        set_add(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &Self::implication_seq_name(),
+            &record,
+        )?;
+        Ok(())
     }
 
     pub fn check_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
-        todo!()
+        // TODO: impelment this
+        Ok(())
     }
 
     pub fn get_all_relations(&self) -> Result<Vec<Relation>, Box<dyn Error>> {
@@ -128,6 +136,10 @@ impl InferenceGraph {
 
     fn implication_seq_name() -> String {
         "implications".to_string()
+    }
+
+    fn relation_set_name() -> String {
+        "relations".to_string()
     }
 
     fn store_implication(&mut self, implication: &PredicateFactor) -> Result<(), Box<dyn Error>> {
