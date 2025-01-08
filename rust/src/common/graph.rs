@@ -51,7 +51,7 @@ impl InferenceGraph {
         set_add(
             &mut *self.redis_connection.borrow_mut(),
             &self.namespace,
-            &Self::implication_seq_name(),
+            &Self::relation_set_name(),
             &record,
         )?;
         Ok(())
@@ -63,7 +63,15 @@ impl InferenceGraph {
     }
 
     pub fn get_all_relations(&self) -> Result<Vec<Relation>, Box<dyn Error>> {
-        todo!()
+        let set_members: Vec<String> = set_members(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            &Self::relation_set_name(),
+        )?;
+        set_members
+            .into_iter()
+            .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
+            .collect()
     }
 
     pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
