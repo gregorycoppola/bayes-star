@@ -1,6 +1,6 @@
 use crate::model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Relation};
 
-fn diagram_domain(domain: &String) -> String {
+fn diagram_domain(domain: &str) -> String {
     format!(
         r#"
                 <span class='domain_span'>
@@ -20,7 +20,7 @@ fn diagram_argument(arg: &Argument) -> String {
             )
         }
         Argument::Variable(var_arg) => {
-            format!("<div>Variable Argument: <br>Domain: {}</div>", var_arg.domain)
+            diagram_domain(&var_arg.domain)
         }
     }
 }
