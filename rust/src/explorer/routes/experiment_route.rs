@@ -15,16 +15,13 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
     for domain in &all_domains {
         let elements = graph.get_entities_in_domain(domain).unwrap();
         println!("elements: {:?}", &elements);
-        for element in &elements {
-            buffer += &format!(
-                r#"
+        buffer += &format!(
+            r#"
                 <div class='row_element'>
-                    {element_name}
+                    {domain}
                 </div>
             "#,
-                element_name = element.domain,
-            )
-        }
+        )
     }
     buffer
 }
