@@ -1,5 +1,4 @@
 use crate::common::resources::FactoryResources;
-use crate::scenarios::dating_simple::SimpleDating;
 use clap::{App, Arg};
 use env_logger::{Builder, Env};
 use serde::Deserialize;
