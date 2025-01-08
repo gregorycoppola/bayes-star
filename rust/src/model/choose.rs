@@ -157,7 +157,7 @@ pub fn extract_existence_factor_for_proposition(
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
-    let conclusion = Predicate::new(basis.predicate.function.clone(), new_roles.clone());
+    let conclusion = Predicate::new(basis.predicate.relation.clone(), new_roles.clone());
     let factor = PredicateFactor {
         premise: premise_group,
         role_maps: mapping_group,

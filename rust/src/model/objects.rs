@@ -108,6 +108,12 @@ impl fmt::Display for Argument {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Relation {
+    pub relation_name: String,
+    pub argument_type: VariableArgument,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct LabeledArgument {
     pub role_name: String,
     pub argument: Argument,
@@ -140,7 +146,7 @@ pub const EXISTENCE_FUNCTION: &str = "exist";
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub struct Predicate {
-    pub function: String,
+    pub relation: Relation,
     roles: Vec<LabeledArgument>,
 }
 
@@ -151,15 +157,16 @@ impl fmt::Debug for Predicate {
 }
 
 impl Predicate {
-    pub fn new(function: String, roles: Vec<LabeledArgument>) -> Self {
+    pub fn new(relation: Relation, roles: Vec<LabeledArgument>) -> Self {
         let mut buffer = roles.clone();
         buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
-        Predicate { function, roles: buffer }
+        Predicate { relation, roles: buffer }
     }
 
     pub fn debug_string(&self) -> String {
         self.hash_string()
     }
+
     pub fn hash_string(&self) -> String {
         let role_strings: Vec<String> = self
             .roles
@@ -167,14 +174,16 @@ impl Predicate {
             .map(|role| role.hash_string())
             .collect();
 
-        format!("{}[{}]", &self.function, role_strings.join(","))
+        format!("{:?}[{}]", &self.relation, role_strings.join(","))
     }
+
     pub fn role_names(&self) -> Vec<String> {
         self.roles
             .iter()
             .map(|role| role.role_name.clone())
             .collect()
     }
+
     pub fn is_fact(&self) -> bool {
         self.roles.iter().all(|role| role.argument.is_constant())
     }
@@ -264,7 +273,7 @@ impl fmt::Debug for PropositionGroup {
 impl PropositionGroup {
     pub fn new(terms: Vec<Proposition>) -> Self {
         let mut buffer = terms.clone();
-        buffer.sort_by(|a, b| a.predicate.function.cmp(&b.predicate.function));
+        buffer.sort_by(|a, b| a.predicate.relation.cmp(&b.predicate.relation));
         PropositionGroup { terms }
     }
     pub fn hash_string(&self) -> String {
