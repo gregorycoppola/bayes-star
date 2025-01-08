@@ -8,7 +8,7 @@ use bayes_star::{
         resources::FactoryResources,
         setup::{parse_configuration_options, ConfigurationOptions},
     },
-    explorer::render::{read_all_css, render_app_body},
+    explorer::{render::{read_all_css, render_app_body}, routes::index_route::internal_index},
 };
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};
@@ -28,8 +28,7 @@ impl AppContext {
 
 #[get("/")]
 fn home() -> Html<String> {
-    let result = render_app_body("");
-    Html(result.unwrap())
+    internal_index()
 }
 
 fn main() {
