@@ -21,25 +21,14 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
     "".to_string()
 }
 
-fn render_implication_part(graph: &InferenceGraph) -> String {
-    let all_implications = graph.get_all_implications().unwrap();
-    println!("all_implications {:?}", &all_implications);
-    for implication in &all_implications {
-        println!("implication {:?}", implication);
-    }
-    "".to_string()
-}
-
 fn render_experiment_parts(graph: &InferenceGraph) -> String {
     format!(
         r#"
         {domain_part}
         {relation_part}
-        {implication_part}
     "#,
         domain_part = render_domain_part(graph),
         relation_part = render_relation_part(graph),
-        implication_part = render_implication_part(graph),
     )
 }
 
