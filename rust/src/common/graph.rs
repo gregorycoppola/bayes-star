@@ -6,7 +6,7 @@ use super::{
 use crate::{
     common::{
         interface::BeliefTable,
-        redis::{set_add, set_members},
+        redis::{is_member, set_add, set_members},
     },
     model::{
         self,
@@ -58,7 +58,14 @@ impl InferenceGraph {
 
     /// Return a "substantive" iff it's ok, else panic.
     pub fn check_domain(&self, domain: &String) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let result = is_member(
+            &mut *self.redis_connection.borrow_mut(),
+            &self.namespace,
+            "domains",
+            domain,
+        )?;
+        assert!(result);
+        Ok(())
     }
 
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
