@@ -2,7 +2,7 @@
 extern crate rocket;
 
 use rocket::State;
-use bayes_star::common::{graph::InferenceGraph, resources::FactoryResources, setup::{parse_configuration_options, ConfigurationOptions}};
+use bayes_star::{common::{graph::InferenceGraph, resources::FactoryResources, setup::{parse_configuration_options, ConfigurationOptions}}, explorer::render::render_app_body};
 
 struct AppContext {
     graph: InferenceGraph,
@@ -17,8 +17,9 @@ impl AppContext {
 }
 
 #[get("/")]
-fn home(context: &State<AppContext>) -> String {
-    todo!()
+fn home(_context: &State<AppContext>) -> String {
+    let result = render_app_body("");
+    result.unwrap()
 }
 
 #[get("/domains")]
