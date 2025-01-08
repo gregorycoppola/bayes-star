@@ -27,3 +27,21 @@ main {
     padding: 20px;
     height: calc(100% - 60px); /* Adjust the height based on the header padding */
 }
+
+
+.section_header {
+    background-color: red;
+    width: 100%;
+    padding: 20px 10px;
+    text-align: left;
+    color: white;
+    font-size: 24px;
+}
+
+.experiment_name {
+    font-size: 54px;
+}
+
+.row_element {
+    font-size: 24px;
+}

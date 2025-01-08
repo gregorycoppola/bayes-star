@@ -27,12 +27,25 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
 }
 
 fn render_relation_part(graph: &InferenceGraph) -> String {
+    let mut buffer = format!(
+        r#"
+        <div class='section_header'>
+            Relations
+        </div>
+    "#
+    );
     let all_relations = graph.get_all_relations().unwrap();
     println!("all_relations {:?}", &all_relations);
     for relation in &all_relations {
         println!("relation {:?}", relation);
+        buffer += &format!( r#" <div class='row_element'>"#);
+        buffer += &format!( r#" <span>{relation_name}</span>"#, relation_name = &relation.relation_name);
+        for argument_type in &relation.types {
+            buffer += &format!( r#" <span>{domain_name}</span>"#, domain_name = argument_type.domain);
+        }
+        buffer += &format!( r#" </div>"#)
     }
-    "".to_string()
+    buffer
 }
 
 fn render_experiment_parts(graph: &InferenceGraph) -> String {
@@ -50,7 +63,7 @@ fn render_experiment_name(experiment_name: &str) -> String {
     format!(
         r#"
         <div class='section_header'>
-            experiment:
+            Experiment
         </div>
         <div class='experiment_name'>
             {experiment_name}
