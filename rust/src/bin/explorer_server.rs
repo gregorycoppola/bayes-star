@@ -13,7 +13,7 @@ use bayes_star::{
 use rocket::response::content::{Content, Html};
 use rocket::{http::ContentType, State};
 
-struct AppContext {
+pub struct AppContext {
     graph: InferenceGraph,
 }
 
@@ -32,8 +32,8 @@ fn home(_context: State<AppContext>) -> Html<String> {
 }
 
 #[get("/experiment/<experiment_name>")]
-fn experiment(experiment_name: String, _context: State<AppContext>) -> Html<String> {
-    internal_experiment(&experiment_name)
+fn experiment(experiment_name: String, context: State<AppContext>) -> Html<String> {
+    internal_experiment(&experiment_name, &context.graph)
 }
 
 fn main() {

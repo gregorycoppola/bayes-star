@@ -56,7 +56,7 @@ fn render_experiment_name(experiment_name: &str) -> String {
     )
 }
 
-pub fn internal_experiment(experiment_name: &str) -> Html<String> {
+pub fn internal_experiment(experiment_name: &str, graph: &InferenceGraph) -> Html<String> {
     let body_html = format!(
         r#"
         {name_part}
