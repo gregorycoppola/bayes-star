@@ -25,8 +25,8 @@ impl AppContext {
 
 fn main() {
     let config = parse_configuration_options();
-    rocket::build()
+    rocket::ignite()
         .manage(AppContext::new(config))
-        .mount("/", routes![])
+        .mount("/", routes![]).launch();
         // .mount("/", routes![home, domains, relations, implications])
 }
