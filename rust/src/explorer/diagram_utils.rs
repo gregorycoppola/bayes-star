@@ -1,4 +1,4 @@
-use crate::model::objects::{PredicateFactor, Relation};
+use crate::model::objects::{Predicate, PredicateFactor, Relation};
 
 fn diagram_domain(domain: &String) -> String {
     // let mut buffer = format!(
@@ -27,6 +27,10 @@ fn diagram_domain(domain: &String) -> String {
 }
 
 fn diagram_relation(relation: &Relation) -> String {
+    "".to_string()
+}
+
+fn diagram_predicate(relation: &Predicate) -> String {
     "".to_string()
 }
 
