@@ -4,7 +4,7 @@ fn diagram_domain(domain: &String) -> String {
     format!(r#"
                 <span class='domain_span'>
                     <span class='domain_label'>{domain}</span>
-                    <span><img src='/static/images/domains/{domain}.png' class='domain_icon'></img></span>
+                    <span><img src='/static/images/domains/{domain}.png' class='domain_icon' /></span>
                 </span>
     "#)
 }
