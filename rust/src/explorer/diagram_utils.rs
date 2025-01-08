@@ -30,11 +30,16 @@ fn diagram_relation(relation: &Relation) -> String {
     "".to_string()
 }
 
-fn diagram_predicate(relation: &Predicate) -> String {
+fn diagram_predicate(predicate: &Predicate) -> String {
     "".to_string()
 }
 
-fn diagram_predicate_group(relation: &PredicateGroup) -> String {
+fn diagram_predicate_group(group: &PredicateGroup) -> String {
+    let mut parts = vec![];
+    for predicate in &group.terms {
+        parts.push(diagram_predicate(predicate));
+    }
+
     "".to_string()
 }
 
