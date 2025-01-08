@@ -65,3 +65,9 @@ main {
     background-color: yellow;
     color: black;
 }
+
+.and_separator {
+    background-color: black;
+    color: white;
+    font-size: 80px;
+}
