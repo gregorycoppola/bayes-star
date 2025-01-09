@@ -36,34 +36,35 @@ pub fn run_inference_rounds(
     config: &CommandLineOptions,
     namespace: &ResourceContext,
 ) -> Result<(), Box<dyn Error>> {
-    let model = InferenceModel::new_shared(&namespace).unwrap();
-    let fact_memory = EmptyBeliefTable::new_shared(&namespace)?;
-    let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
-    proposition_graph.visualize();
-    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart()?;
-    let mut repl = ReplState::new(inferencer);
-    if config.test_scenario.clone().unwrap() == "show".to_string() {
-        for (i, x) in repl.inferencer.bfs_order.iter().enumerate() {
-            println!("{} {:?}", i , x);
-        }
-    } else {
-        repl.inferencer.clear_marginal_output_file()?;
-        repl.inferencer.log_table_to_file()?;
-        let focus = setup_test_scenario(&config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
-        if focus.is_some() {
-            for _i in 0..50 {
-                repl.inferencer.do_fan_out_from_node(&focus.clone().unwrap())?;
-                repl.inferencer.log_table_to_file()?;
-            }
-        } else {
-            for _i in 0..50 {
-                repl.inferencer.do_full_forward_and_backward()?;
-                repl.inferencer.log_table_to_file()?;
-            }
-        }
-    }
-    Ok(())
+    // let model = InferenceModel::new_shared(&namespace).unwrap();
+    // let fact_memory = EmptyBeliefTable::new_shared(&namespace)?;
+    // let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
+    // proposition_graph.visualize();
+    // let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+    // inferencer.initialize_chart()?;
+    // let mut repl = ReplState::new(inferencer);
+    // if config.test_scenario.clone().unwrap() == "show".to_string() {
+    //     for (i, x) in repl.inferencer.bfs_order.iter().enumerate() {
+    //         println!("{} {:?}", i , x);
+    //     }
+    // } else {
+    //     repl.inferencer.clear_marginal_output_file()?;
+    //     repl.inferencer.log_table_to_file()?;
+    //     let focus = setup_test_scenario(&config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
+    //     if focus.is_some() {
+    //         for _i in 0..50 {
+    //             repl.inferencer.do_fan_out_from_node(&focus.clone().unwrap())?;
+    //             repl.inferencer.log_table_to_file()?;
+    //         }
+    //     } else {
+    //         for _i in 0..50 {
+    //             repl.inferencer.do_full_forward_and_backward()?;
+    //             repl.inferencer.log_table_to_file()?;
+    //         }
+    //     }
+    // }
+    // Ok(())
+    todo!()
 }
 
 fn main() {
