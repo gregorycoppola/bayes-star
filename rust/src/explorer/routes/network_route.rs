@@ -14,7 +14,8 @@ fn backwards_print_group(inferencer: &Inferencer, target: &PropositionGroup) -> 
     let mut buffer = "".to_string();
     for backlink in &backlinks {
         let single = backlink.extract_single();
-        backwards_print_single(inferencer, &single);
+        let part = backwards_print_single(inferencer, &single)?;
+        buffer += &part;
     }
     Ok(buffer)
 }
@@ -25,7 +26,8 @@ fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> Resu
     let mut buffer = "".to_string();
     for backlink in &backlinks {
         let group = backlink.extract_group();
-        backwards_print_group(inferencer, &group);
+        let part = backwards_print_group(inferencer, &group)?;
+        buffer += &part;
     }
     let backimplications = extract_backimplications_from_proposition(&inferencer.model.graph, target).unwrap();
     Ok(buffer)
