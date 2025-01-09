@@ -140,7 +140,15 @@ impl InferenceGraph {
     }
 
     pub fn register_target(&mut self, target: &Proposition) -> Result<(), Box<dyn Error>> {
-        todo!()
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+        let record = serialize_record(target)?;
+        set_add(
+            &mut connection,
+            &self.namespace,
+            &Self::target_key_name(),
+            &record,
+        )?;
+        Ok(())
     }
 
     pub fn get_target(&self) -> Result<Proposition, Box<dyn Error>> {
@@ -196,6 +204,10 @@ impl InferenceGraph {
 
     fn experiment_set_name() -> String {
         "experiments".to_string()
+    }
+
+    fn target_key_name() -> String {
+        "target".to_string()
     }
 
     fn store_implication(&mut self, implication: &ImplicationFactor) -> Result<(), Box<dyn Error>> {
