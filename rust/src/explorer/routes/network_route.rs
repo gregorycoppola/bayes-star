@@ -51,10 +51,8 @@ fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>>
     proposition_graph.visualize();
     let model = InferenceModel::new_shared(namespace).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(namespace)?;
-    let mut inferencer =
+    let inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart()?;
-    inferencer.do_full_forward_and_backward()?;
     let result = backwards_print_single(&inferencer, &inferencer.proposition_graph.target)?;
     Ok(result)
 }
