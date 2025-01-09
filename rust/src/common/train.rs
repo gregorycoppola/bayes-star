@@ -177,13 +177,14 @@ fn extract_factor_for_proposition_for_training(
     Ok(result)
 }
 
-pub fn do_training(resources: &ResourceContext) -> Result<(), Box<dyn Error>> {
-    let graph = InferenceGraph::new_mutable(resources.connection.clone(), resources.namespace.clone())?;
-    let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
+pub fn do_training(resources: &ResourceContext, namespace: String) -> Result<(), Box<dyn Error>> {
+    let mut connection = resources.connection.lock().unwrap();
+    let graph = InferenceGraph::new_mutable(namespace.clone())?;
+    let proposition_db = RedisBeliefTable::new_mutable(namespace.clone())?;
     let plan = TrainingPlan::new(&resources)?;
-    let mut factor_model = ExponentialModel::new_mutable(&resources)?;
+    let mut factor_model = ExponentialModel::new_mutable(namespace.clone())?;
     trace!("do_training - Getting all implications");
-    let implications = graph.get_all_implications()?;
+    let implications = graph.get_all_implications(&mut connection)?;
     for implication in implications {
         print_yellow!("do_training - Processing implication: {:?}", implication);
         factor_model.initialize_connection(&implication)?;
@@ -198,12 +199,13 @@ pub fn do_training(resources: &ResourceContext) -> Result<(), Box<dyn Error>> {
     for proposition in &training_questions {
         trace!("do_training - Processing proposition: {:?}", proposition);
         let factor = extract_factor_for_proposition_for_training(
+            &mut connection,
             &proposition_db,
             &graph,
             proposition.clone(),
         )?;
         trace!("do_training - Backimplications: {:?}", &factor);
-        let probabiity_opt = proposition_db.get_proposition_probability(proposition)?;
+        let probabiity_opt = proposition_db.get_proposition_probability(&mut connection, proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
         let _stats = factor_model.train(&factor, probability)?;
         examples_processed += 1;
@@ -218,11 +220,12 @@ pub fn do_training(resources: &ResourceContext) -> Result<(), Box<dyn Error>> {
 pub fn setup_and_train(
     resources: &ResourceContext,
     scenario_maker: &dyn ScenarioMaker,
+    namespace: &str,
 ) -> Result<(), Box<dyn Error>> {
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(resources);
     trace!("scenario result: {:?}", result);
-    let train_result = do_training(resources);
+    let train_result = do_training(resources,  namespace.to_string());
     trace!("train result: {:?}", train_result);
     Ok(())
 }
