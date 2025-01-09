@@ -213,12 +213,13 @@ impl Inferencer {
 
     pub fn score_factor_assignment(
         &self,
+        connection: &mut Connection,
         premises: &Vec<PropositionNode>,
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
         if conclusion.is_single() {
-            self.score_factor_assignment_disjunction(premises, premise_assignment, conclusion)
+            self.score_factor_assignment_disjunction(connection, premises, premise_assignment, conclusion)
         } else {
             self.score_factor_assignment_conjunction(premises, premise_assignment, conclusion)
         }
@@ -226,6 +227,7 @@ impl Inferencer {
 
     pub fn score_factor_assignment_disjunction(
         &self,
+        connection: &mut Connection,
         premises: &Vec<PropositionNode>,
         premise_assignment: &HashMap<PropositionNode, bool>,
         conclusion: &PropositionNode,
@@ -241,7 +243,7 @@ impl Inferencer {
             premise_assignment,
             &proposition_conclusion,
         );
-        let statistics = self.model.model.predict(&context)?;
+        let statistics = self.model.model.predict(connection, &context)?;
         info!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
         Ok(statistics.probability)
     }
