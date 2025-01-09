@@ -8,7 +8,7 @@ fn get_resources() -> NamespaceBundle {
     todo!()
 }
 
-fn render_network(graph: &InferenceGraph, config: &CommandLineOptions) -> Result<String, Box<dyn Error>> {
+fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>> {
     // let proposition_graph = PropositionGraph::new_shared(graph)?;
     // // proposition_graph.visualize();
     // let mut inferencer =
@@ -17,8 +17,8 @@ fn render_network(graph: &InferenceGraph, config: &CommandLineOptions) -> Result
     Ok("todo".to_string())
 }
 
-pub fn internal_network(_experiment_name: &str, graph: &InferenceGraph, config: &CommandLineOptions) -> Html<String> {
-    let network = render_network(graph, config).unwrap();
+pub fn internal_network(experiment_name: &str, namespace: &NamespaceBundle) -> Html<String> {
+    let network = render_network(namespace).unwrap();
     let body_html = format!(
         r#"
         {network}

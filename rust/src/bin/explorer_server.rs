@@ -39,9 +39,8 @@ fn experiment(experiment_name: String, context: State<AppContext>) -> Html<Strin
 }
 
 #[get("/network/<experiment_name>")]
-fn network(experiment_name: String, _context: State<AppContext>) -> Html<String> {
-    todo!()
-    // internal_network(&experiment_name, &context.graph, &context.config)
+fn network(experiment_name: String, context: State<AppContext>) -> Html<String> {
+    internal_network(&experiment_name, &context.namespace)
 }
 
 fn main() {
