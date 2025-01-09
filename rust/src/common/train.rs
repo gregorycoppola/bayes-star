@@ -110,8 +110,9 @@ impl TrainingPlan {
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
+        let mut connection = self.redis_connection.lock().expect("");
         let records = seq_get_all(
-            &mut self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &seq_name,
         )?;
