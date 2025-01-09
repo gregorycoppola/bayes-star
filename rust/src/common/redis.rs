@@ -39,12 +39,12 @@ impl RedisManager {
         Ok(refcell)
     }
 
-    pub fn get_arc_mutex_guarded_connection(&self) -> Result<Mutex<Arc<redis::Connection>>, Box<dyn Error>> {
+    pub fn get_arc_mutex_guarded_connection(&self) -> Result<Arc<Mutex<redis::Connection>>, Box<dyn Error>> {
         let connection = self
             .client
             .get_connection()
             .expect("Couldn't get connection.");
-        let refcell = Mutex::new(Arc::new(connection));
+        let refcell = Arc::new(Mutex::new(connection));
         Ok(refcell)
     }
 }
