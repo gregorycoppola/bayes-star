@@ -44,50 +44,51 @@ impl ReplState {
         }
     }
     fn do_repl_loop(&mut self) -> Result<(), Box<dyn Error>> {
-        loop {
-            self.print_menu_options()?;
-            let tokens = get_input_tokens_from_user();
-            if tokens.len() < 1 {
-                continue;
-            }
-            let function = &tokens[0];
-            match function.as_str() {
-                "s" => {
-                    self.handle_set(&tokens);
-                }
-                "u" => {
-                    self.handle_unset(&tokens);
-                }
-                "reinit" => {
-                    self.inferencer.initialize_chart()?;
-                }
-                "print" => {
-                    self.print_table(&tokens);
-                }
-                "pv" => {
-                    self.inferencer.data.print_table(&function);
-                }
-                "lv" => {
-                    self.inferencer.data.print_table(&function);
-                }
-                "pm" => {
-                    self.inferencer.data.print_table(&function);
-                }
-                "lm" => {
-                    self.inferencer.data.print_table(&function);
-                }
-                "m" => {
-                    self.inferencer.update_marginals()?;
-                }
-                "p" => {
-                    self.inferencer.do_full_forward_and_backward()?;
-                    self.inferencer.update_marginals()?;
-                }
-                "q" => break,
-                _ => println!("Command not recognized."),
-            };
-        }
-        Ok(())
+        // loop {
+        //     self.print_menu_options()?;
+        //     let tokens = get_input_tokens_from_user();
+        //     if tokens.len() < 1 {
+        //         continue;
+        //     }
+        //     let function = &tokens[0];
+        //     match function.as_str() {
+        //         "s" => {
+        //             self.handle_set(&tokens);
+        //         }
+        //         "u" => {
+        //             self.handle_unset(&tokens);
+        //         }
+        //         "reinit" => {
+        //             self.inferencer.initialize_chart()?;
+        //         }
+        //         "print" => {
+        //             self.print_table(&tokens);
+        //         }
+        //         "pv" => {
+        //             self.inferencer.data.print_table(&function);
+        //         }
+        //         "lv" => {
+        //             self.inferencer.data.print_table(&function);
+        //         }
+        //         "pm" => {
+        //             self.inferencer.data.print_table(&function);
+        //         }
+        //         "lm" => {
+        //             self.inferencer.data.print_table(&function);
+        //         }
+        //         "m" => {
+        //             self.inferencer.update_marginals()?;
+        //         }
+        //         "p" => {
+        //             self.inferencer.do_full_forward_and_backward()?;
+        //             self.inferencer.update_marginals()?;
+        //         }
+        //         "q" => break,
+        //         _ => println!("Command not recognized."),
+        //     };
+        // }
+        // Ok(())
+        todo!()
     }
 
     pub fn set_pairs_by_name(&mut self, pairs:&Vec<(&str, f64)>) -> Option<PropositionNode> {
@@ -121,10 +122,11 @@ impl ReplState {
     }
 
     fn handle_unset(&mut self, tokens: &Vec<String>) {
-        let select_index = tokens[1].parse::<u64>().unwrap();
-        let node = self.question_index.get(&select_index).unwrap();
-        self.fact_memory.clear(node);
-        self.inferencer.do_fan_out_from_node(&node).unwrap();
+        todo!()
+        // let select_index = tokens[1].parse::<u64>().unwrap();
+        // let node = self.question_index.get(&select_index).unwrap();
+        // self.fact_memory.clear(node);
+        // self.inferencer.do_fan_out_from_node(&node).unwrap();
     }
 
     fn print_table(&mut self, tokens: &Vec<String>) {

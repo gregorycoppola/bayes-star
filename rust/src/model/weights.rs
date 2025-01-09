@@ -1,11 +1,17 @@
 use crate::{
-    common::{redis::{map_get, map_insert}, resources::ResourceContext},
+    common::{
+        redis::{map_get, map_insert},
+        resources::ResourceContext,
+    },
     model::objects::ImplicationFactor,
 };
 use rand::Rng;
 use redis::{Commands, Connection};
-use std::{collections::HashMap, sync::{Arc, Mutex}};
 use std::{cell::RefCell, error::Error};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 
 pub const CLASS_LABELS: [usize; 2] = [0, 1];
 
@@ -31,17 +37,12 @@ pub fn negative_feature(feature: &str, class_label: usize) -> String {
 }
 
 pub struct ExponentialWeights {
-    connection: Arc<Mutex<Connection>>,
     namespace: String,
 }
 
 impl ExponentialWeights {
-    pub fn new(resources: &ResourceContext) -> Result<ExponentialWeights, Box<dyn Error>> {
-        let connection = resources.connection.clone();
-        Ok(ExponentialWeights {
-            connection,
-            namespace: resources.namespace.clone(),
-        })
+    pub fn new(namespace: String) -> Result<ExponentialWeights, Box<dyn Error>> {
+        Ok(ExponentialWeights { namespace })
     }
 }
 
@@ -50,12 +51,12 @@ impl ExponentialWeights {
 
     pub fn initialize_weights(
         &mut self,
+        connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();
         trace!("initialize_weights - Unique key: {}", feature);
-        let mut connection = self.connection.lock().expect("");
         for class_label in CLASS_LABELS {
             let posf = positive_feature(&feature, class_label);
             let negf = negative_feature(&feature, class_label);
@@ -72,14 +73,14 @@ impl ExponentialWeights {
                 weight2
             );
             map_insert(
-                &mut connection,
+                connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &posf,
                 &weight1.to_string(),
             )?;
             map_insert(
-                &mut connection,
+                connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &negf,
@@ -92,19 +93,15 @@ impl ExponentialWeights {
 
     pub fn read_weights(
         &self,
+        connection: &mut Connection,
         features: &[String],
     ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
         trace!("read_weights - Start");
-        let mut connection = self.connection.lock().expect("");
         let mut weights = HashMap::new();
         for feature in features {
             trace!("read_weights - Reading weight for feature: {}", feature);
-            let weight_record = map_get(
-                &mut connection,
-                &self.namespace,
-                Self::WEIGHTS_KEY,
-                &feature,
-            )?.expect("should be there");
+            let weight_record = map_get(connection, &self.namespace, Self::WEIGHTS_KEY, &feature)?
+                .expect("should be there");
             let weight = weight_record.parse::<f64>().map_err(|e| {
                 trace!("read_weights - Error parsing weight: {:?}", e);
                 Box::new(e) as Box<dyn Error>
@@ -115,9 +112,12 @@ impl ExponentialWeights {
         Ok(weights)
     }
 
-    pub fn save_weights(&mut self, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
+    pub fn save_weights(
+        &mut self,
+        connection: &mut Connection,
+        weights: &HashMap<String, f64>,
+    ) -> Result<(), Box<dyn Error>> {
         trace!("save_weights - Start");
-        let mut connection = self.connection.lock().expect("");
         for (feature, &value) in weights {
             trace!(
                 "save_weights - Saving weight for feature {}: {}",
@@ -125,7 +125,7 @@ impl ExponentialWeights {
                 value
             );
             map_insert(
-                &mut connection,
+                connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &feature,
