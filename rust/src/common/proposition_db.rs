@@ -11,7 +11,7 @@ use crate::{
     },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc};
+use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc, sync::{Arc, Mutex}};
 
 use super::{
     graph::InferenceGraph,
@@ -20,19 +20,19 @@ use super::{
 };
 
 pub struct RedisBeliefTable {
-    redis_connection: RefCell<redis::Connection>,
+    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl RedisBeliefTable {
     pub fn new_mutable(resources: &NamespaceBundle) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_connection()?;
-        let namespace = resources.config.scenario_name.clone();
+        let redis_connection = resources.connection.clone();
+        let namespace = resources.namespace.clone();
         Ok(Box::new(RedisBeliefTable { redis_connection, namespace }))
     }
     pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_connection()?;
-        let namespace = resources.config.scenario_name.clone();
+        let redis_connection = resources.connection.clone();
+        let namespace = resources.namespace.clone();
         Ok(Rc::new(RedisBeliefTable { redis_connection, namespace }))
     }
     pub const PROBABILITIES_KEY: &'static str = "probabilities";
