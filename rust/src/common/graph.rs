@@ -30,7 +30,6 @@ pub struct InferenceGraph {
 
 impl InferenceGraph {
     pub fn new_mutable(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Box<Self>, Box<dyn Error>> {
-        // let redis_connection = resources.redis.get_mutex_guarded_connection()?;
         Ok(Box::new(InferenceGraph {
             redis_connection,
             namespace,

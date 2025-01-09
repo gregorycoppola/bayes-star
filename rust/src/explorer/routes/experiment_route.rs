@@ -101,16 +101,17 @@ fn render_experiment_name(experiment_name: &str) -> String {
     )
 }
 
-pub fn internal_experiment(experiment_name: &str, namespace: &NamespaceBundle) -> Html<String> {
-    todo!()
-    // let body_html = format!(
-    //     r#"
-    //     {name_part}
-    //     {main_part}
-    // "#,
-    //     name_part = render_experiment_name(experiment_name),
-    //     main_part = render_experiment_parts(connection),
-    // );
-    // let result = render_app_body(&body_html);
-    // Html(result.unwrap())
+pub fn internal_experiment(experiment_name: &str, resources: &NamespaceBundle) -> Html<String> {
+    let graph = InferenceGraph::new_mutable(resources.connection.clone(), resources.namespace.clone()).unwrap();
+    // let graph = InferenceGraph::new_mutable(redis_connection, namespace)
+    let body_html = format!(
+        r#"
+        {name_part}
+        {main_part}
+    "#,
+        name_part = render_experiment_name(experiment_name),
+        main_part = render_experiment_parts(&graph),
+    );
+    let result = render_app_body(&body_html);
+    Html(result.unwrap())
 }
