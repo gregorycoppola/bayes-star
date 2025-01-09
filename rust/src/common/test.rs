@@ -16,7 +16,7 @@ use crate::{
     },
     model::{
         exponential::ExponentialModel,
-        objects::{Proposition, unary_existence_function},
+        objects::{Proposition},
     },
     print_blue, print_green, print_red, print_yellow,
 };

@@ -11,7 +11,7 @@ use crate::{
     },
     inference::table::GenericNodeType,
     model::{
-        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup, unary_existence_function},
+        objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
     },
     print_blue, print_green, print_red, print_yellow,
