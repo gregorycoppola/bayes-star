@@ -163,7 +163,7 @@ fn extract_factor_for_proposition_for_training(
     graph: &InferenceGraph,
     conclusion: Proposition,
 ) -> Result<FactorContext, Box<dyn Error>> {
-    let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
+    let factors = extract_backimplications_from_proposition(connection, graph, &conclusion)?;
     let mut probabilities = vec![];
     for factor in &factors {
         let probability = extract_group_probability_for_training(connection, proposition_db, &factor.premise)?;
