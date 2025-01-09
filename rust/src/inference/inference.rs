@@ -55,19 +55,25 @@ impl Inferencer {
         }))
     }
 
-    pub fn initialize_chart(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_chart(&mut self,
+        connection: &mut Connection
+    ) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
-        self.do_pi_traversal()?;
+        self.do_pi_traversal(connection)?;
         Ok(())
     }
 
-    pub fn do_full_forward_and_backward(&mut self) -> Result<(), Box<dyn Error>> {
-        self.do_pi_traversal()?;
-        self.do_lambda_traversal()?;
+    pub fn do_full_forward_and_backward(&mut self,
+        connection: &mut Connection
+    ) -> Result<(), Box<dyn Error>> {
+        self.do_pi_traversal(connection)?;
+        self.do_lambda_traversal(connection)?;
         Ok(())
     }
 
-    pub fn do_fan_out_from_node(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn do_fan_out_from_node(&mut self,
+        connection: &mut Connection,
+         node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let mut backward_order = self.bfs_order.clone();
         backward_order.reverse();
         let mut started = false;
@@ -77,12 +83,12 @@ impl Inferencer {
             }
             if started {
                 trace!("will visit {:?}", &visiting);
-                self.lambda_visit_node(visiting)?;
+                self.lambda_visit_node(connection, visiting)?;
             } else {
                 trace!("wont visit {:?}", &visiting);
             }
         }
-        self.do_pi_traversal()?;
+        self.do_pi_traversal(connection)?;
         Ok(())
     }
 
