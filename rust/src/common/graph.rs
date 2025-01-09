@@ -139,6 +139,14 @@ impl InferenceGraph {
         Ok(result)
     }
 
+    pub fn register_target(&mut self, target: &Proposition) -> Result<(), Box<dyn Error>> {
+        todo!()
+    }
+
+    pub fn get_target(&mut self, target: &Proposition) -> Result<Proposition, Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         trace!(
