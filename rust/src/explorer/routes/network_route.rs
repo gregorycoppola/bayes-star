@@ -12,6 +12,8 @@ fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>>
     let graph = InferenceGraph::new_shared(namespace.connection.clone(), namespace.namespace.clone())?;
     let proposition_graph = PropositionGraph::new_shared(&graph)?;
     proposition_graph.visualize();
+    let model = InferenceModel::new_shared(namespace).unwrap();
+    let fact_memory = EmptyBeliefTable::new_shared(namespace)?;
     // let mut inferencer =
     //     Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
     // inferencer.initialize_chart()?;
