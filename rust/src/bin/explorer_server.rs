@@ -18,16 +18,13 @@ use rocket::{http::ContentType, State};
 use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
-    connection: Arc<Mutex<Connection>>,
-    config: CommandLineOptions,
+    namespace: NamespaceBundle,
 }
 
 impl AppContext {
     pub fn new(config: CommandLineOptions) -> Self {
-        let resources = NamespaceBundle::new(&config).expect("Failed to create factory resources");
-        let connection = resources.connection.clone();
-        // let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
-        AppContext { connection, config }
+        let namespace = NamespaceBundle::new(&config).expect("Failed to create factory resources");
+        AppContext { namespace }
     }
 }
 
