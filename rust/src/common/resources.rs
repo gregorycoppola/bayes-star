@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, sync::{Arc, Mutex}};
 use super::{redis::RedisManager, setup::CommandLineOptions};
 
 pub struct FactoryResources {
@@ -13,4 +13,10 @@ impl FactoryResources {
             redis: RedisManager::new()?,
         })
     }
+}
+
+
+pub struct NamespaceBundle {
+    pub namespace: String,
+    pub connection: Arc<Mutex<redis::Connection>>,
 }
