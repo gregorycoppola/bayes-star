@@ -9,7 +9,7 @@ use crate::common::resources::ResourceContext;
 use crate::common::setup::CommandLineOptions;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
-use crate::{print_yellow, print_blue};
+use crate::{print_blue, print_yellow};
 use redis::Connection;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -47,7 +47,13 @@ fn dot_product(dict1: &HashMap<String, f64>, dict2: &HashMap<String, f64>) -> f6
     for (key, &v1) in dict1 {
         if let Some(&v2) = dict2.get(key) {
             let product = v1 * v2;
-            trace!("dot_product: key {}, v1 {}, v2 {}, product {}", key, v1, v2, product);
+            trace!(
+                "dot_product: key {}, v1 {}, v2 {}, product {}",
+                key,
+                v1,
+                v2,
+                product
+            );
             result += product;
         }
         // In case of null (None), we skip the key as per the original JavaScript logic.
@@ -118,7 +124,12 @@ pub fn do_sgd_update(
         if print_training_loss {
             trace!(
                 "feature: {}, gv: {}, ev: {}, loss: {}, old_weight: {}, new_weight: {}",
-                feature, gv, ev, loss, wv, new_weight
+                feature,
+                gv,
+                ev,
+                loss,
+                wv,
+                new_weight
             );
         }
         new_weights.insert(feature.clone(), new_weight);
@@ -129,14 +140,16 @@ pub fn do_sgd_update(
 impl FactorModel for ExponentialModel {
     fn initialize_connection(
         &mut self,
+        connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
-        self.weights.initialize_weights(implication)?;
+        self.weights.initialize_weights(connection, implication)?;
         Ok(())
     }
 
     fn train(
         &mut self,
+        connection: &mut Connection,
         factor: &FactorContext,
         gold_probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>> {
@@ -161,10 +174,10 @@ impl FactorModel for ExponentialModel {
                 "train_on_example - Reading weights for class {}",
                 class_label
             );
-            let weight_vector = match self
-                .weights
-                .read_weights(&features[class_label].keys().cloned().collect::<Vec<_>>())
-            {
+            let weight_vector = match self.weights.read_weights(
+                connection,
+                &features[class_label].keys().cloned().collect::<Vec<_>>(),
+            ) {
                 Ok(w) => w,
                 Err(e) => {
                     trace!("train_on_example - Error in read_weights: {:?}", e);
@@ -196,12 +209,16 @@ impl FactorModel for ExponentialModel {
                 self.print_training_loss,
             );
             trace!("train_on_example - Saving new weights");
-            self.weights.save_weights(&new_weight)?;
+            self.weights.save_weights(connection, &new_weight)?;
         }
         trace!("train_on_example - End");
         Ok(TrainStatistics { loss: 1f64 })
     }
-    fn predict(&self, factor: &FactorContext) -> Result<PredictStatistics, Box<dyn Error>> {
+    fn predict(
+        &self,
+        connection: &mut Connection,
+        factor: &FactorContext,
+    ) -> Result<PredictStatistics, Box<dyn Error>> {
         let features = match features_from_factor(factor) {
             Ok(f) => f,
             Err(e) => {
@@ -219,10 +236,10 @@ impl FactorModel for ExponentialModel {
                 trace!("feature {:?} {}", &feature, weight);
             }
             trace!("inference_probability - Reading weights");
-            let weight_vector = match self
-                .weights
-                .read_weights(&this_features.keys().cloned().collect::<Vec<_>>())
-            {
+            let weight_vector = match self.weights.read_weights(
+                connection,
+                &this_features.keys().cloned().collect::<Vec<_>>(),
+            ) {
                 Ok(w) => w,
                 Err(e) => {
                     trace!("inference_probability - Error in read_weights: {:?}", e);
@@ -238,7 +255,11 @@ impl FactorModel for ExponentialModel {
         }
         let normalization = potentials[0] + potentials[1];
         let probability = potentials[1] / normalization;
-        trace!("dot_product: normalization {}, marginal {}", normalization, probability);
+        trace!(
+            "dot_product: normalization {}, marginal {}",
+            normalization,
+            probability
+        );
         Ok(PredictStatistics { probability })
     }
 }

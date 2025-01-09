@@ -4,18 +4,16 @@ use crate::{
     model::{
         self,
         exponential::ExponentialModel,
-        objects::{
-            Domain, Entity, Predicate, PredicateGroup, ImplicationFactor, Proposition,
-        },
+        objects::{Domain, Entity, ImplicationFactor, Predicate, PredicateGroup, Proposition},
     },
 };
 use redis::{Commands, Connection};
 use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc, sync::Arc};
 
 use super::{
-    proposition_db::RedisBeliefTable,
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
+    proposition_db::RedisBeliefTable,
     redis::RedisManager,
     resources::ResourceContext,
 };
@@ -29,10 +27,7 @@ impl InferenceModel {
     pub fn new_shared(namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(namespace.clone())?;
         let model = ExponentialModel::new_shared(namespace.clone())?;
-        Ok(Arc::new(InferenceModel {
-            graph,
-            model,
-        }))
+        Ok(Arc::new(InferenceModel { graph, model }))
     }
 }
 
@@ -45,12 +40,18 @@ pub struct FactorContext {
 pub trait FactorModel {
     fn initialize_connection(
         &mut self,
+        connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>>;
     fn train(
         &mut self,
+        connection: &mut Connection,
         factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
-    fn predict(&self, factor: &FactorContext) -> Result<PredictStatistics, Box<dyn Error>>;
+    fn predict(
+        &self,
+        connection: &mut Connection,
+        factor: &FactorContext,
+    ) -> Result<PredictStatistics, Box<dyn Error>>;
 }
