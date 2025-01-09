@@ -128,8 +128,7 @@ impl BeliefTable for RedisBeliefTable {
 pub struct EmptyBeliefTable;
 
 impl EmptyBeliefTable {
-    pub fn new_shared(client: &RedisManager) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = client.get_connection()?;
+    pub fn new_shared(_client: &NamespaceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         Ok(Rc::new(EmptyBeliefTable {}))
     }
 }
