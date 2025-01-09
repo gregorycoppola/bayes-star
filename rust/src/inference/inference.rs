@@ -20,16 +20,16 @@ use colored::*;
 use redis::Connection;
 use serde::{Deserialize, Serialize};
 use std::{
-    borrow::Borrow, collections::{HashMap, HashSet, VecDeque}, error::Error, fs::OpenOptions, rc::Rc
+    borrow::Borrow, collections::{HashMap, HashSet, VecDeque}, error::Error, fs::OpenOptions, rc::Rc, sync::Arc
 };
 use std::io::Write;
 
 use std::backtrace::Backtrace;
 
 pub struct Inferencer {
-    pub model: Rc<InferenceModel>,
-    pub fact_memory: Rc<dyn BeliefTable>,
-    pub proposition_graph: Rc<PropositionGraph>,
+    pub model: Arc<InferenceModel>,
+    pub fact_memory: Arc<dyn BeliefTable>,
+    pub proposition_graph: Arc<PropositionGraph>,
     pub data: HashMapBeliefTable,
     pub bfs_order: Vec<PropositionNode>,
 }
@@ -41,9 +41,9 @@ pub struct MarginalTable {
 
 impl Inferencer {
     pub fn new_mutable(
-        model: Rc<InferenceModel>,
-        proposition_graph: Rc<PropositionGraph>,
-        fact_memory: Rc<dyn BeliefTable>,
+        model: Arc<InferenceModel>,
+        proposition_graph: Arc<PropositionGraph>,
+        fact_memory: Arc<dyn BeliefTable>,
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {

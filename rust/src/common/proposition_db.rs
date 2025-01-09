@@ -84,8 +84,8 @@ impl BeliefTable for RedisBeliefTable {
 pub struct EmptyBeliefTable;
 
 impl EmptyBeliefTable {
-    pub fn new_shared(_client: &NamespaceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        Ok(Rc::new(EmptyBeliefTable {}))
+    pub fn new_shared(_client: &NamespaceBundle) -> Result<Arc<dyn BeliefTable>, Box<dyn Error>> {
+        Ok(Arc::new(EmptyBeliefTable {}))
     }
 }
 
@@ -115,8 +115,8 @@ pub struct HashMapBeliefTable {
 }
 
 impl HashMapBeliefTable {
-    pub fn new() -> Rc<HashMapBeliefTable> {
-        Rc::new(HashMapBeliefTable {
+    pub fn new() -> Arc<HashMapBeliefTable> {
+        Arc::new(HashMapBeliefTable {
             evidence: RefCell::new(HashMap::new()),
         })
     }

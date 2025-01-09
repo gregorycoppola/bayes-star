@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error, io, rc::Rc};
+use std::{collections::HashMap, error::Error, io, rc::Rc, sync::Arc};
 
 use colored::Colorize;
 
@@ -25,7 +25,7 @@ use super::{interface::BeliefTable, resources::NamespaceBundle, setup::CommandLi
 
 pub struct ReplState {
     pub inferencer: Box<Inferencer>,
-    pub fact_memory: Rc<HashMapBeliefTable>,
+    pub fact_memory: Arc<HashMapBeliefTable>,
     /// Relative set by the `print_ordering` last time it serialized an ordering.
     pub question_index: HashMap<u64, PropositionNode>,
     pub proposition_index: HashMap<String, PropositionNode>,

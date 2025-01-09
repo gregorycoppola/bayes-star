@@ -10,7 +10,7 @@ use crate::{
     },
 };
 use redis::{Commands, Connection};
-use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc};
+use std::{cell::RefCell, collections::HashMap, error::Error, rc::Rc, sync::Arc};
 
 use super::{
     proposition_db::RedisBeliefTable,
@@ -21,15 +21,15 @@ use super::{
 };
 
 pub struct InferenceModel {
-    pub graph: Rc<InferenceGraph>,
-    pub model: Rc<dyn FactorModel>,
+    pub graph: Arc<InferenceGraph>,
+    pub model: Arc<dyn FactorModel>,
 }
 
 impl InferenceModel {
-    pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<Self>, Box<dyn Error>> {
+    pub fn new_shared(resources: &NamespaceBundle) -> Result<Arc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(resources.connection.clone(), resources.namespace.clone())?;
         let model = ExponentialModel::new_shared(&resources)?;
-        Ok(Rc::new(InferenceModel {
+        Ok(Arc::new(InferenceModel {
             graph,
             model,
         }))

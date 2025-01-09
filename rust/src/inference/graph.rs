@@ -1,7 +1,7 @@
 use std::{
     collections::{HashMap, HashSet, VecDeque},
     error::Error,
-    rc::Rc,
+    rc::Rc, sync::Arc,
 };
 
 use env_logger::init;
@@ -126,7 +126,7 @@ fn initialize_visit_single(
 impl PropositionGraph {
     pub fn new_shared(
         predicate_graph: &InferenceGraph,
-    ) -> Result<Rc<PropositionGraph>, Box<dyn Error>> {
+    ) -> Result<Arc<PropositionGraph>, Box<dyn Error>> {
         let target = predicate_graph.get_target()?;
         let mut graph = PropositionGraph {
             single_forward: HashMap::new(),
@@ -138,7 +138,7 @@ impl PropositionGraph {
             target: target.clone(),
         };
         initialize_visit_single(predicate_graph, &mut graph, &target)?;
-        Ok(Rc::new(graph))
+        Ok(Arc::new(graph))
     }
 
     pub fn get_inference_used(&self, premise:&PropositionGroup, conclusion: &Proposition) -> ImplicationFactor {

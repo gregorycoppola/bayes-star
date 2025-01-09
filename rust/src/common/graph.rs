@@ -36,8 +36,8 @@ impl InferenceGraph {
         }))
     }
 
-    pub fn new_shared(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Rc<Self>, Box<dyn Error>> {
-        Ok(Rc::new(InferenceGraph {
+    pub fn new_shared(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
+        Ok(Arc::new(InferenceGraph {
             redis_connection,
             namespace,
         }))

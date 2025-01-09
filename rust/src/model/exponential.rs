@@ -15,6 +15,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::error::Error;
 use std::rc::Rc;
+use std::sync::Arc;
 pub struct ExponentialModel {
     print_training_loss: bool,
     weights: ExponentialWeights,
@@ -29,10 +30,10 @@ impl ExponentialModel {
             weights,
         }))
     }
-    pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<dyn FactorModel>, Box<dyn Error>> {
+    pub fn new_shared(resources: &NamespaceBundle) -> Result<Arc<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.connection.clone();
         let weights = ExponentialWeights::new(resources)?;
-        Ok(Rc::new(ExponentialModel {
+        Ok(Arc::new(ExponentialModel {
             print_training_loss: false,
             weights,
         }))
