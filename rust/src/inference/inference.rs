@@ -27,7 +27,6 @@ use std::io::Write;
 use std::backtrace::Backtrace;
 
 pub struct Inferencer {
-    // pub config: ConfigurationOptions,
     pub model: Rc<InferenceModel>,
     pub fact_memory: Rc<dyn BeliefTable>,
     pub proposition_graph: Rc<PropositionGraph>,
@@ -42,14 +41,12 @@ pub struct MarginalTable {
 
 impl Inferencer {
     pub fn new_mutable(
-        config: &CommandLineOptions,
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
         fact_memory: Rc<dyn BeliefTable>,
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {
-            // config: config.clone(),
             model,
             fact_memory,
             proposition_graph,
