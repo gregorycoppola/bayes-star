@@ -40,7 +40,7 @@ pub fn run_inference_rounds(
     let model = InferenceModel::new_shared(&resources).unwrap();
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
-    let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
+    let fact_memory = EmptyBeliefTable::new_shared(&resources)?;
     let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
     proposition_graph.visualize();
     let mut inferencer =

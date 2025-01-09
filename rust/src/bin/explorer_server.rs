@@ -25,7 +25,7 @@ pub struct AppContext {
 impl AppContext {
     pub fn new(config: CommandLineOptions) -> Self {
         let resources = NamespaceBundle::new(&config).expect("Failed to create factory resources");
-        let connection = resources.redis.get_arc_mutex_guarded_connection().unwrap();
+        let connection = resources.connection.clone();
         // let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
         AppContext { connection, config }
     }
