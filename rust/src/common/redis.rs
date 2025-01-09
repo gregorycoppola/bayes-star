@@ -16,6 +16,10 @@ impl RedisManager {
         Ok(redis_client)
     }
 
+    pub fn get_raw_connection(&self) -> Result<redis::Connection, Box<dyn Error>> {
+        todo!()
+    }
+
     pub fn get_connection(&self) -> Result<RefCell<redis::Connection>, Box<dyn Error>> {
         let connection = self
             .client
