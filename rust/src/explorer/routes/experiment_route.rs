@@ -1,7 +1,7 @@
 use redis::Connection;
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, redis::seq_push}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
+use crate::{common::{graph::InferenceGraph, redis::seq_push, resources::NamespaceBundle}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
 
 fn render_domain_part(graph: &InferenceGraph) -> String {
     let mut buffer = format!(
@@ -101,15 +101,16 @@ fn render_experiment_name(experiment_name: &str) -> String {
     )
 }
 
-pub fn internal_experiment(experiment_name: &str, connection: &mut Connection) -> Html<String> {
-    let body_html = format!(
-        r#"
-        {name_part}
-        {main_part}
-    "#,
-        name_part = render_experiment_name(experiment_name),
-        main_part = render_experiment_parts(connection),
-    );
-    let result = render_app_body(&body_html);
-    Html(result.unwrap())
+pub fn internal_experiment(experiment_name: &str, namespace: &NamespaceBundle) -> Html<String> {
+    todo!()
+    // let body_html = format!(
+    //     r#"
+    //     {name_part}
+    //     {main_part}
+    // "#,
+    //     name_part = render_experiment_name(experiment_name),
+    //     main_part = render_experiment_parts(connection),
+    // );
+    // let result = render_app_body(&body_html);
+    // Html(result.unwrap())
 }
