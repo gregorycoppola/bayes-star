@@ -1,4 +1,4 @@
-use crate::{inference::graph::PropositionFactor, model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Proposition, Relation}};
+use crate::{inference::graph::PropositionFactor, model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Proposition, PropositionGroup, Relation}};
 
 fn diagram_domain(domain: &str) -> String {
     format!(
@@ -43,7 +43,7 @@ fn diagram_relation(relation: &Relation) -> String {
     )
 }
 
-fn diagram_predicate(predicate: &Predicate) -> String {
+pub fn diagram_predicate(predicate: &Predicate) -> String {
     let mut argument_buffer = "".to_string();
     for argument in &predicate.roles {
         let argument_part = diagram_argument(&argument.argument);
@@ -107,7 +107,17 @@ pub fn diagram_proposition_factor(relation: &PropositionFactor) -> String {
             </div>
         </div>
     "#,
-        predicate_group_part = diagram_predicate_group(&relation.premise),
+        predicate_group_part = diagram_proposition_group(&relation.premise),
         conclusion_part = diagram_predicate(&relation.conclusion.predicate),
     )
+}
+
+fn diagram_proposition_group(group: &PropositionGroup) -> String {
+    let mut parts = vec![];
+    for predicate in &group.terms {
+        parts.push(diagram_predicate(&predicate.predicate));
+    }
+    let separator = "<span class='and_separator'>&and;</span>"; // Customize as needed
+    let joined_parts = parts.join(separator);
+    format!("<div class='predicate_group'>{}</div>", joined_parts)
 }
