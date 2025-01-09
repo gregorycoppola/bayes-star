@@ -18,7 +18,7 @@ use rocket::{http::ContentType, State};
 use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
-    connection: Mutex<Arc<Connection>>,
+    connection: Arc<Mutex<Connection>>,
     config: CommandLineOptions,
 }
 

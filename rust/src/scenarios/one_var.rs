@@ -39,7 +39,7 @@ pub struct OneVariable {}
 
 impl ScenarioMaker for OneVariable {
     fn setup_scenario(&self, resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
-        let mut graph = InferenceGraph::new_mutable(resources)?;
+        let mut graph = InferenceGraph::new_mutable(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;
         let config = &resources.config;

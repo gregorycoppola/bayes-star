@@ -27,7 +27,7 @@ pub struct InferenceModel {
 
 impl InferenceModel {
     pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
-        let graph = InferenceGraph::new_shared(resources)?;
+        let graph = InferenceGraph::new_shared(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
         let model = ExponentialModel::new_shared(&resources)?;
         Ok(Rc::new(InferenceModel {
             graph,
