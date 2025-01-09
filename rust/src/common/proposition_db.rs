@@ -48,9 +48,9 @@ impl BeliefTable for RedisBeliefTable {
             return Ok(Some(1f64));
         }
         let hash_string = proposition.predicate.hash_string();
-
+        let mut connection = self.redis_connection.lock().expect("");
         let probability_record = map_get(
-            &mut self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             Self::PROBABILITIES_KEY,
             &hash_string,
