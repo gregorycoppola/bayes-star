@@ -16,24 +16,24 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::rc::Rc;
 pub struct ExponentialModel {
-    config: CommandLineOptions,
+    print_training_loss: bool,
     weights: ExponentialWeights,
 }
 
 impl ExponentialModel {
     pub fn new_mutable(resources: &NamespaceBundle) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
-        let connection = resources.redis.get_connection()?;
+        let connection = resources.connection.clone();
         let weights = ExponentialWeights::new(resources)?;
         Ok(Box::new(ExponentialModel {
-            config: resources.config.clone(),
+            print_training_loss: false,
             weights,
         }))
     }
     pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<dyn FactorModel>, Box<dyn Error>> {
-        let connection = resources.redis.get_connection()?;
+        let connection = resources.connection.clone();
         let weights = ExponentialWeights::new(resources)?;
         Ok(Rc::new(ExponentialModel {
-            config: resources.config.clone(),
+            print_training_loss: false,
             weights,
         }))
     }
