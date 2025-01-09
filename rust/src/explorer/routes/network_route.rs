@@ -15,14 +15,16 @@ fn backwards_print_group(proposition_graph: &PropositionGraph, target: &Proposit
         let single = backlink.extract_single();
         backwards_print_single(proposition_graph, &single);
     }
-
     "".to_string()
 }
 
 fn backwards_print_single(proposition_graph: &PropositionGraph, target: &Proposition) -> String {
     let proposition_node = PropositionNode::from_single(&target);
     let backlinks = proposition_graph.get_all_backward(&proposition_node);
-
+    for backlink in &backlinks {
+        let group = backlink.extract_group();
+        backwards_print_group(proposition_graph, &group);
+    }
     "".to_string()
 }
 
