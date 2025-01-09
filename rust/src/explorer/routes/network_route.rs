@@ -2,10 +2,21 @@ use std::{error::Error, rc::Rc};
 
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::objects::Proposition};
+use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::objects::{Proposition, PropositionGroup}};
 
 fn get_resources() -> NamespaceBundle {
     todo!()
+}
+
+fn backwards_print_group(proposition_graph: &PropositionGraph, target: &PropositionGroup) -> String {
+    let proposition_node = PropositionNode::from_group(&target);
+    let backlinks = proposition_graph.get_all_backward(&proposition_node);
+    for backlink in &backlinks {
+        let single = backlink.extract_single();
+        backwards_print_single(proposition_graph, &single);
+    }
+
+    "".to_string()
 }
 
 fn backwards_print_single(proposition_graph: &PropositionGraph, target: &Proposition) -> String {
