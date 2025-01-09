@@ -17,6 +17,7 @@ fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>>
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
+    inferencer.do_full_forward_and_backward()?;
     Ok("todo".to_string())
 }
 
