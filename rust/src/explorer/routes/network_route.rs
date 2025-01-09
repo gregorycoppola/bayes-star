@@ -15,7 +15,7 @@ fn render_network(graph: &InferenceGraph, config: &CommandLineOptions) -> Result
     Ok("todo".to_string())
 }
 
-pub fn internal_network(_experiment_name: &str, graph: &InferenceGraph, config: &CommandLineOptions) -> Html<String> {
+pub fn internal_network(_experiment_name: &str, graph: &InferenceGraph, config: &CommandLineOptions) -> String {
     let network = render_network(graph, config).unwrap();
     let body_html = format!(
         r#"
@@ -23,5 +23,5 @@ pub fn internal_network(_experiment_name: &str, graph: &InferenceGraph, config: 
     "#,
     );
     let result = render_app_body(&body_html);
-    Html(result.unwrap())
+    result.unwrap()
 }

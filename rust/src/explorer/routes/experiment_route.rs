@@ -98,7 +98,7 @@ fn render_experiment_name(experiment_name: &str) -> String {
     )
 }
 
-pub fn internal_experiment(experiment_name: &str, graph: &InferenceGraph) -> Html<String> {
+pub fn internal_experiment(experiment_name: &str, graph: &InferenceGraph) -> String {
     let body_html = format!(
         r#"
         {name_part}
@@ -108,5 +108,5 @@ pub fn internal_experiment(experiment_name: &str, graph: &InferenceGraph) -> Htm
         main_part = render_experiment_parts(graph),
     );
     let result = render_app_body(&body_html);
-    Html(result.unwrap())
+    result.unwrap()
 }
