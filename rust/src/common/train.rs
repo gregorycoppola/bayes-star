@@ -68,8 +68,9 @@ impl TrainingPlan {
             "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
+        let mut connection = self.redis_connection.lock().expect("");
         seq_push(
-            &mut self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             &queue_name,
             &serialized_proposition,
