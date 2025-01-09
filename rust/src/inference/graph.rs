@@ -34,6 +34,8 @@ impl PropositionFactor {
     }
 }
 
+/// This class does NOT store a link to any database.
+/// It is EXPENSIVE to copy, though.. should just be moved.
 pub struct PropositionGraph {
     pub single_forward: HashMap<Proposition, HashSet<PropositionGroup>>,
     pub single_backward: HashMap<Proposition, HashSet<PropositionGroup>>,
