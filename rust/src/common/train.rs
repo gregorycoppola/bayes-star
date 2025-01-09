@@ -146,18 +146,20 @@ where
 
 // Probabilities are either 0 or 1, so assume independent, i.e., just boolean combine them as AND.
 fn extract_group_probability_for_training(
+    connection: &mut Connection,
     proposition_db: &Box<dyn BeliefTable>,
     premise: &PropositionGroup,
 ) -> Result<f64, Box<dyn Error>> {
     let mut product = 1f64;
     for term in &premise.terms {
-        let part = proposition_db.get_proposition_probability(term)?.unwrap();
+        let part = proposition_db.get_proposition_probability(connection, term)?.unwrap();
         product *= part;
     }
     Ok(product)
 }
 
 fn extract_factor_for_proposition_for_training(
+    connection: &mut Connection,
     proposition_db: &Box<dyn BeliefTable>,
     graph: &InferenceGraph,
     conclusion: Proposition,
@@ -165,7 +167,7 @@ fn extract_factor_for_proposition_for_training(
     let factors = extract_backimplications_from_proposition(graph, &conclusion)?;
     let mut probabilities = vec![];
     for factor in &factors {
-        let probability = extract_group_probability_for_training(proposition_db, &factor.premise)?;
+        let probability = extract_group_probability_for_training(connection, proposition_db, &factor.premise)?;
         probabilities.push(probability);
     }
     let result = FactorContext {
