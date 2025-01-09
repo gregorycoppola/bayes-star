@@ -22,21 +22,23 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new_mutable(resources: &ResourceBundle) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
-        let connection = resources.connection.clone();
-        let weights = ExponentialWeights::new(resources)?;
-        Ok(Box::new(ExponentialModel {
-            print_training_loss: false,
-            weights,
-        }))
+    pub fn new_mutable(namespace: String) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
+        todo!()
+        // let connection = resources.connection.clone();
+        // let weights = ExponentialWeights::new(resources)?;
+        // Ok(Box::new(ExponentialModel {
+        //     print_training_loss: false,
+        //     weights,
+        // }))
     }
-    pub fn new_shared(resources: &ResourceBundle) -> Result<Arc<dyn FactorModel>, Box<dyn Error>> {
-        let connection = resources.connection.clone();
-        let weights = ExponentialWeights::new(resources)?;
-        Ok(Arc::new(ExponentialModel {
-            print_training_loss: false,
-            weights,
-        }))
+    pub fn new_shared(namespace: String) -> Result<Arc<dyn FactorModel>, Box<dyn Error>> {
+        todo!()
+        // let connection = resources.connection.clone();
+        // let weights = ExponentialWeights::new(resources)?;
+        // Ok(Arc::new(ExponentialModel {
+        //     print_training_loss: false,
+        //     weights,
+        // }))
     }
 }
 
