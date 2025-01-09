@@ -1,3 +1,5 @@
+use redis::Connection;
+
 use super::{
     inference::{compute_each_combination, groups_from_backlinks, Inferencer},
     table::{GenericNodeType, PropositionNode},
@@ -31,42 +33,49 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn do_lambda_traversal(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn do_lambda_traversal(
+        &mut self,
+        connection: &mut Connection,
+    ) -> Result<(), Box<dyn Error>> {
         let mut bfs_order = self.bfs_order.clone();
         bfs_order.reverse();
         trace!("send_lambda_messages bfs_order: {:?}", &bfs_order);
         for node in &bfs_order {
             trace!("send pi bfs selects {:?}", node);
-            self.lambda_visit_node(node)?;
+            self.lambda_visit_node(connection, node)?;
         }
         Ok(())
     }
 
-    pub fn lambda_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_visit_node(
+        &mut self,
+        connection: &mut Connection,
+        from_node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         self.lambda_send_messages(from_node)?;
-        let is_observed = self.is_observed(from_node)?;
+        let is_observed = self.is_observed(connection, from_node)?;
         trace!(
             "lambda_visit_node {:?} is_observed {}",
             from_node,
             is_observed
         );
         if is_observed {
-            self.lambda_set_from_evidence(from_node)?;
+            self.lambda_set_from_evidence(connection, from_node)?;
         } else {
-            self.lambda_compute_value(&from_node)?;
+            self.lambda_compute_value(connection, &from_node)?;
         }
         Ok(())
     }
 
-
     pub fn lambda_set_from_evidence(
         &mut self,
+        connection: &mut Connection,
         node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
         let as_single = node.extract_single();
         let probability = self
             .fact_memory
-            .get_proposition_probability(&as_single)?
+            .get_proposition_probability(connection, &as_single)?
             .unwrap();
         trace!("set from evidence {:?} {}", node, probability);
         self.data.set_lambda_value(node, 1, probability);
@@ -76,9 +85,10 @@ impl Inferencer {
 
     pub fn lambda_compute_value(
         &mut self,
+        connection: &mut Connection,
         node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
-        let is_observed = self.is_observed(node)?;
+        let is_observed = self.is_observed(connection, node)?;
         assert!(!is_observed);
         let children = self.proposition_graph.get_all_forward(node);
         for class_label in &CLASS_LABELS {
@@ -86,19 +96,22 @@ impl Inferencer {
             for (_child_index, child_node) in children.iter().enumerate() {
                 let child_lambda = self
                     .data
-                    .get_lambda_message(&child_node, node,*class_label)
+                    .get_lambda_message(&child_node, node, *class_label)
                     .unwrap();
                 product *= child_lambda;
             }
-            self.data
-                .set_lambda_value(&node, *class_label, product);
+            self.data.set_lambda_value(&node, *class_label, product);
         }
         Ok(())
     }
 
     pub fn lambda_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
-        trace!("lambda_send_generic for node {:?} with parents {:?}", node, &parent_nodes);
+        trace!(
+            "lambda_send_generic for node {:?} with parents {:?}",
+            node,
+            &parent_nodes
+        );
         let all_combinations = compute_each_combination(&parent_nodes);
         let lambda_true = self.data.get_lambda_value(node, 1).unwrap();
         let lambda_false = self.data.get_lambda_value(node, 0).unwrap();
@@ -112,15 +125,29 @@ impl Inferencer {
                     if other_index != to_index {
                         let class_bool = combination.get(other_parent).unwrap();
                         let class_label = if *class_bool { 1 } else { 0 };
-                        let this_pi = self.data.get_pi_message(&other_parent, node, class_label).unwrap();
-                        trace!("using pi message parent {:?}, node {:?}, label {}: pi={}", &other_parent, node, class_label, this_pi);
+                        let this_pi = self
+                            .data
+                            .get_pi_message(&other_parent, node, class_label)
+                            .unwrap();
+                        trace!(
+                            "using pi message parent {:?}, node {:?}, label {}: pi={}",
+                            &other_parent,
+                            node,
+                            class_label,
+                            this_pi
+                        );
                         pi_product *= this_pi;
                     }
                 }
                 let probability_true =
                     self.score_factor_assignment(&parent_nodes, combination, node)?;
                 let probability_false = 1f64 - probability_true;
-                trace!("probability {} for {:?} on assignment {:?}", probability_true, node, combination);
+                trace!(
+                    "probability {} for {:?} on assignment {:?}",
+                    probability_true,
+                    node,
+                    combination
+                );
                 let parent_assignment = combination.get(to_parent).unwrap();
                 let true_factor = probability_true * pi_product * lambda_true;
                 let false_factor = probability_false * pi_product * lambda_false;
@@ -130,8 +157,18 @@ impl Inferencer {
                     sum_false += true_factor + false_factor;
                 }
             }
-            trace!("final 1 lambda message {} from {:?} to {:?}", sum_true, node, to_parent);
-            trace!("final 0 lambda message {} from {:?} to {:?}", sum_false, node, to_parent);
+            trace!(
+                "final 1 lambda message {} from {:?} to {:?}",
+                sum_true,
+                node,
+                to_parent
+            );
+            trace!(
+                "final 0 lambda message {} from {:?} to {:?}",
+                sum_false,
+                node,
+                to_parent
+            );
             self.data.set_lambda_message(node, to_parent, 1, sum_true);
             self.data.set_lambda_message(node, to_parent, 0, sum_false);
         }
