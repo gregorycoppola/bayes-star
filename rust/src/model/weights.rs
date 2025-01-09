@@ -55,6 +55,7 @@ impl ExponentialWeights {
         trace!("initialize_weights - Start: {:?}", implication);
         let feature = implication.unique_key();
         trace!("initialize_weights - Unique key: {}", feature);
+        let mut connection = self.connection.lock().expect("");
         for class_label in CLASS_LABELS {
             let posf = positive_feature(&feature, class_label);
             let negf = negative_feature(&feature, class_label);
@@ -71,14 +72,14 @@ impl ExponentialWeights {
                 weight2
             );
             map_insert(
-                &mut self.connection.borrow_mut(),
+                &mut connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &posf,
                 &weight1.to_string(),
             )?;
             map_insert(
-                &mut self.connection.borrow_mut(),
+                &mut connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &negf,
@@ -94,11 +95,12 @@ impl ExponentialWeights {
         features: &[String],
     ) -> Result<HashMap<String, f64>, Box<dyn Error>> {
         trace!("read_weights - Start");
+        let mut connection = self.connection.lock().expect("");
         let mut weights = HashMap::new();
         for feature in features {
             trace!("read_weights - Reading weight for feature: {}", feature);
             let weight_record = map_get(
-                &mut self.connection.borrow_mut(),
+                &mut connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &feature,
@@ -115,6 +117,7 @@ impl ExponentialWeights {
 
     pub fn save_weights(&mut self, weights: &HashMap<String, f64>) -> Result<(), Box<dyn Error>> {
         trace!("save_weights - Start");
+        let mut connection = self.connection.lock().expect("");
         for (feature, &value) in weights {
             trace!(
                 "save_weights - Saving weight for feature {}: {}",
@@ -122,7 +125,7 @@ impl ExponentialWeights {
                 value
             );
             map_insert(
-                &mut self.connection.borrow_mut(),
+                &mut connection,
                 &self.namespace,
                 Self::WEIGHTS_KEY,
                 &feature,
