@@ -1,20 +1,22 @@
-use rocket::{get, routes, launch, Rocket};
-use rocket::response::content::Content;
-use rocket::http::ContentType;
+use rocket::launch;
+use rocket::{get, routes, Rocket, Build};
 
-// Simple HTML response
+// Dynamically created HTML response
 #[get("/")]
 fn index() -> String {
-    "<h1>Hello, world!</h1>".to_string()
+    let greeting = "Hello, world!";
+    format!("<h1>{}</h1>", greeting)
 }
 
-// Explicit content type with Content wrapper
+// Another example of dynamically created HTML
 #[get("/welcome")]
-fn welcome() -> Content<String> {
-    Content(ContentType::HTML, "<h1>Welcome to the site!</h1>".to_string())
+fn welcome() -> String {
+    let page_title = "Welcome to the site!";
+    format!("<h1>{}</h1>", page_title)
 }
 
 #[launch]
-fn rocket() -> Rocket {
-    rocket::build().mount("/", routes![index, welcome])
+fn rocket() -> Rocket<Build> {
+    rocket::build()
+        .mount("/", routes![index, welcome])
 }
