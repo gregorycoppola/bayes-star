@@ -174,7 +174,7 @@ fn extract_factor_for_proposition_for_training(
 }
 
 pub fn do_training(resources: &NamespaceBundle) -> Result<(), Box<dyn Error>> {
-    let graph = InferenceGraph::new_mutable(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
+    let graph = InferenceGraph::new_mutable(resources.connection.clone(), resources.namespace.clone())?;
     let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
     let plan = TrainingPlan::new(&resources)?;
     let mut factor_model = ExponentialModel::new_mutable(&resources)?;

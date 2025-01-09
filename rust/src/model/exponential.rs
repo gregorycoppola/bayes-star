@@ -190,7 +190,7 @@ impl FactorModel for ExponentialModel {
                 &weight_vectors[class_label],
                 &gold,
                 &expected,
-                self.config.print_training_loss,
+                self.print_training_loss,
             );
             trace!("train_on_example - Saving new weights");
             self.weights.save_weights(&new_weight)?;
