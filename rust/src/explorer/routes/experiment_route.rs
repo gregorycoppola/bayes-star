@@ -1,9 +1,12 @@
 use redis::Connection;
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, redis::seq_push, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
+use crate::{
+    common::{graph::InferenceGraph, redis::seq_push, resources::ResourceContext},
+    explorer::{diagram_utils::diagram_implication, render_utils::render_app_body},
+};
 
-fn render_domain_part(graph: &InferenceGraph) -> String {
+fn render_domain_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
         r#"
         <div class='section_header'>
@@ -11,10 +14,10 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
         </div>
     "#
     );
-    let all_domains = graph.get_all_domains().unwrap();
+    let all_domains = graph.get_all_domains(connection).unwrap();
     println!("all_domains {:?}", &all_domains);
     for domain in &all_domains {
-        let elements = graph.get_entities_in_domain(domain).unwrap();
+        let elements = graph.get_entities_in_domain(connection, domain).unwrap();
         println!("elements: {:?}", &elements);
         buffer += &format!(
             r#"
@@ -28,7 +31,7 @@ fn render_domain_part(graph: &InferenceGraph) -> String {
     buffer
 }
 
-fn render_relation_part(graph: &InferenceGraph) -> String {
+fn render_relation_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
         r#"
         <div class='section_header'>
@@ -36,7 +39,7 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
         </div>
     "#
     );
-    let all_relations = graph.get_all_relations().unwrap();
+    let all_relations = graph.get_all_relations(connection).unwrap();
     println!("all_relations {:?}", &all_relations);
     for relation in &all_relations {
         println!("relation {:?}", relation);
@@ -59,7 +62,7 @@ fn render_relation_part(graph: &InferenceGraph) -> String {
     buffer
 }
 
-fn render_implication_part(graph: &InferenceGraph) -> String {
+fn render_implication_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
         r#"
         <div class='section_header'>
@@ -67,7 +70,7 @@ fn render_implication_part(graph: &InferenceGraph) -> String {
         </div>
     "#
     );
-    let all_relations = graph.get_all_implications().unwrap();
+    let all_relations = graph.get_all_implications(connection).unwrap();
     println!("all_relations {:?}", &all_relations);
     for relation in &all_relations {
         buffer += &diagram_implication(relation);
@@ -75,16 +78,16 @@ fn render_implication_part(graph: &InferenceGraph) -> String {
     buffer
 }
 
-fn render_experiment_parts(graph: &InferenceGraph) -> String {
+fn render_experiment_parts(connection: &mut Connection, graph: &InferenceGraph) -> String {
     format!(
         r#"
         {domain_part}
         {relation_part}
         {implication_part}
     "#,
-        domain_part = render_domain_part(graph),
-        relation_part = render_relation_part(graph),
-        implication_part = render_implication_part(graph),
+        domain_part = render_domain_part(connection, graph),
+        relation_part = render_relation_part(connection, graph),
+        implication_part = render_implication_part(connection, graph),
     )
 }
 
@@ -102,7 +105,8 @@ fn render_experiment_name(experiment_name: &str) -> String {
 }
 
 pub fn internal_experiment(experiment_name: &str, resources: &ResourceContext) -> Html<String> {
-    let graph = InferenceGraph::new_mutable(resources.connection.clone(), resources.namespace.clone()).unwrap();
+    let mut connection = resources.connection.lock().unwrap();
+    let graph = InferenceGraph::new_mutable(experiment_name.to_string()).unwrap();
     // let graph = InferenceGraph::new_mutable(redis_connection, namespace)
     let body_html = format!(
         r#"
@@ -110,7 +114,7 @@ pub fn internal_experiment(experiment_name: &str, resources: &ResourceContext) -
         {main_part}
     "#,
         name_part = render_experiment_name(experiment_name),
-        main_part = render_experiment_parts(&graph),
+        main_part = render_experiment_parts(&mut connection, &graph),
     );
     let result = render_app_body(&body_html);
     Html(result.unwrap())
