@@ -1,3 +1,4 @@
+use redis::Connection;
 use rocket::response::content::Html;
 
 use crate::{common::graph::InferenceGraph, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
@@ -100,15 +101,16 @@ fn render_experiment_name(experiment_name: &str) -> String {
     )
 }
 
-pub fn internal_experiment(experiment_name: &str, graph: &InferenceGraph) -> Html<String> {
-    let body_html = format!(
-        r#"
-        {name_part}
-        {main_part}
-    "#,
-        name_part = render_experiment_name(experiment_name),
-        main_part = render_experiment_parts(graph),
-    );
-    let result = render_app_body(&body_html);
-    Html(result.unwrap())
+pub fn internal_experiment(experiment_name: &str, connection: &Connection) -> Html<String> {
+    todo!()
+    // let body_html = format!(
+    //     r#"
+    //     {name_part}
+    //     {main_part}
+    // "#,
+    //     name_part = render_experiment_name(experiment_name),
+    //     main_part = render_experiment_parts(graph),
+    // );
+    // let result = render_app_body(&body_html);
+    // Html(result.unwrap())
 }

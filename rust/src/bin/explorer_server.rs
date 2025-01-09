@@ -36,8 +36,7 @@ fn home(_context: State<AppContext>) -> Html<String> {
 
 #[get("/experiment/<experiment_name>")]
 fn experiment(experiment_name: String, context: State<AppContext>) -> Html<String> {
-    todo!()
-    // internal_experiment(&experiment_name, &context.graph)
+    internal_experiment(&experiment_name, &context.connection)
 }
 
 #[get("/network/<experiment_name>")]
