@@ -2,10 +2,17 @@ use std::{error::Error, rc::Rc};
 
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer}};
+use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::objects::Proposition};
 
 fn get_resources() -> NamespaceBundle {
     todo!()
+}
+
+fn backwards_print_single(proposition_graph: &PropositionGraph, target: &Proposition) -> String {
+    let proposition_node = PropositionNode::from_single(&target);
+    let backlinks = proposition_graph.get_all_backward(&proposition_node);
+
+    "".to_string()
 }
 
 fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>> {
