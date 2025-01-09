@@ -43,8 +43,7 @@ pub fn run_inference_rounds(
     let fact_memory = EmptyBeliefTable::new_shared(&resources)?;
     let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
     proposition_graph.visualize();
-    let mut inferencer =
-        Inferencer::new_mutable(&config, model.clone(), proposition_graph.clone(), fact_memory)?;
+    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
     let mut repl = ReplState::new(inferencer);
     if config.test_scenario.clone().unwrap() == "show".to_string() {
