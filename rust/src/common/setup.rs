@@ -7,7 +7,7 @@ use std::{io::Write, path::Path};
 /// These options define the inputs from the user.
 /// Nothing is owned by basic data types so this class can be easily freely around.
 #[derive(Deserialize, Clone, Debug)]
-pub struct ConfigurationOptions {
+pub struct CommandLineOptions {
     pub scenario_name: String,
     pub test_scenario: Option<String>,
     pub entities_per_domain: i32,
@@ -22,7 +22,7 @@ fn check_file_does_not_exist(file_name: &str) {
     }
 }
 
-pub fn parse_configuration_options() -> ConfigurationOptions {
+pub fn parse_configuration_options() -> CommandLineOptions {
     Builder::from_env(Env::default().default_filter_or("info"))
         .format(|buf, record| {
             let file = record.file().unwrap_or("unknown");
@@ -103,7 +103,7 @@ pub fn parse_configuration_options() -> ConfigurationOptions {
         .to_string();
     let test_scenario = matches.value_of("test_scenario").map(String::from);
 
-    ConfigurationOptions {
+    CommandLineOptions {
         scenario_name,
         test_scenario,
         entities_per_domain,

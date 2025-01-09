@@ -7,7 +7,7 @@ use crate::{
         interface::BeliefTable,
         model::{FactorContext, InferenceModel},
         proposition_db,
-        setup::ConfigurationOptions,
+        setup::CommandLineOptions,
     },
     inference::table::GenericNodeType,
     model::{
@@ -42,7 +42,7 @@ pub struct MarginalTable {
 
 impl Inferencer {
     pub fn new_mutable(
-        config: &ConfigurationOptions,
+        config: &CommandLineOptions,
         model: Rc<InferenceModel>,
         proposition_graph: Rc<PropositionGraph>,
         fact_memory: Rc<dyn BeliefTable>,

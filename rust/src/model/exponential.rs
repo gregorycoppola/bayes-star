@@ -6,7 +6,7 @@ use crate::common::model::InferenceModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
 use crate::common::resources::FactoryResources;
-use crate::common::setup::ConfigurationOptions;
+use crate::common::setup::CommandLineOptions;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
 use crate::{print_yellow, print_blue};
@@ -16,7 +16,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::rc::Rc;
 pub struct ExponentialModel {
-    config: ConfigurationOptions,
+    config: CommandLineOptions,
     weights: ExponentialWeights,
 }
 

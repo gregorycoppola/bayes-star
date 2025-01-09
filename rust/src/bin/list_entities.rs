@@ -1,7 +1,7 @@
 use bayes_star::common::{graph::InferenceGraph, resources::FactoryResources, setup::parse_configuration_options};
 
 fn main() {
-    let config: bayes_star::common::setup::ConfigurationOptions = parse_configuration_options();
+    let config: bayes_star::common::setup::CommandLineOptions = parse_configuration_options();
     let resources = FactoryResources::new(&config).unwrap();
     let graph = InferenceGraph::new_shared(&resources).unwrap();
     //

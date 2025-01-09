@@ -6,7 +6,7 @@ use bayes_star::{
     common::{
         graph::InferenceGraph,
         resources::FactoryResources,
-        setup::{parse_configuration_options, ConfigurationOptions},
+        setup::{parse_configuration_options, CommandLineOptions},
     },
     explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
 };
@@ -16,11 +16,11 @@ use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
     graph: InferenceGraph,
-    config: ConfigurationOptions,
+    config: CommandLineOptions,
 }
 
 impl AppContext {
-    pub fn new(config: ConfigurationOptions) -> Self {
+    pub fn new(config: CommandLineOptions) -> Self {
         let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
         let graph =
             InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
