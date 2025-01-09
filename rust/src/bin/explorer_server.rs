@@ -38,11 +38,12 @@ fn home(_context: State<AppContext>) -> Html<String> {
 
 #[get("/experiment/<experiment_name>")]
 fn experiment(experiment_name: String, context: State<AppContext>) -> Html<String> {
-    internal_experiment(&experiment_name, &context.connection)
+    let mut conn = context.connection.lock().unwrap();
+    internal_experiment(&experiment_name, &mut conn)
 }
 
 #[get("/network/<experiment_name>")]
-fn network(experiment_name: String, context: State<AppContext>) -> Html<String> {
+fn network(experiment_name: String, _context: State<AppContext>) -> Html<String> {
     todo!()
     // internal_network(&experiment_name, &context.graph, &context.config)
 }
