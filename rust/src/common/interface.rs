@@ -16,24 +16,27 @@ pub struct PredictStatistics {
 pub trait BeliefTable {
     fn get_proposition_probability(
         &self,
+        context: &mut ResourceBundle,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 
     fn store_proposition_probability(
         &self,
+        context: &mut ResourceBundle,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>>;
 
     fn store_proposition_boolean(
         &self,
+        context: &mut ResourceBundle,
         proposition: &Proposition,
         observation: bool,
     ) -> Result<(), Box<dyn Error>> {
         if observation {
-            self.store_proposition_probability(proposition, 1.0)?;
+            self.store_proposition_probability(context, proposition, 1.0)?;
         } else {
-            self.store_proposition_probability(proposition, 0.0)?;
+            self.store_proposition_probability(context, proposition, 0.0)?;
         }
         Ok(())
     }

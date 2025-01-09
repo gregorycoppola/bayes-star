@@ -20,20 +20,15 @@ use super::{
 };
 
 pub struct RedisBeliefTable {
-    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl RedisBeliefTable {
-    pub fn new_mutable(resources: &ResourceBundle) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = resources.connection.clone();
-        let namespace = resources.namespace.clone();
-        Ok(Box::new(RedisBeliefTable { redis_connection, namespace }))
+    pub fn new_mutable(namespace: String) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
+        Ok(Box::new(RedisBeliefTable { namespace }))
     }
-    pub fn new_shared(resources: &ResourceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
-        let redis_connection = resources.connection.clone();
-        let namespace = resources.namespace.clone();
-        Ok(Rc::new(RedisBeliefTable { redis_connection, namespace }))
+    pub fn new_shared(namespace: String) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
+        Ok(Rc::new(RedisBeliefTable { namespace }))
     }
     pub const PROBABILITIES_KEY: &'static str = "probabilities";
 }
@@ -42,13 +37,13 @@ impl BeliefTable for RedisBeliefTable {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
+        context: &mut ResourceBundle,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         if proposition.predicate.relation == unary_existence_function() {
             return Ok(Some(1f64));
         }
         let hash_string = proposition.predicate.hash_string();
-        let mut connection = self.redis_connection.lock().expect("");
         let probability_record = map_get(
             &mut connection,
             &self.namespace,
@@ -64,6 +59,7 @@ impl BeliefTable for RedisBeliefTable {
 
     fn store_proposition_probability(
         &self,
+        context: &mut ResourceBundle,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
