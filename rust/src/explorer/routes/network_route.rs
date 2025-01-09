@@ -19,10 +19,6 @@ use crate::{
     },
 };
 
-fn get_resources() -> ResourceContext {
-    todo!()
-}
-
 fn backwards_print_group(
     connection: &mut Connection,
     inferencer: &Inferencer,
