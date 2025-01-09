@@ -2,7 +2,7 @@
 #[macro_use]
 extern crate rocket;
 
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 use bayes_star::{
     common::{
@@ -18,14 +18,14 @@ use rocket::{http::ContentType, State};
 use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
-    connection: Mutex<Connection>,
+    connection: Mutex<Arc<Connection>>,
     config: CommandLineOptions,
 }
 
 impl AppContext {
     pub fn new(config: CommandLineOptions) -> Self {
         let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
-        let connection = resources.redis.get_mutex_guarded_connection().unwrap();
+        let connection = resources.redis.get_arc_mutex_guarded_connection().unwrap();
         // let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
         AppContext { connection, config }
     }
@@ -39,7 +39,8 @@ fn home(_context: State<AppContext>) -> Html<String> {
 #[get("/experiment/<experiment_name>")]
 fn experiment(experiment_name: String, context: State<AppContext>) -> Html<String> {
     let mut conn = context.connection.lock().unwrap();
-    internal_experiment(&experiment_name, &mut conn)
+    // internal_experiment(&experiment_name, &mut conn)
+    todo!()
 }
 
 #[get("/network/<experiment_name>")]

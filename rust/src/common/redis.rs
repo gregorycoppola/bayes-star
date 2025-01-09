@@ -2,6 +2,7 @@ use redis::Commands;
 use redis::Connection;
 use std::cell::RefCell;
 use std::error::Error;
+use std::sync::Arc;
 use std::sync::Mutex;
 
 pub struct RedisManager {
@@ -35,6 +36,15 @@ impl RedisManager {
             .get_connection()
             .expect("Couldn't get connection.");
         let refcell = Mutex::new(connection);
+        Ok(refcell)
+    }
+
+    pub fn get_arc_mutex_guarded_connection(&self) -> Result<Mutex<Arc<redis::Connection>>, Box<dyn Error>> {
+        let connection = self
+            .client
+            .get_connection()
+            .expect("Couldn't get connection.");
+        let refcell = Mutex::new(Arc::new(connection));
         Ok(refcell)
     }
 }
