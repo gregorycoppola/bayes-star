@@ -52,7 +52,7 @@ impl Inferencer {
         connection: &mut Connection,
         from_node: &PropositionNode,
     ) -> Result<(), Box<dyn Error>> {
-        self.lambda_send_messages(from_node)?;
+        self.lambda_send_messages(connection, from_node)?;
         let is_observed = self.is_observed(connection, from_node)?;
         trace!(
             "lambda_visit_node {:?} is_observed {}",
@@ -105,7 +105,11 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn lambda_send_messages(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn lambda_send_messages(
+        &mut self,
+        connection: &mut Connection,
+        node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         trace!(
             "lambda_send_generic for node {:?} with parents {:?}",
@@ -140,7 +144,7 @@ impl Inferencer {
                     }
                 }
                 let probability_true =
-                    self.score_factor_assignment(&parent_nodes, combination, node)?;
+                    self.score_factor_assignment(connection, &parent_nodes, combination, node)?;
                 let probability_false = 1f64 - probability_true;
                 trace!(
                     "probability {} for {:?} on assignment {:?}",

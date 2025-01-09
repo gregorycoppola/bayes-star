@@ -94,7 +94,7 @@ impl Inferencer {
                 );
                 product *= pi_x_z;
             }
-            let true_marginal = self.score_factor_assignment(&parent_nodes, combination, node)?;
+            let true_marginal = self.score_factor_assignment(connection, &parent_nodes, combination, node)?;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
             sum_false += false_marginal * product;
