@@ -22,34 +22,32 @@ use crate::{
 };
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
-use std::{cell::RefCell, error::Error, rc::Rc, sync::Mutex};
+use std::{cell::RefCell, error::Error, rc::Rc, sync::{Arc, Mutex}};
 pub struct InferenceGraph {
-    redis_connection: Mutex<redis::Connection>,
+    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl InferenceGraph {
-    pub fn new_mutable(resources: &FactoryResources) -> Result<Box<Self>, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_mutex_guarded_connection()?;
+    pub fn new_mutable(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Box<Self>, Box<dyn Error>> {
+        // let redis_connection = resources.redis.get_mutex_guarded_connection()?;
         Ok(Box::new(InferenceGraph {
             redis_connection,
-            namespace: resources.config.scenario_name.clone(),
+            namespace,
         }))
     }
 
-    pub fn new_shared(resources: &FactoryResources) -> Result<Rc<Self>, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_mutex_guarded_connection()?;
+    pub fn new_shared(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Rc<Self>, Box<dyn Error>> {
         Ok(Rc::new(InferenceGraph {
             redis_connection,
-            namespace: resources.config.scenario_name.clone(),
+            namespace,
         }))
     }
 
-    pub fn new_literal(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_mutex_guarded_connection()?;
+    pub fn new_literal(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Self, Box<dyn Error>> {
         Ok(InferenceGraph {
             redis_connection,
-            namespace: resources.config.scenario_name.clone(),
+            namespace,
         })
     }
 
