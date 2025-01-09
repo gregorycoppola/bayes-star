@@ -8,26 +8,27 @@ fn get_resources() -> NamespaceBundle {
     todo!()
 }
 
-fn backwards_print_group(inferencer: &Inferencer, target: &PropositionGroup) -> String {
+fn backwards_print_group(inferencer: &Inferencer, target: &PropositionGroup) -> Result<String, Box<dyn Error>> {
     let proposition_node = PropositionNode::from_group(&target);
     let backlinks = inferencer.proposition_graph.get_all_backward(&proposition_node);
+    let mut buffer = "".to_string();
     for backlink in &backlinks {
         let single = backlink.extract_single();
         backwards_print_single(inferencer, &single);
     }
-    "".to_string()
+    Ok(buffer)
 }
 
-fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> String {
+fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> Result<String, Box<dyn Error>> {
     let proposition_node = PropositionNode::from_single(&target);
     let backlinks = inferencer.proposition_graph.get_all_backward(&proposition_node);
+    let mut buffer = "".to_string();
     for backlink in &backlinks {
         let group = backlink.extract_group();
         backwards_print_group(inferencer, &group);
     }
-
     let backimplications = extract_backimplications_from_proposition(&inferencer.model.graph, target).unwrap();
-    "".to_string()
+    Ok(buffer)
 }
 
 fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>> {
@@ -40,7 +41,8 @@ fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>>
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
     inferencer.do_full_forward_and_backward()?;
-    Ok("todo".to_string())
+    let result = backwards_print_single(&inferencer, &inferencer.proposition_graph.target)?;
+    Ok(result)
 }
 
 pub fn internal_network(experiment_name: &str, namespace: &NamespaceBundle) -> Html<String> {
