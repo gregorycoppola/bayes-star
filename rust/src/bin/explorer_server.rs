@@ -8,10 +8,10 @@ use bayes_star::{
         resources::FactoryResources,
         setup::{parse_configuration_options, CommandLineOptions},
     },
-    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
+    explorer::routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network},
 };
-use rocket::response::content::{Content, Html};
-use rocket::{http::ContentType, State};
+use rocket::response::content::Html;
+use rocket::State;
 use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
