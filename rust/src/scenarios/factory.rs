@@ -7,8 +7,8 @@ use super::{dating_simple::SimpleDating, one_var::OneVariable};
 pub struct ScenarioMakerFactory;
 
 impl ScenarioMakerFactory {
-    pub fn new_shared(resources: &ResourceContext) -> Result<Rc<dyn ScenarioMaker>, Box<dyn Error>> {
-        match resources.namespace.as_str() {
+    pub fn new_shared(namespace: &str) -> Result<Rc<dyn ScenarioMaker>, Box<dyn Error>> {
+        match namespace {
             "dating_simple" => Ok(Rc::new(SimpleDating {})),
             // "dating_triangle" => Ok(Rc::new(EligibilityTriangle {})),
             "one_var" => Ok(Rc::new(OneVariable {})),
