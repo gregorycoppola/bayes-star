@@ -7,7 +7,7 @@ use crate::{
         self,
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, Predicate, ImplicationFactor, PredicateGroup, Proposition,
+            Domain, Entity, ImplicationFactor, Predicate, PredicateGroup, Proposition,
             PropositionGroup,
         },
     },
@@ -15,7 +15,11 @@ use crate::{
 };
 use redis::{Commands, Connection};
 use serde::Deserialize;
-use std::{cell::RefCell, error::Error, sync::{Arc, Mutex}};
+use std::{
+    cell::RefCell,
+    error::Error,
+    sync::{Arc, Mutex},
+};
 
 use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
@@ -37,9 +41,7 @@ pub struct TrainingPlan {
 
 impl TrainingPlan {
     pub fn new(namespace: String) -> Result<Self, Box<dyn Error>> {
-        Ok(TrainingPlan {
-            namespace,
-        })
+        Ok(TrainingPlan { namespace })
     }
 
     pub fn add_proposition_to_queue(
@@ -67,7 +69,7 @@ impl TrainingPlan {
             &serialized_proposition
         );
         seq_push(
-             connection,
+            connection,
             &self.namespace,
             &queue_name,
             &serialized_proposition,
@@ -111,11 +113,7 @@ impl TrainingPlan {
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
-        let records = seq_get_all(
-            connection,
-            &self.namespace,
-            &seq_name,
-        )?;
+        let records = seq_get_all(connection, &self.namespace, &seq_name)?;
         let mut result = vec![];
         for record in &records {
             let proposition = deserialize_record(record)?;
@@ -125,12 +123,18 @@ impl TrainingPlan {
         Ok(result)
     }
 
-    pub fn get_training_questions(&self, connection: &mut Connection) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn get_training_questions(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let training_queue_name = String::from("training_queue");
         self.get_propositions_from_queue(connection, &training_queue_name)
     }
 
-    pub fn get_test_questions(&self, connection: &mut Connection) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn get_test_questions(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let test_queue_name = String::from("test_queue");
         self.get_propositions_from_queue(connection, &test_queue_name)
     }
@@ -151,7 +155,9 @@ fn extract_group_probability_for_training(
 ) -> Result<f64, Box<dyn Error>> {
     let mut product = 1f64;
     for term in &premise.terms {
-        let part = proposition_db.get_proposition_probability(connection, term)?.unwrap();
+        let part = proposition_db
+            .get_proposition_probability(connection, term)?
+            .unwrap();
         product *= part;
     }
     Ok(product)
@@ -166,7 +172,8 @@ fn extract_factor_for_proposition_for_training(
     let factors = extract_backimplications_from_proposition(connection, graph, &conclusion)?;
     let mut probabilities = vec![];
     for factor in &factors {
-        let probability = extract_group_probability_for_training(connection, proposition_db, &factor.premise)?;
+        let probability =
+            extract_group_probability_for_training(connection, proposition_db, &factor.premise)?;
         probabilities.push(probability);
     }
     let result = FactorContext {
@@ -186,7 +193,7 @@ pub fn do_training(resources: &ResourceContext, namespace: String) -> Result<(),
     let implications = graph.get_all_implications(&mut connection)?;
     for implication in implications {
         print_yellow!("do_training - Processing implication: {:?}", implication);
-        factor_model.initialize_connection(&implication)?;
+        factor_model.initialize_connection(&mut connection, &implication)?;
     }
     trace!("do_training - Getting all propositions");
     let training_questions = plan.get_training_questions(&mut connection)?;
@@ -204,9 +211,10 @@ pub fn do_training(resources: &ResourceContext, namespace: String) -> Result<(),
             proposition.clone(),
         )?;
         trace!("do_training - Backimplications: {:?}", &factor);
-        let probabiity_opt = proposition_db.get_proposition_probability(&mut connection, proposition)?;
+        let probabiity_opt =
+            proposition_db.get_proposition_probability(&mut connection, proposition)?;
         let probability = probabiity_opt.expect("Probability should exist.");
-        let _stats = factor_model.train(&factor, probability)?;
+        let _stats = factor_model.train(&mut connection, &factor, probability)?;
         examples_processed += 1;
     }
     trace!(
@@ -224,7 +232,7 @@ pub fn setup_and_train(
     let model_spec = "dummy_model_spec".to_string();
     let result = scenario_maker.setup_scenario(resources);
     trace!("scenario result: {:?}", result);
-    let train_result = do_training(resources,  namespace.to_string());
+    let train_result = do_training(resources, namespace.to_string());
     trace!("train result: {:?}", train_result);
     Ok(())
 }
