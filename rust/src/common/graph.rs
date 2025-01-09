@@ -15,38 +15,45 @@ use crate::{
         },
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, ImplicationFactor, Predicate, PredicateGroup, Proposition, PropositionGroup, Relation
+            Domain, Entity, ImplicationFactor, Predicate, PredicateGroup, Proposition,
+            PropositionGroup, Relation,
         },
     },
     print_blue,
 };
 use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
-use std::{cell::RefCell, error::Error, rc::Rc, sync::{Arc, Mutex}};
+use std::{
+    cell::RefCell,
+    error::Error,
+    rc::Rc,
+    sync::{Arc, Mutex},
+};
 pub struct InferenceGraph {
     namespace: String,
 }
 
 impl InferenceGraph {
     pub fn new_mutable(namespace: String) -> Result<Box<Self>, Box<dyn Error>> {
-        Ok(Box::new(InferenceGraph {
-            namespace,
-        }))
+        Ok(Box::new(InferenceGraph { namespace }))
     }
 
     pub fn new_shared(namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
-        Ok(Arc::new(InferenceGraph {
-            namespace,
-        }))
+        Ok(Arc::new(InferenceGraph { namespace }))
     }
 
-    pub fn new_literal(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Self, Box<dyn Error>> {
-        Ok(InferenceGraph {
-            namespace,
-        })
+    pub fn new_literal(
+        redis_connection: Arc<Mutex<redis::Connection>>,
+        namespace: String,
+    ) -> Result<Self, Box<dyn Error>> {
+        Ok(InferenceGraph { namespace })
     }
 
-    pub fn register_experiment(&mut self, connection: &mut Connection, experiment_name: &str) -> Result<(), Box<dyn Error>> {
+    pub fn register_experiment(
+        &mut self,
+        connection: &mut Connection,
+        experiment_name: &str,
+    ) -> Result<(), Box<dyn Error>> {
         set_add(
             connection,
             &self.namespace,
@@ -56,16 +63,20 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_all_experiments(&self, connection: &mut Connection) -> Result<Vec<String>, Box<dyn Error>> {
-        let set_members: Vec<String> = set_members(
-            connection,
-            &self.namespace,
-            &Self::experiment_set_name(),
-        )?;
+    pub fn get_all_experiments(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<String>, Box<dyn Error>> {
+        let set_members: Vec<String> =
+            set_members(connection, &self.namespace, &Self::experiment_set_name())?;
         Ok(set_members)
     }
 
-    pub fn register_relation(&mut self, connection: &mut Connection, relation: &Relation) -> Result<(), Box<dyn Error>> {
+    pub fn register_relation(
+        &mut self,
+        connection: &mut Connection,
+        relation: &Relation,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(relation)?;
         set_add(
             connection,
@@ -76,54 +87,59 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn check_relation(&mut self, connection: &mut Connection, relation: &Relation) -> Result<(), Box<dyn Error>> {
+    pub fn check_relation(
+        &mut self,
+        connection: &mut Connection,
+        relation: &Relation,
+    ) -> Result<(), Box<dyn Error>> {
         // TODO: impelment this
         Ok(())
     }
 
-    pub fn get_all_relations(&self, connection: &mut Connection) -> Result<Vec<Relation>, Box<dyn Error>> {
-        let set_members: Vec<String> = set_members(
-            connection,
-            &self.namespace,
-            &Self::relation_set_name(),
-        )?;
+    pub fn get_all_relations(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<Relation>, Box<dyn Error>> {
+        let set_members: Vec<String> =
+            set_members(connection, &self.namespace, &Self::relation_set_name())?;
         set_members
             .into_iter()
             .map(|record| serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>))
             .collect()
     }
 
-    pub fn register_domain(&mut self, connection: &mut Connection, domain: &String) -> Result<(), Box<dyn Error>> {
-        set_add(
-            connection,
-            &self.namespace,
-            "domains",
-            domain,
-        )?;
+    pub fn register_domain(
+        &mut self,
+        connection: &mut Connection,
+        domain: &String,
+    ) -> Result<(), Box<dyn Error>> {
+        set_add(connection, &self.namespace, "domains", domain)?;
         Ok(())
     }
 
-    pub fn check_domain(&self, connection: &mut Connection, domain: &String) -> Result<(), Box<dyn Error>> {
-        let result = is_member(
-             connection,
-            &self.namespace,
-            "domains",
-            domain,
-        )?;
+    pub fn check_domain(
+        &self,
+        connection: &mut Connection,
+        domain: &String,
+    ) -> Result<(), Box<dyn Error>> {
+        let result = is_member(connection, &self.namespace, "domains", domain)?;
         assert!(result);
         Ok(())
     }
 
-    pub fn get_all_domains(&self, connection: &mut Connection) -> Result<Vec<String>, Box<dyn Error>> {
-        let result = set_members(
-            connection,
-            &self.namespace,
-            "domains",
-        )?;
+    pub fn get_all_domains(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<String>, Box<dyn Error>> {
+        let result = set_members(connection, &self.namespace, "domains")?;
         Ok(result)
     }
 
-    pub fn register_target(&mut self, connection: &mut Connection, target: &Proposition) -> Result<(), Box<dyn Error>> {
+    pub fn register_target(
+        &mut self,
+        connection: &mut Connection,
+        target: &Proposition,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(target)?;
         set_value(
             connection,
@@ -135,15 +151,15 @@ impl InferenceGraph {
     }
 
     pub fn get_target(&self, connection: &mut Connection) -> Result<Proposition, Box<dyn Error>> {
-        let record = get_value(
-            connection,
-            &self.namespace,
-            &Self::target_key_name(),
-        )?.unwrap();
+        let record = get_value(connection, &self.namespace, &Self::target_key_name())?.unwrap();
         serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>)
     }
 
-    pub fn store_entity(&mut self, connection: &mut Connection, entity: &Entity) -> Result<(), Box<dyn Error>> {
+    pub fn store_entity(
+        &mut self,
+        connection: &mut Connection,
+        entity: &Entity,
+    ) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
             entity.domain,
@@ -160,13 +176,13 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_entities_in_domain(&self, connection: &mut Connection, domain: &String) -> Result<Vec<Entity>, Box<dyn Error>> {
+    pub fn get_entities_in_domain(
+        &self,
+        connection: &mut Connection,
+        domain: &String,
+    ) -> Result<Vec<Entity>, Box<dyn Error>> {
         let domain_string = domain.to_string();
-        let names: Vec<String> = set_members(
-            connection,
-            &self.namespace,
-            &domain_string,
-        )?;
+        let names: Vec<String> = set_members(connection, &self.namespace, &domain_string)?;
         Ok(names
             .into_iter()
             .map(|name| Entity {
@@ -196,7 +212,11 @@ impl InferenceGraph {
         "target".to_string()
     }
 
-    fn store_implication(&mut self, connection: &mut Connection, implication: &ImplicationFactor) -> Result<(), Box<dyn Error>> {
+    fn store_implication(
+        &mut self,
+        connection: &mut Connection,
+        implication: &ImplicationFactor,
+    ) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         set_add(
             connection,
@@ -209,7 +229,8 @@ impl InferenceGraph {
 
     // TODO: I feel like this should not be public.
     pub fn ensure_existence_backlinks_for_proposition(
-        &mut self, connection: &mut Connection,
+        &mut self,
+        connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         let implication = extract_existence_factor_for_proposition(proposition)?;
@@ -218,7 +239,8 @@ impl InferenceGraph {
     }
 
     fn store_predicate_backward_link(
-        &mut self, connection: &mut Connection,
+        &mut self,
+        connection: &mut Connection,
         inference: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         let conclusion = &inference.conclusion;
@@ -233,7 +255,8 @@ impl InferenceGraph {
     }
 
     pub fn store_predicate_implication(
-        &mut self, connection: &mut Connection,
+        &mut self,
+        connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         self.store_implication(connection, implication)?;
@@ -242,7 +265,8 @@ impl InferenceGraph {
     }
 
     pub fn store_predicate_implications(
-        &mut self, connection: &mut Connection,
+        &mut self,
+        connection: &mut Connection,
         implications: &Vec<ImplicationFactor>,
     ) -> Result<(), Box<dyn Error>> {
         for implication in implications {
@@ -251,29 +275,28 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_all_implications(&self, connection: &mut Connection) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
-        let set_members: Vec<String> = set_members(
-            connection,
-            &self.namespace,
-            &Self::implication_seq_name(),
-        )?;
-    
+    pub fn get_all_implications(
+        &self,
+        connection: &mut Connection,
+    ) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
+        let set_members: Vec<String> =
+            set_members(connection, &self.namespace, &Self::implication_seq_name())?;
+
         set_members
             .into_iter()
             .map(|record| {
-                warn!("Deserializing record: {}", record);  // Log each record before deserialization
-                serde_json::from_str::<ImplicationFactor>(&record)
-                    .map_err(|e| {
-                        warn!("Failed to deserialize record: {}, Error: {}", record, e);  // Log if deserialization fails
-                        Box::new(e) as Box<dyn Error>
-                    })
+                warn!("Deserializing record: {}", record); // Log each record before deserialization
+                serde_json::from_str::<ImplicationFactor>(&record).map_err(|e| {
+                    warn!("Failed to deserialize record: {}, Error: {}", record, e); // Log if deserialization fails
+                    Box::new(e) as Box<dyn Error>
+                })
             })
             .collect()
     }
-    
 
     pub fn predicate_backward_links(
-        &self, connection: &mut Connection,
+        &self,
+        connection: &mut Connection,
         conclusion: &Predicate,
     ) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
