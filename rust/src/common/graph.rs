@@ -24,36 +24,31 @@ use redis::{Commands, Connection};
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, error::Error, rc::Rc, sync::{Arc, Mutex}};
 pub struct InferenceGraph {
-    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl InferenceGraph {
-    pub fn new_mutable(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Box<Self>, Box<dyn Error>> {
+    pub fn new_mutable(namespace: String) -> Result<Box<Self>, Box<dyn Error>> {
         Ok(Box::new(InferenceGraph {
-            redis_connection,
             namespace,
         }))
     }
 
-    pub fn new_shared(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
+    pub fn new_shared(namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
         Ok(Arc::new(InferenceGraph {
-            redis_connection,
             namespace,
         }))
     }
 
     pub fn new_literal(redis_connection: Arc<Mutex<redis::Connection>>, namespace: String) -> Result<Self, Box<dyn Error>> {
         Ok(InferenceGraph {
-            redis_connection,
             namespace,
         })
     }
 
-    pub fn register_experiment(&mut self, experiment_name: &str) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn register_experiment(&mut self, connection: &mut Connection, experiment_name: &str) -> Result<(), Box<dyn Error>> {
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::experiment_set_name(),
             experiment_name,
