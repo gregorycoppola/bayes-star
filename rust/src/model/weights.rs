@@ -4,7 +4,7 @@ use crate::{
 };
 use rand::Rng;
 use redis::{Commands, Connection};
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::{Arc, Mutex}};
 use std::{cell::RefCell, error::Error};
 
 pub const CLASS_LABELS: [usize; 2] = [0, 1];
@@ -31,16 +31,16 @@ pub fn negative_feature(feature: &str, class_label: usize) -> String {
 }
 
 pub struct ExponentialWeights {
-    connection: RefCell<Connection>,
+    connection: Arc<Mutex<Connection>>,
     namespace: String,
 }
 
 impl ExponentialWeights {
     pub fn new(resources: &NamespaceBundle) -> Result<ExponentialWeights, Box<dyn Error>> {
-        let connection = resources.redis.get_connection()?;
+        let connection = resources.connection.clone();
         Ok(ExponentialWeights {
             connection,
-            namespace: resources.config.scenario_name.clone(),
+            namespace: resources.namespace.clone(),
         })
     }
 }
