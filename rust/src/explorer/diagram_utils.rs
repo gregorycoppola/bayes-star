@@ -1,4 +1,4 @@
-use crate::model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Relation};
+use crate::{inference::graph::PropositionFactor, model::objects::{Argument, ImplicationFactor, Predicate, PredicateGroup, Proposition, Relation}};
 
 fn diagram_domain(domain: &str) -> String {
     format!(
@@ -89,5 +89,25 @@ pub fn diagram_implication(relation: &ImplicationFactor) -> String {
     "#,
         predicate_group_part = diagram_predicate_group(&relation.premise),
         conclusion_part = diagram_predicate(&relation.conclusion),
+    )
+}
+
+pub fn diagram_proposition_factor(relation: &PropositionFactor) -> String {
+    format!(
+        r#"
+        <div class='implication_box'>
+            <div class='implication_row'>
+                {predicate_group_part}
+            </div>
+            <div class='implication_divider'>
+                &or;
+            </div>
+            <div class='implication_row'>
+                {conclusion_part}
+            </div>
+        </div>
+    "#,
+        predicate_group_part = diagram_predicate_group(&relation.premise),
+        conclusion_part = diagram_predicate(&relation.conclusion.predicate),
     )
 }

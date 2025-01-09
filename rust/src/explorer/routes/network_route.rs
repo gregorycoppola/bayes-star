@@ -2,7 +2,7 @@ use std::{error::Error, rc::Rc};
 
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::{choose::extract_backimplications_from_proposition, objects::{Proposition, PropositionGroup}}};
+use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::NamespaceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::{diagram_utils::{diagram_implication, diagram_proposition_factor}, render_utils::render_app_body}, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::{choose::extract_backimplications_from_proposition, objects::{Proposition, PropositionGroup}}};
 
 fn get_resources() -> NamespaceBundle {
     todo!()
@@ -35,7 +35,7 @@ fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> Resu
             <div class='network_cell'>
                 {implication_part}
             </div>
-        "#, implication_part = diagram_implication(backimplication));
+        "#, implication_part = diagram_proposition_factor(backimplication));
     }
     Ok(buffer)
 }
