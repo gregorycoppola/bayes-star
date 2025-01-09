@@ -39,6 +39,23 @@ fn namespace_qualified_key(namespace: &str, key: &str) -> String {
     format!("bayes-star:{namespace}:{key}")
 }
 
+pub fn set_value(
+    conn: &mut Connection,
+    key: &str,
+    value: &str,
+) -> Result<(), Box<dyn Error>> {
+    conn.set(key, value)?;
+    Ok(())
+}
+
+pub fn get_value(
+    conn: &mut Connection,
+    key: &str,
+) -> Result<Option<String>, Box<dyn Error>> {
+    let value: Option<String> = conn.get(key)?;
+    Ok(value)
+}
+
 pub fn map_insert(
     conn: &mut Connection,
     namespace: &str,
