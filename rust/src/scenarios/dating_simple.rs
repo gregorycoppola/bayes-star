@@ -37,7 +37,9 @@ pub struct SimpleDating {}
 
 impl ScenarioMaker for SimpleDating {
     fn setup_scenario(&self, resources: &ResourceBundle) -> Result<(), Box<dyn Error>> {
-        let mut graph = InferenceGraph::new_mutable(resources.namespace.clone())?;
+        let mut connection = resources.connection.lock().unwrap();
+        let namespace = "simple_dating".to_string();
+        let mut graph = InferenceGraph::new_mutable(namespace.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;
         let total_members_each_class = 1;
@@ -45,32 +47,32 @@ impl ScenarioMaker for SimpleDating {
 
         // Retrieve entities in the Man domain
         let jack_domain = Domain::MAN.to_string(); // Convert enum to string and make lowercase
-        let jacks: Vec<Entity> = graph.get_entities_in_domain(&jack_domain)?;
+        let jacks: Vec<Entity> = graph.get_entities_in_domain(&mut connection, &jack_domain)?;
         println!("Initial number of jacks: {}", jacks.len());
-        graph.register_domain(&jack_domain)?;
+        graph.register_domain(&mut connection, &jack_domain)?;
         // Retrieve entities in the Woman domain
         let jill_domain = Domain::WOMAN.to_string(); // Convert enum to string and make lowercase
-        let jills = graph.get_entities_in_domain(&jill_domain)?;
+        let jills = graph.get_entities_in_domain(&mut connection, &jill_domain)?;
         println!("Initial number of jills: {}", jills.len());
-        graph.register_domain(&jill_domain)?;
+        graph.register_domain(&mut connection, &jill_domain)?;
 
         let exciting_jill_relation = relation(
             "exciting".to_string(),
             vec![variable_argument(jill_domain.clone())],
         );
-        graph.register_relation(&exciting_jill_relation)?;
+        graph.register_relation(&mut connection, &exciting_jill_relation)?;
         println!("exciting: {}", jills.len());
         let lonely_jack_relation = relation(
             "lonely".to_string(),
             vec![variable_argument(jack_domain.clone())],
         );
-        graph.register_relation(&lonely_jack_relation)?;
+        graph.register_relation(&mut connection, &lonely_jack_relation)?;
         println!("lonely jack: {}", jills.len());
         let lonely_jill_relation = relation(
             "lonely".to_string(),
             vec![variable_argument(jill_domain.clone())],
         );
-        graph.register_relation(&lonely_jill_relation)?;
+        graph.register_relation(&mut connection, &lonely_jill_relation)?;
         println!("lonely jill: {}", jills.len());
         let jack_like_jill_relation = relation(
             "like".to_string(),
@@ -79,7 +81,7 @@ impl ScenarioMaker for SimpleDating {
                 variable_argument(jill_domain.clone()),
             ],
         );
-        graph.register_relation(&jack_like_jill_relation)?;
+        graph.register_relation(&mut connection, &jack_like_jill_relation)?;
         println!("like jack jill: {}", jills.len());
         let jill_like_jack_relation = relation(
             "like".to_string(),
@@ -88,7 +90,7 @@ impl ScenarioMaker for SimpleDating {
                 variable_argument(jack_domain.clone()),
             ],
         );
-        graph.register_relation(&jill_like_jack_relation)?;
+        graph.register_relation(&mut connection, &jill_like_jack_relation)?;
         println!("jill like jack: {}", jills.len());
         let jack_date_jill_relation = relation(
             "date".to_string(),
@@ -97,7 +99,7 @@ impl ScenarioMaker for SimpleDating {
                 variable_argument(jill_domain.clone()),
             ],
         );
-        graph.register_relation(&jack_date_jill_relation)?;
+        graph.register_relation(&mut connection, &jack_date_jill_relation)?;
         println!("jill date jack: {}", jills.len());
 
         for i in 0..total_members_each_class {
@@ -113,7 +115,7 @@ impl ScenarioMaker for SimpleDating {
                     domain: domain.clone(),
                     name: name.clone(),
                 };
-                graph.store_entity(&entity)?;
+                graph.store_entity(&mut connection, &entity)?;
                 println!("Stored entity: {:?}", &entity);
                 domain_entity_map.insert(domain.to_string(), entity);
             }
@@ -139,7 +141,7 @@ impl ScenarioMaker for SimpleDating {
                 );
                 proposition_db.store_proposition_probability(&jack_lonely, p_jack_lonely)?;
                 plan.maybe_add_to_training(is_training, &jack_lonely)?;
-                graph.ensure_existence_backlinks_for_proposition(&jack_lonely)?;
+                graph.ensure_existence_backlinks_for_proposition(&mut connection, &jack_lonely)?;
             }
 
             {
@@ -153,7 +155,7 @@ impl ScenarioMaker for SimpleDating {
                 );
                 proposition_db.store_proposition_probability(&jill_exciting, p_jill_exciting)?;
                 plan.maybe_add_to_training(is_training, &jill_exciting)?;
-                graph.ensure_existence_backlinks_for_proposition(&jill_exciting)?;
+                graph.ensure_existence_backlinks_for_proposition(&mut connection, &jill_exciting)?;
             }
 
             {
@@ -173,7 +175,7 @@ impl ScenarioMaker for SimpleDating {
                 proposition_db
                     .store_proposition_probability(&jill_likes_jack, p_jill_likes_jack)?;
                 plan.maybe_add_to_training(is_training, &jill_likes_jack)?;
-                graph.ensure_existence_backlinks_for_proposition(&jill_likes_jack)?;
+                graph.ensure_existence_backlinks_for_proposition(&mut connection, &jill_likes_jack)?;
             }
 
             {
@@ -215,7 +217,7 @@ impl ScenarioMaker for SimpleDating {
                 plan.maybe_add_to_training(is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(is_test, &jack_dates_jill)?;
                 // graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
-                graph.register_target(&jack_dates_jill)?;
+                graph.register_target(&mut connection, &jack_dates_jill)?;
             }
         }
 
@@ -284,7 +286,7 @@ impl ScenarioMaker for SimpleDating {
 
         for implication in implications.iter() {
             println!("Storing implication: {:?}", implication);
-            graph.store_predicate_implication(implication)?;
+            graph.store_predicate_implication(&mut connection, implication)?;
         }
 
         // Additional functions
