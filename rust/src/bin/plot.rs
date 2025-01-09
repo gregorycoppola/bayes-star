@@ -34,10 +34,10 @@ fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut R
 
 pub fn run_inference_rounds(
     config: &CommandLineOptions,
-    resources: &NamespaceBundle,
+    namespace: &NamespaceBundle,
 ) -> Result<(), Box<dyn Error>> {
-    let model = InferenceModel::new_shared(&resources).unwrap();
-    let fact_memory = EmptyBeliefTable::new_shared(&resources)?;
+    let model = InferenceModel::new_shared(&namespace).unwrap();
+    let fact_memory = EmptyBeliefTable::new_shared(&namespace)?;
     let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
     proposition_graph.visualize();
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
