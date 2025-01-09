@@ -16,7 +16,7 @@ use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc, 
 use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::{map_get, RedisManager}, resources::ResourceBundle,
+    redis::{map_get, RedisManager}, resources::ResourceContext,
 };
 
 pub struct RedisBeliefTable {

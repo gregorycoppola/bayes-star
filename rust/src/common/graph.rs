@@ -1,7 +1,7 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
     redis::{set_value, RedisManager},
-    resources::ResourceBundle,
+    resources::ResourceContext,
 };
 use crate::{
     common::{

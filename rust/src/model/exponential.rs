@@ -5,7 +5,7 @@ use crate::common::interface::{BeliefTable, PredictStatistics, TrainStatistics};
 use crate::common::model::InferenceModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
-use crate::common::resources::ResourceBundle;
+use crate::common::resources::ResourceContext;
 use crate::common::setup::CommandLineOptions;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;

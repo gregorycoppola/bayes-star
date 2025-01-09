@@ -4,7 +4,7 @@ use redis::Connection;
 
 use crate::model::objects::{PredicateGroup, ImplicationFactor, Predicate, Proposition};
 
-use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::ResourceBundle};
+use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::ResourceContext};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -47,6 +47,6 @@ pub trait BeliefTable {
 pub trait ScenarioMaker {
     fn setup_scenario(
         &self,
-        redis: &ResourceBundle,
+        redis: &ResourceContext,
     ) -> Result<(), Box<dyn Error>>;
 }

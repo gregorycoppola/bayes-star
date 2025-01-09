@@ -2,9 +2,9 @@ use std::{error::Error, rc::Rc};
 
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::ResourceBundle, setup::CommandLineOptions, train::TrainingPlan}, explorer::{diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition_factor}, render_utils::render_app_body}, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::{choose::extract_backimplications_from_proposition, objects::{Proposition, PropositionGroup}}};
+use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::ResourceContext, setup::CommandLineOptions, train::TrainingPlan}, explorer::{diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition_factor}, render_utils::render_app_body}, inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode}, model::{choose::extract_backimplications_from_proposition, objects::{Proposition, PropositionGroup}}};
 
-fn get_resources() -> ResourceBundle {
+fn get_resources() -> ResourceContext {
     todo!()
 }
 
@@ -45,7 +45,7 @@ fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> Resu
     Ok(buffer)
 }
 
-fn render_network(bundle: &ResourceBundle, namespace: &str) -> Result<String, Box<dyn Error>> {
+fn render_network(bundle: &ResourceContext, namespace: &str) -> Result<String, Box<dyn Error>> {
     let graph = InferenceGraph::new_shared(namespace.to_string())?;
     let mut connection = bundle.connection.lock().unwrap();
     let target = graph.get_target(connection)?;
@@ -59,7 +59,7 @@ fn render_network(bundle: &ResourceBundle, namespace: &str) -> Result<String, Bo
     Ok(result)
 }
 
-pub fn internal_network(experiment_name: &str, namespace: &ResourceBundle) -> Html<String> {
+pub fn internal_network(experiment_name: &str, namespace: &ResourceContext) -> Html<String> {
     let network = render_network(namespace, experiment_name).unwrap();
     let body_html = format!(
         r#"

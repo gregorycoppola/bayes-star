@@ -17,7 +17,7 @@ use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
     redis::RedisManager,
-    resources::ResourceBundle,
+    resources::ResourceContext,
 };
 
 pub struct InferenceModel {

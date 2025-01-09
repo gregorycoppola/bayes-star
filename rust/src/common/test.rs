@@ -21,7 +21,7 @@ use crate::{
     print_blue, print_green, print_red, print_yellow,
 };
 
-use super::{interface::BeliefTable, resources::ResourceBundle, setup::CommandLineOptions};
+use super::{interface::BeliefTable, resources::ResourceContext, setup::CommandLineOptions};
 
 pub struct ReplState {
     pub inferencer: Box<Inferencer>,
@@ -173,7 +173,7 @@ pub fn get_input_tokens_from_user() -> Vec<String> {
 
 pub fn interactive_inference_example(
     config: &CommandLineOptions,
-    resources: &ResourceBundle,
+    resources: &ResourceContext,
 ) -> Result<(), Box<dyn Error>> {
     // let mut connection = resources.connection.lock().unwrap();
     // let plan = TrainingPlan::new(&resources)?;
@@ -196,7 +196,7 @@ pub fn interactive_inference_example(
 
 pub fn summarize_examples(
     config: &CommandLineOptions,
-    resources: &ResourceBundle,
+    resources: &ResourceContext,
 ) -> Result<(), Box<dyn Error>> {
     // let plan = TrainingPlan::new(&resources)?;
     // let graphical_model = InferenceModel::new_shared(&resources)?;
