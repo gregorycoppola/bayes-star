@@ -1,5 +1,7 @@
 use std::error::Error;
 
+use redis::Connection;
+
 use crate::model::objects::{PredicateGroup, ImplicationFactor, Predicate, Proposition};
 
 use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::ResourceBundle};
@@ -16,20 +18,20 @@ pub struct PredictStatistics {
 pub trait BeliefTable {
     fn get_proposition_probability(
         &self,
-        context: &mut ResourceBundle,
+        context: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>>;
 
     fn store_proposition_probability(
         &self,
-        context: &mut ResourceBundle,
+        context: &mut Connection,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>>;
 
     fn store_proposition_boolean(
         &self,
-        context: &mut ResourceBundle,
+        context: &mut Connection,
         proposition: &Proposition,
         observation: bool,
     ) -> Result<(), Box<dyn Error>> {

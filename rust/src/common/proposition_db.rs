@@ -37,7 +37,7 @@ impl BeliefTable for RedisBeliefTable {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
-        context: &mut ResourceBundle,
+        connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         if proposition.predicate.relation == unary_existence_function() {
@@ -45,7 +45,7 @@ impl BeliefTable for RedisBeliefTable {
         }
         let hash_string = proposition.predicate.hash_string();
         let probability_record = map_get(
-            &mut connection,
+             connection,
             &self.namespace,
             Self::PROBABILITIES_KEY,
             &hash_string,
@@ -59,15 +59,14 @@ impl BeliefTable for RedisBeliefTable {
 
     fn store_proposition_probability(
         &self,
-        context: &mut ResourceBundle,
+        connection: &mut Connection,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
         trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
         let hash_string = proposition.predicate.hash_string();
-        let mut connection = self.redis_connection.lock().expect("");
         map_insert(
-            &mut connection,
+            connection,
             &self.namespace,
             Self::PROBABILITIES_KEY,
             &hash_string,
@@ -89,6 +88,7 @@ impl BeliefTable for EmptyBeliefTable {
     // Return Some if the probability exists in the table, or else None.
     fn get_proposition_probability(
         &self,
+        connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         if proposition.predicate.relation == unary_existence_function() {
@@ -99,6 +99,7 @@ impl BeliefTable for EmptyBeliefTable {
 
     fn store_proposition_probability(
         &self,
+        connection: &mut Connection,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
@@ -125,6 +126,7 @@ impl HashMapBeliefTable {
 impl BeliefTable for HashMapBeliefTable {
     fn get_proposition_probability(
         &self,
+        connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
         if proposition.predicate.relation == unary_existence_function() {
@@ -138,6 +140,7 @@ impl BeliefTable for HashMapBeliefTable {
 
     fn store_proposition_probability(
         &self,
+        connection: &mut Connection,
         proposition: &Proposition,
         probability: f64,
     ) -> Result<(), Box<dyn Error>> {
