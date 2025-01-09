@@ -27,7 +27,7 @@ use std::io::Write;
 use std::backtrace::Backtrace;
 
 pub struct Inferencer {
-    pub config: ConfigurationOptions,
+    // pub config: ConfigurationOptions,
     pub model: Rc<InferenceModel>,
     pub fact_memory: Rc<dyn BeliefTable>,
     pub proposition_graph: Rc<PropositionGraph>,
@@ -49,7 +49,7 @@ impl Inferencer {
     ) -> Result<Box<Self>, redis::RedisError> {
         let bfs_order = proposition_graph.get_bfs_order();
         Ok(Box::new(Inferencer {
-            config: config.clone(),
+            // config: config.clone(),
             model,
             fact_memory,
             proposition_graph,
@@ -145,24 +145,24 @@ impl Inferencer {
     }
 
     pub fn clear_marginal_output_file(&self) -> Result<(), Box<dyn Error>> {
-        let file_name = self.config.marginal_output_file.clone().unwrap();
-        let _file = OpenOptions::new()
-            .write(true) // Enable write access.
-            .truncate(true) // Truncate the file's contents.
-            .create(true) // Create the file if it does not exist.
-            .open(file_name)?;
+        // let file_name = self.config.marginal_output_file.clone().unwrap();
+        // let _file = OpenOptions::new()
+        //     .write(true) // Enable write access.
+        //     .truncate(true) // Truncate the file's contents.
+        //     .create(true) // Create the file if it does not exist.
+        //     .open(file_name)?;
         Ok(())
     }
 
     pub fn log_table_to_file(&self) -> Result<(), Box<dyn Error>> {
-        let table = self.build_marginal_table()?;
-        let json = serde_json::to_string(&table)?;
-        let file_name = self.config.marginal_output_file.clone().unwrap();
-        let mut file = OpenOptions::new()
-            .append(true)
-            .create(true)
-            .open(file_name)?;
-        writeln!(file, "{}", json)?;
+        // let table = self.build_marginal_table()?;
+        // let json = serde_json::to_string(&table)?;
+        // let file_name = self.config.marginal_output_file.clone().unwrap();
+        // let mut file = OpenOptions::new()
+        //     .append(true)
+        //     .create(true)
+        //     .open(file_name)?;
+        // writeln!(file, "{}", json)?;
         Ok(())
     }
 
