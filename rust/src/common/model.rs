@@ -28,7 +28,7 @@ pub struct InferenceModel {
 impl InferenceModel {
     pub fn new_shared(namespace: String) -> Result<Arc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(namespace.clone())?;
-        let model = ExponentialModel::new_shared(&resources)?;
+        let model = ExponentialModel::new_shared(namespace.clone())?;
         Ok(Arc::new(InferenceModel {
             graph,
             model,
