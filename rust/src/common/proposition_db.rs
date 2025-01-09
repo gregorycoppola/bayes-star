@@ -60,31 +60,6 @@ impl BeliefTable for RedisBeliefTable {
             .parse::<f64>()
             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
         Ok(Some(probability))
-
-        // // Use a match statement to handle the different outcomes
-        // match self
-        //     .redis_connection
-        //     .borrow_mut()
-        //     .hget::<_, _, String>("probs", &hash_string)
-        // {
-        //     Ok(probability_str) => {
-        //         // Found the entry, parse it
-        //         let probability = probability_str
-        //             .parse::<f64>()
-        //             .map_err(|e| Box::new(e) as Box<dyn Error>)?;
-        //         Ok(Some(probability))
-        //     }
-        //     Err(e) => {
-        //         // Handle specific "not found" error
-        //         if e.kind() == redis::ErrorKind::TypeError {
-        //             // Entry not found in Redis
-        //             Ok(None)
-        //         } else {
-        //             // Other Redis errors
-        //             Err(Box::new(e) as Box<dyn Error>)
-        //         }
-        //     }
-        // }
     }
 
     fn store_proposition_probability(
@@ -107,20 +82,6 @@ impl BeliefTable for RedisBeliefTable {
             &hash_string,
             &probability.to_string(),
         )?;
-
-        // if let Err(e) = self
-        //     .redis_connection
-        //     .borrow_mut()
-        //     .hset::<&str, &str, String, bool>("probs", &hash_string, probability.to_string())
-        // {
-        //     trace!(
-        //         "GraphicalModel::store_proposition_probability - Error storing probability in Redis: {}",
-        //         e
-        //     );
-        //     return Err(Box::new(e));
-        // }
-
-        // trace!("GraphicalModel::store_proposition_probability - Completed successfully");
         Ok(())
     }
 }
