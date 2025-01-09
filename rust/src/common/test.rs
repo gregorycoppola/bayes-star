@@ -131,30 +131,30 @@ impl ReplState {
     }
 
     fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
-        let bfs = self.inferencer.proposition_graph.get_bfs_order();
-        self.question_index.clear();
-        println!("NODES");
-        for (index, node) in bfs.iter().enumerate() {
-            if node.is_single() {
-                let single = node.extract_single();
-                let probability = self.fact_memory.get_proposition_probability(&single)?;
-                let probability_string = match &probability {
-                    Some(value) => {
-                        if *value > 0.5f64 {
-                            "Yes".green()
-                        } else {
-                            "No".green()
-                        }
-                    }
-                    None => "None".yellow(),
-                };
-                println!("{}\t{}\t{:?}", index, &probability_string, &node);
-                self.question_index.insert(index as u64, node.clone());
-            } else {
-                // trace!("node {} {:?} *", index, &node);
-            }
-        }
-        Ok(())
+        // let bfs = self.inferencer.proposition_graph.get_bfs_order();
+        // self.question_index.clear();
+        // println!("NODES");
+        // for (index, node) in bfs.iter().enumerate() {
+        //     if node.is_single() {
+        //         let single = node.extract_single();
+        //         let probability = self.fact_memory.get_proposition_probability(&single)?;
+        //         let probability_string = match &probability {
+        //             Some(value) => {
+        //                 if *value > 0.5f64 {
+        //                     "Yes".green()
+        //                 } else {
+        //                     "No".green()
+        //                 }
+        //             }
+        //             None => "None".yellow(),
+        //         };
+        //         println!("{}\t{}\t{:?}", index, &probability_string, &node);
+        //         self.question_index.insert(index as u64, node.clone());
+        //     } else {
+        //         // trace!("node {} {:?} *", index, &node);
+        //     }
+        // }
+        todo!()
     }
 
 }
@@ -173,14 +173,16 @@ pub fn interactive_inference_example(
     config: &CommandLineOptions,
     resources: &ResourceBundle,
 ) -> Result<(), Box<dyn Error>> {
+    let mut connection = resources.connection.lock().unwrap();
     let plan = TrainingPlan::new(&resources)?;
     let graphical_model = InferenceModel::new_shared(&resources)?;
     let plan = TrainingPlan::new(&resources)?;
     let model = InferenceModel::new_shared(&resources).unwrap();
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
-    let fact_memory = EmptyBeliefTable::new_shared(&resources)?;
-    let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
+    let fact_memory = EmptyBeliefTable::new_shared(&config.scenario_name)?;
+    let target = model.graph.get_target(&mut connection)?;
+    let proposition_graph = PropositionGraph::new_shared(&model.graph, target)?;
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
