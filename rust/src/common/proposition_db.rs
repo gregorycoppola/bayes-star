@@ -84,7 +84,7 @@ impl BeliefTable for RedisBeliefTable {
 pub struct EmptyBeliefTable;
 
 impl EmptyBeliefTable {
-    pub fn new_shared(_client: &ResourceBundle) -> Result<Arc<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_shared(_namespace: &str) -> Result<Arc<dyn BeliefTable>, Box<dyn Error>> {
         Ok(Arc::new(EmptyBeliefTable {}))
     }
 }

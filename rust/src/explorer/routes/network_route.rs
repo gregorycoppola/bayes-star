@@ -45,8 +45,10 @@ fn backwards_print_single(inferencer: &Inferencer, target: &Proposition) -> Resu
     Ok(buffer)
 }
 
-fn render_network(namespace: &ResourceBundle) -> Result<String, Box<dyn Error>> {
-    let graph = InferenceGraph::new_shared(namespace.namespace.clone())?;
+fn render_network(bundle: &ResourceBundle, namespace: &str) -> Result<String, Box<dyn Error>> {
+    let graph = InferenceGraph::new_shared(namespace.to_string())?;
+    let mut connection = bundle.connection.lock().unwrap();
+    let target = graph.get_target(connection)?;
     let proposition_graph = PropositionGraph::new_shared(&graph)?;
     proposition_graph.visualize();
     let model = InferenceModel::new_shared(namespace).unwrap();
@@ -58,7 +60,7 @@ fn render_network(namespace: &ResourceBundle) -> Result<String, Box<dyn Error>> 
 }
 
 pub fn internal_network(experiment_name: &str, namespace: &ResourceBundle) -> Html<String> {
-    let network = render_network(namespace).unwrap();
+    let network = render_network(namespace, experiment_name).unwrap();
     let body_html = format!(
         r#"
         {network}
