@@ -15,7 +15,7 @@ use crate::{
 };
 use redis::{Commands, Connection};
 use serde::Deserialize;
-use std::{cell::RefCell, error::Error};
+use std::{cell::RefCell, error::Error, sync::{Arc, Mutex}};
 
 use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
@@ -32,16 +32,16 @@ use crate::model::choose::extract_backimplications_from_proposition;
 use std::borrow::BorrowMut;
 
 pub struct TrainingPlan {
-    redis_connection: RefCell<redis::Connection>,
+    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl TrainingPlan {
     pub fn new(resources: &NamespaceBundle) -> Result<Self, Box<dyn Error>> {
-        let redis_connection = resources.redis.get_connection()?;
+        let redis_connection = resources.connection.clone();
         Ok(TrainingPlan {
             redis_connection,
-            namespace: resources.config.scenario_name.clone(),
+            namespace: resources.namespace.clone(),
         })
     }
 
