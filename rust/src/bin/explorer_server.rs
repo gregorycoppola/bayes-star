@@ -39,8 +39,7 @@ fn home(_context: State<AppContext>) -> Html<String> {
 #[get("/experiment/<experiment_name>")]
 fn experiment(experiment_name: String, context: State<AppContext>) -> Html<String> {
     let mut conn = context.connection.lock().unwrap();
-    // internal_experiment(&experiment_name, &mut conn)
-    todo!()
+    internal_experiment(&experiment_name, &mut conn)
 }
 
 #[get("/network/<experiment_name>")]
