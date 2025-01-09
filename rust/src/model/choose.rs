@@ -1,3 +1,5 @@
+use redis::Connection;
+
 use super::objects::{ImplicationFactor, Proposition};
 use super::ops::{convert_to_proposition, convert_to_quantified, extract_premise_role_map};
 use crate::common::graph::InferenceGraph;
@@ -73,6 +75,7 @@ pub fn compute_search_predicates(
 }
 
 pub fn extract_backimplications_from_proposition(
+    connection: &mut Connection,
     graph: &InferenceGraph,
     conclusion: &Proposition,
 ) -> Result<Vec<PropositionFactor>, Box<dyn Error>> {
@@ -85,7 +88,7 @@ pub fn extract_backimplications_from_proposition(
     let mut backimplications = Vec::new();
     for predicate in &search_keys {
         trace!("Processing search_key {:?}", &predicate.hash_string());
-        let implications = graph.predicate_backward_links(&predicate)?;
+        let implications = graph.predicate_backward_links(connection, &predicate)?;
         trace!("Found implications {:?}", &implications);
         for implication in &implications {
             let mut terms = Vec::new();

@@ -187,12 +187,12 @@ impl Inferencer {
         }
     }
 
-    pub fn is_observed(&self, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
+    pub fn is_observed(&self, connection: &mut Connection, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
         if node.is_single() {
             let as_single = node.extract_single();
             let has_evidence = self
                 .fact_memory
-                .get_proposition_probability(&as_single)?
+                .get_proposition_probability(connection,&as_single)?
                 .is_some();
             trace!(
                 "is_observed? node {:?}, has_evidence {}",
