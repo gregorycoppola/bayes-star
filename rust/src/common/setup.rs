@@ -4,6 +4,8 @@ use env_logger::{Builder, Env};
 use serde::Deserialize;
 use std::{io::Write, path::Path};
 
+/// These options define the inputs from the user.
+/// Nothing is owned by basic data types so this class can be easily freely around.
 #[derive(Deserialize, Clone, Debug)]
 pub struct ConfigurationOptions {
     pub scenario_name: String,
