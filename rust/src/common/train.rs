@@ -32,21 +32,19 @@ use crate::model::choose::extract_backimplications_from_proposition;
 use std::borrow::BorrowMut;
 
 pub struct TrainingPlan {
-    redis_connection: Arc<Mutex<redis::Connection>>,
     namespace: String,
 }
 
 impl TrainingPlan {
-    pub fn new(resources: &ResourceContext) -> Result<Self, Box<dyn Error>> {
-        let redis_connection = resources.connection.clone();
+    pub fn new(namespace: String) -> Result<Self, Box<dyn Error>> {
         Ok(TrainingPlan {
-            redis_connection,
-            namespace: resources.namespace.clone(),
+            namespace,
         })
     }
 
     pub fn add_proposition_to_queue(
         &mut self,
+        connection: &mut Connection,
         queue_name: &String,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
@@ -68,9 +66,8 @@ impl TrainingPlan {
             "GraphicalModel::add_to_training_queue - Serialized proposition: {}",
             &serialized_proposition
         );
-        let mut connection = self.redis_connection.lock().expect("");
         seq_push(
-            &mut connection,
+             connection,
             &self.namespace,
             &queue_name,
             &serialized_proposition,
@@ -81,11 +78,12 @@ impl TrainingPlan {
 
     pub fn maybe_add_to_training(
         &mut self,
+        connection: &mut Connection,
         is_training: bool,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         if is_training {
-            self.add_proposition_to_queue(&"training_queue".to_string(), &proposition)
+            self.add_proposition_to_queue(connection, &"training_queue".to_string(), &proposition)
         } else {
             Ok(())
         }
@@ -93,11 +91,12 @@ impl TrainingPlan {
 
     pub fn maybe_add_to_test(
         &mut self,
+        connection: &mut Connection,
         is_test: bool,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         if is_test {
-            self.add_proposition_to_queue(&"test_queue".to_string(), &proposition)
+            self.add_proposition_to_queue(connection, &"test_queue".to_string(), &proposition)
         } else {
             Ok(())
         }
@@ -105,15 +104,15 @@ impl TrainingPlan {
 
     fn get_propositions_from_queue(
         &self,
+        connection: &mut Connection,
         seq_name: &String,
     ) -> Result<Vec<Proposition>, Box<dyn Error>> {
         trace!(
             "GraphicalModel::get_propositions_from_queue - Start. Queue name: {}",
             seq_name
         );
-        let mut connection = self.redis_connection.lock().expect("");
         let records = seq_get_all(
-            &mut connection,
+            connection,
             &self.namespace,
             &seq_name,
         )?;
@@ -126,14 +125,14 @@ impl TrainingPlan {
         Ok(result)
     }
 
-    pub fn get_training_questions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn get_training_questions(&self, connection: &mut Connection) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let training_queue_name = String::from("training_queue");
-        self.get_propositions_from_queue(&training_queue_name)
+        self.get_propositions_from_queue(connection, &training_queue_name)
     }
 
-    pub fn get_test_questions(&self) -> Result<Vec<Proposition>, Box<dyn Error>> {
+    pub fn get_test_questions(&self, connection: &mut Connection) -> Result<Vec<Proposition>, Box<dyn Error>> {
         let test_queue_name = String::from("test_queue");
-        self.get_propositions_from_queue(&test_queue_name)
+        self.get_propositions_from_queue(connection, &test_queue_name)
     }
 }
 
@@ -181,7 +180,7 @@ pub fn do_training(resources: &ResourceContext, namespace: String) -> Result<(),
     let mut connection = resources.connection.lock().unwrap();
     let graph = InferenceGraph::new_mutable(namespace.clone())?;
     let proposition_db = RedisBeliefTable::new_mutable(namespace.clone())?;
-    let plan = TrainingPlan::new(&resources)?;
+    let plan = TrainingPlan::new(namespace.clone())?;
     let mut factor_model = ExponentialModel::new_mutable(namespace.clone())?;
     trace!("do_training - Getting all implications");
     let implications = graph.get_all_implications(&mut connection)?;
@@ -190,7 +189,7 @@ pub fn do_training(resources: &ResourceContext, namespace: String) -> Result<(),
         factor_model.initialize_connection(&implication)?;
     }
     trace!("do_training - Getting all propositions");
-    let training_questions = plan.get_training_questions()?;
+    let training_questions = plan.get_training_questions(&mut connection)?;
     trace!(
         "do_training - Processing propositions: {}",
         training_questions.len()
