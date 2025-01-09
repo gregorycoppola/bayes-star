@@ -37,11 +37,10 @@ pub struct SimpleDating {}
 
 impl ScenarioMaker for SimpleDating {
     fn setup_scenario(&self, resources: &NamespaceBundle) -> Result<(), Box<dyn Error>> {
-        let mut graph = InferenceGraph::new_mutable(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
+        let mut graph = InferenceGraph::new_mutable(resources.connection.clone(), resources.namespace.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;
-        let config = &resources.config;
-        let total_members_each_class = config.entities_per_domain;
+        let total_members_each_class = 1024;
         let entity_domains = [Domain::MAN.to_string(), Domain::WOMAN.to_string()];
 
         // Retrieve entities in the Man domain
