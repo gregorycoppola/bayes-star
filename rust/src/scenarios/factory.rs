@@ -8,7 +8,7 @@ pub struct ScenarioMakerFactory;
 
 impl ScenarioMakerFactory {
     pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<dyn ScenarioMaker>, Box<dyn Error>> {
-        match resources.config.scenario_name.as_str() {
+        match resources.namespace.as_str() {
             "dating_simple" => Ok(Rc::new(SimpleDating {})),
             // "dating_triangle" => Ok(Rc::new(EligibilityTriangle {})),
             "one_var" => Ok(Rc::new(OneVariable {})),
