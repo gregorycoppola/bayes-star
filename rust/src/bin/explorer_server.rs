@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use bayes_star::{
     common::{
         graph::InferenceGraph,
-        resources::FactoryResources,
+        resources::NamespaceBundle,
         setup::{parse_configuration_options, CommandLineOptions},
     },
     explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
@@ -24,7 +24,7 @@ pub struct AppContext {
 
 impl AppContext {
     pub fn new(config: CommandLineOptions) -> Self {
-        let resources = FactoryResources::new(&config).expect("Failed to create factory resources");
+        let resources = NamespaceBundle::new(&config).expect("Failed to create factory resources");
         let connection = resources.redis.get_arc_mutex_guarded_connection().unwrap();
         // let graph = InferenceGraph::new_literal(&resources).expect("Failed to create inference graph");
         AppContext { connection, config }

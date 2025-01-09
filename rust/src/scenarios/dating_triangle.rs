@@ -3,7 +3,7 @@ use crate::common::graph::InferenceGraph;
 use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
 use crate::common::redis::RedisManager;
-use crate::common::resources::{self, FactoryResources};
+use crate::common::resources::{self, NamespaceBundle};
 use crate::common::train::TrainingPlan;
 use crate::model::creators::predicate;
 use crate::scenarios::helpers::weighted_cointoss;
@@ -21,7 +21,7 @@ pub struct EligibilityTriangle {}
 impl ScenarioMaker for EligibilityTriangle {
     fn setup_scenario(
         &self,
-        resources: &FactoryResources,
+        resources: &NamespaceBundle,
     ) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources)?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;

@@ -3,7 +3,7 @@ use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
 use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::redis::RedisManager;
-use crate::common::resources::{self, FactoryResources};
+use crate::common::resources::{self, NamespaceBundle};
 use crate::common::train::TrainingPlan;
 use crate::model::choose::extract_existence_factor_for_proposition;
 use crate::model::creators::{predicate, relation, variable_argument};
@@ -38,7 +38,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct OneVariable {}
 
 impl ScenarioMaker for OneVariable {
-    fn setup_scenario(&self, resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, resources: &NamespaceBundle) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;

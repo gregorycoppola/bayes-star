@@ -20,7 +20,7 @@ use std::{cell::RefCell, error::Error};
 use super::graph::InferenceGraph;
 use super::interface::ScenarioMaker;
 use super::model::FactorModel;
-use super::resources::FactoryResources;
+use super::resources::NamespaceBundle;
 use super::{
     interface::{PredictStatistics, TrainStatistics},
     model::FactorContext,
@@ -37,7 +37,7 @@ pub struct TrainingPlan {
 }
 
 impl TrainingPlan {
-    pub fn new(resources: &FactoryResources) -> Result<Self, Box<dyn Error>> {
+    pub fn new(resources: &NamespaceBundle) -> Result<Self, Box<dyn Error>> {
         let redis_connection = resources.redis.get_connection()?;
         Ok(TrainingPlan {
             redis_connection,
@@ -173,7 +173,7 @@ fn extract_factor_for_proposition_for_training(
     Ok(result)
 }
 
-pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
+pub fn do_training(resources: &NamespaceBundle) -> Result<(), Box<dyn Error>> {
     let graph = InferenceGraph::new_mutable(resources.redis.get_arc_mutex_guarded_connection()?, resources.config.scenario_name.clone())?;
     let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
     let plan = TrainingPlan::new(&resources)?;
@@ -212,7 +212,7 @@ pub fn do_training(resources: &FactoryResources) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn setup_and_train(
-    resources: &FactoryResources,
+    resources: &NamespaceBundle,
     scenario_maker: &dyn ScenarioMaker,
 ) -> Result<(), Box<dyn Error>> {
     let model_spec = "dummy_model_spec".to_string();

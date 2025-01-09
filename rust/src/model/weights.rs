@@ -1,5 +1,5 @@
 use crate::{
-    common::{redis::{map_get, map_insert}, resources::FactoryResources},
+    common::{redis::{map_get, map_insert}, resources::NamespaceBundle},
     model::objects::ImplicationFactor,
 };
 use rand::Rng;
@@ -36,7 +36,7 @@ pub struct ExponentialWeights {
 }
 
 impl ExponentialWeights {
-    pub fn new(resources: &FactoryResources) -> Result<ExponentialWeights, Box<dyn Error>> {
+    pub fn new(resources: &NamespaceBundle) -> Result<ExponentialWeights, Box<dyn Error>> {
         let connection = resources.redis.get_connection()?;
         Ok(ExponentialWeights {
             connection,
