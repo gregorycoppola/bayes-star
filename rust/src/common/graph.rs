@@ -1,12 +1,12 @@
 use super::{
     interface::{PredictStatistics, TrainStatistics},
-    redis::RedisManager,
+    redis::{set_value, RedisManager},
     resources::FactoryResources,
 };
 use crate::{
     common::{
         interface::BeliefTable,
-        redis::{is_member, set_add, set_members},
+        redis::{get_value, is_member, set_add, set_members},
     },
     model::{
         self,
@@ -15,8 +15,7 @@ use crate::{
         },
         exponential::ExponentialModel,
         objects::{
-            Domain, Entity, Predicate, ImplicationFactor, PredicateGroup, Proposition,
-            PropositionGroup, Relation,
+            Domain, Entity, ImplicationFactor, Predicate, PredicateGroup, Proposition, PropositionGroup, Relation
         },
     },
     print_blue,
@@ -142,7 +141,7 @@ impl InferenceGraph {
     pub fn register_target(&mut self, target: &Proposition) -> Result<(), Box<dyn Error>> {
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let record = serialize_record(target)?;
-        set_add(
+        set_value(
             &mut connection,
             &self.namespace,
             &Self::target_key_name(),
@@ -152,7 +151,13 @@ impl InferenceGraph {
     }
 
     pub fn get_target(&self) -> Result<Proposition, Box<dyn Error>> {
-        todo!()
+        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+        let record = get_value(
+            &mut connection,
+            &self.namespace,
+            &Self::target_key_name(),
+        )?.unwrap();
+        serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>)
     }
 
     pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
