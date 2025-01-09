@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use bayes_star::{
     common::{
         graph::InferenceGraph,
-        resources::NamespaceBundle,
+        resources::ResourceBundle,
         setup::{parse_configuration_options, CommandLineOptions},
     },
     explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
@@ -18,12 +18,12 @@ use rocket::{http::ContentType, State};
 use rocket_contrib::serve::StaticFiles;
 
 pub struct AppContext {
-    namespace: NamespaceBundle,
+    namespace: ResourceBundle,
 }
 
 impl AppContext {
     pub fn new(config: CommandLineOptions) -> Self {
-        let namespace = NamespaceBundle::new(&config).expect("Failed to create factory resources");
+        let namespace = ResourceBundle::new(&config).expect("Failed to create factory resources");
         AppContext { namespace }
     }
 }

@@ -5,7 +5,7 @@ use crate::common::interface::{BeliefTable, PredictStatistics, TrainStatistics};
 use crate::common::model::InferenceModel;
 use crate::common::model::{FactorContext, FactorModel};
 use crate::common::redis::RedisManager;
-use crate::common::resources::NamespaceBundle;
+use crate::common::resources::ResourceBundle;
 use crate::common::setup::CommandLineOptions;
 use crate::model::objects::Predicate;
 use crate::model::weights::CLASS_LABELS;
@@ -22,7 +22,7 @@ pub struct ExponentialModel {
 }
 
 impl ExponentialModel {
-    pub fn new_mutable(resources: &NamespaceBundle) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
+    pub fn new_mutable(resources: &ResourceBundle) -> Result<Box<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.connection.clone();
         let weights = ExponentialWeights::new(resources)?;
         Ok(Box::new(ExponentialModel {
@@ -30,7 +30,7 @@ impl ExponentialModel {
             weights,
         }))
     }
-    pub fn new_shared(resources: &NamespaceBundle) -> Result<Arc<dyn FactorModel>, Box<dyn Error>> {
+    pub fn new_shared(resources: &ResourceBundle) -> Result<Arc<dyn FactorModel>, Box<dyn Error>> {
         let connection = resources.connection.clone();
         let weights = ExponentialWeights::new(resources)?;
         Ok(Arc::new(ExponentialModel {

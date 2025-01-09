@@ -2,7 +2,7 @@ use std::error::Error;
 use bayes_star::common::model::InferenceModel;
 use bayes_star::common::proposition_db::EmptyBeliefTable;
 use bayes_star::common::setup::{parse_configuration_options, CommandLineOptions};
-use bayes_star::common::resources::NamespaceBundle;
+use bayes_star::common::resources::ResourceBundle;
 use bayes_star::common::test::ReplState;
 use bayes_star::common::train::TrainingPlan;
 use bayes_star::inference::graph::PropositionGraph;
@@ -34,7 +34,7 @@ fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut R
 
 pub fn run_inference_rounds(
     config: &CommandLineOptions,
-    namespace: &NamespaceBundle,
+    namespace: &ResourceBundle,
 ) -> Result<(), Box<dyn Error>> {
     let model = InferenceModel::new_shared(&namespace).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(&namespace)?;
@@ -68,7 +68,7 @@ pub fn run_inference_rounds(
 
 fn main() {
     let config: bayes_star::common::setup::CommandLineOptions = parse_configuration_options();
-    let resources = NamespaceBundle::new(&config).expect("Couldn't create resources.");
+    let resources = ResourceBundle::new(&config).expect("Couldn't create resources.");
     run_inference_rounds(&config, &resources).expect("Testing failed.");
     println!("main finishes");
 }

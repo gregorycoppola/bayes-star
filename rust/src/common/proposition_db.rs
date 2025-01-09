@@ -16,7 +16,7 @@ use std::{cell::RefCell, collections::HashMap, error::Error, io::Empty, rc::Rc, 
 use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
-    redis::{map_get, RedisManager}, resources::NamespaceBundle,
+    redis::{map_get, RedisManager}, resources::ResourceBundle,
 };
 
 pub struct RedisBeliefTable {
@@ -25,12 +25,12 @@ pub struct RedisBeliefTable {
 }
 
 impl RedisBeliefTable {
-    pub fn new_mutable(resources: &NamespaceBundle) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_mutable(resources: &ResourceBundle) -> Result<Box<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = resources.connection.clone();
         let namespace = resources.namespace.clone();
         Ok(Box::new(RedisBeliefTable { redis_connection, namespace }))
     }
-    pub fn new_shared(resources: &NamespaceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_shared(resources: &ResourceBundle) -> Result<Rc<dyn BeliefTable>, Box<dyn Error>> {
         let redis_connection = resources.connection.clone();
         let namespace = resources.namespace.clone();
         Ok(Rc::new(RedisBeliefTable { redis_connection, namespace }))
@@ -84,7 +84,7 @@ impl BeliefTable for RedisBeliefTable {
 pub struct EmptyBeliefTable;
 
 impl EmptyBeliefTable {
-    pub fn new_shared(_client: &NamespaceBundle) -> Result<Arc<dyn BeliefTable>, Box<dyn Error>> {
+    pub fn new_shared(_client: &ResourceBundle) -> Result<Arc<dyn BeliefTable>, Box<dyn Error>> {
         Ok(Arc::new(EmptyBeliefTable {}))
     }
 }

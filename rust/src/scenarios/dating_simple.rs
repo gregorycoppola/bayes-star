@@ -3,7 +3,7 @@ use crate::common::interface::BeliefTable;
 use crate::common::model::InferenceModel;
 use crate::common::proposition_db::RedisBeliefTable;
 use crate::common::redis::RedisManager;
-use crate::common::resources::{self, NamespaceBundle};
+use crate::common::resources::{self, ResourceBundle};
 use crate::common::train::TrainingPlan;
 use crate::model::creators::{predicate, relation, variable_argument};
 use crate::{
@@ -36,7 +36,7 @@ fn weighted_cointoss(threshold: f64) -> f64 {
 pub struct SimpleDating {}
 
 impl ScenarioMaker for SimpleDating {
-    fn setup_scenario(&self, resources: &NamespaceBundle) -> Result<(), Box<dyn Error>> {
+    fn setup_scenario(&self, resources: &ResourceBundle) -> Result<(), Box<dyn Error>> {
         let mut graph = InferenceGraph::new_mutable(resources.namespace.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(&resources)?;
         let mut plan = TrainingPlan::new(&resources)?;

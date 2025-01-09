@@ -1,4 +1,4 @@
-use crate::common::resources::NamespaceBundle;
+use crate::common::resources::ResourceBundle;
 use clap::{App, Arg};
 use env_logger::{Builder, Env};
 use serde::Deserialize;

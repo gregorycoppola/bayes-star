@@ -1,8 +1,8 @@
-use bayes_star::common::{graph::InferenceGraph, resources::NamespaceBundle, setup::parse_configuration_options};
+use bayes_star::common::{graph::InferenceGraph, resources::ResourceBundle, setup::parse_configuration_options};
 
 fn main() {
     let config: bayes_star::common::setup::CommandLineOptions = parse_configuration_options();
-    let resources = NamespaceBundle::new(&config).unwrap();
+    let resources = ResourceBundle::new(&config).unwrap();
     // let graph = InferenceGraph::new_shared(&resources).unwrap();
     let graph = InferenceGraph::new_shared(resources.connection.clone(), resources.namespace.clone()).unwrap();
     //

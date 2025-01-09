@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::model::objects::{PredicateGroup, ImplicationFactor, Predicate, Proposition};
 
-use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::NamespaceBundle};
+use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, redis::RedisManager, resources::ResourceBundle};
 
 pub struct TrainStatistics {
     pub loss: f64,
@@ -42,6 +42,6 @@ pub trait BeliefTable {
 pub trait ScenarioMaker {
     fn setup_scenario(
         &self,
-        redis: &NamespaceBundle,
+        redis: &ResourceBundle,
     ) -> Result<(), Box<dyn Error>>;
 }

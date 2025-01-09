@@ -17,7 +17,7 @@ use super::{
     graph::InferenceGraph,
     interface::{PredictStatistics, TrainStatistics},
     redis::RedisManager,
-    resources::NamespaceBundle,
+    resources::ResourceBundle,
 };
 
 pub struct InferenceModel {
@@ -26,7 +26,7 @@ pub struct InferenceModel {
 }
 
 impl InferenceModel {
-    pub fn new_shared(resources: &NamespaceBundle) -> Result<Arc<Self>, Box<dyn Error>> {
+    pub fn new_shared(resources: &ResourceBundle) -> Result<Arc<Self>, Box<dyn Error>> {
         let graph = InferenceGraph::new_shared(resources.connection.clone(), resources.namespace.clone())?;
         let model = ExponentialModel::new_shared(&resources)?;
         Ok(Arc::new(InferenceModel {

@@ -1,17 +1,17 @@
 use std::{error::Error, sync::{Arc, Mutex}};
 use super::{redis::RedisManager, setup::CommandLineOptions};
 
-pub struct NamespaceBundle {
+pub struct ResourceBundle {
     pub namespace: String,
     pub connection: Arc<Mutex<redis::Connection>>,
 }
 
-impl NamespaceBundle {
-    pub fn new(options: &CommandLineOptions) -> Result<NamespaceBundle, Box<dyn Error>> {
+impl ResourceBundle {
+    pub fn new(options: &CommandLineOptions) -> Result<ResourceBundle, Box<dyn Error>> {
         let namespace = options.scenario_name.clone();
         let manager = RedisManager::new()?;
         let connection = manager.get_arc_mutex_guarded_connection()?;
-        Ok(NamespaceBundle {
+        Ok(ResourceBundle {
             namespace,
             connection,
         })
