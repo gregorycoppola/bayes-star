@@ -41,18 +41,22 @@ fn namespace_qualified_key(namespace: &str, key: &str) -> String {
 
 pub fn set_value(
     conn: &mut Connection,
+    namespace: &str,
     key: &str,
     value: &str,
 ) -> Result<(), Box<dyn Error>> {
-    conn.set(key, value)?;
+    let nskey = &namespace_qualified_key(namespace, key);
+    conn.set(nskey, value)?;
     Ok(())
 }
 
 pub fn get_value(
     conn: &mut Connection,
+    namespace: &str,
     key: &str,
 ) -> Result<Option<String>, Box<dyn Error>> {
-    let value: Option<String> = conn.get(key)?;
+    let nskey = &namespace_qualified_key(namespace, key);
+    let value: Option<String> = conn.get(nskey)?;
     Ok(value)
 }
 
