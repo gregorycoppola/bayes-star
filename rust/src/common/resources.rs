@@ -7,7 +7,7 @@ pub struct NamespaceBundle {
 }
 
 impl NamespaceBundle {
-    pub fn new_from_cli(options: &CommandLineOptions) -> Result<NamespaceBundle, Box<dyn Error>> {
+    pub fn new(options: &CommandLineOptions) -> Result<NamespaceBundle, Box<dyn Error>> {
         let namespace = options.scenario_name.clone();
         let manager = RedisManager::new()?;
         let connection = manager.get_arc_mutex_guarded_connection()?;
