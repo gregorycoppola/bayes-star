@@ -69,8 +69,9 @@ impl BeliefTable for RedisBeliefTable {
     ) -> Result<(), Box<dyn Error>> {
         trace!("GraphicalModel::store_proposition_probability - Start. Input proposition: {:?}, probability: {}", proposition, probability);
         let hash_string = proposition.predicate.hash_string();
+        let mut connection = self.redis_connection.lock().expect("");
         map_insert(
-            &mut self.redis_connection.borrow_mut(),
+            &mut connection,
             &self.namespace,
             Self::PROBABILITIES_KEY,
             &hash_string,
