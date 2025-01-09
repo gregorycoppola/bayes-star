@@ -9,6 +9,7 @@ fn get_resources() -> NamespaceBundle {
 }
 
 fn render_network(namespace: &NamespaceBundle) -> Result<String, Box<dyn Error>> {
+    let graph = InferenceGraph::new_shared(namespace.connection.clone(), namespace.namespace.clone())?;
     // let proposition_graph = PropositionGraph::new_shared(graph)?;
     // // proposition_graph.visualize();
     // let mut inferencer =
