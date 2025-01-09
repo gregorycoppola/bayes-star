@@ -56,21 +56,19 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_all_experiments(&self) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_all_experiments(&self, connection: &mut Connection) -> Result<Vec<String>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::experiment_set_name(),
         )?;
         Ok(set_members)
     }
 
-    pub fn register_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn register_relation(&mut self, connection: &mut Connection, relation: &Relation) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(relation)?;
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::relation_set_name(),
             &record,
@@ -78,15 +76,14 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn check_relation(&mut self, relation: &Relation) -> Result<(), Box<dyn Error>> {
+    pub fn check_relation(&mut self, connection: &mut Connection, relation: &Relation) -> Result<(), Box<dyn Error>> {
         // TODO: impelment this
         Ok(())
     }
 
-    pub fn get_all_relations(&self) -> Result<Vec<Relation>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_all_relations(&self, connection: &mut Connection) -> Result<Vec<Relation>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::relation_set_name(),
         )?;
@@ -96,10 +93,9 @@ impl InferenceGraph {
             .collect()
     }
 
-    pub fn register_domain(&mut self, domain: &String) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn register_domain(&mut self, connection: &mut Connection, domain: &String) -> Result<(), Box<dyn Error>> {
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             "domains",
             domain,
@@ -107,11 +103,9 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn check_domain(&self, domain: &String) -> Result<(), Box<dyn Error>> {
-        // TODO: here is a bug
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn check_domain(&self, connection: &mut Connection, domain: &String) -> Result<(), Box<dyn Error>> {
         let result = is_member(
-            &mut connection,
+             connection,
             &self.namespace,
             "domains",
             domain,
@@ -120,21 +114,19 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_all_domains(&self) -> Result<Vec<String>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_all_domains(&self, connection: &mut Connection) -> Result<Vec<String>, Box<dyn Error>> {
         let result = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             "domains",
         )?;
         Ok(result)
     }
 
-    pub fn register_target(&mut self, target: &Proposition) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn register_target(&mut self, connection: &mut Connection, target: &Proposition) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(target)?;
         set_value(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::target_key_name(),
             &record,
@@ -142,27 +134,25 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_target(&self) -> Result<Proposition, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_target(&self, connection: &mut Connection) -> Result<Proposition, Box<dyn Error>> {
         let record = get_value(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::target_key_name(),
         )?.unwrap();
         serde_json::from_str(&record).map_err(|e| Box::new(e) as Box<dyn Error>)
     }
 
-    pub fn store_entity(&mut self, entity: &Entity) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn store_entity(&mut self, connection: &mut Connection, entity: &Entity) -> Result<(), Box<dyn Error>> {
         trace!(
             "Storing entity in domain '{}': {}",
             entity.domain,
             entity.name
         );
-        self.check_domain(&entity.domain)?;
+        self.check_domain(connection, &entity.domain)?;
         // NOTE: this is a "set" named after the "domain", with each "entity.name" inside of it.
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             &entity.domain.to_string(),
             &entity.name,
@@ -170,11 +160,10 @@ impl InferenceGraph {
         Ok(())
     }
 
-    pub fn get_entities_in_domain(&self, domain: &String) -> Result<Vec<Entity>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_entities_in_domain(&self, connection: &mut Connection, domain: &String) -> Result<Vec<Entity>, Box<dyn Error>> {
         let domain_string = domain.to_string();
         let names: Vec<String> = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             &domain_string,
         )?;
@@ -207,11 +196,10 @@ impl InferenceGraph {
         "target".to_string()
     }
 
-    fn store_implication(&mut self, implication: &ImplicationFactor) -> Result<(), Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    fn store_implication(&mut self, connection: &mut Connection, implication: &ImplicationFactor) -> Result<(), Box<dyn Error>> {
         let record = serialize_record(implication)?;
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::implication_seq_name(),
             &record,
@@ -221,23 +209,22 @@ impl InferenceGraph {
 
     // TODO: I feel like this should not be public.
     pub fn ensure_existence_backlinks_for_proposition(
-        &mut self,
+        &mut self, connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<(), Box<dyn Error>> {
         let implication = extract_existence_factor_for_proposition(proposition)?;
-        self.store_predicate_implication(&implication)?;
+        self.store_predicate_implication(connection, &implication)?;
         Ok(())
     }
 
     fn store_predicate_backward_link(
-        &mut self,
+        &mut self, connection: &mut Connection,
         inference: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
         let conclusion = &inference.conclusion;
         let record = serialize_record(inference)?;
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         set_add(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
             &record,
@@ -246,28 +233,27 @@ impl InferenceGraph {
     }
 
     pub fn store_predicate_implication(
-        &mut self,
+        &mut self, connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>> {
-        self.store_implication(implication)?;
-        self.store_predicate_backward_link(implication)?;
+        self.store_implication(connection, implication)?;
+        self.store_predicate_backward_link(connection, implication)?;
         Ok(())
     }
 
     pub fn store_predicate_implications(
-        &mut self,
+        &mut self, connection: &mut Connection,
         implications: &Vec<ImplicationFactor>,
     ) -> Result<(), Box<dyn Error>> {
         for implication in implications {
-            self.store_predicate_implication(implication)?;
+            self.store_predicate_implication(connection, implication)?;
         }
         Ok(())
     }
 
-    pub fn get_all_implications(&self) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
+    pub fn get_all_implications(&self, connection: &mut Connection) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
         let set_members: Vec<String> = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::implication_seq_name(),
         )?;
@@ -287,12 +273,11 @@ impl InferenceGraph {
     
 
     pub fn predicate_backward_links(
-        &self,
+        &self, connection: &mut Connection,
         conclusion: &Predicate,
     ) -> Result<Vec<ImplicationFactor>, Box<dyn Error>> {
-        let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let set_members: Vec<String> = set_members(
-            &mut connection,
+            connection,
             &self.namespace,
             &Self::predicate_backward_set_name(conclusion),
         )?;
