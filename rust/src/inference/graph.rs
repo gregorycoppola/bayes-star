@@ -35,7 +35,6 @@ impl PropositionFactor {
 }
 
 pub struct PropositionGraph {
-    pub predicate_graph: Rc<InferenceGraph>,
     pub single_forward: HashMap<Proposition, HashSet<PropositionGroup>>,
     pub single_backward: HashMap<Proposition, HashSet<PropositionGroup>>,
     pub group_forward: HashMap<PropositionGroup, HashSet<Proposition>>,
@@ -123,11 +122,10 @@ fn initialize_visit_single(
 
 impl PropositionGraph {
     pub fn new_shared(
-        predicate_graph: Rc<InferenceGraph>,
+        predicate_graph: &InferenceGraph,
         target: &Proposition,
     ) -> Result<Rc<PropositionGraph>, Box<dyn Error>> {
         let mut graph = PropositionGraph {
-            predicate_graph,
             single_forward: HashMap::new(),
             single_backward: HashMap::new(),
             group_forward: HashMap::new(),
