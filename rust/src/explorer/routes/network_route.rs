@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, rc::Rc};
 
 use rocket::response::content::Html;
 
@@ -9,17 +9,11 @@ fn get_resources() -> FactoryResources {
 }
 
 fn render_network(graph: &InferenceGraph, config: &ConfigurationOptions) -> Result<String, Box<dyn Error>> {
-    let resources = get_resources();
-    let plan = TrainingPlan::new(&resources)?;
-    let model = InferenceModel::new_shared(&resources).unwrap();
-    let test_questions = plan.get_test_questions().unwrap();
-    let target = &test_questions[0];
-    let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
-    let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
-    proposition_graph.visualize();
-    let mut inferencer =
-        Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart()?;
+    let proposition_graph = PropositionGraph::new_shared(Rc::new(graph.clone()), target)?;
+    // proposition_graph.visualize();
+    // let mut inferencer =
+    //     Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
+    // inferencer.initialize_chart()?;
     Ok("todo".to_string())
 }
 
