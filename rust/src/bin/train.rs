@@ -10,7 +10,7 @@ extern crate log;
 fn main() {
     let config = parse_configuration_options();
     let resources = ResourceContext::new(&config).expect("Couldn't create resources.");
-    let scenario_maker = ScenarioMakerFactory::new_shared(&resources).unwrap();
-    setup_and_train(&resources, scenario_maker.borrow()).expect("Error in training.");
+    let scenario_maker = ScenarioMakerFactory::new_shared(&config.scenario_name).unwrap();
+    setup_and_train(&resources, scenario_maker.borrow(), &config.scenario_name).expect("Error in training.");
     warn!("program done");
 }
