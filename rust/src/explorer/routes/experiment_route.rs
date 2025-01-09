@@ -1,5 +1,3 @@
-use rocket::response::content::Html;
-
 use crate::{common::graph::InferenceGraph, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
 
 fn render_domain_part(graph: &InferenceGraph) -> String {

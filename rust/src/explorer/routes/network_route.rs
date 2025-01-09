@@ -1,7 +1,5 @@
 use std::{error::Error, rc::Rc};
 
-use rocket::response::content::Html;
-
 use crate::{common::{graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable, resources::FactoryResources, setup::CommandLineOptions, train::TrainingPlan}, explorer::render_utils::render_app_body, inference::{graph::PropositionGraph, inference::Inferencer}};
 
 fn get_resources() -> FactoryResources {

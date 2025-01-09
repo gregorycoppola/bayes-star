@@ -1,5 +1,3 @@
-use rocket::response::content::Html;
-
 use crate::explorer::render_utils::render_app_body;
 
 
