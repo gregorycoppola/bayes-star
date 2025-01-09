@@ -45,6 +45,7 @@ pub struct PropositionGraph {
 }
 
 fn initialize_visit_single(
+    predicate_graph: &InferenceGraph,
     graph: &mut PropositionGraph,
     single: &Proposition,
 ) -> Result<(), Box<dyn Error>> {
@@ -56,7 +57,7 @@ fn initialize_visit_single(
         .all_nodes
         .insert(PropositionNode::from_single(single));
     let inference_factors =
-        extract_backimplications_from_proposition(&graph.predicate_graph, single)?;
+        extract_backimplications_from_proposition(predicate_graph, single)?;
     trace!(
         "\x1b[33mInference factors count: {}\x1b[0m",
         inference_factors.len()
@@ -109,7 +110,7 @@ fn initialize_visit_single(
                     "\x1b[35mRecursively initializing visit for term: {:?}\x1b[0m",
                     term.hash_string()
                 );
-                initialize_visit_single(graph, term)?;
+                initialize_visit_single(predicate_graph, graph, term)?;
             }
         }
     }
@@ -134,7 +135,7 @@ impl PropositionGraph {
             all_nodes: HashSet::new(),
             target: target.clone(),
         };
-        initialize_visit_single(&mut graph, target)?;
+        initialize_visit_single(predicate_graph, &mut graph, target)?;
         Ok(Rc::new(graph))
     }
 

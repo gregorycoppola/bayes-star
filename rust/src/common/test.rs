@@ -180,7 +180,7 @@ pub fn interactive_inference_example(
     let test_questions = plan.get_test_questions().unwrap();
     let target = &test_questions[config.test_example.unwrap() as usize];
     let fact_memory = EmptyBeliefTable::new_shared(&resources.redis)?;
-    let proposition_graph = PropositionGraph::new_shared(model.graph.clone(), target)?;
+    let proposition_graph = PropositionGraph::new_shared(&model.graph, target)?;
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(&config, model.clone(), proposition_graph.clone(), fact_memory)?;
