@@ -9,10 +9,10 @@ fn get_resources() -> FactoryResources {
 }
 
 fn render_network(graph: &InferenceGraph, config: &ConfigurationOptions) -> Result<String, Box<dyn Error>> {
-    let proposition_graph = PropositionGraph::new_shared(graph)?;
-    // proposition_graph.visualize();
-    let mut inferencer =
-        Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
+    // let proposition_graph = PropositionGraph::new_shared(graph)?;
+    // // proposition_graph.visualize();
+    // let mut inferencer =
+    //     Inferencer::new_mutable(config, model.clone(), proposition_graph.clone(), fact_memory)?;
     // inferencer.initialize_chart()?;
     Ok("todo".to_string())
 }
