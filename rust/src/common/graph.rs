@@ -112,8 +112,8 @@ impl InferenceGraph {
         Ok(())
     }
 
-    /// Return a "substantive" iff it's ok, else panic.
     pub fn check_domain(&self, domain: &String) -> Result<(), Box<dyn Error>> {
+        // TODO: here is a bug
         let mut connection = self.redis_connection.lock().expect("Failed to lock Redis connection");
         let result = is_member(
             &mut connection,

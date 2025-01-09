@@ -101,10 +101,12 @@ impl ScenarioMaker for SimpleDating {
         println!("jill date jack: {}", jills.len());
 
         for i in 0..total_members_each_class {
+            println!("i: {}", i);
             let is_test = i == 0;
             let is_training = !is_test;
             let mut domain_entity_map: HashMap<String, Entity> = HashMap::new();
             for domain in entity_domains.iter() {
+                println!("domain: {}", domain);
                 let prefix = if is_test { "test" } else { "train" };
                 let name = format!("{}_{:?}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
                 let entity = Entity {
