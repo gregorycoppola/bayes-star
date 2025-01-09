@@ -1,3 +1,5 @@
+use redis::Connection;
+
 use super::{
     inference::{compute_each_combination, groups_from_backlinks, Inferencer},
     table::{GenericNodeType, PropositionNode},
@@ -10,21 +12,25 @@ use crate::{
 use std::error::Error;
 
 impl Inferencer {
-    pub fn do_pi_traversal(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn do_pi_traversal(&mut self, connection: &mut Connection) -> Result<(), Box<dyn Error>> {
         let bfs_order = self.bfs_order.clone();
         for node in &bfs_order {
-            self.pi_visit_node(node)?;
+            self.pi_visit_node(connection, node)?;
         }
         Ok(())
     }
 
-    pub fn pi_visit_node(&mut self, from_node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_visit_node(
+        &mut self,
+        connection: &mut Connection,
+        from_node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         if !self.is_root(from_node) {
-            let is_observed = self.is_observed(from_node)?;
+            let is_observed = self.is_observed(connection, from_node)?;
             if is_observed {
-                self.pi_set_from_evidence(from_node)?;
+                self.pi_set_from_evidence(connection, from_node)?;
             } else {
-                self.pi_compute_value(&from_node)?;
+                self.pi_compute_value(connection, &from_node)?;
             }
         } else {
             self.pi_compute_root(from_node)?;
@@ -44,19 +50,27 @@ impl Inferencer {
         Ok(())
     }
 
-    pub fn pi_set_from_evidence(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+    pub fn pi_set_from_evidence(
+        &mut self,
+        connection: &mut Connection,
+        node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         let as_single = node.extract_single();
         let probability = self
             .fact_memory
-            .get_proposition_probability(&as_single)?
+            .get_proposition_probability(connection, &as_single)?
             .unwrap();
         self.data.set_pi_value(node, 1, probability);
         self.data.set_pi_value(node, 0, 1f64 - probability);
         Ok(())
     }
 
-    pub fn pi_compute_value(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
-        let is_observed = self.is_observed(node)?;
+    pub fn pi_compute_value(
+        &mut self,
+        connection: &mut Connection,
+        node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
+        let is_observed = self.is_observed(connection, node)?;
         assert!(!is_observed);
         let parent_nodes = self.proposition_graph.get_all_backward(node);
         let all_combinations = compute_each_combination(&parent_nodes);
@@ -80,8 +94,7 @@ impl Inferencer {
                 );
                 product *= pi_x_z;
             }
-            let true_marginal =
-                self.score_factor_assignment(&parent_nodes, combination, node)?;
+            let true_marginal = self.score_factor_assignment(&parent_nodes, combination, node)?;
             let false_marginal = 1f64 - true_marginal;
             sum_true += true_marginal * product;
             sum_false += false_marginal * product;
