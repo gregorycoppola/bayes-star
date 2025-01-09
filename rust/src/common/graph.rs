@@ -143,7 +143,7 @@ impl InferenceGraph {
         todo!()
     }
 
-    pub fn get_target(&mut self, target: &Proposition) -> Result<Proposition, Box<dyn Error>> {
+    pub fn get_target(&self) -> Result<Proposition, Box<dyn Error>> {
         todo!()
     }
 

@@ -124,8 +124,8 @@ fn initialize_visit_single(
 impl PropositionGraph {
     pub fn new_shared(
         predicate_graph: &InferenceGraph,
-        target: &Proposition,
     ) -> Result<Rc<PropositionGraph>, Box<dyn Error>> {
+        let target = predicate_graph.get_target()?;
         let mut graph = PropositionGraph {
             single_forward: HashMap::new(),
             single_backward: HashMap::new(),
@@ -135,7 +135,7 @@ impl PropositionGraph {
             all_nodes: HashSet::new(),
             target: target.clone(),
         };
-        initialize_visit_single(predicate_graph, &mut graph, target)?;
+        initialize_visit_single(predicate_graph, &mut graph, &target)?;
         Ok(Rc::new(graph))
     }
 
