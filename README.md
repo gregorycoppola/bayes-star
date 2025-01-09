@@ -1,4 +1,4 @@
-# BAYES STAR
+# BAYES STAR ([BAYESSTAR.COM](https://bayesstar.com))
 
 This software package provides a reference implementation of a:
 * Logical Bayesian Network
