@@ -67,7 +67,7 @@ pub fn get_value(
 ) -> Result<Option<String>, Box<dyn Error>> {
     let nskey = &namespace_qualified_key(namespace, key);
     let value: Option<String> = conn.get(nskey)?;
-    warn!("nskey: {nskey}, value: {:?}", &value);
+    trace!("nskey: {nskey}, value: {:?}", &value);
     Ok(value)
 }
 

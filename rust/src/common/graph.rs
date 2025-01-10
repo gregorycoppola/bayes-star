@@ -285,9 +285,9 @@ impl InferenceGraph {
         set_members
             .into_iter()
             .map(|record| {
-                warn!("Deserializing record: {}", record); // Log each record before deserialization
+                trace!("Deserializing record: {}", record); // Log each record before deserialization
                 serde_json::from_str::<ImplicationFactor>(&record).map_err(|e| {
-                    warn!("Failed to deserialize record: {}, Error: {}", record, e); // Log if deserialization fails
+                    trace!("Failed to deserialize record: {}, Error: {}", record, e); // Log if deserialization fails
                     Box::new(e) as Box<dyn Error>
                 })
             })

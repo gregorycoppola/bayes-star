@@ -12,5 +12,5 @@ fn main() {
     let resources = ResourceContext::new(&config).expect("Couldn't create resources.");
     let scenario_maker = ScenarioMakerFactory::new_shared(&config.scenario_name).unwrap();
     setup_and_train(&resources, scenario_maker.borrow(), &config.scenario_name).expect("Error in training.");
-    warn!("program done");
+    trace!("program done");
 }
