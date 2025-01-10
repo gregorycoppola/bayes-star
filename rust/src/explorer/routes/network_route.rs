@@ -58,6 +58,7 @@ fn backwards_print_single(
     let backimplications =
         extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
             .unwrap();
+    buffer += &format!( r#" <div class='network_row'> "#,);
     for backimplication in &backimplications {
         buffer += &format!(
             r#"
@@ -68,11 +69,7 @@ fn backwards_print_single(
             implication_part = diagram_proposition_factor(backimplication)
         );
     }
-    buffer += &format!(
-        r#"
-        </div>
-    "#,
-    );
+    buffer += &format!( r#" </div> "#,);
     buffer += &format!(
         r#"
         <div class='network_row'>
