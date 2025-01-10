@@ -62,16 +62,6 @@ impl ReplState {
     }
 }
 
-pub fn get_input_tokens_from_user() -> Vec<String> {
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    let trimmed = input.trim();
-    let tokens: Vec<String> = trimmed.split_whitespace().map(|s| s.to_string()).collect();
-    tokens
-}
-
 pub fn interactive_inference_example(
     config: &CommandLineOptions,
     resources: &ResourceContext,
