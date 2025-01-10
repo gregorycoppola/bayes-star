@@ -47,19 +47,17 @@ fn backwards_print_single(
         .proposition_graph
         .get_all_backward(&proposition_node);
     let mut buffer = "".to_string();
+    buffer += &format!( r#" <div class='proof_box'> "#,);
+    buffer += &format!( r#" <div class='network_row'> "#,);
     for backlink in &backlinks {
         let group = backlink.extract_group();
         let part = backwards_print_group(connection, inferencer, &group)?;
         buffer += &part;
     }
-    let backimplications =
-        extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
-            .unwrap();
-    buffer += &format!(
-        r#"
-        <div class='network_row'>
-    "#,
-    );
+    buffer += &format!( r#" </div>"#,);
+    // let backimplications =
+    //     extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
+    //         .unwrap();
     // for backimplication in &backimplications {
     //     buffer += &format!(
     //         r#"
@@ -77,12 +75,13 @@ fn backwards_print_single(
     // );
     buffer += &format!(
         r#"
-        <div class='network_cell'>
+        <div class='network_row'>
             {target_part}
         </div>
     "#,
         target_part = diagram_predicate(&target.predicate)
     );
+    buffer += &format!( r#" </div> "#,); // "proof_box"
     Ok(buffer)
 }
 
