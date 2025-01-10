@@ -112,7 +112,7 @@ impl ExponentialWeights {
         Ok(weights)
     }
 
-    pub fn save_weights(
+    pub fn save_weight_vector(
         &mut self,
         connection: &mut Connection,
         weights: &HashMap<String, f64>,

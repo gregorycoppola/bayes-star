@@ -205,7 +205,7 @@ impl FactorModel for ExponentialModel {
                 self.print_training_loss,
             );
             trace!("train_on_example - Saving new weights");
-            self.weights.save_weights(connection, &new_weight)?;
+            self.weights.save_weight_vector(connection, &new_weight)?;
         }
         trace!("train_on_example - End");
         Ok(TrainStatistics { loss: 1f64 })
