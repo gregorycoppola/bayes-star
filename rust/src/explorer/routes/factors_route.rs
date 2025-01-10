@@ -14,7 +14,6 @@ use crate::{
 
 fn iterate_through_factors(
     scenario_name: &str,
-    test_scenario: &str,
     resource_context: &ResourceContext,
 ) -> Result<String, Box<dyn Error>> {
     let model = InferenceModel::new_shared(scenario_name.to_string()).unwrap();
