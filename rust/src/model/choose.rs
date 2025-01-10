@@ -134,7 +134,7 @@ pub fn extract_existence_factor_for_predicate(
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }
-    let premise = Predicate::new_from_relation(existence_predicate_name(), new_roles);
+    let premise = Predicate::new_from_just_name(existence_predicate_name(), new_roles);
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
@@ -156,7 +156,7 @@ pub fn extract_existence_factor_for_proposition(
         new_roles.push(old_role.convert_to_quantified());
         mapping.insert(old_role.role_name.clone(), old_role.role_name.clone());
     }
-    let premise = Predicate::new_from_relation(existence_predicate_name(), new_roles.clone());
+    let premise = Predicate::new_from_just_name(existence_predicate_name(), new_roles.clone());
     let role_map = RoleMap::new(mapping);
     let premise_group = PredicateGroup::new(vec![premise]);
     let mapping_group = GroupRoleMap::new(vec![role_map]);
