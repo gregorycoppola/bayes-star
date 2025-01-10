@@ -25,8 +25,10 @@ fn iterate_through_factors(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     let mut buffer = "".to_string();
     for single_node in &inferencer.bfs_order {
-        let proposition = single_node.extract_single();
-        buffer += &diagram_proposition(&proposition);
+        if single_node.is_single() {
+            let proposition = single_node.extract_single();
+            buffer += &diagram_proposition(&proposition);
+        }
     }
     Ok(buffer)
 }
