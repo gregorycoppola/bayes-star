@@ -18,9 +18,15 @@ use crate::{
 
 fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let node = &PropositionNode::from_single(target);
-    let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
-    let mut buffer = "<div class='factor_box'>".to_string();
+    let mut buffer = "".to_string();
+    buffer += &format!("<div class='factor_box'>");
     buffer += &diagram_proposition(target);
+    let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
+    buffer += &format!("<div class='factor_parent_box'>");
+    for parent_node in &parent_nodes {
+        buffer += &diagram_proposition(parent_node);
+    }
+    buffer += &format!("</div>");
     buffer += &format!("</div>");
     buffer
 }

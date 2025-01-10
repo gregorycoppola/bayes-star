@@ -146,3 +146,11 @@ main {
     font-weight: bold;
     border: 10px orange dotted;
 }
+
+.factor_parent_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border: 5px solid paleturquoise;
+}
