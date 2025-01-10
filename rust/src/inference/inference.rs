@@ -244,7 +244,7 @@ impl Inferencer {
             &proposition_conclusion,
         );
         let statistics = self.model.model.predict(connection, &context)?;
-        info!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
+        trace!("score_factor_assignment_disjunction; premises: {:?}, assignment: {:?}, conclusion {:?}, probability {}", premises, premise_assignment, conclusion, statistics.probability);
         Ok(statistics.probability)
     }
 

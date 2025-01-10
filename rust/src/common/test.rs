@@ -53,7 +53,7 @@ impl ReplState {
             trace!("key {key}");
             let node = self.proposition_index.get(&key).unwrap();
             let prop = node.extract_single();
-            info!("setting {} to {}", &key, pair.1);
+            trace!("setting {} to {}", &key, pair.1);
             self.fact_memory
                 .store_proposition_probability(connection, &prop, pair.1)
                 .unwrap();
