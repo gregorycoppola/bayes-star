@@ -147,11 +147,9 @@ impl Inferencer {
         Ok(table)
     }
 
-    pub fn log_table_to_file(&self) -> Result<(), Box<dyn Error>> {
+    pub fn log_table_to_file(&self) -> Result<MarginalTable, Box<dyn Error>> {
         let table = self.build_marginal_table()?;
-        let json = serde_json::to_string(&table)?;
-        println!("json {json}");
-        Ok(())
+        Ok(table)
     }
 
     pub fn is_root(&self, node: &PropositionNode) -> bool {
