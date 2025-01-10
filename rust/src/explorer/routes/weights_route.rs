@@ -5,7 +5,7 @@ use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explore
 
 fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, factor:&ImplicationFactor) -> String {
     let weights = ExponentialWeights::new(graph.namespace.clone()).unwrap();
-    let feature = factor.feature_string();
+    let feature = factor.unique_key();
     let mut buffer = "".to_string();
     buffer += &format!("<div class='weight_box'>");
     for class_label in CLASS_LABELS {
