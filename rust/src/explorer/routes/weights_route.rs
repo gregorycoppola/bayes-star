@@ -8,6 +8,18 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
     let feature = factor.unique_key();
     let mut buffer = "".to_string();
     buffer += &format!("<div class='weight_box'>");
+    buffer += &format!(r#"
+        <div class='weight_box_row'>
+            <div class='weight_box_cell'>
+            </div>
+            <div class='weight_box_cell'>
+                false
+            </div>
+            <div class='weight_box_cell'>
+                true
+            </div>
+        </div>
+    "#);
     for class_label in CLASS_LABELS {
         let posf = positive_feature(&feature, class_label);
         let negf = negative_feature(&feature, class_label);
@@ -19,10 +31,10 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
                     {class_label}
                 </div>
                 <div class='weight_box_cell'>
-                    {posf_count}
+                    {negf_count}
                 </div>
                 <div class='weight_box_cell'>
-                    {negf_count}
+                    {posf_count}
                 </div>
             </div>
         "#);
