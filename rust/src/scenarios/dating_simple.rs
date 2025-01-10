@@ -217,7 +217,10 @@ impl ScenarioMaker for SimpleDating {
                 plan.maybe_add_to_training(&mut connection, is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(&mut connection, is_test, &jack_dates_jill)?;
                 // graph.ensure_existence_backlinks_for_proposition(&jack_dates_jill)?;
-                graph.register_target(&mut connection, &jack_dates_jill)?;
+
+                if i == 0 {
+                    graph.register_target(&mut connection, &jack_dates_jill)?;
+                }
             }
         }
 

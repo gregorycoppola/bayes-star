@@ -50,6 +50,7 @@ impl ReplState {
         assert!(pairs.len() <= 1);
         for pair in pairs {
             let key = pair.0.to_string();
+            warn!("key {key}");
             let node = self.proposition_index.get(&key).unwrap();
             let prop = node.extract_single();
             info!("setting {} to {}", &key, pair.1);
