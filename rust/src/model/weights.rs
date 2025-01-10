@@ -91,6 +91,23 @@ impl ExponentialWeights {
         Ok(())
     }
 
+    pub fn read_single_weight(
+        &self,
+        connection: &mut Connection,
+        feature: &str,
+    ) -> Result<f64, Box<dyn Error>> {
+        trace!("read_weights - Start");
+        trace!("read_weights - Reading weight for feature: {}", feature);
+        let weight_record = map_get(connection, &self.namespace, Self::WEIGHTS_KEY, &feature)?
+            .expect("should be there");
+        let weight = weight_record.parse::<f64>().map_err(|e| {
+            trace!("read_weights - Error parsing weight: {:?}", e);
+            Box::new(e) as Box<dyn Error>
+        })?;
+        trace!("read_weights - End");
+        Ok(weight)
+    }
+
     pub fn read_weight_vector(
         &self,
         connection: &mut Connection,
