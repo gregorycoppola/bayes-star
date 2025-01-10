@@ -6,10 +6,14 @@ use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explore
 fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, factor:&ImplicationFactor) -> String {
     let feature = factor.feature_string();
     let mut buffer = "".to_string();
+    buffer += &format!("<div class='weight_box'>");
     for class_label in CLASS_LABELS {
+        buffer += &format!("<div class='weight_box_row'>");
         let posf = positive_feature(&feature, class_label);
         let negf = negative_feature(&feature, class_label);
+        buffer += &format!("</div>");
     }
+    buffer += &format!("</div>");
     buffer
 }
 
