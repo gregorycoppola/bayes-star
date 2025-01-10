@@ -107,3 +107,17 @@ main {
     align-items: center;
     flex-direction: column;
 }
+
+.weight_box_row {
+    background-color: greenyellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border: 5px solid paleturquoise;
+}
+
+.weight_box_cell {
+    margin: 20px;
+    padding: 20px;
+}
