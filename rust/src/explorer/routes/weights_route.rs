@@ -3,7 +3,7 @@ use rocket::response::content::Html;
 
 use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
 
-fn render_experiment_parts(connection: &mut Connection, graph: &InferenceGraph) -> String {
+fn render_weights_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
         r#"
         <div class='section_header'>
@@ -23,6 +23,7 @@ fn render_experiment_parts(connection: &mut Connection, graph: &InferenceGraph) 
 pub fn internal_weights(experiment_name: &str, resources: &ResourceContext) -> Html<String> {
     let mut connection = resources.connection.lock().unwrap();
     let graph = InferenceGraph::new_mutable(experiment_name.to_string()).unwrap();
-    let result = render_app_body("");
+    let body_html = render_weights_part(&mut connection, &graph);
+    let result = render_app_body(&body_html);
     Html(result.unwrap())
 }
