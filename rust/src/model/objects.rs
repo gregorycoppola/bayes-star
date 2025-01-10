@@ -151,8 +151,8 @@ impl LabeledArgument {
     }
 }
 
-pub fn unary_existence_function() -> Relation {
-    todo!()
+pub fn existence_predicate_name() -> String {
+    "exists".to_string()
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
