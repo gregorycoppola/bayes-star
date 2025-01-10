@@ -124,3 +124,18 @@ main {
     margin: 20px;
     padding: 20px;
 }
+
+.positive_weight {
+    background-color: darkgreen;
+    color: white;
+}
+
+.negative_weight {
+    background-color: darkred;
+    color: white;
+}
+
+.neutral_weight {
+    background-color: black;
+    color: white;
+}

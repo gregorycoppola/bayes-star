@@ -27,14 +27,14 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
         let negf_count = weights.read_single_weight(connection, &negf).unwrap();
         let posf_css = if posf_count > 0.3f64 {
             "positive_weight".to_string()
-        } else if posf_count <  0.3f64 {
+        } else if posf_count <  -0.3f64 {
             "negative_weight".to_string()
         } else {
             "neutral_weight".to_string()
         };
         let negf_css = if negf_count > 0.3f64 {
             "positive_weight".to_string()
-        } else if negf_count <  0.3f64 {
+        } else if negf_count <  -0.3f64 {
             "negative_weight".to_string()
         } else {
             "neutral_weight".to_string()
