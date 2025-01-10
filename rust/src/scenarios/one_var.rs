@@ -72,6 +72,6 @@ impl ScenarioMaker for OneVariable {
         //     }
         // }
         // Ok(())
-        todo!()
+        panic!()
     }
 }

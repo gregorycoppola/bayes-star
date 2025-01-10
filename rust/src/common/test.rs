@@ -88,7 +88,7 @@ impl ReplState {
         //     };
         // }
         // Ok(())
-        todo!()
+        panic!()
     }
 
     pub fn set_pairs_by_name(&mut self, pairs:&Vec<(&str, f64)>) -> Option<PropositionNode> {
@@ -105,11 +105,11 @@ impl ReplState {
         //     return Some(node.clone());
         // }
         // None
-        todo!()
+        panic!()
     }
 
     fn handle_set(&mut self, tokens: &Vec<String>) {
-        todo!()
+        panic!()
         // let select_index = tokens[1].parse::<u64>().unwrap();
         // let new_prob = tokens[2].parse::<f64>().unwrap();
         // let node = self.question_index.get(&select_index).unwrap();
@@ -122,7 +122,7 @@ impl ReplState {
     }
 
     fn handle_unset(&mut self, tokens: &Vec<String>) {
-        todo!()
+        panic!()
         // let select_index = tokens[1].parse::<u64>().unwrap();
         // let node = self.question_index.get(&select_index).unwrap();
         // self.fact_memory.clear(node);
@@ -158,7 +158,7 @@ impl ReplState {
         //         // trace!("node {} {:?} *", index, &node);
         //     }
         // }
-        todo!()
+        panic!()
     }
 
 }
@@ -193,7 +193,7 @@ pub fn interactive_inference_example(
     // inferencer.initialize_chart()?;
     // let mut repl = ReplState::new(inferencer);
     // repl.do_repl_loop()?;
-    todo!()
+    panic!()
 }
 
 pub fn summarize_examples(
@@ -209,7 +209,7 @@ pub fn summarize_examples(
     //     println!("testing proposition {:?}", &proposition.hash_string());
     // }
     // Ok(())
-    todo!()
+    panic!()
 }
 
 fn make_proposition_map(graph:&PropositionGraph) -> HashMap<String, PropositionNode> {
