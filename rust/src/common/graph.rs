@@ -30,7 +30,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 pub struct InferenceGraph {
-    namespace: String,
+    pub namespace: String,
 }
 
 impl InferenceGraph {

@@ -1,9 +1,10 @@
 use redis::Connection;
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}, model::{objects::ImplicationFactor, weights::{negative_feature, positive_feature, CLASS_LABELS}}};
+use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}, model::{objects::ImplicationFactor, weights::{negative_feature, positive_feature, ExponentialWeights, CLASS_LABELS}}};
 
 fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, factor:&ImplicationFactor) -> String {
+    let weights = ExponentialWeights::new(graph.namespace.clone()).unwrap();
     let feature = factor.feature_string();
     let mut buffer = "".to_string();
     buffer += &format!("<div class='weight_box'>");
