@@ -39,6 +39,27 @@ pub struct MarginalTable {
     entries: Vec<(String, f64)>,
 }
 
+impl MarginalTable {
+    pub fn render_marginal_table(&self) -> String {
+        let mut entries = self.entries.clone();
+        // Sort entries by the string key in alphabetical order
+        entries.sort_by(|a, b| a.0.cmp(&b.0));
+
+        // Start HTML table
+        let mut html_table = String::from("<table><tr><th>Key</th><th>Value</th></tr>");
+
+        // Add rows to the table
+        for (key, value) in entries {
+            html_table.push_str(&format!("<tr><td>{}</td><td>{}</td></tr>", key, value));
+        }
+
+        // Close HTML table
+        html_table.push_str("</table>");
+
+        html_table
+    }
+}
+
 impl Inferencer {
     pub fn new_mutable(
         model: Arc<InferenceModel>,
