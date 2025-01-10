@@ -38,7 +38,7 @@ pub struct SimpleDating {}
 impl ScenarioMaker for SimpleDating {
     fn setup_scenario(&self, resources: &ResourceContext) -> Result<(), Box<dyn Error>> {
         let mut connection = resources.connection.lock().unwrap();
-        let namespace = "simple_dating".to_string();
+        let namespace = "dating_simple".to_string();
         let mut graph = InferenceGraph::new_mutable(namespace.clone())?;
         let proposition_db = RedisBeliefTable::new_mutable(namespace.clone())?;
         let mut plan = TrainingPlan::new(namespace.clone())?;
