@@ -170,7 +170,7 @@ impl FactorModel for ExponentialModel {
                 "train_on_example - Reading weights for class {}",
                 class_label
             );
-            let weight_vector = match self.weights.read_weights(
+            let weight_vector = match self.weights.read_weight_vector(
                 connection,
                 &features[class_label].keys().cloned().collect::<Vec<_>>(),
             ) {
@@ -232,7 +232,7 @@ impl FactorModel for ExponentialModel {
                 trace!("feature {:?} {}", &feature, weight);
             }
             trace!("inference_probability - Reading weights");
-            let weight_vector = match self.weights.read_weights(
+            let weight_vector = match self.weights.read_weight_vector(
                 connection,
                 &this_features.keys().cloned().collect::<Vec<_>>(),
             ) {

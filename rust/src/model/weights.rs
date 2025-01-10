@@ -91,7 +91,7 @@ impl ExponentialWeights {
         Ok(())
     }
 
-    pub fn read_weights(
+    pub fn read_weight_vector(
         &self,
         connection: &mut Connection,
         features: &[String],
