@@ -5,7 +5,6 @@ use super::{
     table::{GenericNodeType, PropositionNode},
 };
 use crate::{
-    inference::inference::build_factor_context_for_assignment,
     model::{objects::existence_predicate_name, weights::CLASS_LABELS},
     print_blue, print_green, print_red,
 };
