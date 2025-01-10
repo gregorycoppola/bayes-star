@@ -65,7 +65,7 @@ fn backwards_print_single(
             .unwrap();
     buffer += &format!(
         r#"
-        <div class='network_cell'>
+        <div class='network_row'>
     "#,
     );
     for backimplication in &backimplications {

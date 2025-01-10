@@ -90,3 +90,11 @@ main {
 .network_column {
     background-color: orange;
 }
+
+.network_row {
+    background-color: plum;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
