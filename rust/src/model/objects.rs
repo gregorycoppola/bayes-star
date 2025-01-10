@@ -193,7 +193,7 @@ impl Predicate {
             .map(|role| role.hash_string())
             .collect();
 
-        format!("{:?}[{}]", &self.relation, role_strings.join(","))
+        format!("{}[{}]", &self.relation.relation_name, role_strings.join(","))
     }
 
     pub fn role_names(&self) -> Vec<String> {
