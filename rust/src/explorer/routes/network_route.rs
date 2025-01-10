@@ -52,14 +52,6 @@ fn backwards_print_single(
         let part = backwards_print_group(connection, inferencer, &group)?;
         buffer += &part;
     }
-    buffer += &format!(
-        r#"
-        <div class='network_cell'>
-            {target_part}
-        </div>
-    "#,
-        target_part = diagram_predicate(&target.predicate)
-    );
     let backimplications =
         extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
             .unwrap();
@@ -82,6 +74,14 @@ fn backwards_print_single(
         r#"
         </div>
     "#,
+    );
+    buffer += &format!(
+        r#"
+        <div class='network_cell'>
+            {target_part}
+        </div>
+    "#,
+        target_part = diagram_predicate(&target.predicate)
     );
     Ok(buffer)
 }
