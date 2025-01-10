@@ -5,7 +5,7 @@ use bayes_star::common::setup::{parse_configuration_options, CommandLineOptions}
 use bayes_star::common::resources::ResourceContext;
 use bayes_star::common::test::ReplState;
 use bayes_star::inference::graph::PropositionGraph;
-use bayes_star::inference::inference::Inferencer;
+use bayes_star::inference::inference::{Inferencer, MarginalTable};
 use bayes_star::inference::table::PropositionNode;
 use redis::Connection;
 
@@ -36,7 +36,7 @@ fn setup_test_scenario(connection:&mut Connection, scenario_name:&str, test_scen
 pub fn run_inference_rounds(
     config: &CommandLineOptions,
     resource_context: &ResourceContext,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<Vec<MarginalTable>, Box<dyn Error>> {
     let model = InferenceModel::new_shared(config.scenario_name.to_string()).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(&config.scenario_name)?;
     let mut connection = resource_context.connection.lock().unwrap();
@@ -46,6 +46,7 @@ pub fn run_inference_rounds(
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart(&mut connection)?;
     let mut repl = ReplState::new(inferencer);
+    let mut buffer = vec![];
     if config.test_scenario.clone().unwrap() == "show".to_string() {
         for (i, x) in repl.inferencer.bfs_order.iter().enumerate() {
             println!("{} {:?}", i , x);
@@ -56,16 +57,16 @@ pub fn run_inference_rounds(
         if focus.is_some() {
             for _i in 0..50 {
                 repl.inferencer.do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
-                repl.inferencer.log_table_to_file()?;
+                buffer.push(repl.inferencer.log_table_to_file()?);
             }
         } else {
             for _i in 0..50 {
                 repl.inferencer.do_full_forward_and_backward(&mut connection)?;
-                repl.inferencer.log_table_to_file()?;
+                buffer.push(repl.inferencer.log_table_to_file()?);
             }
         }
     }
-    Ok(())
+    Ok(buffer)
 }
 
 fn main() {
