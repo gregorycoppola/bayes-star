@@ -61,27 +61,6 @@ impl ReplState {
         panic!()
     }
 
-    fn handle_set(&mut self, tokens: &Vec<String>) {
-        panic!()
-        // let select_index = tokens[1].parse::<u64>().unwrap();
-        // let new_prob = tokens[2].parse::<f64>().unwrap();
-        // let node = self.question_index.get(&select_index).unwrap();
-        // let prop = node.extract_single();
-        // self.fact_memory
-        //     .store_proposition_probability(&prop, new_prob)
-        //     .unwrap();
-        // self.inferencer.do_fan_out_from_node(&node).unwrap();
-        // self.inferencer.update_marginals().unwrap();
-    }
-
-    fn handle_unset(&mut self, tokens: &Vec<String>) {
-        panic!()
-        // let select_index = tokens[1].parse::<u64>().unwrap();
-        // let node = self.question_index.get(&select_index).unwrap();
-        // self.fact_memory.clear(node);
-        // self.inferencer.do_fan_out_from_node(&node).unwrap();
-    }
-
     fn print_table(&mut self, tokens: &Vec<String>) {
         let table_name = tokens[1].clone();
         self.inferencer.data.print_table(&table_name);
