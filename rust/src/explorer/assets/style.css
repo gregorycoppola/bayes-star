@@ -98,6 +98,7 @@ main {
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    border: 5px solid red;
 }
 
 .proof_box {
