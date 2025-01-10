@@ -1,6 +1,7 @@
 use std::{collections::HashMap, error::Error, io, rc::Rc, sync::Arc};
 
 use colored::Colorize;
+use redis::Connection;
 
 use crate::{
     common::{
@@ -14,10 +15,7 @@ use crate::{
         inference::Inferencer,
         table::{self, PropositionNode},
     },
-    model::{
-        exponential::ExponentialModel,
-        objects::{Proposition},
-    },
+    model::{exponential::ExponentialModel, objects::Proposition},
     print_blue, print_green, print_red, print_yellow,
 };
 
@@ -44,21 +42,26 @@ impl ReplState {
         }
     }
 
-    pub fn set_pairs_by_name(&mut self, pairs:&Vec<(&str, f64)>) -> Option<PropositionNode> {
-        // assert!(pairs.len() <= 1);
-        // for pair in pairs {
-        //     let key = pair.0.to_string();
-        //     let node = self.proposition_index.get(&key).unwrap();
-        //     let prop = node.extract_single();
-        //     info!("setting {} to {}", &key, pair.1);
-        //     self.fact_memory
-        //         .store_proposition_probability(&prop, pair.1)
-        //         .unwrap();
-        //     self.inferencer.do_fan_out_from_node(&node).unwrap();
-        //     return Some(node.clone());
-        // }
-        // None
-        panic!()
+    pub fn set_pairs_by_name(
+        &mut self,
+        connection: &mut Connection,
+        pairs: &Vec<(&str, f64)>,
+    ) -> Option<PropositionNode> {
+        assert!(pairs.len() <= 1);
+        for pair in pairs {
+            let key = pair.0.to_string();
+            let node = self.proposition_index.get(&key).unwrap();
+            let prop = node.extract_single();
+            info!("setting {} to {}", &key, pair.1);
+            self.fact_memory
+                .store_proposition_probability(connection, &prop, pair.1)
+                .unwrap();
+            self.inferencer
+                .do_fan_out_from_node(connection, &node)
+                .unwrap();
+            return Some(node.clone());
+        }
+        None
     }
 }
 
@@ -101,7 +104,7 @@ pub fn summarize_examples(
     panic!()
 }
 
-fn make_proposition_map(graph:&PropositionGraph) -> HashMap<String, PropositionNode> {
+fn make_proposition_map(graph: &PropositionGraph) -> HashMap<String, PropositionNode> {
     let bfs = graph.get_bfs_order();
     let mut result = HashMap::new();
     for (index, node) in bfs.iter().enumerate() {
