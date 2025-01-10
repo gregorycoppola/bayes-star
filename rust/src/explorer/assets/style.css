@@ -85,6 +85,7 @@ main {
 
 .network_cell {
     background-color: green;
+    text-align: center;
 }
 
 .network_column {
