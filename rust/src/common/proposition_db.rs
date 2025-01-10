@@ -40,7 +40,7 @@ impl BeliefTable for RedisBeliefTable {
         connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == existence_predicate_name() {
+        if proposition.predicate.relation.relation_name == existence_predicate_name() {
             return Ok(Some(1f64));
         }
         let hash_string = proposition.predicate.hash_string();
@@ -91,7 +91,7 @@ impl BeliefTable for EmptyBeliefTable {
         connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == existence_predicate_name() {
+        if proposition.predicate.relation.relation_name == existence_predicate_name() {
             return Ok(Some(1f64));
         }
         Ok(None)
@@ -129,7 +129,7 @@ impl BeliefTable for HashMapBeliefTable {
         connection: &mut Connection,
         proposition: &Proposition,
     ) -> Result<Option<f64>, Box<dyn Error>> {
-        if proposition.predicate.relation == existence_predicate_name() {
+        if proposition.predicate.relation.relation_name == existence_predicate_name() {
             return Ok(Some(1f64));
         }
         let node = PropositionNode::from_single(proposition);
