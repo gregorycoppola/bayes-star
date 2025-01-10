@@ -7,7 +7,7 @@ use bayes_star::{
         resources::ResourceContext,
         setup::{parse_configuration_options, CommandLineOptions},
     },
-    explorer::routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network, weights_route::internal_weights},
+    explorer::routes::{experiment_route::internal_experiment, index_route::internal_index, marginals_route::internal_marginals, network_route::internal_network, weights_route::internal_weights},
 };
 use rocket::response::content::Html;
 use rocket::State;
@@ -44,11 +44,16 @@ fn weights(experiment_name: String, context: State<WebContext>) -> Html<String> 
     internal_weights(&experiment_name, &context.namespace)
 }
 
+#[get("/marginals/<experiment_name>/<test_scenario>")]
+fn marginals(experiment_name: String, test_scenario: String, context: State<WebContext>) -> Html<String> {
+    internal_marginals(&experiment_name, &test_scenario, &context.namespace)
+}
+
 fn main() {
     let config = parse_configuration_options();
     rocket::ignite()
         .manage(WebContext::new(config))
-        .mount("/", routes![home, experiment, network, weights])
+        .mount("/", routes![home, experiment, network, weights, marginals])
         .mount("/static", StaticFiles::from("static"))
         .launch();
 }
