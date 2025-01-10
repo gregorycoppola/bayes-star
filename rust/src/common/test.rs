@@ -66,29 +66,6 @@ impl ReplState {
     }
 }
 
-pub fn interactive_inference_example(
-    config: &CommandLineOptions,
-    resources: &ResourceContext,
-) -> Result<(), Box<dyn Error>> {
-    // let mut connection = resources.connection.lock().unwrap();
-    // let plan = TrainingPlan::new(&resources)?;
-    // let graphical_model = InferenceModel::new_shared(&resources)?;
-    // let plan = TrainingPlan::new(&resources)?;
-    // let model = InferenceModel::new_shared(&resources).unwrap();
-    // let test_questions = plan.get_test_questions().unwrap();
-    // let target = &test_questions[config.test_example.unwrap() as usize];
-    // let fact_memory = EmptyBeliefTable::new_shared(&config.scenario_name)?;
-    // let target = model.graph.get_target(&mut connection)?;
-    // let proposition_graph = PropositionGraph::new_shared(&model.graph, target)?;
-    // proposition_graph.visualize();
-    // let mut inferencer =
-    //     Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    // inferencer.initialize_chart()?;
-    // let mut repl = ReplState::new(inferencer);
-    // repl.do_repl_loop()?;
-    panic!()
-}
-
 pub fn summarize_examples(
     config: &CommandLineOptions,
     resources: &ResourceContext,
