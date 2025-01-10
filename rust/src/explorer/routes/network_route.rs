@@ -55,24 +55,24 @@ fn backwards_print_single(
         buffer += &part;
     }
     buffer += &format!( r#" </div>"#,);
-    // let backimplications =
-    //     extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
-    //         .unwrap();
-    // for backimplication in &backimplications {
-    //     buffer += &format!(
-    //         r#"
-    //         <span class='network_column'>
-    //             {implication_part}
-    //         </span>
-    //     "#,
-    //         implication_part = diagram_proposition_factor(backimplication)
-    //     );
-    // }
-    // buffer += &format!(
-    //     r#"
-    //     </div>
-    // "#,
-    // );
+    let backimplications =
+        extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
+            .unwrap();
+    for backimplication in &backimplications {
+        buffer += &format!(
+            r#"
+            <span class='network_column'>
+                {implication_part}
+            </span>
+        "#,
+            implication_part = diagram_proposition_factor(backimplication)
+        );
+    }
+    buffer += &format!(
+        r#"
+        </div>
+    "#,
+    );
     buffer += &format!(
         r#"
         <div class='network_row'>
