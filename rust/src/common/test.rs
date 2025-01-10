@@ -66,22 +66,6 @@ impl ReplState {
     }
 }
 
-pub fn summarize_examples(
-    config: &CommandLineOptions,
-    resources: &ResourceContext,
-) -> Result<(), Box<dyn Error>> {
-    // let plan = TrainingPlan::new(&resources)?;
-    // let graphical_model = InferenceModel::new_shared(&resources)?;
-    // let model = InferenceModel::new_shared(&resources).unwrap();
-    // // test
-    // let test_questions = plan.get_test_questions().unwrap();
-    // for (index, proposition) in test_questions.iter().enumerate() {
-    //     println!("testing proposition {:?}", &proposition.hash_string());
-    // }
-    // Ok(())
-    panic!()
-}
-
 fn make_proposition_map(graph: &PropositionGraph) -> HashMap<String, PropositionNode> {
     let bfs = graph.get_bfs_order();
     let mut result = HashMap::new();
