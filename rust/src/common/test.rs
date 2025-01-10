@@ -60,39 +60,6 @@ impl ReplState {
         // None
         panic!()
     }
-
-    fn print_table(&mut self, tokens: &Vec<String>) {
-        let table_name = tokens[1].clone();
-        self.inferencer.data.print_table(&table_name);
-    }
-
-    fn print_menu_options(&mut self) -> Result<(), Box<dyn Error>> {
-        // let bfs = self.inferencer.proposition_graph.get_bfs_order();
-        // self.question_index.clear();
-        // println!("NODES");
-        // for (index, node) in bfs.iter().enumerate() {
-        //     if node.is_single() {
-        //         let single = node.extract_single();
-        //         let probability = self.fact_memory.get_proposition_probability(&single)?;
-        //         let probability_string = match &probability {
-        //             Some(value) => {
-        //                 if *value > 0.5f64 {
-        //                     "Yes".green()
-        //                 } else {
-        //                     "No".green()
-        //                 }
-        //             }
-        //             None => "None".yellow(),
-        //         };
-        //         println!("{}\t{}\t{:?}", index, &probability_string, &node);
-        //         self.question_index.insert(index as u64, node.clone());
-        //     } else {
-        //         // trace!("node {} {:?} *", index, &node);
-        //     }
-        // }
-        panic!()
-    }
-
 }
 
 pub fn get_input_tokens_from_user() -> Vec<String> {
