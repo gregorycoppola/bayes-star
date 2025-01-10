@@ -1,8 +1,33 @@
+use std::error::Error;
+
 use redis::Connection;
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
+use crate::{
+    common::{
+        graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable,
+        resources::ResourceContext,
+    },
+    explorer::{diagram_utils::diagram_implication, render_utils::render_app_body},
+    inference::{graph::PropositionGraph, inference::Inferencer},
+};
 
+fn iterate_through_factors(
+    scenario_name: &str,
+    test_scenario: &str,
+    resource_context: &ResourceContext,
+) -> Result<String, Box<dyn Error>> {
+    let model = InferenceModel::new_shared(scenario_name.to_string()).unwrap();
+    let fact_memory = EmptyBeliefTable::new_shared(scenario_name)?;
+    let mut connection = resource_context.connection.lock().unwrap();
+    let target = model.graph.get_target(&mut connection)?;
+    let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
+    proposition_graph.visualize();
+    let mut inferencer =
+        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+    inferencer.initialize_chart(&mut connection)?;
+    Ok("todo".to_string())
+}
 
 fn render_implication_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
