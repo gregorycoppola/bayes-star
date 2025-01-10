@@ -7,10 +7,11 @@ use bayes_star::common::test::ReplState;
 use bayes_star::inference::graph::PropositionGraph;
 use bayes_star::inference::inference::Inferencer;
 use bayes_star::inference::table::PropositionNode;
+use redis::Connection;
 
 extern crate log;
 
-fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut ReplState) -> Result<Option<PropositionNode>, Box<dyn Error>> {
+fn setup_test_scenario(connection:&mut Connection, scenario_name:&str, test_scenario:&str, repl_state:&mut ReplState) -> Result<Option<PropositionNode>, Box<dyn Error>> {
     let pairs = match (scenario_name, test_scenario) {
         ("dating_simple", "prior") => vec![],
         ("dating_simple", "jack_lonely") => vec![("lonely[sub=test_Man0]", 1f64)],
@@ -27,7 +28,7 @@ fn setup_test_scenario(scenario_name:&str, test_scenario:&str, repl_state:&mut R
         ("mid_chain", "set_n_1") => vec![("alpha4[sub=test_Man0]", 1f64)],
         _ => panic!("Case name not recognized"),
     };
-    let r = repl_state.set_pairs_by_name(&pairs);
+    let r = repl_state.set_pairs_by_name(connection, &pairs);
     Ok(r)
 }
 
@@ -51,7 +52,7 @@ pub fn run_inference_rounds(
     } else {
         repl.inferencer.clear_marginal_output_file()?;
         repl.inferencer.log_table_to_file()?;
-        let focus = setup_test_scenario(&config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
+        let focus = setup_test_scenario(&mut connection, &config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
         if focus.is_some() {
             for _i in 0..50 {
                 repl.inferencer.do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
