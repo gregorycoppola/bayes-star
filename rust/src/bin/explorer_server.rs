@@ -49,9 +49,9 @@ fn marginals(experiment_name: String, test_scenario: String, context: State<WebC
     internal_marginals(&experiment_name, &test_scenario, &context.namespace)
 }
 
-#[get("/factors/<factors_name>")]
-fn factors(factors_name: String, context: State<WebContext>) -> Html<String> {
-    internal_factors(&factors_name, &context.namespace)
+#[get("/factors/<experiment_name>")]
+fn factors(experiment_name: String, context: State<WebContext>) -> Html<String> {
+    internal_factors(&experiment_name, &context.namespace)
 }
 
 fn main() {
