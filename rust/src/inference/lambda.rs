@@ -4,11 +4,7 @@ use super::{
     inference::{compute_each_combination, groups_from_backlinks, Inferencer},
     table::{GenericNodeType, PropositionNode},
 };
-use crate::{
-    inference::inference::build_factor_context_for_assignment,
-    model::{weights::CLASS_LABELS},
-    print_blue, print_green, print_red, print_yellow,
-};
+use crate::{model::weights::CLASS_LABELS, print_blue, print_green, print_red, print_yellow};
 use std::error::Error;
 
 impl Inferencer {
