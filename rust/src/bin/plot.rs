@@ -28,7 +28,8 @@ fn setup_test_scenario(connection:&mut Connection, scenario_name:&str, test_scen
         ("mid_chain", "set_n_1") => vec![("alpha4[sub=test_Man0]", 1f64)],
         _ => panic!("Case name not recognized"),
     };
-    let r = repl_state.set_pairs_by_name(connection, &pairs);
+    // let r = repl_state.set_pairs_by_name(connection, &pairs);
+    let r = None;
     Ok(r)
 }
 
