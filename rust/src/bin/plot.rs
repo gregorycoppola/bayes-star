@@ -38,7 +38,9 @@ pub fn run_inference_rounds(
 ) -> Result<(), Box<dyn Error>> {
     let model = InferenceModel::new_shared(config.scenario_name.to_string()).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(&config.scenario_name)?;
-    let proposition_graph = PropositionGraph::new_shared(&model.graph)?;
+    let mut connection = resource_context.connection.lock().unwrap();
+    let target = model.graph.get_target(&mut connection)?;
+    let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
     proposition_graph.visualize();
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart()?;
