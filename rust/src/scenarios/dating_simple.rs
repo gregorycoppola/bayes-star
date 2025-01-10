@@ -110,7 +110,7 @@ impl ScenarioMaker for SimpleDating {
             for domain in entity_domains.iter() {
                 println!("domain: {}", domain);
                 let prefix = if is_test { "test" } else { "train" };
-                let name = format!("{}_{:?}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
+                let name = format!("{}_{}{}", &prefix, domain, i); // Using Debug formatting for Domain enum
                 let entity = Entity {
                     domain: domain.clone(),
                     name: name.clone(),
