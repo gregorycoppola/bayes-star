@@ -174,6 +174,13 @@ impl Predicate {
         Predicate { relation, roles: buffer }
     }
 
+    pub fn new_from_just_name(relation_name: String, roles: Vec<LabeledArgument>) -> Self {
+        todo!()
+        // let mut buffer = roles.clone();
+        // buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
+        // Predicate { relation, roles: buffer }
+    }
+
     pub fn debug_string(&self) -> String {
         self.hash_string()
     }
