@@ -108,8 +108,11 @@ main {
     flex-direction: column;
 }
 
-.weight_box_row {
+.weight_box {
     background-color: yellow;
+}
+
+.weight_box_row {
     display: flex;
     justify-content: center;
     align-items: center;
