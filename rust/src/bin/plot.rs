@@ -43,7 +43,7 @@ pub fn run_inference_rounds(
     let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
     proposition_graph.visualize();
     let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart()?;
+    inferencer.initialize_chart(&mut connection)?;
     let mut repl = ReplState::new(inferencer);
     if config.test_scenario.clone().unwrap() == "show".to_string() {
         for (i, x) in repl.inferencer.bfs_order.iter().enumerate() {
@@ -55,12 +55,12 @@ pub fn run_inference_rounds(
         let focus = setup_test_scenario(&config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
         if focus.is_some() {
             for _i in 0..50 {
-                repl.inferencer.do_fan_out_from_node(&focus.clone().unwrap())?;
+                repl.inferencer.do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
                 repl.inferencer.log_table_to_file()?;
             }
         } else {
             for _i in 0..50 {
-                repl.inferencer.do_full_forward_and_backward()?;
+                repl.inferencer.do_full_forward_and_backward(&mut connection)?;
                 repl.inferencer.log_table_to_file()?;
             }
         }
