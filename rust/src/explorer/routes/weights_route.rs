@@ -1,7 +1,17 @@
 use redis::Connection;
 use rocket::response::content::Html;
 
-use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}};
+use crate::{common::{graph::InferenceGraph, resources::ResourceContext}, explorer::{diagram_utils::diagram_implication, render_utils::render_app_body}, model::{objects::ImplicationFactor, weights::{negative_feature, positive_feature, CLASS_LABELS}}};
+
+fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, factor:&ImplicationFactor) -> String {
+    let feature = factor.feature_string();
+    let mut buffer = "".to_string();
+    for class_label in CLASS_LABELS {
+        let posf = positive_feature(&feature, class_label);
+        let negf = negative_feature(&feature, class_label);
+    }
+    buffer
+}
 
 fn render_weights_part(connection: &mut Connection, graph: &InferenceGraph) -> String {
     let mut buffer = format!(
