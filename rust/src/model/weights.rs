@@ -97,7 +97,7 @@ impl ExponentialWeights {
         feature: &str,
     ) -> Result<f64, Box<dyn Error>> {
         trace!("read_weights - Start");
-        trace!("read_weights - Reading weight for feature: {}", feature);
+        warn!("read_weights - Reading weight for feature: {}", feature);
         let weight_record = map_get(connection, &self.namespace, Self::WEIGHTS_KEY, &feature)?
             .expect("should be there");
         let weight = weight_record.parse::<f64>().map_err(|e| {

@@ -11,8 +11,8 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
     for class_label in CLASS_LABELS {
         let posf = positive_feature(&feature, class_label);
         let negf = negative_feature(&feature, class_label);
-        let posf_count = 0;
-        let negf_count = 0;
+        let posf_count = weights.read_single_weight(connection, &posf).unwrap();
+        let negf_count = weights.read_single_weight(connection, &negf).unwrap();
         buffer += &format!(r#"
             <div class='weight_box_row'>
                 <div class='weight_box_cell'>
@@ -43,6 +43,7 @@ fn render_weights_part(connection: &mut Connection, graph: &InferenceGraph) -> S
     println!("all_relations {:?}", &all_relations);
     for relation in &all_relations {
         buffer += &diagram_implication(relation);
+        buffer += &render_one_weight_box(connection, graph, relation);
     }
     buffer
 }
