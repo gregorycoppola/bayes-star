@@ -8,13 +8,20 @@ use crate::{
         graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable,
         resources::ResourceContext,
     },
-    explorer::{diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition}, render_utils::render_app_body},
-    inference::{graph::PropositionGraph, inference::Inferencer}, model::objects::Proposition,
+    explorer::{
+        diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition},
+        render_utils::render_app_body,
+    },
+    inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode},
+    model::objects::Proposition,
 };
 
-fn graph_full_factor(inferencer: &Inferencer, target:& Proposition) -> String {
+fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
+    let node = &PropositionNode::from_single(target);
+    let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     "".to_string()
 }
+
 fn iterate_through_factors(
     scenario_name: &str,
     resource_context: &ResourceContext,
