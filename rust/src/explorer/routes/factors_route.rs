@@ -8,7 +8,7 @@ use crate::{
         graph::InferenceGraph, model::InferenceModel, proposition_db::EmptyBeliefTable,
         resources::ResourceContext,
     },
-    explorer::{diagram_utils::{diagram_implication, diagram_predicate}, render_utils::render_app_body},
+    explorer::{diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition}, render_utils::render_app_body},
     inference::{graph::PropositionGraph, inference::Inferencer},
 };
 
@@ -22,16 +22,14 @@ fn iterate_through_factors(
     let mut connection = resource_context.connection.lock().unwrap();
     let target = model.graph.get_target(&mut connection)?;
     let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
-    let mut inferencer =
+    let inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart(&mut connection)?;
-
+    let mut buffer = "".to_string();
     for single_node in &inferencer.bfs_order {
         let proposition = single_node.extract_single();
-        diagram_predicate(&proposition);
-
+        buffer += &diagram_proposition(&proposition);
     }
-    Ok("todo".to_string())
+    Ok(buffer)
 }
 
 fn render_implication_part(connection: &mut Connection, graph: &InferenceGraph) -> String {

@@ -43,6 +43,10 @@ fn diagram_relation(relation: &Relation) -> String {
     )
 }
 
+pub fn diagram_proposition(proposition: &Proposition) -> String {
+    diagram_predicate(&proposition.predicate)
+}
+
 pub fn diagram_predicate(predicate: &Predicate) -> String {
     let mut argument_buffer = "".to_string();
     for argument in &predicate.roles {
