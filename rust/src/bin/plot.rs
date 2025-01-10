@@ -1,17 +1,22 @@
-use std::error::Error;
 use bayes_star::common::model::InferenceModel;
 use bayes_star::common::proposition_db::EmptyBeliefTable;
-use bayes_star::common::setup::{parse_configuration_options, CommandLineOptions};
 use bayes_star::common::resources::ResourceContext;
+use bayes_star::common::setup::{parse_configuration_options, CommandLineOptions};
 use bayes_star::common::test::ReplState;
 use bayes_star::inference::graph::PropositionGraph;
 use bayes_star::inference::inference::{Inferencer, MarginalTable};
 use bayes_star::inference::table::PropositionNode;
 use redis::Connection;
+use std::error::Error;
 
 extern crate log;
 
-fn setup_test_scenario(connection:&mut Connection, scenario_name:&str, test_scenario:&str, repl_state:&mut ReplState) -> Result<Option<PropositionNode>, Box<dyn Error>> {
+fn setup_test_scenario(
+    connection: &mut Connection,
+    scenario_name: &str,
+    test_scenario: &str,
+    repl_state: &mut ReplState,
+) -> Result<Option<PropositionNode>, Box<dyn Error>> {
     let pairs = match (scenario_name, test_scenario) {
         ("dating_simple", "prior") => vec![],
         ("dating_simple", "jack_lonely") => vec![("lonely[sub=test_Man0]", 1f64)],
@@ -34,36 +39,34 @@ fn setup_test_scenario(connection:&mut Connection, scenario_name:&str, test_scen
 }
 
 pub fn run_inference_rounds(
-    config: &CommandLineOptions,
+    scenario_name: &str,
+    test_scenario: &str,
     resource_context: &ResourceContext,
 ) -> Result<Vec<MarginalTable>, Box<dyn Error>> {
-    let model = InferenceModel::new_shared(config.scenario_name.to_string()).unwrap();
-    let fact_memory = EmptyBeliefTable::new_shared(&config.scenario_name)?;
+    let model = InferenceModel::new_shared(scenario_name.to_string()).unwrap();
+    let fact_memory = EmptyBeliefTable::new_shared(scenario_name)?;
     let mut connection = resource_context.connection.lock().unwrap();
     let target = model.graph.get_target(&mut connection)?;
     let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
     proposition_graph.visualize();
-    let mut inferencer = Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
+    let mut inferencer =
+        Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     inferencer.initialize_chart(&mut connection)?;
     let mut repl = ReplState::new(inferencer);
     let mut buffer = vec![];
-    if config.test_scenario.clone().unwrap() == "show".to_string() {
-        for (i, x) in repl.inferencer.bfs_order.iter().enumerate() {
-            println!("{} {:?}", i , x);
+    buffer.push(repl.inferencer.log_table_to_file()?);
+    let focus = setup_test_scenario(&mut connection, scenario_name, test_scenario, &mut repl)?;
+    if focus.is_some() {
+        for _i in 0..50 {
+            repl.inferencer
+                .do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
+            buffer.push(repl.inferencer.log_table_to_file()?);
         }
     } else {
-        repl.inferencer.log_table_to_file()?;
-        let focus = setup_test_scenario(&mut connection, &config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
-        if focus.is_some() {
-            for _i in 0..50 {
-                repl.inferencer.do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
-                buffer.push(repl.inferencer.log_table_to_file()?);
-            }
-        } else {
-            for _i in 0..50 {
-                repl.inferencer.do_full_forward_and_backward(&mut connection)?;
-                buffer.push(repl.inferencer.log_table_to_file()?);
-            }
+        for _i in 0..50 {
+            repl.inferencer
+                .do_full_forward_and_backward(&mut connection)?;
+            buffer.push(repl.inferencer.log_table_to_file()?);
         }
     }
     Ok(buffer)
