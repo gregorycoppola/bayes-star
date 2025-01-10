@@ -19,7 +19,9 @@ use crate::{
 fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let node = &PropositionNode::from_single(target);
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
-    "".to_string()
+    let mut buffer = "".to_string();
+    buffer += &diagram_proposition(target);
+    buffer
 }
 
 fn iterate_through_factors(
@@ -37,7 +39,6 @@ fn iterate_through_factors(
     for single_node in &inferencer.bfs_order {
         if single_node.is_single() {
             let proposition = single_node.extract_single();
-            buffer += &diagram_proposition(&proposition);
             buffer += &graph_full_factor(&inferencer, &proposition);
         }
     }
