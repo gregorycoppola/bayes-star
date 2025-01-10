@@ -175,10 +175,11 @@ impl Predicate {
     }
 
     pub fn new_from_just_name(relation_name: String, roles: Vec<LabeledArgument>) -> Self {
-        todo!()
-        // let mut buffer = roles.clone();
-        // buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
-        // Predicate { relation, roles: buffer }
+        let mut buffer = roles.clone();
+        buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
+        // TODO: add some actual stuff to the vector of arguments
+        let relation = Relation::new(relation_name, vec![]);
+        Predicate { relation, roles: buffer }
     }
 
     pub fn debug_string(&self) -> String {
