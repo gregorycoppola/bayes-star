@@ -8,10 +8,23 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
     let mut buffer = "".to_string();
     buffer += &format!("<div class='weight_box'>");
     for class_label in CLASS_LABELS {
-        buffer += &format!("<div class='weight_box_row'>");
         let posf = positive_feature(&feature, class_label);
         let negf = negative_feature(&feature, class_label);
-        buffer += &format!("</div>");
+        let posf_count = 0;
+        let negf_count = 0;
+        buffer += &format!(r#"
+            <div class='weight_box_row'>
+                <div class='weight_box_cell'>
+                    {class_label}
+                </div>
+                <div class='weight_box_cell'>
+                    {posf_count}
+                </div>
+                <div class='weight_box_cell'>
+                    {negf_count}
+                </div>
+            </div>
+        "#);
     }
     buffer += &format!("</div>");
     buffer
