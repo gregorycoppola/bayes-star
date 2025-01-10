@@ -10,7 +10,7 @@ use bayes_star::{
         resources::ResourceContext,
         setup::{parse_configuration_options, CommandLineOptions},
     },
-    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network}},
+    explorer::{render_utils::{read_all_css, render_app_body}, routes::{experiment_route::internal_experiment, index_route::internal_index, network_route::internal_network, weights_route::internal_weights}},
 };
 use redis::Connection;
 use rocket::response::content::{Content, Html};
@@ -43,11 +43,16 @@ fn network(experiment_name: String, context: State<AppContext>) -> Html<String> 
     internal_network(&experiment_name, &context.namespace)
 }
 
+#[get("/weights/<experiment_name>")]
+fn weights(experiment_name: String, context: State<AppContext>) -> Html<String> {
+    internal_weights(&experiment_name, &context.namespace)
+}
+
 fn main() {
     let config = parse_configuration_options();
     rocket::ignite()
         .manage(AppContext::new(config))
-        .mount("/", routes![home, experiment, network])
+        .mount("/", routes![home, experiment, network, weights])
         .mount("/static", StaticFiles::from("static"))
         .launch();
 }
