@@ -150,12 +150,7 @@ impl Inferencer {
     pub fn log_table_to_file(&self) -> Result<(), Box<dyn Error>> {
         let table = self.build_marginal_table()?;
         let json = serde_json::to_string(&table)?;
-        let file_name = self.config.marginal_output_file.clone().unwrap();
-        let mut file = OpenOptions::new()
-            .append(true)
-            .create(true)
-            .open(file_name)?;
-        writeln!(file, "{}", json)?;
+        println!("json {json}");
         Ok(())
     }
 
