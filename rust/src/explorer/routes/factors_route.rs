@@ -9,9 +9,12 @@ use crate::{
         resources::ResourceContext,
     },
     explorer::{diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition}, render_utils::render_app_body},
-    inference::{graph::PropositionGraph, inference::Inferencer},
+    inference::{graph::PropositionGraph, inference::Inferencer}, model::objects::Proposition,
 };
 
+fn graph_full_factor(inferencer: &Inferencer, target:& Proposition) -> String {
+    "".to_string()
+}
 fn iterate_through_factors(
     scenario_name: &str,
     resource_context: &ResourceContext,
@@ -28,6 +31,7 @@ fn iterate_through_factors(
         if single_node.is_single() {
             let proposition = single_node.extract_single();
             buffer += &diagram_proposition(&proposition);
+            buffer += &graph_full_factor(&inferencer, &proposition);
         }
     }
     Ok(buffer)
