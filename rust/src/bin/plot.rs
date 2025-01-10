@@ -75,7 +75,9 @@ pub fn run_inference_rounds(
 fn main() {
     let config: bayes_star::common::setup::CommandLineOptions = parse_configuration_options();
     let resources = ResourceContext::new(&config).expect("Couldn't create resources.");
-    let marginal_tables = run_inference_rounds(&config, &resources).expect("Testing failed.");
+    let test_scenario = config.test_scenario.expect("no test_scenario in config");
+    let marginal_tables = run_inference_rounds(&config.scenario_name, &test_scenario, &resources)
+        .expect("Testing failed.");
     for marginal_table in &marginal_tables {
         println!("table {:?}", marginal_table);
     }
