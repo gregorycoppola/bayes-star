@@ -110,6 +110,7 @@ fn make_proposition_map(graph: &PropositionGraph) -> HashMap<String, Proposition
     let mut result = HashMap::new();
     for (index, node) in bfs.iter().enumerate() {
         let name = node.debug_string();
+        warn!("name_key: {}", &name);
         result.insert(name, node.clone());
     }
     result
