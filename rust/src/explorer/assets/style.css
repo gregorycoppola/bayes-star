@@ -81,3 +81,12 @@ main {
     font-size: 80px;
     color: white;
 }
+
+
+.network_cell {
+    background-color: green;
+}
+
+.network_column {
+    background-color: orange;
+}
