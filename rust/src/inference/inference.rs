@@ -19,10 +19,16 @@ use crate::{
 use colored::*;
 use redis::Connection;
 use serde::{Deserialize, Serialize};
-use std::{
-    borrow::Borrow, collections::{HashMap, HashSet, VecDeque}, error::Error, fmt::Display, fs::OpenOptions, rc::Rc, sync::Arc
-};
 use std::io::Write;
+use std::{
+    borrow::Borrow,
+    collections::{HashMap, HashSet, VecDeque},
+    error::Error,
+    fmt::Display,
+    fs::OpenOptions,
+    rc::Rc,
+    sync::Arc,
+};
 
 use std::backtrace::Backtrace;
 
@@ -76,25 +82,26 @@ impl Inferencer {
         }))
     }
 
-    pub fn initialize_chart(&mut self,
-        connection: &mut Connection
-    ) -> Result<(), Box<dyn Error>> {
+    pub fn initialize_chart(&mut self, connection: &mut Connection) -> Result<(), Box<dyn Error>> {
         self.initialize_lambda()?;
         self.do_pi_traversal(connection)?;
         Ok(())
     }
 
-    pub fn do_full_forward_and_backward(&mut self,
-        connection: &mut Connection
+    pub fn do_full_forward_and_backward(
+        &mut self,
+        connection: &mut Connection,
     ) -> Result<(), Box<dyn Error>> {
         self.do_pi_traversal(connection)?;
         self.do_lambda_traversal(connection)?;
         Ok(())
     }
 
-    pub fn do_fan_out_from_node(&mut self,
+    pub fn do_fan_out_from_node(
+        &mut self,
         connection: &mut Connection,
-         node: &PropositionNode) -> Result<(), Box<dyn Error>> {
+        node: &PropositionNode,
+    ) -> Result<(), Box<dyn Error>> {
         let mut backward_order = self.bfs_order.clone();
         backward_order.reverse();
         let mut started = false;
@@ -197,12 +204,16 @@ impl Inferencer {
         }
     }
 
-    pub fn is_observed(&self, connection: &mut Connection, node: &PropositionNode) -> Result<bool, Box<dyn Error>> {
+    pub fn is_observed(
+        &self,
+        connection: &mut Connection,
+        node: &PropositionNode,
+    ) -> Result<bool, Box<dyn Error>> {
         if node.is_single() {
             let as_single = node.extract_single();
             let has_evidence = self
                 .fact_memory
-                .get_proposition_probability(connection,&as_single)?
+                .get_proposition_probability(connection, &as_single)?
                 .is_some();
             trace!(
                 "is_observed? node {:?}, has_evidence {}",
@@ -223,7 +234,12 @@ impl Inferencer {
         conclusion: &PropositionNode,
     ) -> Result<f64, Box<dyn Error>> {
         if conclusion.is_single() {
-            self.score_factor_assignment_disjunction(connection, premises, premise_assignment, conclusion)
+            self.score_factor_assignment_disjunction(
+                connection,
+                premises,
+                premise_assignment,
+                conclusion,
+            )
         } else {
             self.score_factor_assignment_conjunction(premises, premise_assignment, conclusion)
         }
