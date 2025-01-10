@@ -25,15 +25,22 @@ fn render_one_weight_box(connection: &mut Connection, graph: &InferenceGraph, fa
         let negf = negative_feature(&feature, class_label);
         let posf_count = weights.read_single_weight(connection, &posf).unwrap();
         let negf_count = weights.read_single_weight(connection, &negf).unwrap();
+        let posf_css = if posf_count > 0.3f64 {
+            "positive_weight".to_string()
+        } else if posf_count <  0.3f64 {
+            "negative_weight".to_string()
+        } else {
+            "neutral_weight".to_string()
+        };
         buffer += &format!(r#"
             <div class='weight_box_row'>
                 <div class='weight_box_cell'>
                     {class_label}
                 </div>
-                <div class='weight_box_cell'>
+                <div class='weight_box_cell {neg_css}'>
                     {negf_count}
                 </div>
-                <div class='weight_box_cell'>
+                <div class='weight_box_cell {pos_css}'>
                     {posf_count}
                 </div>
             </div>
