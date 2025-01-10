@@ -139,3 +139,10 @@ main {
     background-color: black;
     color: white;
 }
+
+.factor_box {
+    background-color: teal;
+    color: white;
+    font-weight: bold;
+    border: 10px orange dotted;
+}
