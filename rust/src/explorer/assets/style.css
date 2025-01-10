@@ -109,7 +109,7 @@ main {
 }
 
 .weight_box_row {
-    background-color: greenyellow;
+    background-color: yellow;
     display: flex;
     justify-content: center;
     align-items: center;
