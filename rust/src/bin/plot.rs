@@ -4,7 +4,6 @@ use bayes_star::common::proposition_db::EmptyBeliefTable;
 use bayes_star::common::setup::{parse_configuration_options, CommandLineOptions};
 use bayes_star::common::resources::ResourceContext;
 use bayes_star::common::test::ReplState;
-use bayes_star::common::train::TrainingPlan;
 use bayes_star::inference::graph::PropositionGraph;
 use bayes_star::inference::inference::Inferencer;
 use bayes_star::inference::table::PropositionNode;
