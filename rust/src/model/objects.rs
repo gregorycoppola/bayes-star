@@ -168,7 +168,7 @@ impl fmt::Debug for Predicate {
 }
 
 impl Predicate {
-    pub fn new(relation: Relation, roles: Vec<LabeledArgument>) -> Self {
+    pub fn new_from_relation(relation: Relation, roles: Vec<LabeledArgument>) -> Self {
         let mut buffer = roles.clone();
         buffer.sort_by(|a, b| a.role_name.cmp(&b.role_name));
         Predicate { relation, roles: buffer }

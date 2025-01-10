@@ -18,7 +18,7 @@ pub fn convert_to_quantified(proposition: &Proposition, roles: &[String]) -> Pre
         })
         .collect();
 
-    Predicate::new(proposition.predicate.relation.clone(), result)
+    Predicate::new_from_relation(proposition.predicate.relation.clone(), result)
 }
 
 pub fn convert_to_proposition(
@@ -65,7 +65,7 @@ pub fn convert_to_proposition(
     debug!("Conversion to proposition completed successfully.");
     let function = predicate.relation.clone();
     Ok(Proposition {
-        predicate: Predicate::new(function, result_roles),
+        predicate: Predicate::new_from_relation(function, result_roles),
     })
 }
 

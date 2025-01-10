@@ -33,11 +33,11 @@ pub fn relation(relation_name: String, roles: Vec<VariableArgument>) -> Relation
 }
 
 pub fn proposition(relation: Relation, roles: Vec<LabeledArgument>) -> Proposition {
-    Proposition::from(Predicate::new(relation, roles))
+    Proposition::from(Predicate::new_from_relation(relation, roles))
 }
 
 pub fn predicate(relation: Relation, roles: Vec<LabeledArgument>) -> Predicate {
-    Predicate::new(relation, roles)
+    Predicate::new_from_relation(relation, roles)
 }
 
 // Function to create a FilledRole
