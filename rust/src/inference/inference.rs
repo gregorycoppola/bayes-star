@@ -147,16 +147,6 @@ impl Inferencer {
         Ok(table)
     }
 
-    pub fn clear_marginal_output_file(&self) -> Result<(), Box<dyn Error>> {
-        // let file_name = self.config.marginal_output_file.clone().unwrap();
-        // let _file = OpenOptions::new()
-        //     .write(true) // Enable write access.
-        //     .truncate(true) // Truncate the file's contents.
-        //     .create(true) // Create the file if it does not exist.
-        //     .open(file_name)?;
-        Ok(())
-    }
-
     pub fn log_table_to_file(&self) -> Result<(), Box<dyn Error>> {
         let table = self.build_marginal_table()?;
         let json = serde_json::to_string(&table)?;

@@ -51,7 +51,6 @@ pub fn run_inference_rounds(
             println!("{} {:?}", i , x);
         }
     } else {
-        repl.inferencer.clear_marginal_output_file()?;
         repl.inferencer.log_table_to_file()?;
         let focus = setup_test_scenario(&mut connection, &config.scenario_name,&config.test_scenario.as_ref().unwrap(), &mut repl)?;
         if focus.is_some() {
