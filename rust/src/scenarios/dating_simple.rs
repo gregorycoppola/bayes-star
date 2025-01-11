@@ -139,7 +139,11 @@ impl ScenarioMaker for SimpleDating {
                     jack_lonely.predicate.hash_string(),
                     p_jack_lonely
                 );
-                proposition_db.store_proposition_probability(&mut connection, &jack_lonely, p_jack_lonely)?;
+                proposition_db.store_proposition_probability(
+                    &mut connection,
+                    &jack_lonely,
+                    p_jack_lonely,
+                )?;
                 plan.maybe_add_to_training(&mut connection, is_training, &jack_lonely)?;
                 graph.ensure_existence_backlinks_for_proposition(&mut connection, &jack_lonely)?;
             }
@@ -153,9 +157,14 @@ impl ScenarioMaker for SimpleDating {
                     jill_exciting.predicate.hash_string(),
                     p_jill_exciting
                 );
-                proposition_db.store_proposition_probability(&mut connection,&jill_exciting, p_jill_exciting)?;
+                proposition_db.store_proposition_probability(
+                    &mut connection,
+                    &jill_exciting,
+                    p_jill_exciting,
+                )?;
                 plan.maybe_add_to_training(&mut connection, is_training, &jill_exciting)?;
-                graph.ensure_existence_backlinks_for_proposition(&mut connection, &jill_exciting)?;
+                graph
+                    .ensure_existence_backlinks_for_proposition(&mut connection, &jill_exciting)?;
             }
 
             {
@@ -172,10 +181,16 @@ impl ScenarioMaker for SimpleDating {
                     jill_likes_jack.predicate.hash_string(),
                     p_jill_likes_jack
                 ); // Logging
-                proposition_db
-                    .store_proposition_probability(&mut connection,&jill_likes_jack, p_jill_likes_jack)?;
+                proposition_db.store_proposition_probability(
+                    &mut connection,
+                    &jill_likes_jack,
+                    p_jill_likes_jack,
+                )?;
                 plan.maybe_add_to_training(&mut connection, is_training, &jill_likes_jack)?;
-                graph.ensure_existence_backlinks_for_proposition(&mut connection, &jill_likes_jack)?;
+                graph.ensure_existence_backlinks_for_proposition(
+                    &mut connection,
+                    &jill_likes_jack,
+                )?;
             }
 
             {
@@ -191,8 +206,11 @@ impl ScenarioMaker for SimpleDating {
                     p_jack_likes_jill
                 ); // Logging
                 if is_training {
-                    proposition_db
-                        .store_proposition_probability(&mut connection,&jack_likes_jill, p_jack_likes_jill)?;
+                    proposition_db.store_proposition_probability(
+                        &mut connection,
+                        &jack_likes_jill,
+                        p_jack_likes_jill,
+                    )?;
                 }
                 plan.maybe_add_to_training(&mut connection, is_training, &jack_likes_jill)?;
                 // graph.ensure_existence_backlinks_for_proposition(&jack_likes_jill)?;
@@ -211,8 +229,11 @@ impl ScenarioMaker for SimpleDating {
                 ); // Logging
 
                 if is_training {
-                    proposition_db
-                        .store_proposition_probability(&mut connection,&jack_dates_jill, p_jack_dates_jill)?;
+                    proposition_db.store_proposition_probability(
+                        &mut connection,
+                        &jack_dates_jill,
+                        p_jack_dates_jill,
+                    )?;
                 }
                 plan.maybe_add_to_training(&mut connection, is_training, &jack_dates_jill)?;
                 plan.maybe_add_to_test(&mut connection, is_test, &jack_dates_jill)?;
