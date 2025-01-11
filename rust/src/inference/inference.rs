@@ -346,8 +346,6 @@ pub fn compute_factor_probability_table(
     inferencer: &Inferencer,
     node: &PropositionNode,
 ) -> Result<FactorProbabilityTable, Box<dyn Error>> {
-    let is_observed = inferencer.is_observed(connection, node)?;
-    assert!(!is_observed);
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     let all_combinations = compute_each_combination(&parent_nodes);
     let mut buffer = vec![];
