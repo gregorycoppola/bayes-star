@@ -9,13 +9,30 @@ use crate::{
         resources::ResourceContext,
     },
     explorer::{
-        diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition, diagram_proposition_group},
+        diagram_utils::{
+            diagram_implication, diagram_predicate, diagram_proposition, diagram_proposition_group,
+        },
         render_utils::render_app_body,
     },
-    inference::{graph::PropositionGraph, inference::{compute_each_combination, Inferencer}, table::PropositionNode},
+    inference::{
+        graph::PropositionGraph,
+        inference::{compute_each_combination, Inferencer},
+        table::{PropositionNode, VariableAssignment},
+    },
     model::objects::Proposition,
 };
 
+pub fn diagram_variable_assignment(assignment: &VariableAssignment) -> String {
+    let mut html =
+        String::from("<table border='1'><tr><th>PropositionNode</th><th>Value</th></tr>");
+    let sorted_keys: Vec<_> = assignment.assignment_map.iter().collect();
+    for (key, value) in sorted_keys {
+        let row = format!("<tr><td>{:?}</td><td>{}</td></tr>", key, value);
+        html.push_str(&row);
+    }
+    html.push_str("</table>");
+    html
+}
 
 fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let node = &PropositionNode::from_single(target);
