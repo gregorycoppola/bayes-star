@@ -24,7 +24,8 @@ fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     buffer += &format!("<div class='factor_parent_box'>");
     for parent_node in &parent_nodes {
-        buffer += &diagram_proposition(parent_node);
+        let proposition = parent_node.extract_single();
+        buffer += &diagram_proposition(&proposition);
     }
     buffer += &format!("</div>");
     buffer += &format!("</div>");
