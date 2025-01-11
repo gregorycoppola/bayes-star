@@ -16,7 +16,7 @@ use crate::{
     },
     inference::{
         graph::PropositionGraph,
-        inference::{compute_each_combination, Inferencer},
+        inference::{compute_each_combination, compute_factor_probability_table, Inferencer},
         table::{FactorProbabilityTable, PropositionNode, VariableAssignment},
     },
     model::objects::Proposition,
@@ -70,7 +70,9 @@ fn compute_factor_probability_table_and_graph(
     inferencer: &Inferencer,
     node: &PropositionNode,
 ) -> Result<String, Box<dyn Error>> {
-    todo!()
+    let table = compute_factor_probability_table(connection, inferencer, node)?;
+    let html = diagram_factor_table(&table);
+    Ok(html)
 }
 
 fn iterate_through_factors(
@@ -89,7 +91,11 @@ fn iterate_through_factors(
         if single_node.is_single() {
             let proposition = single_node.extract_single();
             buffer += &graph_full_factor(&inferencer, &proposition);
-            buffer += &compute_factor_probability_table_and_graph(&mut connection, &inferencer, single_node)?
+            buffer += &compute_factor_probability_table_and_graph(
+                &mut connection,
+                &inferencer,
+                single_node,
+            )?
         }
     }
     Ok(buffer)
