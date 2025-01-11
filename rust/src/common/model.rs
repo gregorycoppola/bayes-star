@@ -43,12 +43,14 @@ pub trait FactorModel {
         connection: &mut Connection,
         implication: &ImplicationFactor,
     ) -> Result<(), Box<dyn Error>>;
+
     fn train(
         &mut self,
         connection: &mut Connection,
         factor: &FactorContext,
         probability: f64,
     ) -> Result<TrainStatistics, Box<dyn Error>>;
+
     fn predict(
         &self,
         connection: &mut Connection,
