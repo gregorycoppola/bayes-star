@@ -257,3 +257,7 @@ impl HashMapBeliefTable {
         self.lambda_messages.insert(key, value);
     }
 }
+
+pub struct FactorProbabilityTable {
+    pub table: Vec<(HashMap<PropositionNode, bool>, f64)>,
+}

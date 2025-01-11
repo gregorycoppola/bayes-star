@@ -1,6 +1,6 @@
 use super::{
     graph::{PropositionFactor, PropositionGraph},
-    table::{HashMapBeliefTable, PropositionNode},
+    table::{FactorProbabilityTable, HashMapBeliefTable, PropositionNode},
 };
 use crate::{
     common::{
@@ -339,10 +339,6 @@ pub fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<Propositio
         result.push(group);
     }
     result
-}
-
-pub struct FactorProbabilityTable {
-    table: Vec<(HashMap<PropositionNode, bool>, f64)>,
 }
 
 pub fn compute_factor_probability_table(
