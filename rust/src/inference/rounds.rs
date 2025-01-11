@@ -49,11 +49,11 @@ pub fn run_inference_rounds(
     let mut repl = ReplState::new(inferencer);
     let mut buffer = vec![];
     buffer.push(repl.inferencer.log_table_to_file()?);
-    let focus = setup_test_scenario(&mut connection, scenario_name, test_scenario, &mut repl)?;
-    if focus.is_some() {
+    let evidence_node = setup_test_scenario(&mut connection, scenario_name, test_scenario, &mut repl)?;
+    if evidence_node.is_some() {
         for _i in 0..50 {
             repl.inferencer
-                .do_fan_out_from_node(&mut connection, &focus.clone().unwrap())?;
+                .do_fan_out_from_node(&mut connection, &evidence_node.clone().unwrap())?;
             buffer.push(repl.inferencer.log_table_to_file()?);
         }
     } else {
