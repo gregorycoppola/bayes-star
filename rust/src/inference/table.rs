@@ -258,6 +258,22 @@ impl HashMapBeliefTable {
     }
 }
 
+pub struct VariableAssignment {
+    pub assignment_map: HashMap<PropositionNode, bool>,
+}
+
+impl VariableAssignment {
+    pub fn new(assignment_map: HashMap<PropositionNode, bool>) -> VariableAssignment {
+        VariableAssignment { assignment_map }
+    }
+}
+
 pub struct FactorProbabilityTable {
-    pub table: Vec<(HashMap<PropositionNode, bool>, f64)>,
+    pub pairs: Vec<(VariableAssignment, f64)>,
+}
+
+impl FactorProbabilityTable {
+    pub fn new(pairs: Vec<(VariableAssignment, f64)>) -> FactorProbabilityTable {
+        FactorProbabilityTable { pairs }
+    }
 }

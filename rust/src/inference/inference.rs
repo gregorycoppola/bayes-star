@@ -9,7 +9,7 @@ use crate::{
         proposition_db,
         setup::CommandLineOptions,
     },
-    inference::table::GenericNodeType,
+    inference::table::{GenericNodeType, VariableAssignment},
     model::{
         objects::{Predicate, PredicateGroup, Proposition, PropositionGroup},
         weights::CLASS_LABELS,
@@ -354,7 +354,7 @@ pub fn compute_factor_probability_table(
     for combination in &all_combinations {
         let true_prob =
             inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
-        buffer.push((combination.clone(), true_prob));
+        buffer.push((VariableAssignment::new(combination.clone()), true_prob));
     }
-    Ok(FactorProbabilityTable{ table: buffer })
+    Ok(FactorProbabilityTable::new(buffer))
 }
