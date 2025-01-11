@@ -12,9 +12,26 @@ use crate::{
         diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition, diagram_proposition_group},
         render_utils::render_app_body,
     },
-    inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode},
+    inference::{graph::PropositionGraph, inference::{compute_each_combination, Inferencer}, table::PropositionNode},
     model::objects::Proposition,
 };
+
+
+pub fn compute_factor_probability_table(
+    connection: &mut Connection,
+    inferencer: &Inferencer,
+    node: &PropositionNode,
+) -> Result<(), Box<dyn Error>> {
+    let is_observed = inferencer.is_observed(connection, node)?;
+    assert!(!is_observed);
+    let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
+    let all_combinations = compute_each_combination(&parent_nodes);
+    for combination in &all_combinations {
+        let true_marginal = inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
+        let false_marginal = 1f64 - true_marginal;
+    }
+    Ok(())
+}
 
 fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let node = &PropositionNode::from_single(target);
