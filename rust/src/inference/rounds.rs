@@ -29,7 +29,6 @@ fn setup_test_scenario(
         _ => panic!("Case name not recognized"),
     };
     let r = repl_state.set_pairs_by_name(connection, &pairs);
-    // let r = None;
     Ok(r)
 }
 
