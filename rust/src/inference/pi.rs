@@ -40,12 +40,10 @@ impl Inferencer {
 
     fn pi_compute_root(&mut self, node: &PropositionNode) -> Result<(), Box<dyn Error>> {
         let root = node.extract_single();
-        // assert_eq!(root.predicate.relation.relation_name, existence_predicate_name());
         self.data
             .set_pi_value(&PropositionNode::from_single(&root), 1, 1.0f64);
         self.data
             .set_pi_value(&PropositionNode::from_single(&root), 0, 0.0f64);
-
         Ok(())
     }
 
