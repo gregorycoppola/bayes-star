@@ -1,4 +1,10 @@
 # CHANGELOG
+## animation0111
+
+Make it so that "/animation/<experiment_name>/<scenario_name>/" will:
+1) load up a scenario
+2) remember the inferences for each
+3) graph the marginals
 
 ## implications0108
 Render the "implications".
