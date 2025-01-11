@@ -356,11 +356,9 @@ pub fn compute_factor_probability_table(
     let all_combinations = compute_each_combination(&parent_nodes);
     let mut buffer = vec![];
     for combination in &all_combinations {
-        let true_marginal =
+        let true_prob =
             inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
-        let false_marginal = 1f64 - true_marginal;
-
-        buffer.push((combination.clone(), true_marginal));
+        buffer.push((combination.clone(), true_prob));
     }
     Ok(FactorProbabilityTable{ table: buffer })
 }
