@@ -65,6 +65,14 @@ fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     buffer
 }
 
+fn compute_factor_probability_table_and_graph(
+    connection: &mut Connection,
+    inferencer: &Inferencer,
+    node: &PropositionNode,
+) -> Result<String, Box<dyn Error>> {
+    todo!()
+}
+
 fn iterate_through_factors(
     scenario_name: &str,
     resource_context: &ResourceContext,
@@ -81,6 +89,7 @@ fn iterate_through_factors(
         if single_node.is_single() {
             let proposition = single_node.extract_single();
             buffer += &graph_full_factor(&inferencer, &proposition);
+            buffer += &compute_factor_probability_table_and_graph(&mut connection, &inferencer, single_node)?
         }
     }
     Ok(buffer)
