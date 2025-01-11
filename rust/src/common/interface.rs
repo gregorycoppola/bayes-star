@@ -9,12 +9,11 @@ use super::{graph::InferenceGraph, model::InferenceModel, train::TrainingPlan, r
 pub struct TrainStatistics {
     pub loss: f64,
 }
+
 pub struct PredictStatistics {
     pub probability: f64,
 }
 
-/// MUTABILITY: These methods use const self reference, but can still "store" to the DB
-/// using a "const" DB connection.
 pub trait BeliefTable {
     fn get_proposition_probability(
         &self,
