@@ -341,7 +341,7 @@ pub fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<Propositio
     result
 }
 
-struct FactorProbabilityTable {
+pub struct FactorProbabilityTable {
     table: Vec<(HashMap<PropositionNode, bool>, f64)>,
 }
 
@@ -349,15 +349,18 @@ pub fn compute_factor_probability_table(
     connection: &mut Connection,
     inferencer: &Inferencer,
     node: &PropositionNode,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<FactorProbabilityTable, Box<dyn Error>> {
     let is_observed = inferencer.is_observed(connection, node)?;
     assert!(!is_observed);
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     let all_combinations = compute_each_combination(&parent_nodes);
+    let mut buffer = vec![];
     for combination in &all_combinations {
         let true_marginal =
             inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
         let false_marginal = 1f64 - true_marginal;
+
+        buffer.push((combination.clone(), true_marginal));
     }
-    Ok(())
+    Ok(FactorProbabilityTable{ table: buffer })
 }
