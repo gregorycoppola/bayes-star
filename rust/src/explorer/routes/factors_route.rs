@@ -17,7 +17,7 @@ use crate::{
     inference::{
         graph::PropositionGraph,
         inference::{compute_each_combination, Inferencer},
-        table::{PropositionNode, VariableAssignment},
+        table::{FactorProbabilityTable, PropositionNode, VariableAssignment},
     },
     model::objects::Proposition,
 };
@@ -28,6 +28,21 @@ pub fn diagram_variable_assignment(assignment: &VariableAssignment) -> String {
     let sorted_keys: Vec<_> = assignment.assignment_map.iter().collect();
     for (key, value) in sorted_keys {
         let row = format!("<tr><td>{:?}</td><td>{}</td></tr>", key, value);
+        html.push_str(&row);
+    }
+    html.push_str("</table>");
+    html
+}
+
+pub fn diagram_factor_table(table: &FactorProbabilityTable) -> String {
+    let mut html =
+        String::from("<table border='1'><tr><th>VariableAssignment</th><th>Probability</th></tr>");
+    for (pair, probability) in &table.pairs {
+        let assignment_html = diagram_variable_assignment(pair);
+        let row = format!(
+            "<tr><td>{}</td><td>{}</td></tr>",
+            assignment_html, probability
+        );
         html.push_str(&row);
     }
     html.push_str("</table>");
