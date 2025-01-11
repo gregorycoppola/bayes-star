@@ -9,7 +9,7 @@ use crate::{
         resources::ResourceContext,
     },
     explorer::{
-        diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition},
+        diagram_utils::{diagram_implication, diagram_predicate, diagram_proposition, diagram_proposition_group},
         render_utils::render_app_body,
     },
     inference::{graph::PropositionGraph, inference::Inferencer, table::PropositionNode},
@@ -24,8 +24,8 @@ fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     buffer += &format!("<div class='factor_parent_box'>");
     for parent_node in &parent_nodes {
-        let proposition = parent_node.extract_single();
-        buffer += &diagram_proposition(&proposition);
+        let proposition = parent_node.extract_group();
+        buffer += &diagram_proposition_group(&proposition);
     }
     buffer += &format!("</div>");
     buffer += &format!("</div>");
