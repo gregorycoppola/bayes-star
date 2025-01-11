@@ -342,7 +342,7 @@ pub fn groups_from_backlinks(backlinks: &Vec<PropositionNode>) -> Vec<Propositio
 }
 
 struct FactorProbabilityTable {
-    table:Vec<(HashMap<PropositionNode, bool>, f64)>,
+    table: Vec<(HashMap<PropositionNode, bool>, f64)>,
 }
 
 pub fn compute_factor_probability_table(
@@ -355,7 +355,8 @@ pub fn compute_factor_probability_table(
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     let all_combinations = compute_each_combination(&parent_nodes);
     for combination in &all_combinations {
-        let true_marginal = inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
+        let true_marginal =
+            inferencer.score_factor_assignment(connection, &parent_nodes, combination, node)?;
         let false_marginal = 1f64 - true_marginal;
     }
     Ok(())
