@@ -51,7 +51,18 @@ fn diagram_relation(relation: &Relation) -> String {
 }
 
 pub fn diagram_proposition(proposition: &Proposition, marginal_table: Option<&MarginalTable>) -> String {
-    diagram_predicate(&proposition.predicate)
+    let score_part = "".to_string();
+    format!(
+        r#"
+        <span class='relation'>
+            <span class='relation_name'>
+                {predicate_part}
+            </span>
+            {score_part}
+        </span>
+    "#,
+        predicate_part = &diagram_predicate(&proposition.predicate),
+    )
 }
 
 pub fn diagram_predicate(predicate: &Predicate) -> String {
