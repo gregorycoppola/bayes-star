@@ -24,7 +24,7 @@ use crate::{
     },
 };
 
-fn backwards_print_group(
+fn backwards_print_group_with_marginal_table(
     connection: &mut Connection,
     inferencer: &Inferencer,
     target: &PropositionGroup,
@@ -58,7 +58,7 @@ fn backwards_print_single_with_marginal_table(
     buffer += &format!(r#" <div class='network_row'> "#,);
     for backlink in &backlinks {
         let group = backlink.extract_group();
-        let part = backwards_print_group(connection, inferencer, &group, table)?;
+        let part = backwards_print_group_with_marginal_table(connection, inferencer, &group, table)?;
         buffer += &part;
     }
     buffer += &format!(r#" </div>"#,);
