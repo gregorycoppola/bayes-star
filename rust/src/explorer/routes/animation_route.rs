@@ -28,6 +28,7 @@ fn backwards_print_group(
     connection: &mut Connection,
     inferencer: &Inferencer,
     target: &PropositionGroup,
+    table: &MarginalTable,
 ) -> Result<String, Box<dyn Error>> {
     let proposition_node = PropositionNode::from_group(&target);
     let backlinks = inferencer
@@ -36,7 +37,7 @@ fn backwards_print_group(
     let mut buffer = "".to_string();
     for backlink in &backlinks {
         let single = backlink.extract_single();
-        let part = backwards_print_single_with_marginal_table(connection, inferencer, &single)?;
+        let part = backwards_print_single_with_marginal_table(connection, inferencer, &single, table)?;
         buffer += &part;
     }
     Ok(buffer)
@@ -46,6 +47,7 @@ fn backwards_print_single_with_marginal_table(
     connection: &mut Connection,
     inferencer: &Inferencer,
     target: &Proposition,
+    table: &MarginalTable,
 ) -> Result<String, Box<dyn Error>> {
     let proposition_node = PropositionNode::from_single(&target);
     let backlinks = inferencer
@@ -56,7 +58,7 @@ fn backwards_print_single_with_marginal_table(
     buffer += &format!(r#" <div class='network_row'> "#,);
     for backlink in &backlinks {
         let group = backlink.extract_group();
-        let part = backwards_print_group(connection, inferencer, &group)?;
+        let part = backwards_print_group(connection, inferencer, &group, table)?;
         buffer += &part;
     }
     buffer += &format!(r#" </div>"#,);
@@ -100,11 +102,15 @@ fn safe_network_animations(
     let fact_memory = EmptyBeliefTable::new_shared(namespace)?;
     let inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    let result = backwards_print_single_with_marginal_table(
-        connection,
-        &inferencer,
-        &inferencer.proposition_graph.target,
-    )?;
+    let mut result = "".to_string();
+    for table in marginal_tables {
+        result += &backwards_print_single_with_marginal_table(
+            connection,
+            &inferencer,
+            &inferencer.proposition_graph.target,
+            table,
+        )?;
+    }
     Ok(result)
 }
 
