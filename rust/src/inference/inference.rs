@@ -48,7 +48,11 @@ pub struct MarginalTable {
 
 impl MarginalTable {
     pub fn new(entries: Vec<(String, f64)>) -> MarginalTable {
-        todo!()
+        let mut mapping = HashMap::new();
+        for (key, value) in &entries {
+            mapping.insert(key.clone(), *value);
+        }
+        MarginalTable { entries, mapping }
     }
 }
 

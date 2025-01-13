@@ -154,3 +154,9 @@ main {
     flex-direction: row;
     border: 5px solid paleturquoise;
 }
+
+.marginal {
+    background-color: orangered;
+    color: white;
+    font-size: 32px;
+}
