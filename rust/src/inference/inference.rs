@@ -160,7 +160,7 @@ impl Inferencer {
         }
 
         // self.log_table_to_file(&table)?;
-        let table = MarginalTable { entries };
+        let table = MarginalTable::new(entries);
         Ok(table)
     }
 
@@ -183,7 +183,7 @@ impl Inferencer {
             let probability = probability1;
             entries.push((node_string, probability));
         }
-        let table = MarginalTable { entries };
+        let table = MarginalTable::new(entries);
         Ok(table)
     }
 
