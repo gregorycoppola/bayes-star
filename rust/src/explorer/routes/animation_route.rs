@@ -73,7 +73,7 @@ fn backwards_print_single_with_marginal_table(
                 {implication_part}
             </span>
         "#,
-            implication_part = diagram_proposition_factor(backimplication, None)
+            implication_part = diagram_proposition_factor(backimplication, Some(table))
         );
     }
     buffer += &format!(r#" </div> "#,);
