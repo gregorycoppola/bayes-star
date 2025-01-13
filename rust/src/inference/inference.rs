@@ -47,6 +47,12 @@ pub struct MarginalTable {
 }
 
 impl MarginalTable {
+    pub fn new(entries: Vec<(String, f64)>) -> MarginalTable {
+        todo!()
+    }
+}
+
+impl MarginalTable {
     pub fn get_marginal(&self, proposition: &Proposition) -> Option<f64> {
         let node_string = format!("{:?}", proposition);
         self.mapping.get(&node_string).copied()
