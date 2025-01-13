@@ -4,7 +4,8 @@ use crate::{common::resources::ResourceContext, explorer::render_utils::render_a
 
 
 pub fn internal_marginals(experiment_name: &str, test_scenario: &str, resource_context: &ResourceContext) -> Html<String> {
-    let marginal_tables = run_inference_rounds(experiment_name, test_scenario, resource_context)
+    let mut connection = resource_context.connection.lock().unwrap();
+    let marginal_tables = run_inference_rounds(&mut connection, experiment_name, test_scenario)
         .expect("Testing failed.");
 
     let mut body_html = "".to_string();
