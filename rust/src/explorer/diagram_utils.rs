@@ -57,25 +57,19 @@ pub fn diagram_proposition(
     let score_part = match marginal_table {
         Some(table) => {
             let marginal = table.get_marginal(proposition).unwrap();
-
-        // Calculate the color based on the marginal value
-        let color = if marginal < 0.5 {
-            // Gradient from red to yellow (0.0 to 0.5)
-            format!(
-                "rgb({}, {}, 0)", 
-                (255.0 * (1.0 - marginal * 2.0)) as u8, 
-                (255.0 * marginal * 2.0) as u8
-            )
-        } else {
-            // Gradient from yellow to green (0.5 to 1.0)
-            format!(
-                "rgb(0, {}, {})", 
-                (255.0 * (marginal - 0.5) * 2.0) as u8, 
-                (255.0 * (1.0 - (marginal - 0.5) * 2.0)) as u8
-            )
-        };
-
-            // Apply the color to the span
+            let color = if marginal < 0.5 {
+                format!(
+                    "rgb({}, {}, 0)",
+                    (255.0 * (1.0 - marginal * 2.0)) as u8,
+                    (255.0 * marginal * 2.0) as u8
+                )
+            } else {
+                format!(
+                    "rgb(0, {}, {})",
+                    (255.0 * (marginal - 0.5) * 2.0) as u8,
+                    (255.0 * (1.0 - (marginal - 0.5) * 2.0)) as u8
+                )
+            };
             format!(
                 "<span class='marginal' style='background-color: {};'>{}</span>",
                 color, marginal
