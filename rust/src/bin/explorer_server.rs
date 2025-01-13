@@ -54,9 +54,9 @@ fn factors(experiment_name: String, context: State<WebContext>) -> Html<String> 
     internal_factors(&experiment_name, &context.namespace)
 }
 
-#[get("/animation/<experiment_name>")]
-fn animation(experiment_name: String, context: State<WebContext>) -> Html<String> {
-    internal_animation(&experiment_name, &context.namespace)
+#[get("/animation/<experiment_name>/<test_scenario>")]
+fn animation(experiment_name: String, test_scenario: String, context: State<WebContext>) -> Html<String> {
+    internal_animation(&experiment_name, &test_scenario, &context.namespace)
 }
 
 fn main() {
