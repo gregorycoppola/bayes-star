@@ -68,8 +68,7 @@ pub fn render_component(body_path: &str, subs: &HashMap<String, String>) -> Stri
     new_body
 }
 
-pub fn render_app_body(body_html: &str) -> Result<String, Box<dyn Error>> {
-    let body_path = "src/explorer/assets/app.html";
+pub fn render_against_custom_body(body_html: &str, body_path: &str) -> Result<String, Box<dyn Error>> {
     let raw_body = read_file_contents(body_path).unwrap();
     let mut subs = HashMap::new();
     subs.insert("{body_html}".to_string(), body_html.to_string());
@@ -77,4 +76,9 @@ pub fn render_app_body(body_html: &str) -> Result<String, Box<dyn Error>> {
     subs.insert("/* css here */".to_string(), read_all_css(html_root));
     let new_body = do_replaces(&raw_body, &subs);
     Ok(new_body)
+}
+
+pub fn render_app_body(body_html: &str) -> Result<String, Box<dyn Error>> {
+    let body_path = "src/explorer/assets/app.html";
+    render_against_custom_body(body_html, body_path)
 }
