@@ -50,7 +50,7 @@ fn diagram_relation(relation: &Relation) -> String {
     )
 }
 
-pub fn diagram_proposition(proposition: &Proposition) -> String {
+pub fn diagram_proposition(proposition: &Proposition, marginal_table: Option<&MarginalTable>) -> String {
     diagram_predicate(&proposition.predicate)
 }
 
