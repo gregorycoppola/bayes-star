@@ -51,7 +51,12 @@ fn diagram_relation(relation: &Relation) -> String {
 }
 
 pub fn diagram_proposition(proposition: &Proposition, marginal_table: Option<&MarginalTable>) -> String {
-    let score_part = "".to_string();
+    let score_part = match marginal_table {
+        Some(table) => {
+
+        }
+        None => "".to_string(),
+    }
     format!(
         r#"
         <span class='relation'>

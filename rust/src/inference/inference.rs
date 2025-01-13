@@ -46,6 +46,10 @@ pub struct MarginalTable {
 }
 
 impl MarginalTable {
+    pub fn get_marginal(&self) -> Option<f64> {
+        todo!()
+    }
+
     pub fn render_marginal_table(&self) -> String {
         let mut entries = self.entries.clone();
         // Sort entries by the string key in alphabetical order
