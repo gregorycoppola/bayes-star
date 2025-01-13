@@ -36,13 +36,13 @@ fn backwards_print_group(
     let mut buffer = "".to_string();
     for backlink in &backlinks {
         let single = backlink.extract_single();
-        let part = backwards_print_single(connection, inferencer, &single)?;
+        let part = backwards_print_single_with_marginal_table(connection, inferencer, &single)?;
         buffer += &part;
     }
     Ok(buffer)
 }
 
-fn backwards_print_single(
+fn backwards_print_single_with_marginal_table(
     connection: &mut Connection,
     inferencer: &Inferencer,
     target: &Proposition,
@@ -100,7 +100,7 @@ fn safe_network_animations(
     let fact_memory = EmptyBeliefTable::new_shared(namespace)?;
     let inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    let result = backwards_print_single(
+    let result = backwards_print_single_with_marginal_table(
         connection,
         &inferencer,
         &inferencer.proposition_graph.target,
