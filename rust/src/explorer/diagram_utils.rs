@@ -122,7 +122,7 @@ pub fn diagram_proposition_factor(relation: &PropositionFactor, marginal_table: 
         </div>
     "#,
         predicate_group_part = diagram_proposition_group(&relation.premise),
-        conclusion_part = diagram_proposition(&relation.conclusion),
+        conclusion_part = diagram_proposition(&relation.conclusion, marginal_table),
     )
 }
 

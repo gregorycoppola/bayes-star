@@ -53,7 +53,7 @@ fn graph_full_factor(inferencer: &Inferencer, target: &Proposition) -> String {
     let node = &PropositionNode::from_single(target);
     let mut buffer = "".to_string();
     buffer += &format!("<div class='factor_box'>");
-    buffer += &diagram_proposition(target);
+    buffer += &diagram_proposition(target, None);
     let parent_nodes = inferencer.proposition_graph.get_all_backward(node);
     buffer += &format!("<div class='factor_parent_box'>");
     for parent_node in &parent_nodes {
