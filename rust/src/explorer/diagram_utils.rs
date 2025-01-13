@@ -50,11 +50,36 @@ fn diagram_relation(relation: &Relation) -> String {
     )
 }
 
-pub fn diagram_proposition(proposition: &Proposition, marginal_table: Option<&MarginalTable>) -> String {
+pub fn diagram_proposition(
+    proposition: &Proposition,
+    marginal_table: Option<&MarginalTable>,
+) -> String {
     let score_part = match marginal_table {
         Some(table) => {
             let marginal = table.get_marginal(proposition).unwrap();
-            format!("<span class='marginal'>{marginal}></span>")
+
+            // Calculate the color based on the marginal value
+            let color = if marginal < 0.5 {
+                // Gradient from red to yellow (0.0 to 0.5)
+                format!(
+                    "rgb({}, {}, 0)",
+                    (255 * (1.0 - marginal * 2.0)) as u8,
+                    (255 * marginal * 2.0) as u8
+                )
+            } else {
+                // Gradient from yellow to green (0.5 to 1.0)
+                format!(
+                    "rgb(0, {}, {})",
+                    (255 * (marginal - 0.5) * 2.0) as u8,
+                    (255 * (1.0 - (marginal - 0.5) * 2.0)) as u8
+                )
+            };
+
+            // Apply the color to the span
+            format!(
+                "<span class='marginal' style='background-color: {};'>{}</span>",
+                color, marginal
+            )
         }
         None => "".to_string(),
     };
@@ -123,7 +148,10 @@ pub fn diagram_implication(relation: &ImplicationFactor) -> String {
     )
 }
 
-pub fn diagram_proposition_factor(relation: &PropositionFactor, marginal_table: Option<&MarginalTable>) -> String {
+pub fn diagram_proposition_factor(
+    relation: &PropositionFactor,
+    marginal_table: Option<&MarginalTable>,
+) -> String {
     format!(
         r#"
         <div class='implication_box'>
