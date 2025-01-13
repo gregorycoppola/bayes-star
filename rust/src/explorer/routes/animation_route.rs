@@ -68,18 +68,17 @@ fn backwards_print_single(
     Ok(buffer)
 }
 
-fn render_network_animations(bundle: &ResourceContext, namespace: &str) -> Result<String, Box<dyn Error>> {
+fn safe_network_animations(connection: &mut Connection, namespace: &str, ) -> Result<String, Box<dyn Error>> {
     let graph = InferenceGraph::new_shared(namespace.to_string())?;
-    let mut connection = bundle.connection.lock().unwrap();
-    let target = graph.get_target(&mut connection)?;
-    let proposition_graph = PropositionGraph::new_shared(&mut connection, &graph, target)?;
+    let target = graph.get_target(connection)?;
+    let proposition_graph = PropositionGraph::new_shared(connection, &graph, target)?;
     proposition_graph.visualize();
     let model = InferenceModel::new_shared(namespace.to_string()).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(namespace)?;
     let inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     let result = backwards_print_single(
-        &mut connection,
+        connection,
         &inferencer,
         &inferencer.proposition_graph.target,
     )?;
@@ -94,14 +93,7 @@ pub fn internal_animation(
     let mut connection = resource_context.connection.lock().unwrap();
     let marginal_tables = run_inference_rounds(&mut connection, experiment_name, test_scenario)
         .expect("Testing failed.");
-
-    let mut body_html = "".to_string();
-    body_html += &format!("<div class='marginal_box'>");
-    for marginal_table in &marginal_tables {
-        let html_part = marginal_table.render_marginal_table();
-        body_html += &html_part;
-    }
-    body_html += &format!("</div>");
+    let body_html = safe_network_animations(&mut connection, experiment_name).unwrap();
     let result = render_app_body(&body_html);
     Html(result.unwrap())
 }
