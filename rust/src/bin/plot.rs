@@ -8,7 +8,8 @@ fn main() {
     let config = parse_configuration_options();
     let resources = ResourceContext::new(&config).expect("Couldn't create resources.");
     let test_scenario = config.test_scenario.expect("no test_scenario in config");
-    let marginal_tables = run_inference_rounds(&config.scenario_name, &test_scenario, &resources)
+    let mut connection = resources.connection.lock().unwrap();
+    let marginal_tables = run_inference_rounds(&mut connection, &config.scenario_name, &test_scenario)
         .expect("Testing failed.");
     for marginal_table in &marginal_tables {
         println!("table {:?}", marginal_table);
