@@ -1,5 +1,5 @@
 use crate::{
-    inference::graph::PropositionFactor,
+    inference::{graph::PropositionFactor, inference::MarginalTable},
     model::objects::{
         Argument, ImplicationFactor, Predicate, PredicateGroup, Proposition, PropositionGroup,
         Relation,
@@ -106,7 +106,7 @@ pub fn diagram_implication(relation: &ImplicationFactor) -> String {
     )
 }
 
-pub fn diagram_proposition_factor(relation: &PropositionFactor) -> String {
+pub fn diagram_proposition_factor(relation: &PropositionFactor, marginal_table: Option<&MarginalTable>) -> String {
     format!(
         r#"
         <div class='implication_box'>

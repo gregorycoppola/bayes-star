@@ -66,7 +66,7 @@ fn backwards_print_single(
                 {implication_part}
             </span>
         "#,
-            implication_part = diagram_proposition_factor(backimplication)
+            implication_part = diagram_proposition_factor(backimplication, None)
         );
     }
     buffer += &format!( r#" </div> "#,);
