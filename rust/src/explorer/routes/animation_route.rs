@@ -10,7 +10,7 @@ use crate::{
     },
     explorer::{
         diagram_utils::{diagram_predicate, diagram_proposition_factor},
-        render_utils::render_app_body,
+        render_utils::{render_against_custom_body, render_app_body},
     },
     inference::{
         graph::PropositionGraph,
@@ -123,6 +123,8 @@ pub fn internal_animation(
     let marginal_tables = run_inference_rounds(&mut connection, experiment_name, test_scenario)
         .expect("Testing failed.");
     let body_html = safe_network_animations(&mut connection, experiment_name, &marginal_tables).unwrap();
-    let result = render_app_body(&body_html);
+    // let result = render_app_body(&body_html);
+    let body_path = "src/explorer/assets/slides.html";
+    let result = render_against_custom_body(&body_html, &body_path);
     Html(result.unwrap())
 }
