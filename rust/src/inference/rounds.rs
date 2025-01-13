@@ -33,33 +33,32 @@ fn setup_test_scenario(
 }
 
 pub fn run_inference_rounds(
+    connection: &mut Connection,
     scenario_name: &str,
     test_scenario: &str,
-    resource_context: &ResourceContext,
 ) -> Result<Vec<MarginalTable>, Box<dyn Error>> {
     let model = InferenceModel::new_shared(scenario_name.to_string()).unwrap();
     let fact_memory = EmptyBeliefTable::new_shared(scenario_name)?;
-    let mut connection = resource_context.connection.lock().unwrap();
-    let target = model.graph.get_target(&mut connection)?;
-    let proposition_graph = PropositionGraph::new_shared(&mut connection, &model.graph, target)?;
+    let target = model.graph.get_target(connection)?;
+    let proposition_graph = PropositionGraph::new_shared(connection, &model.graph, target)?;
     proposition_graph.visualize();
     let mut inferencer =
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
-    inferencer.initialize_chart(&mut connection)?;
+    inferencer.initialize_chart(connection)?;
     let mut repl = ReplState::new(inferencer);
     let mut buffer = vec![];
     buffer.push(repl.inferencer.log_table_to_file()?);
-    let evidence_node = setup_test_scenario(&mut connection, scenario_name, test_scenario, &mut repl)?;
+    let evidence_node = setup_test_scenario(connection, scenario_name, test_scenario, &mut repl)?;
     if evidence_node.is_some() {
         for _i in 0..50 {
             repl.inferencer
-                .do_fan_out_from_node(&mut connection, &evidence_node.clone().unwrap())?;
+                .do_fan_out_from_node(connection, &evidence_node.clone().unwrap())?;
             buffer.push(repl.inferencer.log_table_to_file()?);
         }
     } else {
         for _i in 0..50 {
             repl.inferencer
-                .do_full_forward_and_backward(&mut connection)?;
+                .do_full_forward_and_backward(connection)?;
             buffer.push(repl.inferencer.log_table_to_file()?);
         }
     }
