@@ -43,11 +43,13 @@ pub struct Inferencer {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MarginalTable {
     entries: Vec<(String, f64)>,
+    mapping: HashMap<String, f64>,
 }
 
 impl MarginalTable {
-    pub fn get_marginal(&self) -> Option<f64> {
-        todo!()
+    pub fn get_marginal(&self, proposition: &Proposition) -> Option<f64> {
+        let node_string = format!("{:?}", proposition);
+        self.mapping.get(&node_string).copied()
     }
 
     pub fn render_marginal_table(&self) -> String {
