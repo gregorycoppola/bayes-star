@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Navigator</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="card-container">
         <div class="animation-card" id="card-0">Card 1</div>
@@ -23,6 +25,33 @@
         <button id="right-arrow" class="arrow">→</button>
     </div>
 
-    <script></script>
+    <script>
+        let currentCardIndex = 0;
+        const totalCards = 10;
+        const cards = document.querySelectorAll('.animation-card');
+
+        // Function to show the current card and hide the others
+        function showCurrentCard() {
+            cards.forEach((card, index) => {
+                card.style.display = index === currentCardIndex ? 'flex' : 'none';
+            });
+        }
+
+        // Event listener for the left arrow
+        document.getElementById('left-arrow').addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex - 1 + totalCards) % totalCards;
+            showCurrentCard();
+        });
+
+        // Event listener for the right arrow
+        document.getElementById('right-arrow').addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex + 1) % totalCards;
+            showCurrentCard();
+        });
+
+        // Show the first card on initial load
+        showCurrentCard();
+    </script>
 </body>
+
 </html>
