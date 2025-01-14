@@ -9,7 +9,7 @@ use crate::{
         resources::ResourceContext,
     },
     explorer::{
-        diagram_utils::{diagram_predicate, diagram_proposition_factor},
+        diagram_utils::{diagram_predicate, diagram_proposition, diagram_proposition_factor},
         render_utils::{render_against_custom_body, render_app_body},
     },
     inference::{
@@ -85,7 +85,7 @@ fn backwards_print_single_with_marginal_table(
             {target_part}
         </div>
     "#,
-        target_part = diagram_predicate(&target.predicate)
+        target_part = diagram_proposition(target, Some(&table))
     );
     buffer += &format!(r#"</div>"#,); // "proof_box"
     Ok(buffer)
