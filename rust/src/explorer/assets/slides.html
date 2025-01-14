@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <div id="index-display">Card 1 of 10</div>
     <div class="card-container">
         {body_html}
 
@@ -22,24 +23,30 @@
         let currentCardIndex = 0;
         const totalCards = 10;
         const cards = document.querySelectorAll('.animation-card');
+        const indexDisplay = document.getElementById('index-display');
 
-        // Function to show the current card and hide the others
+        // Function to show the current card and update the index display
         function showCurrentCard() {
             cards.forEach((card, index) => {
                 card.style.display = index === currentCardIndex ? 'flex' : 'none';
             });
+            indexDisplay.textContent = `Card ${currentCardIndex + 1} of ${totalCards}`;
         }
 
         // Event listener for the left arrow
         document.getElementById('left-arrow').addEventListener('click', () => {
-            currentCardIndex = (currentCardIndex - 1 + totalCards) % totalCards;
-            showCurrentCard();
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                showCurrentCard();
+            }
         });
 
         // Event listener for the right arrow
         document.getElementById('right-arrow').addEventListener('click', () => {
-            currentCardIndex = (currentCardIndex + 1) % totalCards;
-            showCurrentCard();
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                showCurrentCard();
+            }
         });
 
         // Show the first card on initial load

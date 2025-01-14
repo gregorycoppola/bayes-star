@@ -38,3 +38,11 @@
 #right-arrow {
     right: 10px;
 }
+
+#index-display {
+    margin: 10px;
+    font-size: 128px;
+    background-color: black;
+    color: white;
+    border: 12px red solid;
+}
