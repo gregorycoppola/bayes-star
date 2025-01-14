@@ -55,7 +55,6 @@ fn backwards_print_single_with_marginal_table(
         .proposition_graph
         .get_all_backward(&proposition_node);
     let mut buffer = "".to_string();
-    buffer += &format!(r#"<div class='animation-card'>"#,);
     buffer += &format!(r#"<div class='proof_box'>"#,);
     buffer += &format!(r#"<div class='network_row'>"#,);
     for backlink in &backlinks {
@@ -89,7 +88,6 @@ fn backwards_print_single_with_marginal_table(
         target_part = diagram_predicate(&target.predicate)
     );
     buffer += &format!(r#"</div>"#,); // "proof_box"
-    buffer += &format!(r#"</div>"#,); // "animation-card"
     Ok(buffer)
 }
 
@@ -108,12 +106,14 @@ fn safe_network_animations(
         Inferencer::new_mutable(model.clone(), proposition_graph.clone(), fact_memory)?;
     let mut result = "".to_string();
     for table in marginal_tables {
+        result += &format!(r#"<div class='animation-card'>"#,);
         result += &backwards_print_single_with_marginal_table(
             connection,
             &inferencer,
             &inferencer.proposition_graph.target,
             table,
         )?;
+        result += &format!(r#"</div>"#,); // "animation-card"
     }
     Ok(result)
 }
