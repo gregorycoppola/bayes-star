@@ -74,6 +74,8 @@ main {
 
 .implication_box {
     border: 10px solid black;
+    display: flex;
+    flex-direction: row;
 }
 
 .implication_divider {
