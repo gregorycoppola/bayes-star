@@ -37,7 +37,8 @@ fn backwards_print_group_with_marginal_table(
     let mut buffer = "".to_string();
     for backlink in &backlinks {
         let single = backlink.extract_single();
-        let part = backwards_print_single_with_marginal_table(connection, inferencer, &single, table)?;
+        let part =
+            backwards_print_single_with_marginal_table(connection, inferencer, &single, table)?;
         buffer += &part;
     }
     Ok(buffer)
@@ -54,18 +55,20 @@ fn backwards_print_single_with_marginal_table(
         .proposition_graph
         .get_all_backward(&proposition_node);
     let mut buffer = "".to_string();
-    buffer += &format!(r#" <div class='proof_box'> "#,);
-    buffer += &format!(r#" <div class='network_row'> "#,);
+    buffer += &format!(r#"<div class='animation-card'>"#,);
+    buffer += &format!(r#"<div class='proof_box'>"#,);
+    buffer += &format!(r#"<div class='network_row'>"#,);
     for backlink in &backlinks {
         let group = backlink.extract_group();
-        let part = backwards_print_group_with_marginal_table(connection, inferencer, &group, table)?;
+        let part =
+            backwards_print_group_with_marginal_table(connection, inferencer, &group, table)?;
         buffer += &part;
     }
-    buffer += &format!(r#" </div>"#,);
+    buffer += &format!(r#"</div>"#,); // network_row
     let backimplications =
         extract_backimplications_from_proposition(connection, &inferencer.model.graph, target)
             .unwrap();
-    buffer += &format!(r#" <div class='network_row'> "#,);
+    buffer += &format!(r#"<div class='network_row'>"#,);
     for backimplication in &backimplications {
         buffer += &format!(
             r#"
@@ -76,7 +79,7 @@ fn backwards_print_single_with_marginal_table(
             implication_part = diagram_proposition_factor(backimplication, Some(table))
         );
     }
-    buffer += &format!(r#" </div> "#,);
+    buffer += &format!(r#"</div>"#,); // network_row
     buffer += &format!(
         r#"
         <div class='network_row'>
@@ -85,7 +88,8 @@ fn backwards_print_single_with_marginal_table(
     "#,
         target_part = diagram_predicate(&target.predicate)
     );
-    buffer += &format!(r#" </div> "#,); // "proof_box"
+    buffer += &format!(r#"</div>"#,); // "proof_box"
+    buffer += &format!(r#"</div>"#,); // "animation-card"
     Ok(buffer)
 }
 
@@ -122,7 +126,8 @@ pub fn internal_animation(
     let mut connection = resource_context.connection.lock().unwrap();
     let marginal_tables = run_inference_rounds(&mut connection, experiment_name, test_scenario)
         .expect("Testing failed.");
-    let body_html = safe_network_animations(&mut connection, experiment_name, &marginal_tables).unwrap();
+    let body_html =
+        safe_network_animations(&mut connection, experiment_name, &marginal_tables).unwrap();
     // let result = render_app_body(&body_html);
     let body_path = "src/explorer/assets/slides.html";
     let result = render_against_custom_body(&body_html, &body_path);
