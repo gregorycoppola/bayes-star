@@ -25,6 +25,7 @@ This provides a crypto-graphically secure time-stamping and immutable recording 
 
 Find me online at:
 * twitter: [@coppola_ai](https://twitter.com/coppola_ai)
+* twitter: [@gregcoppola5d](https://twitter.com/gregcoppola5d)
 
 ## License
 
